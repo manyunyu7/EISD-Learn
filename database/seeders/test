@@ -1,0 +1,28 @@
+// 20210326145439
+// https://data.covid19.go.id/public/api/update.json
+
+{
+  "data": {
+    "id": 1,
+    "jumlah_odp": 48914,
+    "jumlah_pdp": 0,
+    "total_spesimen": 12330238,
+    "total_spesimen_negatif": 8145643
+  },
+  "update": {
+    "penambahan": {
+      "jumlah_positif": 6107,
+      "jumlah_meninggal": 98,
+      "jumlah_sembuh": 4656,
+      "jumlah_dirawat": 1353,
+      "tanggal": "2021-03-25",
+      "created": "2021-03-25 17:58:25"
+    },
+    "total": {
+      "jumlah_positif": 1482559,
+      "jumlah_dirawat": 125279,
+      "jumlah_sembuh": 1317199,
+      "jumlah_meninggal": 40081
+    }
+  }
+}
