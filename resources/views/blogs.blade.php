@@ -83,11 +83,11 @@
         <div class="container w-100" data-aos="flip-right">
             <img width="100%" src="https://github.githubassets.com/images/modules/site/home/footer-illustration.svg" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
         </div>
-        <p class="gloss mb-0" style="color: #7F00FF !important">Feylacourse</p>
+        <p class="gloss mb-0" style="color: #7F00FF !important">{{ config('app.name') }}</p>
         <div style="text-align: center">I want more, I want an Online sequence.
             Everything is humble with Online Course.
         </div>
-        <div style="text-align: center">You’re in Good Hands with Feylacourse</div>
+        <div style="text-align: center">You’re in Good Hands with {{ config('app.name') }}</div>
         <hr>
     </header>
 

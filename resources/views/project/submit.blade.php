@@ -48,7 +48,7 @@
                 <div class="card">
                     <div class="card-body">
                         <blockquote class="blockquote">
-                            Hi, Selamat , karena kamu sudah mencapai tahap akhir dari proses pembelajaran di Feylacourse, Silakan submit project Akhir
+                            Hi, Selamat , karena kamu sudah mencapai tahap akhir dari proses pembelajaran di {{ config('app.name') }} , Silakan submit project Akhir
                             untuk mendapatkan sertifikat hasil belajar dari mentor kelas ini,
                             <footer class="card-blockquote"><cite title="Source title"></cite></footer>
                         </blockquote>

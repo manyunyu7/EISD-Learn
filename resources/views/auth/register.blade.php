@@ -8,13 +8,13 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header w-100 center d-none">
-                                <h2  class="gloss mt-2" style=" text-align:center; color: #7F00FF !important">Feylacourse</h2>
+                                <h2  class="gloss mt-2" style=" text-align:center; color: #7F00FF !important">{{ config('app.name') }}</h2>
                                 {{ __('Register') }}</div>
 
                             <div class="card-body">
                                 <form method="POST" action="{{ route('register') }}">
                                     @csrf
-                                    <h4 class="gloss" style="color: #7F00FF" >Feylacourse</h4>
+                                    <h4 class="gloss" style="color: #7F00FF" >{{ config('app.name') }}</h4>
                                     <h4>Buat Akun</h4>
                                     <div class="form-group row">
                                         <label for="name"

@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\Paginator;
 use DB;
 use Alert;
-
+use App\Models\StudentSection;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class LessonController extends Controller
 {
@@ -41,7 +43,7 @@ class LessonController extends Controller
 
     public function manage()
     {
-        $user_id  = Auth::id();
+        $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
         Paginator::useBootstrap();
         return view('lessons.manage_lesson', compact('dayta'));
@@ -81,16 +83,16 @@ class LessonController extends Controller
 
     public function show(Lesson $lesson)
     {
-        $user_id  = Auth::id();
+        $user_id = FacadesAuth::id();
         $lesson_id = $lesson->id;
-        $lessonz = DB::table('view_course')
+        $lessonz = FacadesDB::table('view_course')
             ->where('id', "$lesson_id")
             ->get()
             ->toArray();
 
         $lesson = $lessonz[0];
 
-        $student_lesson = DB::table('student_lesson')
+        $student_lesson = FacadesDB::table('student_lesson')
             ->where('student-lesson', "$user_id-$lesson_id")
             ->get()
             ->toArray();
@@ -100,7 +102,30 @@ class LessonController extends Controller
             $isRegistered = false;
         }
 
-        $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
+        $sections = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
+
+        // Iterate over the sections and check if each one is already added to the student-section
+        foreach ($sections as $key => $section) {
+            $section_id = $section->section_id;
+
+            // Check if the section is already added to the student-section
+            $isTaken = StudentSection::where('section_id', $section_id)
+                ->where('student_id', Auth::id())
+                ->exists();
+
+            // Add the 'isTaken' attribute to the section object
+            $section->isTaken = $isTaken;
+
+            // Check if the current section is the last section
+            if ($key === count($sections) - 1) {
+                $section->isLastSection = true;
+            } else {
+                $section->isLastSection = false;
+            }
+        }
+
+        $section = $sections;
+        //$section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         return view('lessons.main_course', compact('lesson', 'section', 'isRegistered'));
     }
 
@@ -116,8 +141,8 @@ class LessonController extends Controller
     public function update(Request $request, Lesson $lesson)
     {
         $this->validate($request, [
-            'title'     => 'required',
-            'content'   => 'required'
+            'title' => 'required',
+            'content' => 'required'
         ]);
 
         $lesson = Lesson::findOrFail($lesson->id);
@@ -125,9 +150,9 @@ class LessonController extends Controller
 
         if ($request->file('image') == "" && $request->file('video') == "") {
             $lesson->update([
-                'course_title'     => $request->title,
-                'course_description'   => $request->content,
-                'course_category'     => $request->input('category')
+                'course_title' => $request->title,
+                'course_description' => $request->content,
+                'course_category' => $request->input('category')
             ]);
         } else if ($request->file('video') == "" && $request->file('image') != "") {
             //hapus old image
@@ -136,10 +161,10 @@ class LessonController extends Controller
             $image = $request->file('image');
             $image->storeAs('public/class/cover', $image->hashName());
             $lesson->update([
-                'course_cover_image'     => $image->hashName(),
-                'course_title'     => $request->title,
-                'course_category'     => $request->input('category'),
-                'course_description'   => $request->content
+                'course_cover_image' => $image->hashName(),
+                'course_title' => $request->title,
+                'course_category' => $request->input('category'),
+                'course_description' => $request->content
             ]);
         } else if ($request->file('image') == "" && $request->file('video') != "") {
             //Kalau image tidak diubah tapi video diubah
@@ -151,10 +176,10 @@ class LessonController extends Controller
             $video->storeAs('public/class/trailer', $video->hashName());
 
             $lesson->update([
-                'course_title'     => $request->title,
-                'course_trailer'     => $video->hashName(),
-                'course_category'     => $request->input('category'),
-                'course_description'   => $request->content
+                'course_title' => $request->title,
+                'course_trailer' => $video->hashName(),
+                'course_category' => $request->input('category'),
+                'course_description' => $request->content
             ]);
         } else {
         }
@@ -169,8 +194,6 @@ class LessonController extends Controller
 
 
 
-
-
     /**
      * store
      *
@@ -179,11 +202,13 @@ class LessonController extends Controller
      */
     public function store(Request $request)
     {
+        ini_set('upload_max_filesize', '500M');
+        ini_set('post_max_size', '500M');
         // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
         $this->validate($request, [
-            'image'     => 'required|image|mimes:png,jpg,jpeg',
-            'title'     => 'required',
-            'content'   => 'required',
+            'image' => 'required|image|mimes:png,jpg,jpeg',
+            'title' => 'required',
+            'content' => 'required',
             'category' => 'required_without_all',
         ]);
 
@@ -193,17 +218,17 @@ class LessonController extends Controller
         $cat = $request->input('category');
         $image->storeAs('public/class/cover', $image->hashName());
         $video->storeAs('public/class/trailer', $video->hashName());
-        $user_id  = Auth::id();
+        $user_id = Auth::id();
 
         $cats = $request->input('category');
 
         $inputDeyta = Lesson::create([
-            'course_cover_image'     => $image->hashName(),
-            'course_title'     => $request->title,
-            'course_trailer'     => $video->hashName(),
-            'course_category'     => $request->input('category'),
-            'mentor_id'     => $user_id,
-            'course_description'   => $request->content
+            'course_cover_image' => $image->hashName(),
+            'course_title' => $request->title,
+            'course_trailer' => $video->hashName(),
+            'course_category' => $cat,
+            'mentor_id' => $user_id,
+            'course_description' => $request->content
         ]);
 
         if ($inputDeyta) {
@@ -218,13 +243,13 @@ class LessonController extends Controller
     public function studentRegister(Request $request)
     {
         try {
-            $user_id  = Auth::user()->id;
+            $user_id = Auth::user()->id;
             $registerLesson = StudentLesson::create([
-                'student_id'     => $user_id,
-                'lesson_id'     => $request->course_id,
-                'learn_status'     => 0,
-                'certificate_file'     => "",
-                'student-lesson'     => "$user_id-$request->course_id",
+                'student_id' => $user_id,
+                'lesson_id' => $request->course_id,
+                'learn_status' => 0,
+                'certificate_file' => "",
+                'student-lesson' => "$user_id-$request->course_id",
             ]);
             if ($registerLesson) {
                 return redirect('/home')->with(['success' => 'Berhasil Mendaftar Kelas!']);
@@ -239,14 +264,13 @@ class LessonController extends Controller
     // Drop Kelas
     public function drop(Request $request)
     {
-        $user_id  = Auth::user()->id;
+        $user_id = Auth::user()->id;
         $course_id = $request->course_id;
-       $delete =  DB::table('student_lesson')->where('student-lesson', '=', $user_id."-".$course_id)->delete();
+        $delete = DB::table('student_lesson')->where('student-lesson', '=', $user_id . "-" . $course_id)->delete();
         if ($delete) {
             return redirect('/home')->with(['success' => 'Berhasil Drop Kelas!']);
         } else {
             return redirect('/home')->with(['error' => 'Gagal Drop Kelas!']);
         }
     }
-
 }

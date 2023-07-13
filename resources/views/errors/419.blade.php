@@ -8,7 +8,7 @@
                 <strong><h4><h2>{{ $exception->getMessage() }}</h2></h4></strong>
                 <p class="lead text-gray-800">Page Expired</p>
                 <p class="text-gray-500 mb-0">Tampaknya kamu tersesat , yuk kutuntun kembali </p>
-                <h3>Feylacourse.xyz</h3>
+                <h3>{{ config('app.name') }}</h3>
                 <a href="{{ url('/') }}">&larr; Back to Home</a>
             </div>
         </div>

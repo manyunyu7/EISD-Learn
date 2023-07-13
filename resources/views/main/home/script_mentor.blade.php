@@ -31,7 +31,7 @@ Circles.create({
 //Notify
 $.notify({
 	icon: 'flaticon-alarm-1',
-	title: 'Welcome to Feylacourse',
+	title: 'Welcome to {{ config('app.name') }}',
 	message: 'Best Free Online Course',
 },{
 	type: 'info',
