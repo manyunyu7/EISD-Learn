@@ -39,6 +39,8 @@
 
 @section('main')
     @push('custom-scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
         <script>
             // Wait for the page to load
             document.addEventListener("DOMContentLoaded", function() {
@@ -59,7 +61,12 @@
                         // Prevent the default behavior of the button
                         event.preventDefault();
                         // Show an alert informing the user to complete the video first
-                        alert("Pengguna harus menyelesaikan video terlebih dahulu.");
+                        Swal.fire({
+                            title: "Video Progress",
+                            text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                            icon: "warning",
+                            confirmButtonText: "OK",
+                        });
                     }
                 });
 
