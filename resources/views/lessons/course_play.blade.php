@@ -46,18 +46,8 @@
             document.addEventListener("DOMContentLoaded", function() {
                 // Get the video element
                 var video = document.getElementById("playVideo168");
-
-                video.ontimeupdate = function() {
-                    setTimeout(() => {
-                        previousTime = elem.currentTime;
-                    }, 1000)
-                }
-
-                video.onseeking = function() {
-                    if (elem.currentTime > previousTime) {
-                        elem.currentTime = previousTime;
-                    }
-                }
+                // Disable video fast forward
+                video.playbackRate = 1;
 
                 // Get the "Next Lesson" button element
                 var nextButton = document.getElementById("nextLessonButton");
