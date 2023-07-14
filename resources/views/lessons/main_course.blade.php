@@ -1,6 +1,40 @@
 @extends('lessons._template')
-@section('main')
+@section('head-section')
+    <style>
+        #previewCover {
+            object-fit: cover;
+            height: 200px;
+            width: 100%;
+        }
 
+        .video-mask {
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .course_section_name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .card img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 576px) {
+
+            /* Adjustments for small screens (e.g., mobile devices) */
+            .card img {
+                /* Add any additional styles for small screens */
+            }
+        }
+    </style>
+@endsection
+
+@section('main')
     <div class="container-fluid">
         <div class="main-content-container container-fluid px-4 mt-5">
             {{-- @include('blog.breadcumb') --}}
@@ -35,6 +69,15 @@
                                         </video>
                                     </div>
                                     <h1 class="card-title">Deskripsi Kelas</h1><br>
+                                    <!-- Add Next and Previous buttons -->
+                                    <div class="d-flex justify-content-between mt-2 mb-4">
+                                        {{-- @if ($before_section) --}}
+                                        <a href="" class="btn btn-primary">Previous Lesson</a>
+                                        {{-- @endif --}}
+                                        {{-- @if ($next_section) --}}
+                                        <a href="" class="btn btn-primary">Next Lesson</a>
+                                        {{-- @endif --}}
+                                    </div>
                                     {!! $lesson->course_description !!}
                                 </div>
                             </div>
@@ -56,8 +99,8 @@
                                 <label class="font-weight-bold">Dibuat Oleh : </label>
                                 <div class="d-flex">
                                     <div class="avatar">
-                                        <img src="{{ Storage::url('public/profile/') . $lesson->profile_url }}" alt="..."
-                                            class="avatar-img rounded-circle">
+                                        <img src="{{ Storage::url('public/profile/') . $lesson->profile_url }}"
+                                            alt="..." class="avatar-img rounded-circle">
                                     </div>
                                     <div class="info-post ml-2">
                                         <p class="username">{{ $lesson->mentor_name }}</p>
@@ -73,20 +116,9 @@
 
                 </div>
 
-                <div class="col-12 ">
-                    <div class="card card-post card-round">
-                        <div class="card-body">
-                            {{-- <p class="card-category text-info mb-1"><a href="#">Design</a></p> --}}
-                            {!! $lesson->course_description !!}
-                        </div>
-                    </div>
-                </div>
-
-
 
 
             </div>
         </div>
     </div>
-
 @endsection

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Feylacourse</title>
+    <title>{{ config('app.name') }}</title>
     <link rel="stylesheet" href="./home_assets/styles/style.css">
     <link rel="stylesheet" href="./home_assets/styles/card-pricing.css">
     <link rel="stylesheet" href="./home_assets/styles/header.css">

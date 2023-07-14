@@ -59,8 +59,12 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::post('/course/submission/scoring', 'FinalProjectController@score')->name('course.submission.scoring');
     });
 
+
+    Route::get('/progress', 'StudentProgressController@startSection');
+
+
     Route::group(['middleware' => ['student']], function () {
-        
+
         Route::get('/portfolio/see/{portfolio}/', 'PortfolioController@show')->name('portfolio.show');
         Route::get('/portfolio/create', 'PortfolioController@create')->name('portfolio.create');
         Route::get('/portfolio/manage', 'PortfolioController@manage')->name('portfolio.manage');
@@ -68,7 +72,7 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::delete('/portfolio/{portfolio}/destroy', 'PortfolioController@destroy')->name('portfolio.destroy');
         Route::post('/portfolio/store', 'PortfolioController@store')->name('portfolio.store');
         Route::post('/portfolio/{portfolio}/update', 'PortfolioController@update')->name('portfolio.update');
-        
+
 
         Route::post('/course/register', 'LessonController@studentRegister')->name('course.register');
         Route::post('/course/drop', 'LessonController@drop')->name('course.drop');
@@ -96,7 +100,7 @@ Route::resource('blog', BlogController::class);
 Route::get('/blog/{blog}', 'BlogController@show')->name('blog.read');
 
 
-Route::group(['prefix' => 'filemanager'], function() {
+Route::group(['prefix' => 'filemanager'], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
 

@@ -6,7 +6,8 @@
 
                 <div class="user">
                     <div class="avatar-sm float-left mr-2f">
-                        <img src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}" alt="profile" class="avatar-img rounded-circle">
+                        <img src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}" alt="profile"
+                            class="avatar-img rounded-circle">
                     </div>
                     <div class="info">
                         <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
@@ -26,7 +27,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                                    <a href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
                                                                       document.getElementById('logout-form').submit();">
                                         <span class="link-collapse">Logout</span>
                                     </a>
@@ -42,7 +44,7 @@
             @endauth
             <ul class="nav nav-danger">
                 <hr>
-  
+
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
@@ -52,21 +54,32 @@
                 <hr>
                 <div class="container">
 
-
                     @forelse ($section as $item)
-
-                        <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
+                        <li class="nav-item card p-1 bg-light" style="margin-bottom: 6px !important">
                             <a href="{{ route('course.see_section', [$item->lesson_id, $item->section_id]) }}">
-                                <span class="badge badge-success ">{{ $item->section_order }}</span><br>
+                                <span class="badge badge-default">{{ $item->section_order }}</span><br>
                             </a>
-                            <p style="margin-bottom: 0px !important"> {{ $item->section_title }}</p>
+                            <p class="text-dark" style="margin-bottom: 0px !important">{{ $item->section_title }}</p>
+                            <div class="mt-1 mb-1">
+                                @if (isset($item) && isset($item->isTaken))
+                                    @php
+                                        $isCurrent = $item->isCurrent ?? false;
+                                    @endphp
+                                    @if ($item->isTaken && !$isCurrent)
+                                        <span class="badge badge-success text-small">Sudah Dipelajari</span>
+                                    @elseif ($isCurrent)
+                                        <span class="badge badge-primary text-small">Sedang Dipelajari</span>
+                                    @else
+                                        <span class="badge badge-secondary text-small">Belum Diambil</span>
+                                    @endif
+                                @endif
+                            </div>
                         </li>
-
                     @empty
                         <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
                             {{-- <a href="{{ route('course.see_section', [$item->lesson_id, $item->section_id]) }}">
-                                <span class="badge badge-success ">{{ $item->section_order }}</span><br>
-                            </a> --}}
+                        <span class="badge badge-success ">{{ $item->section_order }}</span><br>
+                        </a> --}}
                             <p style="margin-bottom: 0px !important"> Belum Ada Materi di Kelas Ini</p>
                         </li>
                     @endforelse
@@ -80,21 +93,25 @@
                         @if ($isRegistered)
                     <li class="nav-item card p-2 border border-primary mx-2" style="margin-bottom: 6px !important">
                         <h4 style="margin-bottom: 0px !important; color:black">Project Akhir</h4>
-                        <p style="margin-bottom: 0px !important" class=""> <small id="helpId" class="form-text text-muted">Lihat Penugasan Pada Materi Project Akhir</small></p>
+                        <p style="margin-bottom: 0px !important" class=""> <small id="helpId"
+                                class="form-text text-muted">Lihat Penugasan Pada Materi Project Akhir</small></p>
                         <hr>
                         <a href="{{ route('course.submission', [$lesson->id]) }}">
-                            <button type="button" name="" id="" class="btn btn-primary btn-border">Buka Halaman Project</button>
+                            <button type="button" name="" id="" class="btn btn-primary btn-border">Buka
+                                Halaman Project</button>
                         </a>
-                        <small style="margin-bottom: 2px !important width:100% text-align:center" class="text-danger">Dikerjakan setelah semua materi yang ada diselesaikan</small>
+                        <small style="margin-bottom: 2px !important width:100% text-align:center"
+                            class="text-danger">Dikerjakan
+                            setelah semua materi yang ada diselesaikan</small>
                     </li>
                     @endif
 
                 @endauth
                 </li>
-                <li class="mx-4 mt-2">
-                    <a href="http://themekita.com/atlantis-bootstrap-dashboard.html" class="btn btn-primary btn-block">
-                        <span class="btn-label mr-2"> <i class="fa fa-heart"></i> </span>Donasi Untuk Guru</a>
-                </li>
+                <!-- <li class="mx-4 mt-2">
+                        <a href="http://themekita.com/atlantis-bootstrap-dashboard.html" class="btn btn-primary btn-block">
+                            <span class="btn-label mr-2"> <i class="fa fa-heart"></i> </span>Donasi Untuk Guru</a>
+                    </li> -->
             </ul>
         </div>
     </div>

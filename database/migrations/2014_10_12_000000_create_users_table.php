@@ -20,11 +20,12 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('profile_url')->default('default.png');;
-            $table->string('role');
-            $table->string('contact')->default("");
-            $table->string('jobs')->default("");
-            $table->string('institute')->default("");
-            $table->text('motto')->default("");
+            $table->string('role')->nullable();
+            $table->string('contact')->default("")->nullable();
+            $table->string('jobs')->default("")->nullable();
+            $table->string('institute')->default("")->nullable();
+            $table->string('mdln_username')->default("")->nullable();
+            $table->text('motto')->default("")->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

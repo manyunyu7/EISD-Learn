@@ -79,7 +79,5 @@ class UsersTableSeeder extends Seeder
             'created_at' => Carbon::now()->timezone('Asia/Bangkok')->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->timezone('Asia/Bangkok')->format('Y-m-d H:i:s')
         ]);
-
-        
     }
 }

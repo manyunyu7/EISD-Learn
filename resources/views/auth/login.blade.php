@@ -6,8 +6,8 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="mt-4">
-                                <h1  class="gloss mt-2 my-2" style=" text-align:center; color: #7F00FF !important">Feylacourse</h1>
-                                <p  class=" mt-2 my-2" style=" text-align:center; color: #150129 !important">Learning On Feylacourse, <br> You Are In A Good Hand With Feylacourse</p>
+                                <h1  class="gloss mt-2 my-2" style=" text-align:center; color: #7F00FF !important">{{ config('app.name') }}</h1>
+                                <p  class=" mt-2 my-2" style=" text-align:center; color: #150129 !important">Learning On {{ config('app.name') }}, <br> You Are In A Good Hand With {{ config('app.name') }}</p>
                             </div>
 
                             <div class="card-body">

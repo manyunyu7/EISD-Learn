@@ -2,11 +2,13 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class SectionView extends Migration
 {
-    public function up() {
+    public function up()
+    {
         DB::statement("CREATE OR REPLACE VIEW `view_course_section` 
         AS SELECT a.id as `lesson_id`,a.course_title as lessons_title, a.mentor_id ,
          b.name as `mentor_name` , c.id as `section_id` ,
@@ -20,7 +22,7 @@ class SectionView extends Migration
      * Reverse the migrations.
      *
      * @return void
-    */
+     */
     public function down()
     {
         DB::statement("DROP VIEW view_course_section");
