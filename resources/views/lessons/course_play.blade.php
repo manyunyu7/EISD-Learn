@@ -45,20 +45,36 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 // Initialize Video.js
-                var videoPlayer = videojs("myVideo");
-                // Disable fast forward
-                videoPlayer.on("seeking", function(event) {
-                    var currentTime = videoPlayer.currentTime();
-                    var previousTime = videoPlayer.cache_.previousTime || 0;
+                 var videoPlayer = document.getElementById("myVideo");
+                 
+                 let previousTime = 0;
 
-                    if (currentTime < previousTime) {
-                        // User attempted to seek backward, prevent seeking
-                        videoPlayer.currentTime(previousTime);
-                    } else {
-                        // User attempted to seek forward, allow seeking
-                        videoPlayer.cache_.previousTime = currentTime;
-                    }
-                });
+                videoPlayer.ontimeupdate = function() {
+                  setTimeout(() => {
+                    console.log("hello world "+videoPlayer.currentTime);
+                    previousTime = videoPlayer.currentTime;
+                  }, 1)
+                }
+                
+                videoPlayer.onseeking = function() {
+                  if (videoPlayer.currentTime > previousTime) {
+                      videoPlayer.currentTime = previousTime;
+                  }
+                }
+
+                // Disable fast forward
+                // videoPlayer.on("seeking", function(event) {
+                //     var currentTime = videoPlayer.currentTime();
+                //     var previousTime = videoPlayer.cache_.previousTime || 0;
+
+                //     if (currentTime < previousTime) {
+                //         // User attempted to seek backward, prevent seeking
+                //         videoPlayer.currentTime(previousTime);
+                //     } else {
+                //         // User attempted to seek forward, allow seeking
+                //         videoPlayer.cache_.previousTime = currentTime;
+                //     }
+                // });
 
                 // Get the "Next Lesson" button element
                 var nextButton = document.getElementById("nextLessonButton");
