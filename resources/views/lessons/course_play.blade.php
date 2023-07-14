@@ -102,8 +102,8 @@
                 </div>
 
                 <div class="container-fluid">
-                    <video crossorigin playsinline id="playVideo168" autoplay="autoplay" width="100%" class="video-mask"
-                        disablePictureInPicture controlsList="nodownload">
+                    <video crossorigin controls playsinline id="playVideo168" autoplay="autoplay" width="100%"
+                        class="video-mask" disablePictureInPicture controlsList="nodownload">
                         <!-- Video files -->
                         <source
                             src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video . '?random1') }}">
