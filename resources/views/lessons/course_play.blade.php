@@ -41,20 +41,31 @@
     @push('custom-scripts')
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
 
+        <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
         <script>
-            // Wait for the page to load
             document.addEventListener("DOMContentLoaded", function() {
-                // Get the video element
-                var video = document.getElementById("playVideo168");
-                // Disable video fast forward
-                video.playbackRate = 1;
+                // Initialize Video.js
+                var videoPlayer = videojs("myVideo");
+                // Disable fast forward
+                videoPlayer.on("seeking", function(event) {
+                    var currentTime = videoPlayer.currentTime();
+                    var previousTime = videoPlayer.cache_.previousTime || 0;
+
+                    if (currentTime < previousTime) {
+                        // User attempted to seek backward, prevent seeking
+                        videoPlayer.currentTime(previousTime);
+                    } else {
+                        // User attempted to seek forward, allow seeking
+                        videoPlayer.cache_.previousTime = currentTime;
+                    }
+                });
 
                 // Get the "Next Lesson" button element
                 var nextButton = document.getElementById("nextLessonButton");
 
                 nextButton.addEventListener("click", function(event) {
                     // Calculate the video progress as a percentage
-                    var progress = (video.currentTime / video.duration) * 100;
+                    var progress = (videoPlayer.currentTime() / videoPlayer.duration()) * 100;
 
                     if (progress >= 90) {
                         // Allow the default behavior of the button
@@ -62,26 +73,13 @@
                     } else {
                         // Prevent the default behavior of the button
                         event.preventDefault();
-                        // Show an alert informing the user to complete the video first
+                        // Show a SweetAlert alert informing the user to complete the video first
                         Swal.fire({
                             title: "Video Progress",
                             text: "Pengguna harus menyelesaikan video terlebih dahulu.",
                             icon: "warning",
                             confirmButtonText: "OK",
                         });
-                    }
-                });
-
-                // Add an event listener to track video progress
-                video.addEventListener("timeupdate", function() {
-                    // Calculate the video progress as a percentage
-                    var progress = (video.currentTime / video.duration) * 100;
-
-                    // Toggle the visibility of the "Next Lesson" button
-                    if (progress >= 10) {
-                        nextButton.classList.remove("hidden");
-                    } else {
-                        nextButton.classList.add("hidden");
                     }
                 });
             });
@@ -104,7 +102,7 @@
                 </div>
 
                 <div class="container-fluid">
-                    <video crossorigin controls playsinline id="playVideo168" autoplay="autoplay" width="100%"
+                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
                         class="video-mask" disablePictureInPicture controlsList="nodownload">
                         <!-- Video files -->
                         <source
