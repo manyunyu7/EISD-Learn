@@ -22,7 +22,6 @@ class CourseSectionController extends Controller
 {
     public function manage_section(Lesson $lesson)
     {
-
         $user_id = Auth::id();
         $lesson_id = $lesson->id;
         if ($user_id != $lesson->mentor_id) {
@@ -33,11 +32,19 @@ class CourseSectionController extends Controller
         return view('lessons.section.manage_section', compact('lesson'), compact('dayta'));
     }
 
+
+    public function goToNextSection(Lesson $lesson, CourseSection $lesson_id)
+    {
+    }
+
     // SEE SECTION
     public function see_section(Lesson $lesson, CourseSection $section)
     {
-        //i do auth check here, not in route middleware, because section is showed to non logged user 
-        // in class preview
+        // Find the next and previous sections
+        $nextSectionId = null;
+        $prevSectionId = null;
+        $currentSectionId = $section->id;
+
         if (!Auth::check()) {
             abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
@@ -45,8 +52,6 @@ class CourseSectionController extends Controller
         $lesson_id = $lesson->id;
 
         if (Auth::user()->role == "student") {
-            # code...
-
             $student_lesson = DB::table('student_lesson')
                 ->where('student-lesson', "$user_id-$lesson_id")
                 ->get()
@@ -60,50 +65,105 @@ class CourseSectionController extends Controller
             }
         }
 
-        if (Auth::user()->role == "mentor") {
-            $isRegistered = true;
-        }
-
         $section_id = $section->id;
         $lesson_id = $lesson->id;
+
+        // Get the preceding sections
+        $precedingSections = DB::select("
+         SELECT * FROM course_section WHERE course_id = :course_id ORDER BY section_order ASC", [
+            'course_id' => $lesson_id,
+        ]);
+
+        $precedingSectionIds = array_map(function ($section) {
+            return $section->id;
+        }, $precedingSections);
+
+        $studentTakenSections = DB::select("
+        SELECT
+            ss.student_id,
+            users.name,
+            lessons.course_title,
+            lessons.id AS lessons_id,
+            ss.section_id,
+            ss.`student-section`
+        FROM
+            student_section AS ss
+        LEFT JOIN users ON users.id = ss.student_id
+        LEFT JOIN course_section ON ss.section_id = course_section.id
+        LEFT JOIN lessons ON course_section.course_id = lessons.id
+        WHERE users.id = :user_id AND lessons.id = :lessons_id
+      ", [
+            'user_id' => Auth::id(),
+            'lessons_id' => $lesson_id,
+        ]);
+        $studentTakenSectionIds = array_map(function ($section) {
+            return $section->section_id;
+        }, $studentTakenSections);
+
+        $currentSectionIndex = array_search($section_id, $precedingSectionIds);
+        if ($currentSectionIndex !== false) {
+            if ($currentSectionIndex < count($precedingSectionIds) - 1) {
+                $nextSectionId = $precedingSectionIds[$currentSectionIndex + 1];
+            }
+
+            if ($currentSectionIndex > 0) {
+                $prevSectionId = $precedingSectionIds[$currentSectionIndex - 1];
+            }
+        }
+
+        // Check if the student has taken all the preceding sections
+        $isPrecedingTaken = StudentSection::whereIn('section_id', $precedingSectionIds)
+            ->where('student_id', $user_id)
+            ->exists();
+
+
+        $sectionTakenOnCourseCount = DB::table('student_section as ss')
+            ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+            ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+            ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+            ->count();
+
+        if (!$isPrecedingTaken && $sectionTakenOnCourseCount != 0) {
+            abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+        }
+
         // $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         // Fetch all sections for the lesson
+        $student_sections = DB::select("select * from student_section ");
         $sections = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
-
-        $this->startSection($section_id);
         $section_spec = DB::select("select * from view_course_section where section_id = '$section_id' ");
 
         // Iterate over the sections and check if each one is already added to the student-section
         foreach ($sections as $key => $section) {
-            $section_id = $section->section_id;
-
             // Check if the section is already added to the student-section
-            $isTaken = StudentSection::where('section_id', $section_id)
+            $isTaken = StudentSection::where('section_id', $section->section_id)
                 ->where('student_id', Auth::id())
                 ->exists();
 
             // Add the 'isTaken' attribute to the section object
             $section->isTaken = $isTaken;
+            $section->isCurrent = $section_id;
 
-            // Check if the current section is the last section
-            if ($key === count($sections) - 1) {
-                $section->isLastSection = true;
+            if ($section->section_id == $section_id) {
+                $section->isCurrent = true;
             } else {
-                $section->isLastSection = false;
+                $section->isCurrent = false;
             }
         }
+
         $section = $sections;
+        $next_section = $nextSectionId;
+        $prev_section = $prevSectionId;
+        $sectionOrder = $precedingSectionIds;
+        $courseId = $lesson_id;
+        $compact = compact('courseId', 'next_section', 'prev_section', 'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered',);
+        if (Auth::user()->role == "student") {
+            $this->startSection($currentSectionId);
+        }
 
-        return view('lessons.course_play', compact('lesson', 'section', 'section_spec', 'isRegistered'));
-
-        // // abort(401,"Lalalala");
-        // $section=$section;
-        // $user_id  = Auth::id();
-        // $lesson_id = $lesson->id;
-        // $dayta = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
-        // // $dayta = DB::select("select * from view_course_section  where mentor_id = $user_id");
-        // return view('lessons.course_play',compact('dayta','lesson','section'));
+        return view('lessons.course_play', $compact);
     }
+
 
     function startSection($sectionId)
     {
