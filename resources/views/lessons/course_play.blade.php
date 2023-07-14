@@ -44,61 +44,39 @@
         <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                // Initialize Video.js
-                 var videoPlayer = document.getElementById("myVideo");
-                 
-                 let previousTime = 0;
+                        // Initialize Video.js
+                        var videoPlayer = document.getElementById("myVideo");
 
-                videoPlayer.ontimeupdate = function() {
-                  setTimeout(() => {
-                    console.log("hello world "+videoPlayer.currentTime);
-                    previousTime = videoPlayer.currentTime;
-                  }, 1)
-                }
-                
-                videoPlayer.onseeking = function() {
-                  if (videoPlayer.currentTime > previousTime) {
-                      videoPlayer.currentTime = previousTime;
-                  }
-                }
+                        let previousTime = 0;
 
-                // Disable fast forward
-                // videoPlayer.on("seeking", function(event) {
-                //     var currentTime = videoPlayer.currentTime();
-                //     var previousTime = videoPlayer.cache_.previousTime || 0;
+                        videoPlayer.ontimeupdate = function() {
+                          setTimeout(() => {
+                            console.log("hello world "+videoPlayer.currentTime);
+                            previousTime = videoPlayer.currentTime;
+                          }, 1)
+                        }
 
-                //     if (currentTime < previousTime) {
-                //         // User attempted to seek backward, prevent seeking
-                //         videoPlayer.currentTime(previousTime);
-                //     } else {
-                //         // User attempted to seek forward, allow seeking
-                //         videoPlayer.cache_.previousTime = currentTime;
-                //     }
-                // });
+                        videoPlayer.onseeking = function() {
+                          if (videoPlayer.currentTime > previousTime) {
+                              videoPlayer.currentTime = previousTime;
+                          }
+                        }
 
-                // Get the "Next Lesson" button element
-                var nextButton = document.getElementById("nextLessonButton");
+                        // Disable fast forward
+                        videoPlayer.on("seeking", function(event) {
+                            var currentTime = videoPlayer.currentTime();
+                            var previousTime = videoPlayer.cache_.previousTime || 0;
 
-                nextButton.addEventListener("click", function(event) {
-                    // Calculate the video progress as a percentage
-                    var progress = (videoPlayer.currentTime() / videoPlayer.duration()) * 100;
-
-                    if (progress >= 90) {
-                        // Allow the default behavior of the button
-                        return;
-                    } else {
-                        // Prevent the default behavior of the button
-                        event.preventDefault();
-                        // Show a SweetAlert alert informing the user to complete the video first
-                        Swal.fire({
-                            title: "Video Progress",
-                            text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                            icon: "warning",
-                            confirmButtonText: "OK",
+                            if (currentTime < previousTime) {
+                                // User attempted to seek backward, prevent seeking
+                                videoPlayer.currentTime(previousTime);
+                            } else {
+                                // User attempted to seek forward, allow seeking
+                                videoPlayer.cache_.previousTime = currentTime;
+                            }
                         });
-                    }
-                });
-            });
+
+                     
         </script>
     @endpush
 
@@ -132,6 +110,32 @@
                     </video>
                 </div>
 
+
+                <script>
+                function nextCuy() {
+                    var videoPlayer = document.getElementById("myVideo");
+                    var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                    var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+            
+                    if (progress >= 90) {
+                         window.location.href = nextUrl;
+                        return;
+                    } else {
+            
+                        // Prevent the default behavior of the button
+                        event.preventDefault();
+                        // Show a SweetAlert alert informing the user to complete the video first
+                        Swal.fire({
+                            title: "Video Progress",
+                            text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                            icon: "warning",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                }
+                </script>
+                
+                
                 <div class="card mt-5">
                     <img class="card-img-top" src="holder.js/100x180/" alt="">
                     <div class="card-body">
@@ -142,9 +146,12 @@
                                     class="btn btn-primary hidden">Previous Lesson</a>
                             @endif
                             @if ($next_section != null)
-                                <a href="{{ url('/') . "/course/$courseId/section/$next_section" }}" id="nextLessonButton"
-                                    class="btn btn-primary ">Next
-                                    Lesson</a>
+                                <button id="nextLessonButton" class="btn btn-primary" onclick="nextCuy();">Next
+                                    Lesson</button>
+
+                                <!--<a href="{{ url('/') . "/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
+                                <!--    class="btn btn-primary ">Next-->
+                                <!--    Lesson</a>-->
                             @endif
 
                         </div>
