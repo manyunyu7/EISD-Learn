@@ -47,19 +47,17 @@
                 // Get the video element
                 var video = document.getElementById("playVideo168");
 
-                // Disable video fast forward
-                video.addEventListener("seeking", function(event) {
-                    var currentTime = video.currentTime;
-                    var previousTime = video.dataset.previousTime || 0;
+                video.ontimeupdate = function() {
+                    setTimeout(() => {
+                        previousTime = elem.currentTime;
+                    }, 1000)
+                }
 
-                    if (currentTime < previousTime) {
-                        // User attempted to seek backward, prevent seeking
-                        video.currentTime = previousTime;
-                    } else {
-                        // User attempted to seek forward, allow seeking
-                        video.dataset.previousTime = currentTime;
+                video.onseeking = function() {
+                    if (elem.currentTime > previousTime) {
+                        elem.currentTime = previousTime;
                     }
-                });
+                }
 
                 // Get the "Next Lesson" button element
                 var nextButton = document.getElementById("nextLessonButton");
