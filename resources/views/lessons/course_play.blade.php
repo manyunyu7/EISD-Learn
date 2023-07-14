@@ -102,7 +102,7 @@
                 </div>
 
                 <div class="container-fluid">
-                    <video controls crossorigin playsinline id="playVideo168" width="100%" class="video-mask"
+                    <video crossorigin playsinline id="playVideo168" width="100%" class="video-mask"
                         disablePictureInPicture controlsList="nodownload">
                         <!-- Video files -->
                         <source
