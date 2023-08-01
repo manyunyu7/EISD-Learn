@@ -55,6 +55,8 @@ class HomeController extends Controller
         ->where('user_id', $user_id)
         ->count();
 
+      if(Auth)
+
       return view('main.dashboard')
         ->with(compact(
           'classes',

@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'LandingController@landing');
-Route::get('/home', 'LandingController@landing');
 Route::get('/classes', 'LandingController@classes');
 Route::get('/blogs', 'LandingController@blogs');
 Route::get('/home', 'HomeController@index');
