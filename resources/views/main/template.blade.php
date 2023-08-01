@@ -27,7 +27,7 @@
 
 	<!-- jQuery Scrollbar -->
 	<script src="{{asset('atlantis/examples')}}/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-	
+
 	<!-- Bootstrap Tagsinput -->
 	<script src="{{asset('atlantis/examples')}}/assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
 
@@ -44,7 +44,9 @@
 		});
 	</script>
 
-		@yield('head-section')
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+
+    @yield('head-section')
 
 	<!-- CSS Files -->
 	<link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/bootstrap.min.css">
@@ -58,7 +60,7 @@
 		<div class="main-header">
 			<!-- Logo Header -->
 			<div class="logo-header" data-background-color="blue">
-				
+
 				<a href="{{url('/home')}}" class="logo">
 					<p class="navbar-brand text-white">{{config('app.name')}}</p>
 					{{-- <img src="{{URL::to('/')}}/home_assets/esd_3.png" alt="navbar brand" class="navbar-brand"> --}}
@@ -81,7 +83,7 @@
 			@auth
 			@include('main.nav_bar')
 			@endauth
-		
+
 			<!-- End Navbar -->
 		</div>
 
@@ -89,14 +91,14 @@
 		@include('main.side-bar')
 		<!-- End Sidebar -->
 
-		
+
 		<div class="main-panel">
 			<div class="content">
 				@yield('breadcumb')
 				@yield('main')
 			</div>
 		</div>
-{{-- 
+{{--
 				<footer class="footer">
 				<div class="container-fluid">
 					<nav class="pull-left">
@@ -120,11 +122,11 @@
 					</nav>
 					<div class="copyright ml-auto">
 						2018,made with <i class="fa fa-heart heart text-danger"></i> by <a href="http://henryaugusta.feylabs.my.id">Feylaboratiry</a>
-					</div>				
+					</div>
 				</div>
 			</footer> --}}
 		</div>
-		
+
 	</div>
 
 
@@ -163,7 +165,7 @@
 
 
 	@yield('script')
-	<script>	
+	<script>
 
 
 		var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');

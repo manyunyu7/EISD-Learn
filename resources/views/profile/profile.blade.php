@@ -64,35 +64,32 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Institusi</label>
-                                            <input type="text" class="form-control" value="{{ Auth::user()->institute }}" name="institute" placeholder="Institusi">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Profesi</label>
-                                            <input type="text" class="form-control" value="{{ Auth::user()->jobs }}" name="jobs">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3 mb-1">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>Motto Hidup</label>
-                                            <textarea class="form-control" name="motto" placeholder="Motto" rows="3"> {{ Auth::user()->motto }}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
+{{--                                <div class="row mt-3">--}}
+{{--                                    <div class="col-md-12">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label>Institusi</label>--}}
+{{--                                            <input type="text" class="form-control" value="{{ Auth::user()->institute }}" name="institute" placeholder="Institusi">--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="row mt-3">--}}
+{{--                                    <div class="col-md-12">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label>Profesi</label>--}}
+{{--                                            <input type="text" class="form-control" value="{{ Auth::user()->jobs }}" name="jobs">--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="row mt-3 mb-1">--}}
+{{--                                    <div class="col-md-12">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label>Motto Hidup</label>--}}
+{{--                                            <textarea class="form-control" name="motto" placeholder="Motto" rows="3"> {{ Auth::user()->motto }}</textarea>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
                                 <div class="text-right mt-3 mb-3">
-
-
-
                                     <button class="btn btn-success">Save</button>
                                     <button class="btn btn-danger">Reset</button>
                                 </div>

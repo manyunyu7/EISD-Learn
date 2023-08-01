@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
+use Illuminate\Support\Facades\Redirect;
 
 class HomeController extends Controller
 {
@@ -54,6 +55,10 @@ class HomeController extends Controller
       $blogCreatedCount = DB::table('view_blog')
         ->where('user_id', $user_id)
         ->count();
+
+      if(!Auth::check()){
+          return Redirect::away('/'); // Replace '/login' with the URL of your login page
+      }
 
       return view('main.dashboard')
         ->with(compact(

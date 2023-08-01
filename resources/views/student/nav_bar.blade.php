@@ -1,5 +1,5 @@
 <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
-				
+
     <div class="container-fluid">
         <div class="collapse" id="search-nav">
             <form class="navbar-left navbar-form nav-search mr-md-3">
@@ -26,7 +26,7 @@
                 <ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
                     <li>
                         <div class="dropdown-title d-flex justify-content-between align-items-center">
-                            Messages 									
+                            Messages
                             <a href="#" class="small">Mark all as read</a>
                         </div>
                     </li>
@@ -34,7 +34,7 @@
                         <div class="message-notif-scroll scrollbar-outer">
                             <div class="notif-center">
                                 <a href="#">
-                                    <div class="notif-img"> 
+                                    <div class="notif-img">
                                         <img  src="{{ Storage::url('public/profile/'). Auth::user()->profile_url }}" alt="Img Profile">
                                     </div>
                                     <div class="notif-content">
@@ -42,11 +42,11 @@
                                         <span class="block">
                                             How are you ?
                                         </span>
-                                        <span class="time">5 minutes ago</span> 
+                                        <span class="time">5 minutes ago</span>
                                     </div>
                                 </a>
                                 <a href="#">
-                                    <div class="notif-img"> 
+                                    <div class="notif-img">
                                         <img src="{{asset('atlantis/examples')}}/assets/img/chadengle.jpg" alt="Img Profile">
                                     </div>
                                     <div class="notif-content">
@@ -54,11 +54,11 @@
                                         <span class="block">
                                             Ok, Thanks !
                                         </span>
-                                        <span class="time">12 minutes ago</span> 
+                                        <span class="time">12 minutes ago</span>
                                     </div>
                                 </a>
                                 <a href="#">
-                                    <div class="notif-img"> 
+                                    <div class="notif-img">
                                         <img src="{{asset('atlantis/examples')}}/assets/img/mlane.jpg" alt="Img Profile">
                                     </div>
                                     <div class="notif-content">
@@ -66,11 +66,11 @@
                                         <span class="block">
                                             Ready for the meeting today...
                                         </span>
-                                        <span class="time">12 minutes ago</span> 
+                                        <span class="time">12 minutes ago</span>
                                     </div>
                                 </a>
                                 <a href="#">
-                                    <div class="notif-img"> 
+                                    <div class="notif-img">
                                         <img src="{{asset('atlantis/examples')}}/assets/img/talha.jpg" alt="Img Profile">
                                     </div>
                                     <div class="notif-content">
@@ -78,7 +78,7 @@
                                         <span class="block">
                                             Hi, Apa Kabar ?
                                         </span>
-                                        <span class="time">17 minutes ago</span> 
+                                        <span class="time">17 minutes ago</span>
                                     </div>
                                 </a>
                             </div>
@@ -107,7 +107,7 @@
                                         <span class="block">
                                             New user registered
                                         </span>
-                                        <span class="time">5 minutes ago</span> 
+                                        <span class="time">5 minutes ago</span>
                                     </div>
                                 </a>
                                 <a href="#">
@@ -116,18 +116,18 @@
                                         <span class="block">
                                             Rahmad commented on Admin
                                         </span>
-                                        <span class="time">12 minutes ago</span> 
+                                        <span class="time">12 minutes ago</span>
                                     </div>
                                 </a>
                                 <a href="#">
-                                    <div class="notif-img"> 
+                                    <div class="notif-img">
                                         <img src="{{asset('atlantis/examples')}}/assets/img/profile2.jpg" alt="Img Profile">
                                     </div>
                                     <div class="notif-content">
                                         <span class="block">
                                             Reza send messages to you
                                         </span>
-                                        <span class="time">12 minutes ago</span> 
+                                        <span class="time">12 minutes ago</span>
                                     </div>
                                 </a>
                                 <a href="#">
@@ -136,7 +136,7 @@
                                         <span class="block">
                                             Farrah liked Admin
                                         </span>
-                                        <span class="time">17 minutes ago</span> 
+                                        <span class="time">17 minutes ago</span>
                                     </div>
                                 </a>
                             </div>
@@ -213,7 +213,7 @@
                                 <div class="avatar-lg"><img  src="{{ Storage::url('public/profile/'). Auth::user()->profile_url }}" alt="image profile" class="avatar-img rounded"></div>
                                 <div class="u-text">
                                     <h4>Hizrian</h4>
-                                    <p class="text-muted">{{Auth::user()->email }}</p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                    <p class="text-muted">{{Auth::user()->email }}</p><a href="" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                 </div>
                             </div>
                         </li>

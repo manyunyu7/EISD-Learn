@@ -77,41 +77,40 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group row">
-                                        <label
-                                            class="col-md-4 col-form-label text-md-right">Asal Institusi</label>
+{{--                                    <div class="form-group row">--}}
+{{--                                        <label--}}
+{{--                                            class="col-md-4 col-form-label text-md-right">Asal Institusi</label>--}}
 
-                                        <div class="col-md-6">
-                                            <input type="text" class="form-control"
-                                                name="institute" placeholder="Asal Institusi">
-                                      <small id="helpId" class="form-text text-muted">Misal : Santri di santrenkoding</small>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-group row">
-                                        <label 
-                                            class="col-md-4 col-form-label text-md-right">Profesi</label>
+{{--                                        <div class="col-md-6">--}}
+{{--                                            <input type="text" class="form-control"--}}
+{{--                                                name="institute" placeholder="Asal Institusi">--}}
+{{--                                      <small id="helpId" class="form-text text-muted">Misal : Santri di santrenkoding</small>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
 
-                                        <div class="col-md-6">
-                                            <input type="text" class="form-control"
-                                                name="jobs">
-                                      <small id="helpId" class="form-text text-muted">Misal : Mobile Developer di PT XYZ atau <br> Mahasiswa di Telkom University</small>
-                                        </div>
-                                    </div>
+{{--                                    <div class="form-group row">--}}
+{{--                                        <label --}}
+{{--                                            class="col-md-4 col-form-label text-md-right">Profesi</label>--}}
 
-                                    <div class="form-group row">
-                                        <label 
-                                            class="col-md-4 col-form-label text-md-right">Motto Hidup</label>
+{{--                                        <div class="col-md-6">--}}
+{{--                                            <input type="text" class="form-control"--}}
+{{--                                                name="jobs">--}}
+{{--                                      <small id="helpId" class="form-text text-muted">Misal : Mobile Developer di PT XYZ atau <br> Mahasiswa di Telkom University</small>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
 
-                                        <div class="col-md-6">
-                                            <input type="text" class="form-control"
-                                                name="motto">
-                                      <small id="helpId" class="form-text text-muted">Misal : Man Jadda Wajada</small>
-                                        </div>
-                                    </div>
+{{--                                    <div class="form-group row">--}}
+{{--                                        <label --}}
+{{--                                            class="col-md-4 col-form-label text-md-right">Motto Hidup</label>--}}
+
+{{--                                        <div class="col-md-6">--}}
+{{--                                            <input type="text" class="form-control"--}}
+{{--                                                name="motto">--}}
+{{--                                      <small id="helpId" class="form-text text-muted">Misal : Man Jadda Wajada</small>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
 
 
-                                    
                                     <div class="form-group row">
                                         <label for="rolez"
                                             class="col-md-4 col-form-label text-md-right">Disini Aku Mau</label>
@@ -119,7 +118,7 @@
                                         <div class="col-md-6">
                                               <select class="form-control" name="rolez" id="">
                                                 <option value="student">Belajar</option>
-                                                <option value="mentor">Mengajar</option>
+                                                <option value="mentor">Mengajar (Mentor)</option>
                                               </select>
                                         </div>
                                     </div>

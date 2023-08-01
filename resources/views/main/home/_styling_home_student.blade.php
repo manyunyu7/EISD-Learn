@@ -1,5 +1,5 @@
 <style>
-    
+
     .album-poster-parent {
         padding: 10px;
         background-color: #e6e6e6 !important;
@@ -41,7 +41,7 @@
         /* background-position: center center; */
         /* background-repeat: no-repeat; */
         width: 100%;
-        height: 150px;
+        height: 205px;
     }
 
 </style>
