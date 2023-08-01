@@ -56,7 +56,7 @@ class HomeController extends Controller
         ->where('user_id', $user_id)
         ->count();
 
-      if(Auth::check()){
+      if(!Auth::check()){
           return Redirect::away('/'); // Replace '/login' with the URL of your login page
       }
 
