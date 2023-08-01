@@ -121,6 +121,7 @@ class CourseSectionController extends Controller
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+            ->where('ss.student_id', Auth::id())
             ->count();
 
         if (!$isPrecedingTaken && $sectionTakenOnCourseCount != 0) {
