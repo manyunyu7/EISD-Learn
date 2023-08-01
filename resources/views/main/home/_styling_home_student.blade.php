@@ -41,7 +41,7 @@
         /* background-position: center center; */
         /* background-repeat: no-repeat; */
         width: 100%;
-        height: 225px;
+        height: 205px;
     }
 
 </style>
