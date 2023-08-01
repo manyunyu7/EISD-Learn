@@ -70,7 +70,7 @@
         /* background-position: center center; */
         /* background-repeat: no-repeat; */
         width: 100%;
-        height: 150px;
+        height: 186px;
     }
 </style>
 @endsection
