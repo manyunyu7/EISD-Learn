@@ -162,7 +162,7 @@
         <lottie-player class="center" src="https://assets10.lottiefiles.com/packages/lf20_n7DAEZ.json" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay>
         </lottie-player>
         <br><br><br>
-        <h4>Tugas Akhir</h4>
+        <h4>Evaluasi</h4>
     </div>
 </div>
 
@@ -190,7 +190,7 @@
                 <p class="card-text text-center">- Pembina Proyek Mata Kuliah WAD - </p>
             </div>
         </div> -->
-        <!-- 
+        <!--
         <div class="col-md-12 col-lg-4 col-12 card ">
             <div class="card-body">
                 <div class="text-center">
