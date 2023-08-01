@@ -72,7 +72,7 @@
                                     <!-- Add Next and Previous buttons -->
                                     <div class="d-flex justify-content-between mt-2 mb-4">
                                         {{-- @if ($before_section) --}}
-                                        <a href="" class="btn btn-primary">Previous Lesson</a>
+                                        {{-- <a href="" class="btn btn-primary">Previous Lesson</a> --}}
                                         {{-- @endif --}}
                                         {{-- @if ($next_section) --}}
                                         <a href="" class="btn btn-primary">Next Lesson</a>
