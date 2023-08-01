@@ -29,8 +29,8 @@ class ProfileController extends Controller
             'name'     => 'required',
             'phone'   => 'required',
             'phone'   => 'required',
-            'jobs'   => 'required',
-            'motto'   => 'required',
+//            'jobs'   => 'required',
+//            'motto'   => 'required',
             'email'   => 'required',
         ]);
 
@@ -43,9 +43,9 @@ class ProfileController extends Controller
             $user->update([
                 'name' => $request->name,
                 'contact' => $request->phone,
-                'institute' => $request->institute,
-                'motto' => $request->motto,
-                'jobs' => $request->jobs,
+                'institute' => "",
+                'motto' => "",
+                'jobs' => "",
                 'email' => $request->email,
             ]);
         } else if($request->file('imagez') != "") {
