@@ -51,7 +51,7 @@ class CourseSectionController extends Controller
         }
         $user_id = Auth::user()->id;
         $lesson_id = $lesson->id;
-
+        $isRegistered = false;
         if (Auth::user()->role == "student") {
             $student_lesson = DB::table('student_lesson')
                 ->where('student-lesson', "$user_id-$lesson_id")
