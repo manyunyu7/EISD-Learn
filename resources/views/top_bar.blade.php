@@ -23,7 +23,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Podcast</a>
             </li>
-       
+
             <li class="nav-item dropdownv d-none">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">Dropdown</a>
@@ -40,7 +40,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('login') }}">
                              <button type="button"
-                                class="btn btn-outline-primary">Login</button> 
+                                class="btn btn-outline-primary">Login</button>
                                 <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
@@ -78,4 +78,4 @@
     </div>
     <hr>
 </nav>
- 
+

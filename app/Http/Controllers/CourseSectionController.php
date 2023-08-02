@@ -12,6 +12,7 @@ use App\Models\CourseSection;
 use App\Models\StudentSection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\Paginator;
 use File;
@@ -111,22 +112,45 @@ class CourseSectionController extends Controller
             }
         }
 
+        $sectionTakenByStudent = null;
+        $lastSectionTaken = null;
+
+        if (Auth::check()) {
+            if (Auth::user()->role == "student") {
+                $sectionTakenByStudent = FacadesDB::table('student_section as ss')
+                    ->select('section_id')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lesson_id) // Add the condition lessons.id = 5
+                    ->pluck('ss.section_id')
+                    ->toArray();
+
+                $lastSectionTaken = FacadesDB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lesson_id)
+                    ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
+                    ->first();
+            }
+        }
+
+        //return $precedingSectionIds;
         // Check if the student has taken all the preceding sections
         $isPrecedingTaken = StudentSection::whereIn('section_id', $precedingSectionIds)
             ->where('student_id', $user_id)
             ->exists();
-
 
         $sectionTakenOnCourseCount = DB::table('student_section as ss')
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
             ->where('ss.student_id', Auth::id())
+            ->where('lessons.id', $lesson_id)
             ->count();
-
-        if (!$isPrecedingTaken && $sectionTakenOnCourseCount != 0) {
-            abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
-        }
 
         // $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         // Fetch all sections for the lesson
@@ -153,14 +177,53 @@ class CourseSectionController extends Controller
         }
 
         $section = $sections;
+        $firstSectionId = null;
+        $lastSectionId = null;
+
         $next_section = $nextSectionId;
         $prev_section = $prevSectionId;
         $sectionOrder = $precedingSectionIds;
-        $courseId = $lesson_id;
-        $compact = compact('courseId', 'next_section', 'prev_section', 'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered',);
-        if (Auth::user()->role == "student") {
-            $this->startSection($currentSectionId);
+
+        if (!empty($sectionOrder)) {
+            $firstSectionId = $sectionOrder[0];
+            $lastSectionId = end($sectionOrder);
         }
+
+        $isFirstSection = false;
+        if ($firstSectionId == $section_id) {
+            $isFirstSection = true;
+        }
+
+        $courseId = $lesson_id;
+        $isStudent = false;
+
+
+        $isEligibleStudent = true; //eligible to open the section
+        if (Auth::user()->role == "student") {
+            $isStudent = true;
+            $completedSections = $sectionTakenByStudent;
+
+            // Get the index of the current section in the sectionOrder array
+            $currentSectionIndex = array_search($currentSectionId, $sectionOrder);
+
+            // Loop through the sectionOrder array from the beginning until the current section index
+            for ($i = 0; $i < $currentSectionIndex; $i++) {
+                // Check if the section from sectionOrder exists in completedSections
+                if (!in_array($sectionOrder[$i], $completedSections)) {
+                    $isEligibleStudent = false;
+                    abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                }
+            }
+            if($isEligibleStudent){
+                $this->startSection($currentSectionId);
+            }
+        }
+
+        $compact = compact('isEligibleStudent', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
+            'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection',
+            'firstSectionId', 'lastSectionId', 'isPrecedingTaken',
+            'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered');
+
 
         return view('lessons.course_play', $compact);
     }
@@ -205,7 +268,7 @@ class CourseSectionController extends Controller
     /**
      * store
      *
-     * @param  mixed $request
+     * @param mixed $request
      * @return void
      */
     public function store(Request $request)

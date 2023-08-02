@@ -102,7 +102,7 @@ class LessonController extends Controller
             $isRegistered = false;
         }
 
-        $sections = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
+        $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
 
         // Iterate over the sections and check if each one is already added to the student-section
         foreach ($sections as $key => $section) {
@@ -124,9 +124,41 @@ class LessonController extends Controller
             }
         }
 
+        $sectionTakenByStudent = null;
+        $lastSectionTaken = null;
+        if(Auth::check()){
+            if(Auth::user()->role=="student"){
+                $sectionTakenByStudent = FacadesDB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lesson_id) // Add the condition lessons.id = 5
+                    ->count();
+
+                $lastSectionTaken = FacadesDB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lesson_id)
+                    ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
+                    ->first();
+
+            }
+        }
+
+
         $section = $sections;
+        $firstSectionId = null;
+        if(!empty($section)){
+            $firstSectionId = $section[0]->section_id;
+        }
+        $nextUrl = "/course/$lesson_id/section/$firstSectionId";
+        $abc = url("/").$nextUrl;
         //$section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
-        return view('lessons.main_course', compact('lesson', 'section', 'isRegistered'));
+        $compact = compact('lesson', 'firstSectionId','nextUrl','abc','section', 'sectionTakenByStudent','lastSectionTaken', 'isRegistered');
+        return view('lessons.main_course', $compact);
     }
 
 

@@ -42,26 +42,28 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
         <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            // Check if the current URL contains "xyz"
+            var currentUrl = window.location.href;
+            if (currentUrl.indexOf("xyz") === -1) {
                 // Initialize Video.js
-                var videoPlayer = document.getElementById("myVideo");
+                document.addEventListener("DOMContentLoaded", function () {
+                    var videoPlayer = document.getElementById("myVideo");
+                    let previousTime = 0;
 
-                // Declare previousTime in a higher scope
-                let previousTime = 0;
+                    videoPlayer.ontimeupdate = function () {
+                        setTimeout(() => {
+                            console.log("hello world " + videoPlayer.currentTime);
+                            previousTime = videoPlayer.currentTime;
+                        }, 1);
+                    };
 
-                videoPlayer.ontimeupdate = function () {
-                    setTimeout(() => {
-                        console.log("hello world " + videoPlayer.currentTime);
-                        previousTime = videoPlayer.currentTime;
-                    }, 1);
-                };
-
-                videoPlayer.onseeking = function () {
-                    if (videoPlayer.currentTime > previousTime) {
-                        videoPlayer.currentTime = previousTime;
-                    }
-                };
-            });
+                    videoPlayer.onseeking = function () {
+                        if (videoPlayer.currentTime > previousTime) {
+                            videoPlayer.currentTime = previousTime;
+                        }
+                    };
+                });
+            }
         </script>
     @endpush
 

@@ -2,8 +2,6 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             @auth
-
-
                 <div class="user">
                     <div class="avatar-sm float-left mr-2f">
                         <img src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}" alt="profile"
