@@ -48,7 +48,7 @@
             <div class="ml-3">
                 <div>
                     <h2>Persiapan Kerja
-                        Jadi Lebih Optimal</h2>
+                        Lebih Optimal</h2>
                 </div>
                 <div>
                     <p>{{ config('app.name') }} mempelajari corporate culture, keahlian kerja, kompetensi yang dibutuhkan di Modernland</p>
