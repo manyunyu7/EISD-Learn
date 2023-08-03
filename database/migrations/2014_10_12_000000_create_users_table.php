@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('jobs')->default("")->nullable();
             $table->string('institute')->default("")->nullable();
             $table->string('mdln_username')->default("")->nullable();
-            $table->text('motto')->default("")->nullable();
+            $table->string('motto')->default("")->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

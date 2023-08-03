@@ -89,7 +89,7 @@
                     @auth
 
                         @if ($isRegistered)
-                    <li class="nav-item card p-2 border border-primary mx-2 d-none" style="margin-bottom: 6px !important">
+                    <li class="nav-item card p-2 border border-primary mx-2" style="margin-bottom: 6px !important">
                         <h4 style="margin-bottom: 0px !important; color:black">Project Akhir</h4>
                         <p style="margin-bottom: 0px !important" class=""> <small id="helpId"
                                 class="form-text text-muted">Lihat Penugasan Pada Materi Project Akhir</small></p>
