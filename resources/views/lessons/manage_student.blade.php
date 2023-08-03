@@ -15,8 +15,8 @@
           <div class="page-header row no-gutters py-4">
 
             <div class="col-12 text-center text-sm-left mb-0">
-                <span class="text-uppercase page-subtitle">Course</span>
-                <h3 class="page-title">Manage Course Milik {{ Auth::user()->name }}</h3>
+                <span class="text-uppercase page-subtitle">Siswa</span>
+                <h3 class="page-title">Siswa Pada Kelas : {{$lesson->course_title}}</h3>
             </div>
         </div>
         <div class="row">
@@ -102,6 +102,8 @@
                             </tbody>
                           </table>
                     </div>
+
+
                 </div>
             </div>
 

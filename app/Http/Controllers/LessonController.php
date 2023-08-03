@@ -41,6 +41,70 @@ class LessonController extends Controller
 
 
 
+    public function seeStudent($lessonId)
+    {
+        $lesson = Lesson::findOrFail($lessonId);
+        $user_id = Auth::id();
+        $dayta = DB::select("SELECT * FROM view_course WHERE mentor_id = $user_id");
+        $students = DB::select("SELECT * FROM student_lesson WHERE lesson_id = $lessonId");
+        $sections = DB::select("SELECT * FROM course_section WHERE course_id = $lessonId");
+
+        $student_sections = DB::select("
+        SELECT ss.*, cs.course_id
+        FROM student_section ss
+        INNER JOIN course_section cs ON ss.section_id = cs.id
+        WHERE cs.course_id = $lessonId
+    ");
+
+        // Organize the sections data into an associative array for easier access
+        $sectionsData = [];
+        foreach ($sections as $section) {
+            $sectionsData[$section->id] = $section;
+        }
+
+        // Create an associative array to hold student-wise course data
+        $courseData = [];
+        foreach ($student_sections as $student_section) {
+            $studentId = $student_section->student_id;
+            $sectionId = $student_section->section_id;
+            $courseId = $student_section->course_id;
+
+            // Get the student name from the User model
+            $student = User::findOrFail($studentId);
+
+            // Add student data if not already added
+            if (!isset($courseData[$studentId])) {
+                $courseData[$studentId] = [
+                    'student_id' => $studentId,
+                    'student_name' => $student->name, // Use the 'name' field from the User model
+                    'course_id' => $courseId,
+                    'section_taken_count' => 0,
+                    'section_remaining_count' => count($sections),
+                    'section_taken' => [],
+                    'section_remaining' => $sections,
+                ];
+            }
+
+            // Add section data to the student's sections_taken array
+            $courseData[$studentId]['section_taken'][] = [
+                'section_id' => $sectionId,
+                'section_title' => $sectionsData[$sectionId]->section_title,
+            ];
+            $courseData[$studentId]['section_taken_count']++;
+            $courseData[$studentId]['section_remaining_count']--;
+            unset($courseData[$studentId]['section_remaining'][$sectionId]);
+        }
+
+        // Create an array to hold the student data without the nested "courseData" structure
+        $studentData = [];
+        foreach ($courseData as $studentId => $data) {
+            $studentData[] = $data;
+        }
+
+        Paginator::useBootstrap();
+        $compact = compact('dayta', 'lesson', 'students', 'studentData');
+        return $compact;
+    }
     public function manage()
     {
         $user_id = Auth::id();
