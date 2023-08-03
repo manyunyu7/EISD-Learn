@@ -47,7 +47,7 @@
         <div class="col-md-6 d-flex justify-content-center center" data-aos="zoom-in-up">
             <div class="ml-3">
                 <div>
-                    <h2>Persiapan Kerja dan Belajar
+                    <h2>Persiapan Kerja
                         Jadi Lebih Optimal</h2>
                 </div>
                 <div>
