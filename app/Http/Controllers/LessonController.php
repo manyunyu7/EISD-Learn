@@ -103,8 +103,12 @@ class LessonController extends Controller
 
         Paginator::useBootstrap();
         $compact = compact('dayta', 'lesson', 'students', 'studentData');
+        // Uncomment the following line to return the view (if you need to use it later)
+         return view('lessons.manage_student', $compact);
         return $compact;
     }
+
+
     public function manage()
     {
         $user_id = Auth::id();
