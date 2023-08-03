@@ -68,23 +68,25 @@ class LessonController extends Controller
             $studentId = $student_section->student_id;
             $sectionId = $student_section->section_id;
             $courseId = $student_section->course_id;
-
+        
             // Get the student name from the User model
             $student = User::findOrFail($studentId);
-
+        
             // Add student data if not already added
             if (!isset($courseData[$studentId])) {
                 $courseData[$studentId] = [
                     'student_id' => $studentId,
                     'student_name' => $student->name, // Use the 'name' field from the User model
+                    'student_profile_url' => $student->student_profile_url,
                     'course_id' => $courseId,
                     'section_taken_count' => 0,
                     'section_remaining_count' => count($sections),
                     'section_taken' => [],
                     'section_remaining' => $sections,
+                    'completion_percentage' => '0%', // Initialize with 0% completion
                 ];
             }
-
+        
             // Add section data to the student's sections_taken array
             $courseData[$studentId]['section_taken'][] = [
                 'section_id' => $sectionId,
@@ -93,6 +95,16 @@ class LessonController extends Controller
             $courseData[$studentId]['section_taken_count']++;
             $courseData[$studentId]['section_remaining_count']--;
             unset($courseData[$studentId]['section_remaining'][$sectionId]);
+        
+            // Calculate the completion percentage
+            $totalSections = count($sections);
+            if ($totalSections > 0) {
+                $completedSections = $courseData[$studentId]['section_taken_count'];
+                $completionPercentage = ($completedSections / $totalSections) * 100;
+                $courseData[$studentId]['completion_percentage'] = number_format($completionPercentage, 2) . '%';
+            } else {
+                $courseData[$studentId]['completion_percentage'] = '0%';
+            }
         }
 
         // Create an array to hold the student data without the nested "courseData" structure
@@ -100,7 +112,7 @@ class LessonController extends Controller
         foreach ($courseData as $studentId => $data) {
             $studentData[] = $data;
         }
-
+        
         Paginator::useBootstrap();
         $compact = compact('dayta', 'lesson', 'students', 'studentData');
         // Uncomment the following line to return the view (if you need to use it later)

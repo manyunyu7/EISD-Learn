@@ -9,8 +9,7 @@
 @section('main')
 <div class="container-fluid">
     <div class="container mt-5">
-        @include('blog.breadcumb')
-
+   
           <!-- Page Header -->
           <div class="page-header row no-gutters py-4">
 
