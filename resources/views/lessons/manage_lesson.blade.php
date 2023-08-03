@@ -2,17 +2,18 @@
 
 @section('head-section')
     <!-- Datatables -->
-
+    
 	<script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
 @endsection
 
 @section('main')
 <div class="container-fluid">
     <div class="container mt-5">
-   
+        @include('blog.breadcumb')
+        
           <!-- Page Header -->
           <div class="page-header row no-gutters py-4">
-
+        
             <div class="col-12 text-center text-sm-left mb-0">
                 <span class="text-uppercase page-subtitle">Course</span>
                 <h3 class="page-title">Manage Course Milik {{ Auth::user()->name }}</h3>
@@ -27,22 +28,22 @@
                                 <span aria-hidden="true">&times;</span>
                                 <span class="sr-only">Close</span>
                             </button>
-                            <strong>{{Session::get( 'success' )}}</strong>
+                            <strong>{{Session::get( 'success' )}}</strong> 
                         </div>
-
+    
                         @elseif(session() -> has('error'))
-
+                
                         <div class="alert alert-primary alert-dismissible fade show mx-2 my-2" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                                 <span class="sr-only">Close</span>
                             </button>
                             <strong>{{Session::get( 'error' )}}</strong>
-
+                
                         @endif
 
-
-
+                        
+                  
                     <div class="card-body">
                         <a href="{{ url('lesson/create') }}" >   <button class="btn btn-primary btn-border btn-round mb-3">Buat Kelas Baru</button></a>
                         <table id="basic-datatables" class="table table-bordered table-responsive       @if (count($dayta) < 1)
@@ -53,7 +54,6 @@
                                 <th scope="col">GAMBAR</th>
                                 <th scope="col">JUDUL</th>
                                 <th scope="col">MATERI</th>
-                                <th scope="col">SISWA</th>
                                 <th scope="col">CONTENT</th>
                                 <th scope="col">PENULIS</th>
                                 <th scope="col">KATEGORI</th>
@@ -72,12 +72,11 @@
                                         $course_id = $data->id
                                     @endphp
                                     <td> <a href="{{url("/lesson/$course_id/section/")}}" class="badge badge-primary">Manage Materi</a> </td>
-                                    <td> <a href="{{url("/lesson/$course_id/students/")}}" class="badge badge-primary">Manage Siswa</a> </td>
                                     <td> <a href="{{url("/lesson/$course_id")}}"><button type="button" class="btn btn-outline-primary">Lihat Kelas</button></a></td>
                                     <td>{{ $data->mentor_name}}</td>
                                     @php
-                                    $cat = $data->course_category;
-
+                                    $cat = $data->course_category;    
+                                    
                                     @endphp
                                     <td>{{  $cat }}</td>
                                     <td class="text-center">
@@ -99,7 +98,7 @@
                                   </div>
                               @endforelse
                             </tbody>
-                          </table>
+                          </table>  
                     </div>
                 </div>
             </div>
@@ -132,7 +131,7 @@
                 data: {id:id},
                 success: function (data) {
                               //
-                    }
+                    }         
             });
     });
 });
@@ -195,14 +194,15 @@
 <script>
 //message with toastr
 @if(session()-> has('success'))
-    toastr.success('{{ session('success') }}', 'BERHASIL!');
+    toastr.success('{{ session('success') }}', 'BERHASIL!'); 
 @elseif(session()-> has('error'))
-    toastr.error('{{ session('error') }}', 'GAGAL!');
+    toastr.error('{{ session('error') }}', 'GAGAL!'); 
 @endif
 </script>
 
 
 @endsection
 
+ 
 
-
+ 

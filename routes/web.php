@@ -47,7 +47,6 @@ Route::group(['middleware’' => ['auth']], function () {
 
     Route::group(['middleware' => ['mentor']], function () {
         Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
-        Route::get('/lesson/{lesson}/students/', 'LessonController@seeStudent');
         Route::get('/lesson/store', 'LessonController@add');
         Route::get('/lesson/correct', 'FinalProjectController@correction');
         Route::resource('lesson', LessonController::class);
