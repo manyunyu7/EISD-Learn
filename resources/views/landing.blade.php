@@ -47,7 +47,7 @@
         <div class="col-md-6 d-flex justify-content-center center" data-aos="zoom-in-up">
             <div class="ml-3">
                 <div>
-                    <h2>Persiapan Kerja dan Belajar
+                    <h2>Persiapan Kerja
                         Jadi Lebih Optimal</h2>
                 </div>
                 <div>
@@ -242,7 +242,8 @@
         <h3 style="text-align: center;">"Mari Bergabung Dengan Ratusan User Lainnya di
             {{ config('app.name') }}"
         </h3>
-        <p>Tidak perlu download / kartu kredit. Cukup daftar langsung belajar.</p>
+{{--        <p>Tidak perlu download / kartu kredit. Cukup daftar langsung belajar.</p>--}}
+        <p>Creating Forward</p>
         <br><br>
         <button type="button" name="" id="" class="btn btn-primary btn-lg btn-block">Uji Coba Gratis</button>
         <br><br>

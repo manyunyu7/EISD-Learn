@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use Illuminate\Validation\ValidationException;
 
 
 class ProfileController extends Controller
@@ -15,9 +17,46 @@ class ProfileController extends Controller
     {
         return view('profile.profile');
     }
+
+
+    public function updatePasswordz(Request $request)
+    {
+        $request->validate([
+            'current-password' => 'required',
+            'new-password' => 'required|min:8',
+        ]);
+
+        $user = Auth::user();
+        $currentPassword = $request->input('current-password');
+        $newPassword = $request->input('new-password');
+
+        if ($this->verifyPassword($currentPassword, $user->password)) {
+            $hashedNewPassword = Hash::make($newPassword);
+
+            // Update the user's password
+            $user->password = $hashedNewPassword;
+            $user->save();
+
+            // Redirect the user back to their profile page with a success message
+            return redirect()->back()->with('success', 'Password updated successfully.');
+        }
+
+        throw ValidationException::withMessages([
+            'current_password' => __('The provided password does not match your current password.'),
+        ]);
+    }
+
+    private function verifyPassword($plainPassword, $hashedPassword)
+    {
+        // Implement your password verification logic here
+        // For example, you can use password_verify() if you're using PHP's built-in password_hash() for hashing.
+        // Make sure to adjust this based on how you've hashed the passwords in your application.
+        return password_verify($plainPassword, $hashedPassword);
+    }
+
+
     /**
      * update
-     *
      * @param  mixed $request
      * @return void
      */

@@ -156,12 +156,11 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card full-height">
                 <div class="card-header">
                     <div class="card-head-row">
                         <div class="card-title">Daftar Siswa Di Kelas Anda</div>
-
                     </div>
                 </div>
                 <div class="card-body">

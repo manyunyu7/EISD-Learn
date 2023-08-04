@@ -74,9 +74,9 @@
                                         {{-- @if ($before_section) --}}
                                         {{-- <a href="" class="btn btn-primary">Previous Lesson</a> --}}
                                         {{-- @endif --}}
-                                        {{-- @if ($next_section) --}}
-                                        <a href="" class="btn btn-primary">Next Lesson</a>
-                                        {{-- @endif --}}
+                                        @if ($firstSectionId!=null)
+                                            <a href="{{$nextUrl}}" class="btn btn-primary">Next Lesson</a>
+                                        @endif
                                     </div>
                                     {!! $lesson->course_description !!}
                                 </div>
@@ -100,7 +100,7 @@
                                 <div class="d-flex">
                                     <div class="avatar">
                                         <img src="{{ Storage::url('public/profile/') . $lesson->profile_url }}"
-                                            alt="..." class="avatar-img rounded-circle">
+                                             alt="..." class="avatar-img rounded-circle">
                                     </div>
                                     <div class="info-post ml-2">
                                         <p class="username">{{ $lesson->mentor_name }}</p>
@@ -115,7 +115,6 @@
 
 
                 </div>
-
 
 
             </div>

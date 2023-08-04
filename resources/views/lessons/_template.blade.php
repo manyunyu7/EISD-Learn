@@ -65,10 +65,15 @@
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="blue">
 
-                <a href="{{ url('/home') }}" class="logo">
-                    <p class="navbar-brand text-white">{{ config('app.name') }}</p>
-                    {{-- <img src="{{asset('atlantis/examples')}}/assets/img/logo.svg" alt="navbar brand" class="navbar-brand"> --}}
-                </a>
+                @if(Auth::check())
+                    <a href="{{ url('/') }}" class="logo">
+                        <p class="navbar-brand text-white">{{ config('app.name') }}</p>
+                    </a>
+                @else
+                    <a href="{{ url('/') }}" class="logo">
+                        <p class="navbar-brand text-white">{{ config('app.name') }}</p>
+                    </a>
+                @endif
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
                     data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon">
@@ -100,7 +105,7 @@
                 @yield('main')
             </div>
         </div>
-        {{-- 
+        {{--
 				<footer class="footer">
 				<div class="container-fluid">
 					<nav class="pull-left">
@@ -124,7 +129,7 @@
 					</nav>
 					<div class="copyright ml-auto">
 						2018,made with <i class="fa fa-heart heart text-danger"></i> by <a href="http://henryaugusta.feylabs.my.id">Feylaboratiry</a>
-					</div>				
+					</div>
 				</div>
 			</footer> --}}
     </div>

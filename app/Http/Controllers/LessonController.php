@@ -40,6 +40,84 @@ class LessonController extends Controller
     }
 
 
+    public function seeStudent($lessonId)
+    {
+        $lesson = Lesson::findOrFail($lessonId);
+        $user_id = Auth::id();
+        $dayta = DB::select("SELECT * FROM view_course WHERE mentor_id = $user_id");
+        $students = DB::select("SELECT * FROM student_lesson WHERE lesson_id = $lessonId");
+        $sections = DB::select("SELECT * FROM course_section WHERE course_id = $lessonId");
+
+        $student_sections = DB::select("
+        SELECT ss.*, cs.course_id
+        FROM student_section ss
+        INNER JOIN course_section cs ON ss.section_id = cs.id
+        WHERE cs.course_id = $lessonId
+    ");
+
+        // Organize the sections data into an associative array for easier access
+        $sectionsData = [];
+        foreach ($sections as $section) {
+            $sectionsData[$section->id] = $section;
+        }
+
+        // Create an associative array to hold student-wise course data
+        $courseData = [];
+        foreach ($student_sections as $student_section) {
+            $studentId = $student_section->student_id;
+            $sectionId = $student_section->section_id;
+            $courseId = $student_section->course_id;
+
+            // Get the student name from the User model
+            $student = User::findOrFail($studentId);
+
+            // Add student data if not already added
+            if (!isset($courseData[$studentId])) {
+                $courseData[$studentId] = [
+                    'student_id' => $studentId,
+                    'student_name' => $student->name, // Use the 'name' field from the User model
+                    'student_profile_url' => $student->student_profile_url,
+                    'course_id' => $courseId,
+                    'section_taken_count' => 0,
+                    'section_remaining_count' => count($sections),
+                    'section_taken' => [],
+                    'section_remaining' => $sections,
+                    'completion_percentage' => '0%', // Initialize with 0% completion
+                ];
+            }
+
+            // Add section data to the student's sections_taken array
+            $courseData[$studentId]['section_taken'][] = [
+                'section_id' => $sectionId,
+                'section_title' => $sectionsData[$sectionId]->section_title,
+            ];
+            $courseData[$studentId]['section_taken_count']++;
+            $courseData[$studentId]['section_remaining_count']--;
+            unset($courseData[$studentId]['section_remaining'][$sectionId]);
+
+            // Calculate the completion percentage
+            $totalSections = count($sections);
+            if ($totalSections > 0) {
+                $completedSections = $courseData[$studentId]['section_taken_count'];
+                $completionPercentage = ($completedSections / $totalSections) * 100;
+                $courseData[$studentId]['completion_percentage'] = number_format($completionPercentage, 2) . '%';
+            } else {
+                $courseData[$studentId]['completion_percentage'] = '0%';
+            }
+        }
+
+        // Create an array to hold the student data without the nested "courseData" structure
+        $studentData = [];
+        foreach ($courseData as $studentId => $data) {
+            $studentData[] = $data;
+        }
+
+        Paginator::useBootstrap();
+        $compact = compact('dayta', 'lesson', 'students', 'studentData');
+        // Uncomment the following line to return the view (if you need to use it later)
+        return view('lessons.manage_student', $compact);
+        return $compact;
+    }
 
     public function manage()
     {
@@ -74,8 +152,11 @@ class LessonController extends Controller
     }
 
 
-    public function edit(Lesson $lesson)
+    public function edit(Request $request,Lesson $lesson)
     {
+        if($request->dump==true){
+            return $lesson;
+        }
         return view('lessons.edit_lesson', compact('lesson'));
     }
 
@@ -102,7 +183,7 @@ class LessonController extends Controller
             $isRegistered = false;
         }
 
-        $sections = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
+        $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
 
         // Iterate over the sections and check if each one is already added to the student-section
         foreach ($sections as $key => $section) {
@@ -124,9 +205,41 @@ class LessonController extends Controller
             }
         }
 
+        $sectionTakenByStudent = null;
+        $lastSectionTaken = null;
+        if(Auth::check()){
+            if(Auth::user()->role=="student"){
+                $sectionTakenByStudent = FacadesDB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lesson_id) // Add the condition lessons.id = 5
+                    ->count();
+
+                $lastSectionTaken = FacadesDB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lesson_id)
+                    ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
+                    ->first();
+
+            }
+        }
+
+
         $section = $sections;
+        $firstSectionId = null;
+        if(!empty($section)){
+            $firstSectionId = $section[0]->section_id;
+        }
+        $nextUrl = "/course/$lesson_id/section/$firstSectionId";
+        $abc = url("/").$nextUrl;
         //$section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
-        return view('lessons.main_course', compact('lesson', 'section', 'isRegistered'));
+        $compact = compact('lesson', 'firstSectionId','nextUrl','abc','section', 'sectionTakenByStudent','lastSectionTaken', 'isRegistered');
+        return view('lessons.main_course', $compact);
     }
 
 
@@ -144,7 +257,6 @@ class LessonController extends Controller
             'title' => 'required',
             'content' => 'required'
         ]);
-
         $lesson = Lesson::findOrFail($lesson->id);
         $cat = $request->input('category');
 
@@ -179,6 +291,9 @@ class LessonController extends Controller
                 'course_title' => $request->title,
                 'course_trailer' => $video->hashName(),
                 'course_category' => $request->input('category'),
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'can_be_accessed' => $request->can_be_accessed,
                 'course_description' => $request->content
             ]);
         } else {
@@ -227,6 +342,9 @@ class LessonController extends Controller
             'course_title' => $request->title,
             'course_trailer' => $video->hashName(),
             'course_category' => $cat,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'can_be_accessed' => $request->access,
             'mentor_id' => $user_id,
             'course_description' => $request->content
         ]);

@@ -45,9 +45,12 @@ Route::get('/loginz', function () {
 
 Route::group(['middleware’' => ['auth']], function () {
 
+    Route::post('/dfef', 'ProfileController@updatePasswordz');
+
     Route::group(['middleware' => ['mentor']], function () {
         Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
         Route::get('/lesson/store', 'LessonController@add');
+        Route::get('/lesson/{lesson}/students/', 'LessonController@seeStudent');
         Route::get('/lesson/correct', 'FinalProjectController@correction');
         Route::resource('lesson', LessonController::class);
         Route::resource('section', CourseSectionController::class);
