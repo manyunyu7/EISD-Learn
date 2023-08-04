@@ -96,10 +96,10 @@
 
                         <div class='card card-small mb-3'>
                             <div class="card-header border-bottom">
-                                <h6 class="m-0">Periode Kelas</h6>
+                                <h6 class="m-0">Akses Konten</h6>
                             </div>
                             <div class='card-body container-fluid'>
-                                <small class="form-text text-muted"><strong>Kosongkan Input Ini</strong> jika kelas ini bisa diakses setiap saat oleh siswa</small>
+{{--                                <small class="form-text text-muted"><strong>Kosongkan Input Ini</strong> jika kelas ini bisa diakses setiap saat oleh siswa</small>--}}
 {{--                                <div class="form-group">--}}
 {{--                                    <label>Tanggal Start</label>--}}
 {{--                                    <div class="input-group">--}}
