@@ -342,7 +342,7 @@ class LessonController extends Controller
             'course_category' => $cat,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
-            'can_be_accessed' => $request->can_be_accessed,
+            'can_be_accessed' => $request->access,
             'mentor_id' => $user_id,
             'course_description' => $request->content
         ]);

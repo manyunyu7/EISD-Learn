@@ -116,7 +116,7 @@
 
                                 <div class="form-group">
                                     <label>Konten Bisa Diakses ? </label>
-                                    <select class="form-control" name="can_be_accessed">
+                                    <select class="form-control" name="access">
                                         <option value="y">Ya</option>
                                         <option value="n">Tidak</option>
                                     </select>

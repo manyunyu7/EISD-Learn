@@ -134,7 +134,7 @@
 
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Konten Bisa Diakses ? </label>
-                                    <select class="form-control" name="can_be_accessed">
+                                    <select class="form-control" name="access">
                                         <option value="y"
                                                 @if($lesson->can_be_accessed=="y") selected @endif
                                         >Ya</option>
