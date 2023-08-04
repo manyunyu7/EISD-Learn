@@ -45,6 +45,8 @@ Route::get('/loginz', function () {
 
 Route::group(['middleware’' => ['auth']], function () {
 
+    Route::post('/dfef', 'ProfileController@updatePasswordz');
+
     Route::group(['middleware' => ['mentor']], function () {
         Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
         Route::get('/lesson/store', 'LessonController@add');
