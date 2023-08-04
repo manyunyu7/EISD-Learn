@@ -15,7 +15,7 @@
 {{--                </div>--}}
 
 
-                <div class="error mx-auto" data-text="401">401</div>
+                <div class="error mx-auto" data-text="401"></div>
                 <strong>
                     <h4>
                         <h2>{{ $exception->getMessage() }}</h2>
