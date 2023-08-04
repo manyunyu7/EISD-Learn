@@ -152,9 +152,11 @@ class LessonController extends Controller
     }
 
 
-    public function edit(Lesson $lesson)
+    public function edit(Request $request,Lesson $lesson)
     {
-        return $lesson;
+        if($request->dump==true){
+            return $lesson;
+        }
         return view('lessons.edit_lesson', compact('lesson'));
     }
 
