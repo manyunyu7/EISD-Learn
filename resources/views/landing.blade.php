@@ -242,7 +242,8 @@
         <h3 style="text-align: center;">"Mari Bergabung Dengan Ratusan User Lainnya di
             {{ config('app.name') }}"
         </h3>
-        <p>Tidak perlu download / kartu kredit. Cukup daftar langsung belajar.</p>
+{{--        <p>Tidak perlu download / kartu kredit. Cukup daftar langsung belajar.</p>--}}
+        <p>Creating Forward</p>
         <br><br>
         <button type="button" name="" id="" class="btn btn-primary btn-lg btn-block">Uji Coba Gratis</button>
         <br><br>
