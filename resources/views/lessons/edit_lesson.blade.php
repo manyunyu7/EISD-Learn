@@ -117,33 +117,33 @@
                             <div class='card-body container-fluid'>
                                 <small class="form-text text-muted"><strong>Kosongkan Input Ini</strong> jika kelas ini
                                     bisa diakses setiap saat oleh siswa</small>
-                                <div class="form-group">
-                                    @php
-                                    // Convert the database date to the correct format for datetime-local input
-                                    if($lesson->start_date!=null){
-                                    $start_date = date('Y-m-d\TH:i', strtotime($lesson->start_date));
-                                    }
-                                    @endphp
-                                    <label>Tanggal Start</label>
-                                    <div class="input-group">
-                                        <input type="datetime-local" class="form-control"
-                                               value="{{$lesson->start_date ?? ''}}" name="start_time">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group">--}}
+{{--                                    @php--}}
+{{--                                    // Convert the database date to the correct format for datetime-local input--}}
+{{--                                    if($lesson->start_date!=null){--}}
+{{--                                    $start_date = date('Y-m-d\TH:i', strtotime($lesson->start_date));--}}
+{{--                                    }--}}
+{{--                                    @endphp--}}
+{{--                                    <label>Tanggal Start</label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <input type="datetime-local" class="form-control"--}}
+{{--                                               value="{{$lesson->start_date ?? ''}}" name="start_time">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group">
-                                    <label>Tanggal Selesai</label>
-                                    <div class="input-group">
-                                        @php
-                                            // Convert the database date to the correct format for datetime-local input
-                                            if($lesson->end_date!=null){
-                                                $end_date = date('Y-m-d\TH:i', strtotime($lesson->end_date));
-                                            }
-                                        @endphp
-                                        <input type="datetime-local" value="{{ $end_date ?? '' }}" class="form-control"
-                                               name="end_time">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group">--}}
+{{--                                    <label>Tanggal Selesai</label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        @php--}}
+{{--                                            // Convert the database date to the correct format for datetime-local input--}}
+{{--                                            if($lesson->end_date!=null){--}}
+{{--                                                $end_date = date('Y-m-d\TH:i', strtotime($lesson->end_date));--}}
+{{--                                            }--}}
+{{--                                        @endphp--}}
+{{--                                        <input type="datetime-local" value="{{ $end_date ?? '' }}" class="form-control"--}}
+{{--                                               name="end_time">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Konten Bisa Diakses ?</label>

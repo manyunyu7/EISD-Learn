@@ -100,19 +100,19 @@
                             </div>
                             <div class='card-body container-fluid'>
                                 <small class="form-text text-muted"><strong>Kosongkan Input Ini</strong> jika kelas ini bisa diakses setiap saat oleh siswa</small>
-                                <div class="form-group">
-                                    <label>Tanggal Start</label>
-                                    <div class="input-group">
-                                        <input type="datetime-local" class="form-control" name="start_time">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group">--}}
+{{--                                    <label>Tanggal Start</label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <input type="datetime-local" class="form-control" name="start_time">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
-                                <div class="form-group">
-                                    <label>Tanggal Selesai</label>
-                                    <div class="input-group">
-                                        <input type="datetime-local" class="form-control" name="end_time">
-                                    </div>
-                                </div>
+{{--                                <div class="form-group">--}}
+{{--                                    <label>Tanggal Selesai</label>--}}
+{{--                                    <div class="input-group">--}}
+{{--                                        <input type="datetime-local" class="form-control" name="end_time">--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
 
                                 <div class="form-group">
                                     <label>Konten Bisa Diakses ? </label>
