@@ -66,7 +66,7 @@
             <div class="logo-header" data-background-color="blue">
 
                 @if(Auth::check())
-                    <a href="{{ url('/home') }}" class="logo">
+                    <a href="{{ url('/') }}" class="logo">
                         <p class="navbar-brand text-white">{{ config('app.name') }}</p>
                     </a>
                 @else
