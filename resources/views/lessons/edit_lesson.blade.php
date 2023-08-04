@@ -119,10 +119,11 @@
                                     bisa diakses setiap saat oleh siswa</small>
                                 <div class="form-group">
                                     @php
-                                        // Convert the database date to the correct format for datetime-local input
-                                        if($lesson->start_date!=null){
-                                        $start_date = date('Y-m-d\TH:i', strtotime($lesson->start_date));
-                                        }
+                                        $start_date == $lesson->start_date;
+                                    // Convert the database date to the correct format for datetime-local input
+                                    if($lesson->start_date!=null){
+                                    $start_date = date('Y-m-d\TH:i', strtotime($lesson->start_date));
+                                    }
                                     @endphp
                                     <label>Tanggal Start</label>
                                     <div class="input-group">
@@ -136,19 +137,23 @@
                                     <div class="input-group">
                                         @php
                                             // Convert the database date to the correct format for datetime-local input
+                                            $end_date == $lesson->end_date;
                                             if($lesson->end_date!=null){
                                                 $end_date = date('Y-m-d\TH:i', strtotime($lesson->end_date));
                                             }
                                         @endphp
-                                        <input type="datetime-local" value="{{ $end_date }}" class="form-control" name="end_time">
+                                        <input type="datetime-local" value="{{ $end_date }}" class="form-control"
+                                               name="end_time">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Konten Bisa Diakses ?</label>
                                     <select class="form-control" name="access">
-                                        <option value="y" @if($lesson->can_be_accessed == "y") selected @endif>Ya</option>
-                                        <option value="n" @if($lesson->can_be_accessed == "n") selected @endif>Tidak</option>
+                                        <option value="y" @if($lesson->can_be_accessed == "y") selected @endif>Ya
+                                        </option>
+                                        <option value="n" @if($lesson->can_be_accessed == "n") selected @endif>Tidak
+                                        </option>
                                     </select>
                                 </div>
 
