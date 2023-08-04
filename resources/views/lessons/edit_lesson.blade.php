@@ -119,7 +119,6 @@
                                     bisa diakses setiap saat oleh siswa</small>
                                 <div class="form-group">
                                     @php
-                                        $start_date == $lesson->start_date;
                                     // Convert the database date to the correct format for datetime-local input
                                     if($lesson->start_date!=null){
                                     $start_date = date('Y-m-d\TH:i', strtotime($lesson->start_date));
@@ -128,7 +127,7 @@
                                     <label>Tanggal Start</label>
                                     <div class="input-group">
                                         <input type="datetime-local" class="form-control"
-                                               value="{{$lesson->start_date}}" name="start_time">
+                                               value="{{$lesson->start_date ?? ''}}" name="start_time">
                                     </div>
                                 </div>
 
@@ -137,12 +136,11 @@
                                     <div class="input-group">
                                         @php
                                             // Convert the database date to the correct format for datetime-local input
-                                            $end_date == $lesson->end_date;
                                             if($lesson->end_date!=null){
                                                 $end_date = date('Y-m-d\TH:i', strtotime($lesson->end_date));
                                             }
                                         @endphp
-                                        <input type="datetime-local" value="{{ $end_date }}" class="form-control"
+                                        <input type="datetime-local" value="{{ $end_date ?? '' }}" class="form-control"
                                                name="end_time">
                                     </div>
                                 </div>
