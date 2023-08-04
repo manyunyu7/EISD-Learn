@@ -115,13 +115,12 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleFormControlSelect1">Konten Bisa Diakses ? </label>
+                                    <label>Konten Bisa Diakses ? </label>
                                     <select class="form-control" name="can_be_accessed">
-                                        <option value="true">Ya</option>
-                                        <option value="false">Tidak</option>
+                                        <option value="y">Ya</option>
+                                        <option value="n">Tidak</option>
                                     </select>
                                 </div>
-
 
                             </div>
                         </div>
