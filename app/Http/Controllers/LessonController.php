@@ -337,6 +337,9 @@ class LessonController extends Controller
             'course_title' => $request->title,
             'course_trailer' => $video->hashName(),
             'course_category' => $cat,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'can_be_accessed' => $request->can_be_accessed,
             'mentor_id' => $user_id,
             'course_description' => $request->content
         ]);
