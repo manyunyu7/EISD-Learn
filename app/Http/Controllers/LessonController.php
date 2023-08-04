@@ -154,6 +154,7 @@ class LessonController extends Controller
 
     public function edit(Lesson $lesson)
     {
+        return $lesson;
         return view('lessons.edit_lesson', compact('lesson'));
     }
 
@@ -255,7 +256,6 @@ class LessonController extends Controller
             'content' => 'required'
         ]);
         $lesson = Lesson::findOrFail($lesson->id);
-        return $lesson;
         $cat = $request->input('category');
 
         if ($request->file('image') == "" && $request->file('video') == "") {
