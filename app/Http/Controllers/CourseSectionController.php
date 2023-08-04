@@ -49,6 +49,7 @@ class CourseSectionController extends Controller
         if (!Auth::check()) {
             abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
+
         $user_id = Auth::user()->id;
         $lesson_id = $lesson->id;
         $isRegistered = false;
@@ -68,6 +69,14 @@ class CourseSectionController extends Controller
 
         $section_id = $section->id;
         $lesson_id = $lesson->id;
+
+        $lessonObject = Lesson::findOrFail($lesson_id);
+        if (Auth::user()->role == "student") {
+            if ($lessonObject->can_be_accessed == "n") {
+                return redirect()->back()->with(['error' => 'Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan!']);
+            }
+        }
+
 
         // Get the preceding sections
         $precedingSections = DB::select("
