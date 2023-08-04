@@ -120,8 +120,39 @@
         </ul>
         <div class="b-footer">
             <p>
-                All rights reserved by © {{config('app.name')}} @ {{ now()->year }} </p>
+                All rights reserved by © <span id="app-name"></span> @ <span id="current-year"></span>
+            </p>
         </div>
+
+        <script>
+            // Function to get the current year
+            function getCurrentYear() {
+                return new Date().getFullYear();
+            }
+
+            // Function to update the current year in the footer
+            function updateCurrentYear() {
+                document.getElementById('current-year').textContent = getCurrentYear();
+            }
+
+            // Function to get the app name (replace 'YourAppName' with your actual app name)
+            function getAppName() {
+                return 'YourAppName';
+            }
+
+            // Function to update the app name in the footer
+            function updateAppName() {
+                document.getElementById('app-name').textContent = getAppName();
+            }
+
+            // Call the update functions initially to set the initial values
+            updateCurrentYear();
+            updateAppName();
+
+            // Set up an interval to update the current year every second (or you can adjust the interval as needed)
+            setInterval(updateCurrentYear, 1000);
+        </script>
+
     </footer>
 
 
