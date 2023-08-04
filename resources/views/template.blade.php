@@ -120,7 +120,7 @@
         </ul>
         <div class="b-footer">
             <p>
-                All rights reserved by © <?php echo date('d F Y'); ?> </p>
+                All rights reserved by © Kamis, <?php echo date('d F Y H:i:s'); ?> </p>
         </div>
     </footer>
 
