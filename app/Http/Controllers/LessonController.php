@@ -254,8 +254,8 @@ class LessonController extends Controller
             'title' => 'required',
             'content' => 'required'
         ]);
-
         $lesson = Lesson::findOrFail($lesson->id);
+        return $lesson;
         $cat = $request->input('category');
 
         if ($request->file('image') == "" && $request->file('video') == "") {
