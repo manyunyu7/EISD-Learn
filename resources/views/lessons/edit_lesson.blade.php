@@ -21,19 +21,19 @@
 @section('main')
 
     <script>
-        window.onload = function() {
+        window.onload = function () {
             // jQuery and everything else is loaded
             var el = document.getElementById('input-image');
-            el.onchange = function() {
+            el.onchange = function () {
                 var fileReader = new FileReader();
                 fileReader.readAsDataURL(document.getElementById("input-image").files[0])
-                fileReader.onload = function(oFREvent) {
+                fileReader.onload = function (oFREvent) {
                     document.getElementById("imgPreview").src = oFREvent.target.result;
                 };
             }
 
-            $(document).ready(function() {
-                $.myfunction = function() {
+            $(document).ready(function () {
+                $.myfunction = function () {
                     $("#previewName").text($("#inputTitle").val());
                     var title = $.trim($("#inputTitle").val())
                     if (title == "") {
@@ -41,7 +41,7 @@
                     }
                 };
 
-                $("#inputTitle").keyup(function() {
+                $("#inputTitle").keyup(function () {
                     $.myfunction();
                 });
 
@@ -51,29 +51,29 @@
     </script>
     {{-- {{ var_dump($lesson) }} --}}
 
-   
-        <div class="container-fluid">
-            <div class="main-content-container container-fluid px-4 mt-5">
 
-                {{-- @include('blog.breadcumb') --}}
+    <div class="container-fluid">
+        <div class="main-content-container container-fluid px-4 mt-5">
+
+            {{-- @include('blog.breadcumb') --}}
 
 
-                <!-- Page Header -->
-                <div class="page-header row no-gutters mb-4">
-                    <div class="col-12 col-sm-12 text-center text-sm-left mb-0">
-                        <span class="text-uppercase page-subtitle">Edit Kelas</span>
-                        <h3 class="page-title">Edit Kelas : {{ $lesson->course_title }}</h3>
-                    </div>
+            <!-- Page Header -->
+            <div class="page-header row no-gutters mb-4">
+                <div class="col-12 col-sm-12 text-center text-sm-left mb-0">
+                    <span class="text-uppercase page-subtitle">Edit Kelas</span>
+                    <h3 class="page-title">Edit Kelas : {{ $lesson->course_title }}</h3>
                 </div>
+            </div>
 
-                <div class="row my-1">
-                    <a href="#">
-                        <button class="btn btn-primary btn-border btn-round">Manage Materi</button>
-                    </a>
-                </div>
-                <form action="{{ route('lesson.update', $lesson->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
+            <div class="row my-1">
+                <a href="#">
+                    <button class="btn btn-primary btn-border btn-round">Manage Materi</button>
+                </a>
+            </div>
+            <form action="{{ route('lesson.update', $lesson->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
 
                 <!-- End Page Header -->
@@ -83,13 +83,14 @@
                         {{-- Card Preview --}}
                         <div class="card card-post card-round">
                             <img class="card-img-top" id="imgPreview"
-                                src="{{ Storage::url('public/class/cover/') . $lesson->course_cover_image }}"
-                                alt="Cover Kelas">
+                                 src="{{ Storage::url('public/class/cover/') . $lesson->course_cover_image }}"
+                                 alt="Cover Kelas">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="avatar">
-                                        <img  src="{{ Storage::url('public/profile/'). Auth::user()->profile_url }}" alt="..."
-                                            class="avatar-img rounded-circle">
+                                        <img src="{{ Storage::url('public/profile/'). Auth::user()->profile_url }}"
+                                             alt="..."
+                                             class="avatar-img rounded-circle">
                                     </div>
                                     <div class="info-post ml-2">
                                         <p class="username">{{ Auth::user()->name }}</p>
@@ -109,6 +110,44 @@
                             </div>
                         </div>
 
+                        <div class='card card-small mb-3'>
+                            <div class="card-header border-bottom">
+                                <h6 class="m-0">Periode Kelas</h6>
+                            </div>
+                            <div class='card-body container-fluid'>
+                                <small class="form-text text-muted"><strong>Kosongkan Input Ini</strong> jika kelas ini
+                                    bisa diakses setiap saat oleh siswa</small>
+                                <div class="form-group">
+                                    <label>Tanggal Start</label>
+                                    <div class="input-group">
+                                        <input type="datetime-local" class="form-control"
+                                               value="{{$lesson->start_date}}" name="start_time">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Tanggal Selesai</label>
+                                    <div class="input-group">
+                                        <input type="datetime-local" value="{{$lesson->end_date}}" class="form-control" name="end_time">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Konten Bisa Diakses ? </label>
+                                    <select class="form-control" name="can_be_accessed">
+                                        <option value="true"
+                                                @if($lesson->can_be_accessed=="true") selected @endif
+                                        >Ya</option>
+                                        <option value="false"
+                                                @if($lesson->can_be_accessed!="true") selected @endif
+                                        >Tidak</option>
+                                    </select>
+                                </div>
+
+
+                            </div>
+                        </div>
+
 
                         <div class='card card-small mb-3'>
                             <div class="card-header border-bottom">
@@ -117,20 +156,21 @@
                             <div class='card-body container-fluid'>
                                 <div class="embed-responsive embed-responsive-16by9 video-mask">
                                     <video loop controls class="embed-responsive-item">
-                                        <source src="{{ Storage::url('public/class/trailer/') . $lesson->course_trailer }}"
+                                        <source
+                                            src="{{ Storage::url('public/class/trailer/') . $lesson->course_trailer }}"
                                             type=video/mp4>
                                     </video>
                                 </div>
 
                                 <div class="form-group container-fluid">
                                     <input id="input-video" type="file" onchange="previewVideo()"
-                                        class="form-control @error('video') is-invalid @enderror" name="video">
+                                           class="form-control @error('video') is-invalid @enderror" name="video">
 
                                     <!-- error message untuk video -->
                                     @error('video')
-                                        <div class="alert alert-danger mt-2">
-                                            {{ $message }}
-                                        </div>
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
                                     @enderror
 
                                 </div>
@@ -146,44 +186,57 @@
                                 <div class="form-group">
                                     <label class="font-weight-bold">JUDUL KELAS</label>
                                     <input id="inputTitle" type="text"
-                                        class="form-control @error('title') is-invalid @enderror" name="title"
-                                        value="{{ old('title', $lesson->course_title) }}" placeholder="Masukkan Nama Kelas">
+                                           class="form-control @error('title') is-invalid @enderror" name="title"
+                                           value="{{ old('title', $lesson->course_title) }}"
+                                           placeholder="Masukkan Nama Kelas">
 
                                     <!-- error message untuk title -->
                                     @error('title')
-                                        <div class="alert alert-danger mt-2">
-                                            {{ $message }}
-                                        </div>
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
+                                    </div>
                                     @enderror
                                 </div>
                                 @php
-                                $category = $lesson->course_category
+                                    $category = $lesson->course_category
                                 @endphp
                                 <div class="form-group">
                                     <label class="form-label">Category</label>
                                     <select class="form-control" name="category" id="">
                                         <option value="Select Category">Select Category</option>
-                                        <option {{ $category == 'Design' ? 'selected' : '' }} value="Design">Design</option>
-                                        <option {{ $category == '3D Modelling' ? 'selected' : '' }} value="3D Modelling">3D
-                                            Modelling</option>
+                                        <option {{ $category == 'Design' ? 'selected' : '' }} value="Design">Design
+                                        </option>
+                                        <option
+                                            {{ $category == '3D Modelling' ? 'selected' : '' }} value="3D Modelling">3D
+                                            Modelling
+                                        </option>
                                         <option {{ $category == 'IT/Programming' ? 'selected' : '' }}
-                                            value="IT/Programming">IT / Programming</option>
+                                                value="IT/Programming">IT / Programming
+                                        </option>
                                         <option
                                             {{ $category == 'Marketing and Business' ? 'selected' : '' }}value="Marketing and Business">
-                                            Marketing and Business</option>
+                                            Marketing and Business
+                                        </option>
                                         <option {{ $category == 'Food and Beverage' ? 'selected' : '' }}
-                                            value="Food and Beverage">Food and Beverage</option>
+                                                value="Food and Beverage">Food and Beverage
+                                        </option>
                                         <option {{ $category == 'Management' ? 'selected' : '' }} value="Management">
-                                            Management</option>
+                                            Management
+                                        </option>
                                         <option {{ $category == 'Social and Politics' ? 'selected' : '' }}
-                                            value="Social and Politics">Social and Politics</option>
-                                        <option {{ $category == 'Office' ? 'selected' : '' }} value="Office">Office</option>
+                                                value="Social and Politics">Social and Politics
+                                        </option>
+                                        <option {{ $category == 'Office' ? 'selected' : '' }} value="Office">Office
+                                        </option>
                                         <option {{ $category == 'Outdoor' ? 'selected' : '' }} value="Outdoor">Outdoor
-                                            Activity</option>
+                                            Activity
+                                        </option>
                                         <option {{ $category == 'Junior High School' ? 'selected' : '' }}
-                                            value="Junior High School">Junior High School</option>
+                                                value="Junior High School">Junior High School
+                                        </option>
                                         <option {{ $category == 'Senior High School' ? 'selected' : '' }}
-                                            value="Senior High School">Senior High School</option>
+                                                value="Senior High School">Senior High School
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -198,32 +251,33 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">GAMBAR</label>
                                             <input id="input-image" type="file" onchange="previewPhoto()"
-                                                class="form-control @error('image') is-invalid @enderror" name="image">
+                                                   class="form-control @error('image') is-invalid @enderror"
+                                                   name="image">
 
                                             <!-- error message untuk title -->
                                             @error('image')
-                                                <div class="alert alert-danger mt-2">
-                                                    {{ $message }}
-                                                </div>
+                                            <div class="alert alert-danger mt-2">
+                                                {{ $message }}
+                                            </div>
                                             @enderror
                                         </div>
-                                        
+
                                         {!! $lesson->course_description !!}
 
                                         <div class="form-group">
                                             <label class="font-weight-bold">Deskripsi Kelas</label>
-                                            <textarea class="form-control ckeditor @error('content') is-invalid @enderror"
+                                            <textarea
+                                                class="form-control ckeditor @error('content') is-invalid @enderror"
                                                 name="content" rows="5"
                                                 placeholder="Masukkan Deskripsi Kelas">{{ old('description', $lesson->course_description) }}</textarea>
 
                                             <!-- error message untuk content -->
                                             @error('content')
-                                                <div class="alert alert-danger mt-2">
-                                                    {{ $message }}
-                                                </div>
+                                            <div class="alert alert-danger mt-2">
+                                                {{ $message }}
+                                            </div>
                                             @enderror
                                         </div>
-
 
 
                                         <button type="submit" class="btn btn-md btn-primary">SIMPAN</button>
@@ -236,9 +290,8 @@
                     </div>
 
 
-
                 </div>
-            </div>
         </div>
+    </div>
     </form>
 @endsection

@@ -289,6 +289,9 @@ class LessonController extends Controller
                 'course_title' => $request->title,
                 'course_trailer' => $video->hashName(),
                 'course_category' => $request->input('category'),
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'can_be_accessed' => $request->can_be_accessed,
                 'course_description' => $request->content
             ]);
         } else {
