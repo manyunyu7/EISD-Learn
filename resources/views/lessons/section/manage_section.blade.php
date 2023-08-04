@@ -215,17 +215,17 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">Materi Ke- :</label>
                                             <div class="container row">
-                                                <input id="section_order" type="number" min="0"
+                                                <input id="section_order" type="text" min="0"
                                                        class="form-control col-6 @error('section_order') is-invalid @enderror"
                                                        name="section_order" value="{{ old('section_order') }}"
                                                        placeholder="Urutan Materi">
                                             </div>
 
 
-                                            <p> - Isi dengan angka 1 jika ini adalah materi pertama
+                                            <p> - Isi dengan angka 01 jika ini adalah materi pertama
                                                 <br> - 1 Bilangan Urutan Materi hanya boleh muncul 1 kali di kelas
                                                 yang sama
-                                                <br> - Referensi Urutan dapat dilihat pada tabel materi anda dibawah
+{{--                                                <br> - Referensi Urutan dapat dilihat pada tabel materi anda dibawah--}}
                                             </p>
 
                                             <!-- error message untuk materi -->
