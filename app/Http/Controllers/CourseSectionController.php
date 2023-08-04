@@ -73,7 +73,7 @@ class CourseSectionController extends Controller
         $lessonObject = Lesson::findOrFail($lesson_id);
         if (Auth::user()->role == "student") {
             if ($lessonObject->can_be_accessed == "n") {
-                return redirect()->back()->with(['error' => 'Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan!']);
+                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
             }
         }
 
