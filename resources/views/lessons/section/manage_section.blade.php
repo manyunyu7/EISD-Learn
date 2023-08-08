@@ -323,7 +323,7 @@
                                     <tr>
                                         <th scope="col">Urutan</th>
                                         <th scope="col">Judul Materi</th>
-                                        <th scope="col">Video Materi</th>
+                                        <th scope="col">Materi</th>
 {{--                                        <th scope="col">MATERI</th>--}}
                                         <th scope="col">Hapus Materi</th>
 
@@ -423,7 +423,7 @@
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span></button>
-                                                            <h4 class="modal-title"><b>Video Materi</b></h4>
+                                                            <h4 class="modal-title"><b>Materi</b></h4>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="box-body">
