@@ -85,8 +85,9 @@
                 <div class="container-fluid">
 
                     @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
-                        <iframe src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
-                                height="600">
+                        <div class='embed-responsive' style='padding-bottom:150%'>
+                            <object data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}' type='application/pdf' width='100%' height='100%'></object>
+                        </div>
                     @else
                         <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
                                class="video-mask" disablePictureInPicture controlsList="nodownload">
