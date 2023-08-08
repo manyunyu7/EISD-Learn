@@ -241,7 +241,7 @@
                                         <h2><strong> Course Video </strong></h2>
                                         <p>Replace/Upload Video untuk megganti video materi</p>
                                         <div class="form-group">
-                                            <input accept=".mp4,video/*" id="input-video" type="file"
+                                            <input id="input-video" type="file"
                                                    onchange="previewVideo()"
                                                    class="form-control @error('video') is-invalid @enderror"
                                                    value="{{ old('video') }}" name="video">
