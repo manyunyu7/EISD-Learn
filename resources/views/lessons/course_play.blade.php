@@ -83,18 +83,26 @@
                 </div>
 
                 <div class="container-fluid">
-                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
-                           class="video-mask" disablePictureInPicture controlsList="nodownload">
-                        <!-- Video files -->
-                        <source
-                            src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video . '?random1') }}">
-                        <!-- Caption files -->
-                        <!-- <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default /> -->
-                        <!-- <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt" /> -->
 
-                        <!-- Fallback for browsers that don't support the <video> element -->
-                        <!-- <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a> -->
-                    </video>
+                    @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
+                        <iframe src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
+                                height="600">
+                    @else
+                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
+                               class="video-mask" disablePictureInPicture controlsList="nodownload">
+                            <!-- Video files -->
+                            <source
+                                src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
+                            <!-- Caption files -->
+                            <!-- <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default /> -->
+                            <!-- <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt" /> -->
+
+                            <!-- Fallback for browsers that don't support the <video> element -->
+                            <!-- <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a> -->
+                        </video>
+                    @endif
+
+
                 </div>
 
 
