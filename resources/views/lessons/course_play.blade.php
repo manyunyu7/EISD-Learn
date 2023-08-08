@@ -110,6 +110,8 @@
 
                 <script>
                     function nextCuy() {
+                        window.location.href = nextUrl;
+
                         var videoPlayer = document.getElementById("myVideo");
                         var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
                         var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
