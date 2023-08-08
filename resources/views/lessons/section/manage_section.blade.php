@@ -371,7 +371,7 @@
                                                                            value="{{ old('section_u_video') }}"
                                                                            name="section_u_video">
                                                                     <small id="helpId" class="form-text text-muted">Kosongkan
-                                                                        Jika Video Tidak Ingin Diganti</small>
+                                                                        Jika Tidak Ingin Diganti</small>
                                                                 </div>
 
                                                                 <div class="form-group">
