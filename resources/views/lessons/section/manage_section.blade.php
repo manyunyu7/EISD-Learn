@@ -333,7 +333,7 @@
                                     @forelse ($dayta as $data)
 
                                         <div class="modal fade " id="edit-modal{{$loop->iteration}}">
-                                            <div class="modal-dialog modal-fullscreen">
+                                            <div class="modal-dialog modal-xl modal-fullscreen">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal"
@@ -415,8 +415,7 @@
 
                                         <tr>
 
-                                            {{-- START OF MODAL FOR VIDEO --}}
-                                            <div class="modal fade  bd-example-modal-xl"
+                                            <div class="modal fade modal-dialog modal-xl bd-example-modal-xl"
                                                  id="video-modal{{$loop->iteration}}">
                                                 <div class="modal-dialog modal-xl">
                                                     <div class="modal-content">
