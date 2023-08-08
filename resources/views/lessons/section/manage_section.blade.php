@@ -350,7 +350,7 @@
                                                             <div class="box-body">
                                                                 <div>
                                                                     <video loop controls width="100%"
-                                                                           class="video-mask">
+                                                                           class="video-mask d-none">
                                                                         <source
                                                                             src="{{ Storage::url("public/class/content/".$data->lesson_id."/".$data->section_video)}}"
                                                                             type=video/mp4>
