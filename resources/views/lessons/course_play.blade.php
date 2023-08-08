@@ -110,6 +110,7 @@
 
                 <script>
                     function nextCuy() {
+                        var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
                         window.location.href = nextUrl;
                         return;
                         var videoPlayer = document.getElementById("myVideo");
