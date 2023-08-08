@@ -118,7 +118,7 @@
                                         <div class="col-md-6">
                                               <select class="form-control" name="rolez" id="">
                                                 <option value="student">Belajar</option>
-                                                <option value="mentor">Mengajar (Mentor)</option>
+{{--                                                <option value="mentor">Mengajar (Mentor)</option>--}}
                                               </select>
                                         </div>
                                     </div>
