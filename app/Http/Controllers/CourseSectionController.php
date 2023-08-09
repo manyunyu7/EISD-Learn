@@ -86,7 +86,7 @@ class CourseSectionController extends Controller
     }
 
     // SEE SECTION
-    public function see_section(Lesson $lesson, CourseSection $section)
+    public function see_section(Request $request,Lesson $lesson, CourseSection $section)
     {
         // Find the next and previous sections
         $nextSectionId = null;
@@ -173,6 +173,10 @@ class CourseSectionController extends Controller
 
         if (Auth::check()) {
             if (Auth::user()->role == "student") {
+
+                if($section->can_be_accessed=="n"){
+                    abort(401,"Materi baru dapat diakses pada jadwal yang telah ditentukan");
+                }
                 $sectionTakenByStudent = FacadesDB::table('student_section as ss')
                     ->select('section_id')
                     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
@@ -281,6 +285,9 @@ class CourseSectionController extends Controller
             'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered');
 
 
+        if($request->dump==true){
+            return $compact;
+        }
         return view('lessons.course_play', $compact);
     }
 
@@ -365,6 +372,7 @@ class CourseSectionController extends Controller
             'section_video' => $video->hashName(),
             'section_content' => $request->content,
             'section_order' => $section_order,
+            'can_be_accessed' => $request->access,
             'course_id' => $lesson_id,
             'section_title' => $request->title,
         ]);
@@ -408,7 +416,6 @@ class CourseSectionController extends Controller
      */
     public function update(Request $request, CourseSection $section)
     {
-
         // try {
         //     //code causing exception to be thrown
 
@@ -430,6 +437,7 @@ class CourseSectionController extends Controller
                 'section_content' => $request->section_u_content,
                 'section_order' => $section_order,
                 'course_id' => $lesson_id,
+                'can_be_accessed' => $request->access,
                 'section_title' => $request->section_u_title,
             ]);
         } else if ($request->file('section_u_video') != "") {
@@ -444,6 +452,7 @@ class CourseSectionController extends Controller
                 'section_content' => $request->section_u_content,
                 'section_order' => $section_order,
                 'course_id' => $lesson_id,
+                'can_be_accessed' => $request->access,
                 'section_title' => $request->section_u_title,
             ]);
         } else {

@@ -32,7 +32,7 @@ $countBlog = 0;
     $.notify({
         icon: 'flaticon-alarm-1',
         title: 'Welcome to {{ config('app.name') }}',
-        message: 'Best Free Online Course',
+        message: 'Resource Belajar Digital PT Modernland Realty Tbk',
     }, {
         type: 'info',
         placement: {

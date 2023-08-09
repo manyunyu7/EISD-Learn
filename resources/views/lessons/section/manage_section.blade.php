@@ -211,6 +211,14 @@
 
 
                                         <div class="form-group">
+                                            <label>Konten Bisa Diakses ?</label>
+                                            <select class="form-control" name="access">
+                                                <option value="y">Ya</option>
+                                                <option value="n">Tidak</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="font-weight-bold">Materi Ke- :</label>
                                             <div class="container row">
                                                 <input id="section_order" type="text" min="0"
@@ -360,6 +368,15 @@
                                                                            name="section_u_title" placeholder="User ID"
                                                                            value="{{$data->section_title}}">
                                                                 </div>
+
+                                                                <div class="form-group">
+                                                                    <label>Konten Bisa Diakses ?</label>
+                                                                    <select class="form-control" name="access">
+                                                                        <option value="y" {{$data->can_be_accessed === "y" ? "selected" : ""}}>Ya</option>
+                                                                        <option value="n" {{$data->can_be_accessed === "n" ? "selected" : ""}}>Tidak</option>
+                                                                    </select>
+                                                                </div>
+
                                                                 <div class="form-group">
                                                                     <label for="">Ganti File</label>
                                                                     <input id="input-video"

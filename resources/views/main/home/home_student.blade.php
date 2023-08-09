@@ -308,7 +308,6 @@
                                 <thead>
                                 <tr>
                                     <th>Kelas</th>
-                                    <th>Modul Pembelajaran</th>
                                     <th>Skor</th>
                                 </tr>
                                 </thead>
