@@ -56,9 +56,8 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="d-flex justify-content-center" data-aos="zoom-in-up">
-                <img class="img-fluid mx-2" src="http://feylabs.my.id/fm/mdln_asset/learning/mdln_sphere.png" alt="">
-            </div>
+            <lottie-player src="https://lottie.host/de4087d3-35d5-41fb-9af5-1bc46fce0dc9/g0rmfNzz8R.json" mode="bounce" background="TRANSPARENT" speed="1" style="width: 100%; height:300px;" hover loop autoplay>
+            </lottie-player>
         </div>
     </div>
 </div>
@@ -142,14 +141,14 @@
         <p class="center"> Dengan 3 Langkah Mudah</p>
     </div>
 
-    <div class="col-md-4 center text-center" data-aos="flip-right" data-aos-duration="1500">
+    <div class="col-md-4 center text-center" data-aos="bounce" data-aos-duration="1500">
         <lottie-player class="center" src="https://assets1.lottiefiles.com/packages/lf20_jcikwtux.json" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay>
         </lottie-player>
         <br><br><br>
         <h4>Daftar</h4>
     </div>
 
-    <div class="col-md-4 center text-center" data-aos="flip-right" data-aos-duration="1500">
+    <div class="col-md-4 center text-center" data-aos="bounce" data-aos-duration="1500">
         <lottie-player class="center" src="https://assets9.lottiefiles.com/packages/lf20_e9kjkvml.json" background="transparent" speed="3" style="width: 200px; height: 200px;" loop autoplay>
         </lottie-player>
         <br><br><br>
@@ -158,7 +157,7 @@
 
 
 
-    <div class="col-md-4 center text-center" data-aos="flip-right" data-aos-duration="1500">
+    <div class="col-md-4 center text-center" data-aos="bounce" data-aos-duration="1500">
         <lottie-player class="center" src="https://assets10.lottiefiles.com/packages/lf20_n7DAEZ.json" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay>
         </lottie-player>
         <br><br><br>
@@ -245,7 +244,7 @@
 {{--        <p>Tidak perlu download / kartu kredit. Cukup daftar langsung belajar.</p>--}}
         <p>Creating Forward</p>
         <br><br>
-        <button type="button" name="" id="" class="btn btn-primary btn-lg btn-block">Uji Coba Gratis</button>
+{{--        <button type="button" name="" id="" class="btn btn-primary btn-lg btn-block">Uji Coba Gratis</button>--}}
         <br><br>
     </div>
 </div>
