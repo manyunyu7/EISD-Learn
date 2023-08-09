@@ -8,20 +8,20 @@
 
     .navbar-custom {
         position: top;
-        background-color: #0275d8 !important;
+        background-color: #ffffff !important;
         color: white !important
     }
 
     .navbar-custom a {
-        color: azure !important
+        color: black !important
     }
 
     .jargon-header {
-        background-color: #0275d8 !important;
+        background-color: #FFFFFF !important;
     }
 
     header {
-        background-color: #0275d8 !important;
+        background-color: #FFFFFF !important;
         color: white !important;
     }
 
@@ -80,9 +80,12 @@
 
 <header>
     <div class="container w-100" data-aos="flip-right">
-        <img width="100%" src="{{ URL::to('/') }}/home_assets/img/illustration.svg" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
+        <img width="100%" src="{{ URL::to('/') }}/mdln_40.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
     </div>
-    <p class="gloss mb-0" style="color: #ffffff !important">{{ config('app.name') }}</p>
+    <div style="text-align: center">
+        <p class="gloss mb-0" style="color: #BB0014 !important;   !important">{{ config('app.name') }}</p>
+        {{-- <img src="./home_assets/img/esd_3.png" width="500px" alt="Logo EISD"> --}}
+    </div>
     <div style="text-align: center">I want more, I want an Online sequence.
         Everything is humble with Online Course.
     </div>

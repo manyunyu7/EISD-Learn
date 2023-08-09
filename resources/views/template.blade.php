@@ -39,6 +39,11 @@
             font-family: gloss, Quicksand;
             color: black;
         }
+
+        .scrollable-table-body {
+            max-height: 300px; /* Adjust the desired height */
+            overflow-y: scroll;
+        }
     </style>
     @yield('styling')
 

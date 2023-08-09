@@ -30,18 +30,29 @@ class HomeController extends Controller
         if (!Auth::check()) {
             return Redirect::away("/");
         }
+
+        $leaderboard = DB::table(DB::raw('student_section ss'))
+            ->select(
+                'u.name as student_name',
+                DB::raw('SUM(ss.score) as total_score')
+            )
+            ->join('users as u', 'ss.student_id', '=', 'u.id')
+            ->groupBy('ss.student_id', 'u.name')
+            ->orderByDesc('total_score')
+            ->get();
+
         if (Auth::check() && Auth::user()->role == 'mentor') {
-            $user_id = Auth::user()->id;
+            $userId = Auth::user()->id;
             $user_name = Auth::user()->name;
-            $blog = DB::select("select * from view_blog where user_id = $user_id ");
-            $classes = DB::select("select * from view_course where mentor_id = $user_id");
-            $classRegistered = DB::select("SELECT * from view_student_lesson where student_id=$user_id");
+            $blog = DB::select("select * from view_blog where user_id = $userId ");
+            $classes = DB::select("select * from view_course where mentor_id = $userId");
+            $classRegistered = DB::select("SELECT * from view_student_lesson where student_id=$userId");
             $projectCreatedCount = DB::table('view_project')
-                ->where('user_id', $user_id)
+                ->where('user_id', $userId)
                 ->count();
 
             $classRegisteredCount = DB::table('view_course')
-                ->where('mentor_id', $user_id)
+                ->where('mentor_id', $userId)
                 ->count();
 
             $studentCount = DB::table('view_student_lesson')
@@ -56,7 +67,7 @@ class HomeController extends Controller
 
 
             $blogCreatedCount = DB::table('view_blog')
-                ->where('user_id', $user_id)
+                ->where('user_id', $userId)
                 ->count();
 
             if (!Auth::check()) {
@@ -75,27 +86,40 @@ class HomeController extends Controller
                     'classRegisteredCount'
                 ));
         } else if (Auth::check() && Auth::user()->role == 'student') {
-            $user_id = Auth::id();
-            $blog = DB::select("select * from view_blog where user_id = $user_id ");
+            $userId = Auth::id();
+            $blog = DB::select("select * from view_blog where user_id = $userId ");
+
+            $userScores = DB::table('student_section')
+                ->join('course_section', 'student_section.section_id', '=', 'course_section.id')
+                ->select('course_section.section_title', DB::raw('COALESCE(student_section.score, 0) as score'))
+                ->where('student_section.student_id', $userId)
+                ->orderBy('course_section.section_order')
+                ->get();
+
+
             $classes = DB::select("select * from view_course");
-            $classRegistered = DB::select("SELECT * from view_student_lesson where student_id=$user_id");
+            $classRegistered = DB::select("SELECT * from view_student_lesson where student_id=$userId");
             $projectCreatedCount = DB::table('view_project')
-                ->where('user_id', $user_id)
+                ->where('user_id', $userId)
                 ->count();
 
             $classRegisteredCount = DB::table('view_student_lesson')
-                ->where('student_id', $user_id)
+                ->where('student_id', $userId)
                 ->count();
 
             $blogCreatedCount = DB::table('view_blog')
-                ->where('user_id', $user_id)
+                ->where('user_id', $userId)
                 ->count();
+
+
 
             return view('main.dashboard')
                 ->with(compact(
                     'classes',
                     'classRegistered',
                     'blog',
+                    'userScores',
+                    'leaderboard',
                     'blogCreatedCount',
                     'projectCreatedCount',
                     'classRegisteredCount'

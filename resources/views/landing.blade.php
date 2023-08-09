@@ -8,10 +8,10 @@
 
 <header>
     <div class="container w-100" data-aos="flip-right">
-        <img width="100%" src="{{ URL::to('/') }}/home_assets/img/illustration.svg" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
+        <img width="100%" src="{{ URL::to('/') }}/mdln_40.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
     </div>
     <div style="text-align: center">
-        <p class="gloss mb-0" style="color: #7F00FF !important;   !important">{{ config('app.name') }}</p>
+        <p class="gloss mb-0" style="color: #BB0014 !important;   !important">{{ config('app.name') }}</p>
         {{-- <img src="./home_assets/img/esd_3.png" width="500px" alt="Logo EISD"> --}}
     </div>
     <div style="text-align: center"></div>

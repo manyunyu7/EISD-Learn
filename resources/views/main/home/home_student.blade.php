@@ -4,6 +4,62 @@
 
 @section('script')
     @include('main.home.script_student')
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var userScores = @json($userScores);
+
+        var sectionTitles = userScores.map(score => score.section_title);
+        var scoreData = userScores.map(score => score.score);
+
+        var ctx = document.getElementById('userScoresChart').getContext('2d');
+        var userScoresChart = new Chart(ctx, {
+            type: 'line', // Use bar chart for 3D effect
+            data: {
+                labels: sectionTitles,
+                datasets: [{
+                    label: 'User Scores',
+                    data: scoreData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true // Adjust this based on your data
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'User Scores Chart'
+                    }
+                }
+            }
+        });
+    </script>
 @endsection
 
 @section('main')
@@ -23,49 +79,6 @@
     <div class="page-inner mt--5">
 
         <div class="row mt--2 border-primary">
-
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Leaderboard Score Management Trainee</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-sub">
-                            Leaderboard Score MT Modernland Realty 2023
-                        </div>
-                        <table class="table mt-3">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
 
             <div class="col-md-12">
                 <div class="card"> {{-- card --}}
@@ -264,9 +277,100 @@
             </div>
 
 
-            <div class="col-md-12">
+            <div class="col-md-12 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Grafik Skormu</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-sub">
+                            Performa Skor Per Materi
+                        </div>
 
+                        <div style="height: 370px">
+                            <canvas id="userScoresChart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="col-md-6 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Skor Per Modul</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-sub">
+                            Skor post test tiap-tiap modul
+                        </div>
+                        <div>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Kelas</th>
+                                    <th>Modul Pembelajaran</th>
+                                    <th>Skor</th>
+                                </tr>
+                                </thead>
+                                <tbody class="scrollable-table-body">
+                                @foreach ($userScores as $index => $item)
+                                    <tr>
+                                        <td>
+                                            {{ $item->section_title }}
+                                        </td>
+                                        <td>{{ $item->score }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Leaderboard Score Management Trainee</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-sub">
+                            Leaderboard Score MT Modernland Realty 2023
+                        </div>
+
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Total Score</th>
+                            </tr>
+                            </thead>
+                            <tbody class="scrollable-table-body">
+                            @foreach ($leaderboard as $index => $student)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>
+                                        {{ $student->student_name }}
+                                        @if ($index === 0)
+                                            <span class="badge badge-primary">1st</span>
+                                        @elseif ($index === 1)
+                                            <span class="badge badge-secondary">2nd</span>
+                                        @elseif ($index === 2)
+                                            <span class="badge badge-success">3rd</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $student->total_score }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
 
             <div class="row d-none">
                 <div class="col-md-4">
