@@ -109,10 +109,8 @@
                     @endphp
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{url('/home')}}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{url('/lesson/manage')}}">Kelas</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('lesson.show', $lesson->id) }}">{{$lesson->course_title}}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Materi</li>
+                        <li class="breadcrumb-item"><a href="{{url('/lesson/manage')}}">Manage Kelas</a></li>
+                        <li class="breadcrumb-item">{{$lesson->course_title}}</li>
                     </ol>
                 </nav>
             </div>
@@ -225,7 +223,7 @@
                                             <p> - Isi dengan angka 01 jika ini adalah materi pertama
                                                 <br> - 1 Bilangan Urutan Materi hanya boleh muncul 1 kali di kelas
                                                 yang sama
-{{--                                                <br> - Referensi Urutan dapat dilihat pada tabel materi anda dibawah--}}
+                                                {{--                                                <br> - Referensi Urutan dapat dilihat pada tabel materi anda dibawah--}}
                                             </p>
 
                                             <!-- error message untuk materi -->
@@ -324,14 +322,14 @@
                                         <th scope="col">Urutan</th>
                                         <th scope="col">Judul Materi</th>
                                         <th scope="col">Materi</th>
-{{--                                        <th scope="col">MATERI</th>--}}
+                                        <th scope="col">Input Nilai</th>
+                                        {{--                                        <th scope="col">MATERI</th>--}}
                                         <th scope="col">Hapus Materi</th>
 
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @forelse ($dayta as $data)
-
                                         <div class="modal fade " id="edit-modal{{$loop->iteration}}">
                                             <div class="modal-dialog modal-xl modal-fullscreen">
                                                 <div class="modal-content">
@@ -454,19 +452,25 @@
                                                 {{-- Start OF Table Data --}}
                                                 <td>{{ $data->section_order }} <br>
                                                 <td>{{ $data->section_title }} <br>
-
                                                 <td>
                                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                                             data-target="#edit-modal{{$loop->iteration}}">
                                                         Lihat/Edit Detail
                                                     </button>
                                                 </td>
-{{--                                                <td>--}}
-{{--                                                    <button type="button" class="btn btn-outline-primary"--}}
-{{--                                                            data-toggle="modal"--}}
-{{--                                                            data-target="#video-modal{{$loop->iteration}}">Lihat Materi--}}
-{{--                                                    </button>--}}
-{{--                                                </td>--}}
+                                                <td>
+                                                    <a href="{{url("/lesson/".$data->lesson_id."/section/".$data->section_id."/input-score")}}">
+                                                        <button type="button" class="btn btn-primary">
+                                                            Input Nilai
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                                {{--                                                <td>--}}
+                                                {{--                                                    <button type="button" class="btn btn-outline-primary"--}}
+                                                {{--                                                            data-toggle="modal"--}}
+                                                {{--                                                            data-target="#video-modal{{$loop->iteration}}">Lihat Materi--}}
+                                                {{--                                                    </button>--}}
+                                                {{--                                                </td>--}}
                                                 <td class="text-center">
                                                     <form id="delete-post-form"
                                                           action="{{ route('section.destroy', [$data->section_id])}}"

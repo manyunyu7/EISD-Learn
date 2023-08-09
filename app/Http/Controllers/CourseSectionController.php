@@ -33,6 +33,53 @@ class CourseSectionController extends Controller
         return view('lessons.section.manage_section', compact('lesson'), compact('dayta'));
     }
 
+    public function updateScores(Request $request)
+    {
+        $scoresData = $request->input('scores');
+
+        foreach ($scoresData as $studentSectionId => $score) {
+            // Assuming you have a StudentSection model
+            $studentSection = StudentSection::find($studentSectionId);
+            if ($studentSection) {
+                $studentSection->score = $score;
+                $studentSection->save();
+            }
+        }
+
+        return response()->json(['message' => 'Scores updated successfully']);
+    }
+
+    public function viewInputScore(Request $request, $lessonId,$sectionId){
+        $lesson = Lesson::findOrFail($lessonId);
+        $section = CourseSection::findOrFail($sectionId);
+        $students = DB::select(DB::raw("
+        SELECT
+            ss.id as student_section_id,
+            ss.student_id,
+            ss.score,
+            l.course_title,
+            l.id as course_id,
+            u.name as student_name,
+            u.email as student_email,
+            u.profile_url as student_profile_url,
+            s.section_title,
+            s.section_order,
+            s.id as section_id,
+            ss.created_at as taken_at
+        FROM student_section ss
+        LEFT JOIN users u ON ss.student_id = u.id
+        LEFT JOIN course_section s ON ss.section_id = s.id
+        LEFT JOIN lessons l on s.course_id = l.id
+        WHERE s.id = '$sectionId'
+    "));
+
+        $compact = compact('students','lesson');
+        if($request->dump==true){
+            return $compact;
+        }
+        return view('lessons.section.input_score', $compact);
+    }
+
 
     public function goToNextSection(Lesson $lesson, CourseSection $lesson_id)
     {
