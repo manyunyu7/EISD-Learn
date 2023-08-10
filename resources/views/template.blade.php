@@ -56,64 +56,64 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap" rel="stylesheet">
 
-    <style>
-        nav {
-            font-family: Nunito, sans-serif;
-        }
-
-
-        .loader {
-            border: 4px solid #f3f3f3; /* Light gray border */
-            border-top: 4px solid #3498db; /* Blue border for loading indicator */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite; /* Spin animation */
-        }
-
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999; /* Make sure the loader is above everything else */
-        }
-
-        .blinking-overlay {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: blink 0.9s infinite;
-        }
-
-        .centered-image {
-            max-width: 20%; /* Adjust the maximum width of the image */
-            max-height: 20vh; /* Adjust the maximum height of the image */
-        }
-
-        @keyframes blink {
-            0%, 100% {
-                opacity: 0;
+        <style>
+            nav {
+                font-family: Nunito, sans-serif;
             }
-            50% {
-                opacity: 1;
-            }
-        }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
+
+            .loader {
+                border: 4px solid #f3f3f3; /* Light gray border */
+                border-top: 4px solid #3498db; /* Blue border for loading indicator */
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 2s linear infinite; /* Spin animation */
             }
-            100% {
-                transform: rotate(360deg);
+
+            .loader-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999; /* Make sure the loader is above everything else */
             }
-        }
-    </style>
+
+            .blinking-overlay {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: blink 0.9s infinite;
+            }
+
+            .centered-image {
+                max-width: 20%; /* Adjust the maximum width of the image */
+                max-height: 20vh; /* Adjust the maximum height of the image */
+            }
+
+            @keyframes blink {
+                0%, 100% {
+                    opacity: 0;
+                }
+                50% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
 
     <!-- Lottie Animate -->
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -132,11 +132,11 @@
 <body>
 
 
-<div id="loaderOverlay" class="loader-overlay">
-    <div class="blinking-overlay">
-        <img src="{{URL::to('/')}}/mdln_long.png" alt="navbar brand" class="centered-image">
+    <div id="loaderOverlay" class="loader-overlay">
+        <div class="blinking-overlay">
+            <img src="{{URL::to('/')}}/mdln_long.png" alt="navbar brand" class="centered-image">
+        </div>
     </div>
-</div>
 @include('top_bar')
 @yield('body')
 
