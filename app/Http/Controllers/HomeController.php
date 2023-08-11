@@ -37,7 +37,7 @@ class HomeController extends Controller
 
         $leaderboardQuery = DB::table(DB::raw('student_section ss'))
             ->select(
-                'u.name as student_name', 'u.profile_url',
+                'u.name as student_name', 'u.profile_url','u.id',
                 DB::raw('SUM(ss.score) as total_score'),
                 'avg_subquery.average_score as average_score',
                 DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as highest_score'),
