@@ -375,14 +375,14 @@
                                                     <div class="number">{{$student->total_score}}</div>
                                                     <div class="title">Total Point</div>
                                                 </div>
-                                                <div class="col">
-                                                    <div class="number">{{$student->highest_score}}</div>
-                                                    <div class="title">Nilai Tertinggi</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="number">{{$student->lowest_score}}</div>
-                                                    <div class="title">Nilai Terendah</div>
-                                                </div>
+{{--                                                <div class="col">--}}
+{{--                                                    <div class="number">{{$student->highest_score}}</div>--}}
+{{--                                                    <div class="title">Nilai Tertinggi</div>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="col">--}}
+{{--                                                    <div class="number">{{$student->lowest_score}}</div>--}}
+{{--                                                    <div class="title">Nilai Terendah</div>--}}
+{{--                                                </div>--}}
                                             </div>
                                         </div>
                                     </div>
