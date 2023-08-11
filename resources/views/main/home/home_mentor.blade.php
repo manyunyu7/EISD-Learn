@@ -3,9 +3,56 @@
 @endsection
 
 @section('script')
-@include('main.home.script_mentor')
-@endsection
+    @include('main.home.script_mentor')
 
+    <script>
+        var userScores = @json($leaderboard);
+        console.log(userScores);
+        var studentNames = userScores.map(score => score.student_name);
+        var totalScores = userScores.map(score => score.total_score);
+
+        var ctx = document.getElementById('userScoresChart').getContext('2d');
+        var userScoresChart = new Chart(ctx, {
+            type: 'bar', // Change to 'bar' for a bar chart
+            data: {
+                labels: studentNames,
+                datasets: [{
+                    label: 'Total Scores',
+                    data: totalScores,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 0, // Rotate labels to be horizontal
+                            autoSkip: false, // Display all labels without skipping
+                            maxTicksLimit: 10 // Adjust this based on the available space
+                        }
+                    },
+                    y: {
+                        beginAtZero: true // Adjust this based on your data
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Student Total Scores Chart'
+                    }
+                }
+            }
+        });
+    </script>
+@endsection
 @section('main')
 
 <div class="panel-header bg-primary-gradient">
@@ -251,6 +298,22 @@
             </div>
         </div>
 
+        <div class="col-md-12 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Grafik Skor Siswa</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-sub">
+                        Performa Skor Per Materi
+                    </div>
+
+                    <div style="height: 370px">
+                        <canvas id="userScoresChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="col-md-12">
             <div class="card full-height">

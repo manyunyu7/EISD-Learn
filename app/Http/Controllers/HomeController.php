@@ -58,6 +58,7 @@ class HomeController extends Controller
         if (Auth::user()->role != "mentor") {
             $leaderboardQuery->limit(5);
         }
+
         $leaderboard = $leaderboardQuery->get();
 
         if (Auth::check() && Auth::user()->role == 'mentor') {
