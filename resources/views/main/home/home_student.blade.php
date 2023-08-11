@@ -427,7 +427,7 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>
                                         <div class="avatar">
-                                            <img src="{{ Storage::url('public/profile/') . $data->profile_url }}"
+                                            <img src="{{ Storage::url('public/profile/') . $student->profile_url }}"
                                                  alt="..." class="avatar-img rounded-circle">
                                         </div>
                                         {{ $student->student_name }}
