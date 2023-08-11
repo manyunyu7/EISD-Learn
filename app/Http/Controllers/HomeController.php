@@ -31,15 +31,21 @@ class HomeController extends Controller
             return Redirect::away("/");
         }
 
+        $averageScoreSubquery = DB::table('student_section')
+            ->select('student_id', DB::raw('AVG(score) as average_score'))
+            ->groupBy('student_id');
+
         $leaderboardQuery = DB::table(DB::raw('student_section ss'))
             ->select(
                 'u.name as student_name', 'u.profile_url',
                 DB::raw('SUM(ss.score) as total_score'),
+                'avg_subquery.average_score as average_score',
                 DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as highest_score'),
                 DB::raw('(SELECT MIN(score) FROM student_section WHERE student_id = u.id) as lowest_score')
             )
             ->join('users as u', 'ss.student_id', '=', 'u.id')
-            ->groupBy('ss.student_id', 'u.name')
+            ->joinSub($averageScoreSubquery, 'avg_subquery', 'u.id', '=', 'avg_subquery.student_id')
+            ->groupBy('ss.student_id', 'u.name', 'avg_subquery.average_score')
             ->orderByDesc('total_score');
 
         $topThreeQuery =  DB::table(DB::raw('student_section ss'))
@@ -60,7 +66,6 @@ class HomeController extends Controller
         }
 
         $leaderboard = $leaderboardQuery->get();
-
         if (Auth::check() && Auth::user()->role == 'mentor') {
             $userId = Auth::user()->id;
             $user_name = Auth::user()->name;

@@ -272,6 +272,7 @@
                             <th>Rank</th>
                             <th>Name</th>
                             <th>Total Score</th>
+                            <th>Nilai Rata-Rata</th>
                         </tr>
                         </thead>
                         <tbody class="scrollable-table-body">
@@ -289,6 +290,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $student->total_score }}</td>
+                                <td>{{ $student->average_score }}</td>
                             </tr>
                         @endforeach
                         </tbody>
