@@ -57,20 +57,20 @@ class ProfileController extends Controller
 
     /**
      * update
-     * @param  mixed $request
+     * @param mixed $request
      * @return void
      */
     public function update(Request $request)
     {
 
         $this->validate($request, [
-            'imagez'     => 'image|mimes:png,jpg,jpeg',
-            'name'     => 'required',
-            'phone'   => 'required',
-            'phone'   => 'required',
+            'imagez' => 'image|mimes:png,jpg,jpeg',
+            'name' => 'required',
+            'phone' => 'required',
+            'phone' => 'required',
 //            'jobs'   => 'required',
 //            'motto'   => 'required',
-            'email'   => 'required',
+            'email' => 'required',
         ]);
 
         $user = User::findOrFail(Auth::user()->id);
@@ -87,17 +87,17 @@ class ProfileController extends Controller
                 'jobs' => "",
                 'email' => $request->email,
             ]);
-        } else if($request->file('imagez') != "") {
+        } else if ($request->file('imagez') != "") {
             // Storage::url('public/profile/') . Auth::user()->profile_url;
-             //hapus old image
-             if ($user->profile_url == "error.png") {
-             }else{
-             }
-             Storage::disk('local')->delete('public/profile/' . $user->profile_url);
-             //upload new image
-             $image = $request->file('imagez');
-             $image->storeAs('public/profile/', $image->hashName());
-             $user->update([
+            //hapus old image
+            if ($user->profile_url == "error.png") {
+            } else {
+                Storage::disk('local')->delete('public/profile/' . $user->profile_url);
+            }
+            //upload new image
+            $image = $request->file('imagez');
+            $image->storeAs('public/profile/', $image->hashName());
+            $user->update([
                 'profile_url' => $image->hashName(),
                 'contact' => $request->phone,
                 'institute' => $request->institute,

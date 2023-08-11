@@ -156,6 +156,49 @@
             </div>
         </div>
 
+        <div class="col-md-12 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Leaderboard Score Management Trainee</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-sub">
+                        5 Best Scores
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Total Score</th>
+                        </tr>
+                        </thead>
+                        <tbody class="scrollable-table-body">
+                        @foreach ($leaderboard as $index => $student)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    {{ $student->student_name }}
+                                    @if ($index === 0)
+                                        <span class="badge badge-primary">1st</span>
+                                    @elseif ($index === 1)
+                                        <span class="badge badge-secondary">2nd</span>
+                                    @elseif ($index === 2)
+                                        <span class="badge badge-success">3rd</span>
+                                    @endif
+                                </td>
+                                <td>{{ $student->total_score }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+
         <div class="col-md-12">
             <div class="card full-height">
                 <div class="card-header">

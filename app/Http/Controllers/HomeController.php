@@ -31,15 +31,20 @@ class HomeController extends Controller
             return Redirect::away("/");
         }
 
-        $leaderboard = DB::table(DB::raw('student_section ss'))
+        $leaderboardQuery = DB::table(DB::raw('student_section ss'))
             ->select(
                 'u.name as student_name',
                 DB::raw('SUM(ss.score) as total_score')
             )
             ->join('users as u', 'ss.student_id', '=', 'u.id')
             ->groupBy('ss.student_id', 'u.name')
-            ->orderByDesc('total_score')
-            ->get();
+            ->orderByDesc('total_score');
+
+// Check if the authenticated user's role is "mentor"
+        if (Auth::user()->roles != "mentor") {
+            $leaderboardQuery->limit(5);
+        }
+        $leaderboard = $leaderboardQuery->get();
 
         if (Auth::check() && Auth::user()->role == 'mentor') {
             $userId = Auth::user()->id;
@@ -80,6 +85,7 @@ class HomeController extends Controller
                     'classRegistered',
                     'blog',
                     'blogCreatedCount',
+                    'leaderboard',
                     'studentCount',
                     'myStudent',
                     'projectCreatedCount',

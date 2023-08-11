@@ -335,7 +335,7 @@
                     </div>
                     <div class="card-body">
                         <div class="card-sub">
-                            Leaderboard Score MT Modernland Realty 2023
+                            5 Best Scores
                         </div>
 
                         <table class="table table-bordered">
