@@ -33,14 +33,28 @@ class HomeController extends Controller
 
         $leaderboardQuery = DB::table(DB::raw('student_section ss'))
             ->select(
-                'u.name as student_name',
-                DB::raw('SUM(ss.score) as total_score')
+                'u.name as student_name', 'u.profile_url',
+                DB::raw('SUM(ss.score) as total_score'),
+                DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as highest_score'),
+                DB::raw('(SELECT MIN(score) FROM student_section WHERE student_id = u.id) as lowest_score')
             )
             ->join('users as u', 'ss.student_id', '=', 'u.id')
             ->groupBy('ss.student_id', 'u.name')
             ->orderByDesc('total_score');
 
-// Check if the authenticated user's role is "mentor"
+        $topThreeQuery =  DB::table(DB::raw('student_section ss'))
+            ->select(
+                'u.name as student_name', 'u.profile_url',
+                DB::raw('SUM(ss.score) as total_score'),
+                DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as lowest_score'),
+                DB::raw('(SELECT MIN(score) FROM student_section WHERE student_id = u.id) as highest_score')
+            )
+            ->join('users as u', 'ss.student_id', '=', 'u.id')
+            ->groupBy('ss.student_id', 'u.name')
+            ->orderByDesc('total_score')->get();
+
+        $topThree = $topThreeQuery;
+        // Check if the authenticated user's role is "mentor"
         if (Auth::user()->role != "mentor") {
             $leaderboardQuery->limit(5);
         }
@@ -88,6 +102,7 @@ class HomeController extends Controller
                     'leaderboard',
                     'studentCount',
                     'myStudent',
+                    'topThree',
                     'projectCreatedCount',
                     'classRegisteredCount'
                 ));
@@ -118,13 +133,13 @@ class HomeController extends Controller
                 ->count();
 
 
-
             return view('main.dashboard')
                 ->with(compact(
                     'classes',
                     'classRegistered',
                     'blog',
                     'userScores',
+                    'topThree',
                     'leaderboard',
                     'blogCreatedCount',
                     'projectCreatedCount',
