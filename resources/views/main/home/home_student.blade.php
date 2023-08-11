@@ -89,23 +89,23 @@
                             id="pills-tab-without-border" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill"
-                                    href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd"
-                                    aria-selected="true">Kelas Yang Sedang Anda Ikuti</a>
+                                   href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd"
+                                   aria-selected="true">Kelas Yang Sedang Anda Ikuti</a>
                             </li>
                             <li class="nav-item d-none">
                                 <a class="nav-link" id="pills-profile-tab-nobd" data-toggle="pill"
-                                    href="#pills-profile-nobd" role="tab" aria-controls="pills-profile-nobd"
-                                    aria-selected="false">Detail Progress Kelas</a>
+                                   href="#pills-profile-nobd" role="tab" aria-controls="pills-profile-nobd"
+                                   aria-selected="false">Detail Progress Kelas</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-contact-tab-nobd" data-toggle="pill"
-                                    href="#pills-contact-nobd" role="tab" aria-controls="pills-contact-nobd"
-                                    aria-selected="false">Cari Kelas Baru</a>
+                                   href="#pills-contact-nobd" role="tab" aria-controls="pills-contact-nobd"
+                                   aria-selected="false">Cari Kelas Baru</a>
                             </li>
                         </ul>
                         <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
-                                aria-labelledby="pills-home-tab-nobd">
+                                 aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
                                     <div class="">
                                         <div class="card-head-row card-tools-still-right">
@@ -119,12 +119,14 @@
                                         <div class="row row-eq-height">
                                             @forelse ($classRegistered as $data)
                                                 <div class="col-lg-4 col-sm-6 my-2">
-                                                    <div class="album-poster-parent" style="background-color: white !important">
-                                                        <a href="javascript:void();" class="album-poster" data-switch="0">
+                                                    <div class="album-poster-parent"
+                                                         style="background-color: white !important">
+                                                        <a href="javascript:void();" class="album-poster"
+                                                           data-switch="0">
                                                             <img class="fufufu"
-                                                                onerror="this.onerror=null; this.src='./assets/album/n5'"
-                                                                src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                                                                alt="La Noyee">
+                                                                 onerror="this.onerror=null; this.src='./assets/album/n5'"
+                                                                 src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                                                                 alt="La Noyee">
                                                         </a>
                                                         <br>
                                                         <div class="course-info">
@@ -137,11 +139,13 @@
 
                                                         <div class="d-flex">
                                                             <div class="avatar">
-                                                                <img src="{{ Storage::url('public/profile/') . $data->mentor_profile_url }}"
+                                                                <img
+                                                                    src="{{ Storage::url('public/profile/') . $data->mentor_profile_url }}"
                                                                     alt="..." class="avatar-img rounded-circle">
                                                             </div>
                                                             <div class="info-post ml-2">
-                                                                <p style="margin-bottom: 1px !important" class="username">
+                                                                <p style="margin-bottom: 1px !important"
+                                                                   class="username">
                                                                     {{ $data->mentor_name }}</p>
                                                                 {{ $data->created_at }}
                                                             </div>
@@ -150,17 +154,20 @@
                                                         <div class="mt-2">
                                                             <a href="{{ url("/lesson/$data->id") }}">
                                                                 <button type="submit"
-                                                                    class="btn btn-outline-primary btn-xs btn-block mb-2">Lanjutkan
-                                                                    Belajar</button>
+                                                                        class="btn btn-outline-primary btn-xs btn-block mb-2">
+                                                                    Lanjutkan
+                                                                    Belajar
+                                                                </button>
                                                             </a>
                                                             <form action="{{ route('course.drop') }}" method="POST"
-                                                                enctype="multipart/form-data">
+                                                                  enctype="multipart/form-data">
                                                                 @csrf
                                                                 <input class="d-none" type="text" name="course_id"
-                                                                    value="{{ $data->id }}" id="">
+                                                                       value="{{ $data->id }}" id="">
                                                                 <button type="submit"
-                                                                    class="btn btn-outline-danger btn-xs">Arsipkan
-                                                                    Kelas</button>
+                                                                        class="btn btn-outline-danger btn-xs">Arsipkan
+                                                                    Kelas
+                                                                </button>
                                                             </form>
                                                         </div>
 
@@ -175,31 +182,35 @@
                                                     </script>
                                                     <lottie-player
                                                         src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json"
-                                                        background="transparent" speed="1" style="width: 300px; height: 300px;"
+                                                        background="transparent" speed="1"
+                                                        style="width: 300px; height: 300px;"
                                                         loop autoplay></lottie-player>
                                                 </div>
-                                                <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas Manapun</strong>
+                                                <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas
+                                                    Manapun</strong>
                                             @endforelse
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pills-profile-nobd" role="tabpanel"
-                                aria-labelledby="pills-profile-tab-nobd">
+                                 aria-labelledby="pills-profile-tab-nobd">
                                 <h3>1. Bikin Rumah Lucu</h3>
                                 <div class="progress">
                                     <div class="progress-bar progress-bar-striped bg-warning progress-bar-animated"
-                                        role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"
-                                        style="width: 15%"></div>
+                                         role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"
+                                         style="width: 15%"></div>
                                 </div>
                                 <h3>2. Belajar Bikin Rumah</h3>
                                 <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                         role="progressbar"
+                                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
+                                         style="width: 75%"></div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pills-contact-nobd" role="tabpanel"
-                                aria-labelledby="pills-contact-tab-nobd">
+                                 aria-labelledby="pills-contact-tab-nobd">
                                 <div class="">
                                     <div class="">
                                         <div class="card-head-row card-tools-still-right">
@@ -213,12 +224,14 @@
                                         <div class="row row-eq-height">
                                             @forelse ($classes as $data)
                                                 <div class="col-lg-4 col-sm-6 my-2">
-                                                    <div class="album-poster-parent" style="background-color: white !important">
-                                                        <a href="javascript:void();" class="album-poster" data-switch="0">
+                                                    <div class="album-poster-parent"
+                                                         style="background-color: white !important">
+                                                        <a href="javascript:void();" class="album-poster"
+                                                           data-switch="0">
                                                             <img class="fufufu"
-                                                                onerror="this.onerror=null; this.src='./assets/album/n5'"
-                                                                src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                                                                alt="La Noyee">
+                                                                 onerror="this.onerror=null; this.src='./assets/album/n5'"
+                                                                 src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                                                                 alt="La Noyee">
                                                         </a>
                                                         <br>
                                                         <div class="course-info">
@@ -231,11 +244,13 @@
 
                                                         <div class="d-flex">
                                                             <div class="avatar">
-                                                                <img src="{{ Storage::url('public/profile/') . $data->profile_url }}"
+                                                                <img
+                                                                    src="{{ Storage::url('public/profile/') . $data->profile_url }}"
                                                                     alt="..." class="avatar-img rounded-circle">
                                                             </div>
                                                             <div class="info-post ml-2">
-                                                                <p style="margin-bottom: 1px !important" class="username">
+                                                                <p style="margin-bottom: 1px !important"
+                                                                   class="username">
                                                                     {{ $data->mentor_name }}</p>
                                                                 {{ $data->created_at }}
                                                             </div>
@@ -244,17 +259,21 @@
                                                         <div class="mt-2">
                                                             <a href="{{ url("/lesson/$data->id") }}">
                                                                 <button type="submit"
-                                                                    class="btn btn-primary btn-xs btn-block mb-2">Lihat
-                                                                    Kelas</button>
+                                                                        class="btn btn-primary btn-xs btn-block mb-2">
+                                                                    Lihat
+                                                                    Kelas
+                                                                </button>
                                                             </a>
                                                             <form action="{{ route('course.register') }}" method="POST"
-                                                                enctype="multipart/form-data">
+                                                                  enctype="multipart/form-data">
                                                                 @csrf
                                                                 <input class="d-none" type="text" name="course_id"
-                                                                    value="{{ $data->id }}" id="">
+                                                                       value="{{ $data->id }}" id="">
                                                                 <button type="submit"
-                                                                    class="btn btn-outline-primary btn-xs">Daftar Kelas
-                                                                    Ini</button>
+                                                                        class="btn btn-outline-primary btn-xs">Daftar
+                                                                    Kelas
+                                                                    Ini
+                                                                </button>
                                                             </form>
                                                         </div>
 
@@ -306,31 +325,40 @@
                             @foreach ($topThree as $index => $student)
                                 <div class="col-md-3 my-4 @if($index>2) d-none @endif">
                                     <div class="card card-profile">
-                                        <div class="card-header" style="background-image: url('../assets/img/blogpost.jpg')">
+                                        <div class="card-header"
+                                             style="background-image: url('../assets/img/blogpost.jpg')">
                                             <div class="profile-picture">
                                                 <div class="avatar avatar-xl">
-                                                    <img src="{{ Storage::url('public/profile/') . $student->profile_url }}" alt="..."
-                                                         class="avatar-img rounded-circle"
-                                                         onerror="this.src='{{ asset('storage/profile/error.png') }}'">                                    </div>
+                                                    <img
+                                                        src="{{ Storage::url('public/profile/') . $student->profile_url }}"
+                                                        alt="..."
+                                                        class="avatar-img rounded-circle"
+                                                        onerror="this.src='{{ asset('storage/profile/error.png') }}'">
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="user-profile text-center">
-                                                <div class="name"><strong>#{{$index+1}}</strong> {{$student->student_name}}</div>
+                                                <div class="name">
+                                                    <strong>#{{$index+1}}</strong> {{$student->student_name}}</div>
                                                 {{--                                    <div class="job">Total Skor </div>--}}
                                                 {{--                                    <div class="desc">A man who hates loneliness</div>--}}
                                                 <div class="social-media d-none">
                                                     <a class="btn btn-info btn-twitter btn-sm btn-link" href="#">
-                                                        <span class="btn-label just-icon"><i class="flaticon-twitter"></i> </span>
+                                                        <span class="btn-label just-icon"><i
+                                                                class="flaticon-twitter"></i> </span>
                                                     </a>
                                                     <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="#">
-                                                        <span class="btn-label just-icon"><i class="flaticon-google-plus"></i> </span>
+                                                        <span class="btn-label just-icon"><i
+                                                                class="flaticon-google-plus"></i> </span>
                                                     </a>
                                                     <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
-                                                        <span class="btn-label just-icon"><i class="flaticon-facebook"></i> </span>
+                                                        <span class="btn-label just-icon"><i
+                                                                class="flaticon-facebook"></i> </span>
                                                     </a>
                                                     <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="#">
-                                                        <span class="btn-label just-icon"><i class="flaticon-dribbble"></i> </span>
+                                                        <span class="btn-label just-icon"><i
+                                                                class="flaticon-dribbble"></i> </span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -356,6 +384,34 @@
                             @endforeach
 
                         </div>
+
+                        <div class="card-list d-none">
+                            @foreach ($leaderboard as $index => $student)
+
+                                <div class="item-list">
+                                    <div class="avatar">
+                                        <img src="{{ Storage::url('public/profile/') . $data->profile_url }}" alt="..."
+                                             class="avatar-img rounded-circle">
+                                    </div>
+                                    <div class="info-user ml-3">
+                                        <div class="username">
+                                            {{ ($index+1)." ". $student->student_name }}
+                                            @if ($index === 0)
+                                                <span class="badge badge-primary">1st</span>
+                                            @elseif ($index === 1)
+                                                <span class="badge badge-secondary">2nd</span>
+                                            @elseif ($index === 2)
+                                                <span class="badge badge-success">3rd</span>
+                                            @endif
+                                        </div>
+                                        <div class="status">{{$student->total_score}}</div>
+                                    </div>
+                                </div>
+                                <div class="separator-dashed"></div>
+                            @endforeach
+
+                        </div>
+
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -370,13 +426,18 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>
+                                        <div class="avatar">
+                                            <img src="{{ Storage::url('public/profile/') . $data->profile_url }}"
+                                                 alt="..." class="avatar-img rounded-circle">
+                                        </div>
                                         {{ $student->student_name }}
+
                                         @if ($index === 0)
-                                            <span class="badge badge-primary">1st</span>
+                                            <span class="badge badge-primary ml-1">1st</span>
                                         @elseif ($index === 1)
-                                            <span class="badge badge-secondary">2nd</span>
+                                            <span class="badge badge-secondary ml-1">2nd</span>
                                         @elseif ($index === 2)
-                                            <span class="badge badge-success">3rd</span>
+                                            <span class="badge badge-success ml-1">3rd</span>
                                         @endif
                                     </td>
                                     <td>{{ $student->total_score }}</td>
@@ -425,8 +486,6 @@
             </div>
 
 
-
-
             <div class="row d-none">
                 <div class="col-md-4">
                     <div class="card">
@@ -436,7 +495,8 @@
                         <div class="card-body pb-0">
                             <div class="d-flex">
                                 <div class="avatar">
-                                    <img src="../assets/img/logoproduct.svg" alt="..." class="avatar-img rounded-circle">
+                                    <img src="../assets/img/logoproduct.svg" alt="..."
+                                         class="avatar-img rounded-circle">
                                 </div>
                                 <div class="flex-1 pt-1 ml-2">
                                     <h6 class="fw-bold mb-1">CSS</h6>
@@ -449,7 +509,8 @@
                             <div class="separator-dashed"></div>
                             <div class="d-flex">
                                 <div class="avatar">
-                                    <img src="../assets/img/logoproduct.svg" alt="..." class="avatar-img rounded-circle">
+                                    <img src="../assets/img/logoproduct.svg" alt="..."
+                                         class="avatar-img rounded-circle">
                                 </div>
                                 <div class="flex-1 pt-1 ml-2">
                                     <h6 class="fw-bold mb-1">J.CO Donuts</h6>
@@ -462,7 +523,8 @@
                             <div class="separator-dashed"></div>
                             <div class="d-flex">
                                 <div class="avatar">
-                                    <img src="../assets/img/logoproduct3.svg" alt="..." class="avatar-img rounded-circle">
+                                    <img src="../assets/img/logoproduct3.svg" alt="..."
+                                         class="avatar-img rounded-circle">
                                 </div>
                                 <div class="flex-1 pt-1 ml-2">
                                     <h6 class="fw-bold mb-1">Ready Pro</h6>
@@ -486,7 +548,8 @@
                             <div class="card-list">
                                 <div class="item-list">
                                     <div class="avatar">
-                                        <img src="../assets/img/jm_denis.jpg" alt="..." class="avatar-img rounded-circle">
+                                        <img src="../assets/img/jm_denis.jpg" alt="..."
+                                             class="avatar-img rounded-circle">
                                     </div>
                                     <div class="info-user ml-3">
                                         <div class="username">Jimmy Denis</div>
@@ -498,7 +561,8 @@
                                 </div>
                                 <div class="item-list">
                                     <div class="avatar">
-                                        <img src="../assets/img/chadengle.jpg" alt="..." class="avatar-img rounded-circle">
+                                        <img src="../assets/img/chadengle.jpg" alt="..."
+                                             class="avatar-img rounded-circle">
                                     </div>
                                     <div class="info-user ml-3">
                                         <div class="username">Chad</div>
@@ -546,7 +610,8 @@
                                 </div>
                                 <div class="item-list">
                                     <div class="avatar">
-                                        <img src="../assets/img/jm_denis.jpg" alt="..." class="avatar-img rounded-circle">
+                                        <img src="../assets/img/jm_denis.jpg" alt="..."
+                                             class="avatar-img rounded-circle">
                                     </div>
                                     <div class="info-user ml-3">
                                         <div class="username">Jimmy Denis</div>
@@ -630,15 +695,16 @@
                                         role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link" id="pills-today" data-toggle="pill" href="#pills-today"
-                                                role="tab" aria-selected="true">Today</a>
+                                               role="tab" aria-selected="true">Today</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="pills-week" data-toggle="pill" href="#pills-week"
-                                                role="tab" aria-selected="false">Week</a>
+                                            <a class="nav-link active" id="pills-week" data-toggle="pill"
+                                               href="#pills-week"
+                                               role="tab" aria-selected="false">Week</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="pills-month" data-toggle="pill" href="#pills-month"
-                                                role="tab" aria-selected="false">Month</a>
+                                               role="tab" aria-selected="false">Month</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -681,7 +747,8 @@
                                 <div class="flex-1 ml-3 pt-1">
                                     <h6 class="text-uppercase fw-bold mb-1">Lee Chong Wei <span
                                             class="text-muted pl-3">closed</span></h6>
-                                    <span class="text-muted">Is there any update plan for RTL version near future?</span>
+                                    <span
+                                        class="text-muted">Is there any update plan for RTL version near future?</span>
                                 </div>
                                 <div class="float-right pt-1">
                                     <small class="text-muted">2 Days Ago</small>
@@ -709,7 +776,8 @@
                                 <div class="flex-1 ml-3 pt-1">
                                     <h6 class="text-uppercase fw-bold mb-1">Logan Paul <span
                                             class="text-muted pl-3">closed</span></h6>
-                                    <span class="text-muted">Is there any update plan for RTL version near future?</span>
+                                    <span
+                                        class="text-muted">Is there any update plan for RTL version near future?</span>
                                 </div>
                                 <div class="float-right pt-1">
                                     <small class="text-muted">2 Days Ago</small>
@@ -735,6 +803,6 @@
 
                 </script>
 
-            @endif
+    @endif
 
-        @endsection
+@endsection
