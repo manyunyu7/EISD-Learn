@@ -41,7 +41,7 @@ class HomeController extends Controller
             ->orderByDesc('total_score');
 
 // Check if the authenticated user's role is "mentor"
-        if (Auth::user()->roles != "mentor") {
+        if (Auth::user()->role != "mentor") {
             $leaderboardQuery->limit(5);
         }
         $leaderboard = $leaderboardQuery->get();

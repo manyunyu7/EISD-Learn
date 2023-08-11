@@ -6,8 +6,10 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="mt-4">
-                                <h1  class="gloss mt-2 my-2" style=" text-align:center; color: #7F00FF !important">{{ config('app.name') }}</h1>
-                                <p  class=" mt-2 my-2" style=" text-align:center; color: #150129 !important">Creating <strong>Forward</strong></p>
+                                <div class="fa-align-center">
+                                    <img style="display: block; margin: 0 auto;" width="300px" src="http://192.168.30.231:5555/home_assets/img/esd_3.png" alt="">
+                                </div>
+{{--                                <p  class=" mt-2 my-2" style=" text-align:center; color: #150129 !important">Creating <strong>Forward</strong></p>--}}
 {{--                                <p  class=" mt-2 my-2" style=" text-align:center; color: #150129 !important">Learning On {{ config('app.name') }}, <br> You Are In A Good Hand With {{ config('app.name') }}</p>--}}
                             </div>
 
