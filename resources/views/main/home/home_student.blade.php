@@ -294,40 +294,6 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Skor Per Modul</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-sub">
-                            Skor post test tiap-tiap modul
-                        </div>
-                        <div>
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>Kelas</th>
-                                    <th>Skor</th>
-                                </tr>
-                                </thead>
-                                <tbody class="scrollable-table-body">
-                                @foreach ($userScores as $index => $item)
-                                    <tr>
-                                        <td>
-                                            {{ $item->section_title }}
-                                        </td>
-                                        <td>{{ $item->score }}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md-12 col-12">
                 <div class="card">
                     <div class="card-header">
@@ -375,14 +341,14 @@
                                                     <div class="number">{{$student->total_score}}</div>
                                                     <div class="title">Total Point</div>
                                                 </div>
-{{--                                                <div class="col">--}}
-{{--                                                    <div class="number">{{$student->highest_score}}</div>--}}
-{{--                                                    <div class="title">Nilai Tertinggi</div>--}}
-{{--                                                </div>--}}
-{{--                                                <div class="col">--}}
-{{--                                                    <div class="number">{{$student->lowest_score}}</div>--}}
-{{--                                                    <div class="title">Nilai Terendah</div>--}}
-{{--                                                </div>--}}
+                                                {{--                                                <div class="col">--}}
+                                                {{--                                                    <div class="number">{{$student->highest_score}}</div>--}}
+                                                {{--                                                    <div class="title">Nilai Tertinggi</div>--}}
+                                                {{--                                                </div>--}}
+                                                {{--                                                <div class="col">--}}
+                                                {{--                                                    <div class="number">{{$student->lowest_score}}</div>--}}
+                                                {{--                                                    <div class="title">Nilai Terendah</div>--}}
+                                                {{--                                                </div>--}}
                                             </div>
                                         </div>
                                     </div>
@@ -396,7 +362,7 @@
                                 <th>Rank</th>
                                 <th>Name</th>
                                 <th>Total Score</th>
-{{--                                <th>Nilai Rata-Rata</th>--}}
+                                {{--                                <th>Nilai Rata-Rata</th>--}}
                             </tr>
                             </thead>
                             <tbody class="scrollable-table-body">
@@ -414,7 +380,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $student->total_score }}</td>
-{{--                                    <td>{{ $student->average_score }}</td>--}}
+                                    {{--                                    <td>{{ $student->average_score }}</td>--}}
                                 </tr>
                             @endforeach
                             </tbody>
@@ -423,6 +389,41 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Skor Per Modul</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-sub">
+                            Skor post test tiap-tiap modul
+                        </div>
+                        <div>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Kelas</th>
+                                    <th>Skor</th>
+                                </tr>
+                                </thead>
+                                <tbody class="scrollable-table-body">
+                                @foreach ($userScores as $index => $item)
+                                    <tr>
+                                        <td>
+                                            {{ $item->section_title }}
+                                        </td>
+                                        <td>{{ $item->score }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
 
 
 
