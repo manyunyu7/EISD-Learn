@@ -3,8 +3,10 @@
 namespace App\Helper;
 
 
+use App\Models\MyAnalyticEvent;
 use App\Models\UserMNotification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -130,6 +132,24 @@ class MyHelper
     public static function logout()
     {
         return response()->json(['error' => 'Unauthenticated.'], 401);
+    }
+
+    public static function addAnalyticEvent(
+        $event,$page
+    ){
+        $data = new MyAnalyticEvent();
+        $userId = "";
+        $is_logged_in = false;
+        if(Auth::check()){
+            $is_logged_in=true;
+            $userId = Auth::id();
+        }
+        $data->user_id=$userId;
+        $data->event=$event;
+        $data->is_logged_in=$is_logged_in;
+        $data->page=$is_logged_in;
+
+        $data->save();
     }
 
     public static function error($code, $message)

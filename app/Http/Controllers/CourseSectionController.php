@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\MyHelper;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -94,6 +95,9 @@ class CourseSectionController extends Controller
         $currentSectionId = $section->id;
 
         if (!Auth::check()) {
+            MyHelper::addAnalyticEvent(
+                "Belum Login Buka Section","Course Section"
+            );
             abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
 
@@ -120,6 +124,9 @@ class CourseSectionController extends Controller
         $lessonObject = Lesson::findOrFail($lesson_id);
         if (Auth::user()->role == "student") {
             if ($lessonObject->can_be_accessed == "n") {
+                MyHelper::addAnalyticEvent(
+                    "Reject Section Diluar Jadwal","Course Section"
+                );
                 abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
             }
         }
@@ -288,6 +295,11 @@ class CourseSectionController extends Controller
         if($request->dump==true){
             return $compact;
         }
+
+        MyHelper::addAnalyticEvent(
+            "Buka Section","Course Section"
+        );
+
         return view('lessons.course_play', $compact);
     }
 
@@ -323,6 +335,9 @@ class CourseSectionController extends Controller
 
     public function create_section(Lesson $lesson)
     {
+        MyHelper::addAnalyticEvent(
+            "Buka Halaman Buat Section","Create Section"
+        );
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
         return view('lessons.section.create_section', compact('lesson'), compact('dayta'));

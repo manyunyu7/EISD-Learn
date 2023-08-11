@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\MyHelper;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -99,6 +100,9 @@ class HomeController extends Controller
                 return Redirect::away('/'); // Replace '/login' with the URL of your login page
             }
 
+            MyHelper::addAnalyticEvent(
+                "Buka Dashboard Mentor","Dashboard"
+            );
             return view('main.dashboard')
                 ->with(compact(
                     'classes',
@@ -138,7 +142,9 @@ class HomeController extends Controller
                 ->where('user_id', $userId)
                 ->count();
 
-
+            MyHelper::addAnalyticEvent(
+                "Buka Dashboard Student","Dashboard"
+            );
             return view('main.dashboard')
                 ->with(compact(
                     'classes',

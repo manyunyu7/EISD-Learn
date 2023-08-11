@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\MyHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,11 @@ class ProfileController extends Controller
 
     public function updatePasswordz(Request $request)
     {
+
+        MyHelper::addAnalyticEvent(
+            "Ganti Password","Profile"
+        );
+
         $request->validate([
             'current-password' => 'required',
             'new-password' => 'required|min:8',
@@ -62,6 +68,9 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
+        MyHelper::addAnalyticEvent(
+            "Update Foto Profile","Profile"
+        );
 
         $this->validate($request, [
             'imagez' => 'image|mimes:png,jpg,jpeg',
