@@ -63,6 +63,7 @@
             // Route::post('/lesson/{lesson}/store/','CourseSectionController@store')->name('section.store');
             // Route::delete('/lesson/{lesson}/section/s','CourseSectionController@destroy')->name('section.delete');
             Route::get('/lesson/{lesson}/section/create', 'CourseSectionController@create_section');
+            Route::get('/student/{id}/all-scores', 'ScoreController@seeByStudent');
             Route::post('/update-scores', 'CourseSectionController@updateScores');
             Route::post('/course/submission/scoring', 'FinalProjectController@score')->name('course.submission.scoring');
         });

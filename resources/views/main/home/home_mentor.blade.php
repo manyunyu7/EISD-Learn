@@ -280,14 +280,16 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
-                                    {{ $student->student_name }}
-                                    @if ($index === 0)
-                                        <span class="badge badge-primary">1st</span>
-                                    @elseif ($index === 1)
-                                        <span class="badge badge-secondary">2nd</span>
-                                    @elseif ($index === 2)
-                                        <span class="badge badge-success">3rd</span>
-                                    @endif
+                                    <a href="{{url("student/$student->id/all-scores")}}" target="_blank">
+                                        {{ $student->student_name }}
+                                        @if ($index === 0)
+                                            <span class="badge badge-primary">1st</span>
+                                        @elseif ($index === 1)
+                                            <span class="badge badge-secondary">2nd</span>
+                                        @elseif ($index === 2)
+                                            <span class="badge badge-success">3rd</span>
+                                        @endif
+                                    </a>
                                 </td>
                                 <td>{{ $student->total_score }}</td>
 {{--                                <td>{{ $student->average_score }}</td>--}}
