@@ -109,10 +109,8 @@
                     @endphp
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{url('/home')}}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{url('/lesson/manage')}}">Kelas</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('lesson.show', $lesson->id) }}">{{$lesson->course_title}}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Materi</li>
+                        <li class="breadcrumb-item"><a href="{{url('/lesson/manage')}}">Manage Kelas</a></li>
+                        <li class="breadcrumb-item">{{$lesson->course_title}}</li>
                     </ol>
                 </nav>
             </div>
@@ -167,7 +165,7 @@
                                        href="#v-pills-profile-icons" role="tab" aria-controls="v-pills-profile-icons"
                                        aria-selected="false">
                                         <i class="flaticon-play-button-1"></i>
-                                        Video Utama Materi
+                                        File Utama Materi
                                     </a>
                                     <a class="nav-link" id="v-pills-profile-tab-icons" data-toggle="pill"
                                        href="#v-class-content" role="tab" aria-controls="v-pills-profile-icons"
@@ -213,6 +211,14 @@
 
 
                                         <div class="form-group">
+                                            <label>Konten Bisa Diakses ?</label>
+                                            <select class="form-control" name="access">
+                                                <option value="y">Ya</option>
+                                                <option value="n">Tidak</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="font-weight-bold">Materi Ke- :</label>
                                             <div class="container row">
                                                 <input id="section_order" type="text" min="0"
@@ -225,7 +231,7 @@
                                             <p> - Isi dengan angka 01 jika ini adalah materi pertama
                                                 <br> - 1 Bilangan Urutan Materi hanya boleh muncul 1 kali di kelas
                                                 yang sama
-{{--                                                <br> - Referensi Urutan dapat dilihat pada tabel materi anda dibawah--}}
+                                                {{--                                                <br> - Referensi Urutan dapat dilihat pada tabel materi anda dibawah--}}
                                             </p>
 
                                             <!-- error message untuk materi -->
@@ -238,10 +244,10 @@
                                     </div>
                                     <div class="tab-pane fade" id="v-pills-profile-icons" role="tabpanel"
                                          aria-labelledby="v-pills-profile-tab-icons">
-                                        <h2><strong> Course Video </strong></h2>
-                                        <p>Replace/Upload Video untuk megganti video materi</p>
+                                        <h2><strong> Course Materi </strong></h2>
+                                        <p>Replace/Upload Materi untuk megganti file materi (pdf/video/image)</p>
                                         <div class="form-group">
-                                            <input accept=".mp4,video/*" id="input-video" type="file"
+                                            <input id="input-video" type="file"
                                                    onchange="previewVideo()"
                                                    class="form-control @error('video') is-invalid @enderror"
                                                    value="{{ old('video') }}" name="video">
@@ -323,17 +329,17 @@
                                     <tr>
                                         <th scope="col">Urutan</th>
                                         <th scope="col">Judul Materi</th>
-                                        <th scope="col">Video Materi</th>
-                                        <th scope="col">MATERI</th>
+                                        <th scope="col">Materi</th>
+                                        <th scope="col">Input Nilai</th>
+                                        {{--                                        <th scope="col">MATERI</th>--}}
                                         <th scope="col">Hapus Materi</th>
 
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @forelse ($dayta as $data)
-
                                         <div class="modal fade " id="edit-modal{{$loop->iteration}}">
-                                            <div class="modal-dialog modal-fullscreen">
+                                            <div class="modal-dialog modal-xl modal-fullscreen">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal"
@@ -350,7 +356,7 @@
                                                             <div class="box-body">
                                                                 <div>
                                                                     <video loop controls width="100%"
-                                                                           class="video-mask">
+                                                                           class="video-mask d-none">
                                                                         <source
                                                                             src="{{ Storage::url("public/class/content/".$data->lesson_id."/".$data->section_video)}}"
                                                                             type=video/mp4>
@@ -362,16 +368,25 @@
                                                                            name="section_u_title" placeholder="User ID"
                                                                            value="{{$data->section_title}}">
                                                                 </div>
+
                                                                 <div class="form-group">
-                                                                    <label for="">Ganti Video</label>
-                                                                    <input accept=".mp4,video/*" id="input-video"
+                                                                    <label>Konten Bisa Diakses ?</label>
+                                                                    <select class="form-control" name="access">
+                                                                        <option value="y" {{$data->can_be_accessed === "y" ? "selected" : ""}}>Ya</option>
+                                                                        <option value="n" {{$data->can_be_accessed === "n" ? "selected" : ""}}>Tidak</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="">Ganti File</label>
+                                                                    <input id="input-video"
                                                                            type="file"
                                                                            onchange="previewVideo()"
                                                                            class="form-control @error('video') is-invalid @enderror"
                                                                            value="{{ old('section_u_video') }}"
                                                                            name="section_u_video">
                                                                     <small id="helpId" class="form-text text-muted">Kosongkan
-                                                                        Jika Video Tidak Ingin Diganti</small>
+                                                                        Jika Tidak Ingin Diganti</small>
                                                                 </div>
 
                                                                 <div class="form-group">
@@ -415,8 +430,7 @@
 
                                         <tr>
 
-                                            {{-- START OF MODAL FOR VIDEO --}}
-                                            <div class="modal fade  bd-example-modal-xl"
+                                            <div class="modal fade modal-dialog modal-xl bd-example-modal-xl"
                                                  id="video-modal{{$loop->iteration}}">
                                                 <div class="modal-dialog modal-xl">
                                                     <div class="modal-content">
@@ -424,7 +438,7 @@
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span></button>
-                                                            <h4 class="modal-title"><b>Video Materi</b></h4>
+                                                            <h4 class="modal-title"><b>Materi</b></h4>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="box-body">
@@ -455,7 +469,6 @@
                                                 {{-- Start OF Table Data --}}
                                                 <td>{{ $data->section_order }} <br>
                                                 <td>{{ $data->section_title }} <br>
-
                                                 <td>
                                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                                             data-target="#edit-modal{{$loop->iteration}}">
@@ -463,11 +476,18 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-outline-primary"
-                                                            data-toggle="modal"
-                                                            data-target="#video-modal{{$loop->iteration}}">Lihat Video
-                                                    </button>
+                                                    <a href="{{url("/lesson/".$data->lesson_id."/section/".$data->section_id."/input-score")}}">
+                                                        <button type="button" class="btn btn-primary">
+                                                            Input Nilai
+                                                        </button>
+                                                    </a>
                                                 </td>
+                                                {{--                                                <td>--}}
+                                                {{--                                                    <button type="button" class="btn btn-outline-primary"--}}
+                                                {{--                                                            data-toggle="modal"--}}
+                                                {{--                                                            data-target="#video-modal{{$loop->iteration}}">Lihat Materi--}}
+                                                {{--                                                    </button>--}}
+                                                {{--                                                </td>--}}
                                                 <td class="text-center">
                                                     <form id="delete-post-form"
                                                           action="{{ route('section.destroy', [$data->section_id])}}"

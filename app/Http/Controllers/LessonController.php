@@ -321,7 +321,7 @@ class LessonController extends Controller
         ini_set('post_max_size', '500M');
         // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
         $this->validate($request, [
-            'image' => 'required|image|mimes:png,jpg,jpeg',
+            'image' => 'required',
             'title' => 'required',
             'content' => 'required',
             'category' => 'required_without_all',

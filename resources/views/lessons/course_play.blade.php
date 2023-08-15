@@ -83,23 +83,36 @@
                 </div>
 
                 <div class="container-fluid">
-                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
-                           class="video-mask" disablePictureInPicture controlsList="nodownload">
-                        <!-- Video files -->
-                        <source
-                            src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video . '?random1') }}">
-                        <!-- Caption files -->
-                        <!-- <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default /> -->
-                        <!-- <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt" /> -->
+                    @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
+                        <div class='embed-responsive' style='padding-bottom:150%'>
+                            <object data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}' type='application/pdf' width='100%' height='100%'></object>
+                        </div>
+                    @else
+                        @php
+                            $videoFormats = ['mp4', 'webm', 'ogg']; // Add more video formats as needed
+                            $imageFormats = ['jpg', 'jpeg', 'png', 'gif']; // Add more image formats as needed
+                            $fileExtension = pathinfo($sectionSpec->section_video, PATHINFO_EXTENSION);
+                        @endphp
 
-                        <!-- Fallback for browsers that don't support the <video> element -->
-                        <!-- <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a> -->
-                    </video>
+                        @if (in_array($fileExtension, $videoFormats))
+                            <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
+                                   class="video-mask" disablePictureInPicture controlsList="nodownload">
+                                <source src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
+                            </video>
+                        @elseif (in_array($fileExtension, $imageFormats))
+                            <img src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}" alt="Image">
+                        @else
+                            <p>Unsupported file format</p>
+                        @endif
+                    @endif
                 </div>
 
 
                 <script>
                     function nextCuy() {
+                        var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                        window.location.href = nextUrl;
+                        return;
                         var videoPlayer = document.getElementById("myVideo");
                         var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
                         var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);

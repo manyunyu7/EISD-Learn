@@ -21,6 +21,7 @@ class CourseSection extends Model
         'section_order',
         'section_content',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'can_be_accessed'
     ];
 }

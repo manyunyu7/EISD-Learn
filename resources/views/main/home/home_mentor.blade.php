@@ -3,9 +3,56 @@
 @endsection
 
 @section('script')
-@include('main.home.script_mentor')
-@endsection
+    @include('main.home.script_mentor')
 
+    <script>
+        var userScores = @json($leaderboard);
+        console.log(userScores);
+        var studentNames = userScores.map(score => score.student_name);
+        var totalScores = userScores.map(score => score.total_score);
+
+        var ctx = document.getElementById('userScoresChart').getContext('2d');
+        var userScoresChart = new Chart(ctx, {
+            type: 'bar', // Change to 'bar' for a bar chart
+            data: {
+                labels: studentNames,
+                datasets: [{
+                    label: 'Total Scores',
+                    data: totalScores,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 0, // Rotate labels to be horizontal
+                            autoSkip: false, // Display all labels without skipping
+                            maxTicksLimit: 10 // Adjust this based on the available space
+                        }
+                    },
+                    y: {
+                        beginAtZero: true // Adjust this based on your data
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Student Total Scores Chart'
+                    }
+                }
+            }
+        });
+    </script>
+@endsection
 @section('main')
 
 <div class="panel-header bg-primary-gradient">
@@ -151,6 +198,122 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Leaderboard Score Management Trainee</div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row justify-content-center">
+
+                        @foreach ($topThree as $index => $student)
+                            <div class="col-md-3 my-4 @if($index>2) d-none @endif">
+                                <div class="card card-profile">
+                                    <div class="card-header" style="background-image: url('../assets/img/blogpost.jpg')">
+                                        <div class="profile-picture">
+                                            <div class="avatar avatar-xl">
+                                                <img src="{{ Storage::url('public/profile/') . $student->profile_url }}" alt="..."
+                                                     class="avatar-img rounded-circle"
+                                                     onerror="this.src='{{ asset('storage/profile/error.png') }}'">                                    </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="user-profile text-center">
+                                            <div class="name"><strong>#{{$index+1}}</strong> {{$student->student_name}}</div>
+                                            {{--                                    <div class="job">Total Skor </div>--}}
+                                            {{--                                    <div class="desc">A man who hates loneliness</div>--}}
+                                            <div class="social-media d-none">
+                                                <a class="btn btn-info btn-twitter btn-sm btn-link" href="#">
+                                                    <span class="btn-label just-icon"><i class="flaticon-twitter"></i> </span>
+                                                </a>
+                                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="#">
+                                                    <span class="btn-label just-icon"><i class="flaticon-google-plus"></i> </span>
+                                                </a>
+                                                <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                    <span class="btn-label just-icon"><i class="flaticon-facebook"></i> </span>
+                                                </a>
+                                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="#">
+                                                    <span class="btn-label just-icon"><i class="flaticon-dribbble"></i> </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="row user-stats text-center">
+                                            <div class="col">
+                                                <div class="number">{{$student->total_score}}</div>
+                                                <div class="title">Total Point</div>
+                                            </div>
+{{--                                            <div class="col">--}}
+{{--                                                <div class="number">{{$student->highest_score}}</div>--}}
+{{--                                                <div class="title">Nilai Tertinggi</div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="col">--}}
+{{--                                                <div class="number">{{$student->lowest_score}}</div>--}}
+{{--                                                <div class="title">Nilai Terendah</div>--}}
+{{--                                            </div>--}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Total Score</th>
+{{--                            <th>Nilai Rata-Rata</th>--}}
+                        </tr>
+                        </thead>
+                        <tbody class="scrollable-table-body">
+                        @foreach ($leaderboard as $index => $student)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    <a href="{{url("student/$student->id/all-scores")}}" target="_blank">
+                                        {{ $student->student_name }}
+                                        @if ($index === 0)
+                                            <span class="badge badge-primary">1st</span>
+                                        @elseif ($index === 1)
+                                            <span class="badge badge-secondary">2nd</span>
+                                        @elseif ($index === 2)
+                                            <span class="badge badge-success">3rd</span>
+                                        @endif
+                                    </a>
+                                </td>
+                                <td>{{ $student->total_score }}</td>
+{{--                                <td>{{ $student->average_score }}</td>--}}
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Grafik Skor Siswa</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-sub">
+                        Performa Skor Per Materi
+                    </div>
+
+                    <div style="height: 370px">
+                        <canvas id="userScoresChart"></canvas>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\MyHelper;
 use Illuminate\Http\Request;
 use Auth;
 use Exception;
@@ -22,7 +23,7 @@ class LandingController extends Controller
 {
     public function landing()
     {
-      
+
         // $user_id  = Auth::id();
         // $lesson_id = $lesson->id;
         // if($user_id != $lesson->mentor_id){
@@ -36,7 +37,9 @@ class LandingController extends Controller
     public function classes()
     {
         $dayta = DB::select("select * from view_course");
-        
+        MyHelper::addAnalyticEvent(
+            "Buka Halaman Kelas","Kelas"
+        );
         return view('classes')->with('dayta', $dayta);
     }
 

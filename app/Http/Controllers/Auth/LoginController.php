@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helper\MyHelper;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -49,9 +50,12 @@ class LoginController extends Controller
     protected function validateLogin(Request $request)
     {
         $this->validate($request, [
-            $this->username() => 'required', 
+            $this->username() => 'required',
             'password' => 'required|string',
         ]);
+        MyHelper::addAnalyticEvent(
+            "Validate Login","auth"
+        );
     }
 
     // Override method
@@ -64,6 +68,14 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         return $request->only($this->username(), 'password');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        // Log the successful login
+        MyHelper::addAnalyticEvent(
+            "Successful Login", "auth"
+        );
     }
 
 }
