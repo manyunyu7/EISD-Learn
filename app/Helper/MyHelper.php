@@ -147,7 +147,7 @@ class MyHelper
         $data->user_id=$userId;
         $data->event=$event;
         $data->is_logged_in=$is_logged_in;
-        $data->page=$is_logged_in;
+        $data->page=$page;
 
         $data->save();
     }
