@@ -103,7 +103,7 @@ class HomeController extends Controller
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Mentor","Dashboard"
             );
-            return view('main.dashboard')
+            return view('main.dashboard_mentor')
                 ->with(compact(
                     'classes',
                     'classRegistered',

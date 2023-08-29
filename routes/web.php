@@ -65,7 +65,23 @@
             Route::get('/lesson/{lesson}/section/create', 'CourseSectionController@create_section');
             Route::get('/student/{id}/all-scores', 'ScoreController@seeByStudent');
             Route::post('/update-scores', 'CourseSectionController@updateScores');
+
+            Route::get('user/manage', [App\Http\Controllers\StaffController::class, 'viewAdminManage']);
+            Route::get('user/create', [App\Http\Controllers\StaffController::class, 'viewAdminCreate']);
+
+
             Route::post('/course/submission/scoring', 'FinalProjectController@score')->name('course.submission.scoring');
+        });
+
+        Route::prefix('user')->group(function () {
+            Route::get('create', [App\Http\Controllers\StaffController::class, 'viewAdminCreate']);
+            Route::get('{id}/edit', [App\Http\Controllers\StaffController::class, 'viewAdminEdit']);
+            Route::post('{id}/change-photo', [App\Http\Controllers\StaffController::class, 'updateProfilePhoto']);
+            Route::get('{id}/detail', [App\Http\Controllers\StaffController::class, 'viewDetail']);
+            Route::post('change-password', [App\Http\Controllers\StaffController::class, 'updatePassword']);
+            Route::post('store', [App\Http\Controllers\StaffController::class, 'store']);
+            Route::post('update', [App\Http\Controllers\StaffController::class, 'update']);
+            Route::get('{id}/delete', [App\Http\Controllers\StaffController::class, 'destroy']);
         });
 
 

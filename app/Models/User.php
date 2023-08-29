@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -28,6 +29,15 @@ class User extends Authenticatable
         'jobs',
         'motto',
     ];
+
+    protected $appends = ["full_photo_path"];
+
+
+    function getFullPhotoPathAttribute()
+    {
+        return Storage::url('public/profile/') . $this->profile_url;
+    }
+
 
     /**
      * The attributes that should be hidden for arrays.
