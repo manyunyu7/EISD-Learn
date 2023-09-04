@@ -43,7 +43,10 @@
 
 
                                 <div class="card-body">
-                                    <a href="{{ url('exam/new') }}" >   <button class="btn btn-primary btn-border btn-round mb-3">Tambah Quiz Baru</button></a>
+                                    <a href="{{ url('exam/new') }}">
+                                        <button class="btn btn-primary btn-border btn-round mb-3">Tambah Quiz Baru
+                                        </button>
+                                    </a>
                                     <table id="basic-datatables" class="table table-bordered table-responsive       @if (count($dayta) < 1)
                         d-none
                       @endif">
@@ -54,7 +57,7 @@
                                             <th scope="col">Pertanyaan</th>
                                             <th scope="col">Nilai</th>
                                             <th scope="col">CONTENT</th>
-                                            <th  scope="col"></th>
+                                            <th scope="col"></th>
                                             <th scope="col"></th>
                                         </tr>
                                         </thead>
@@ -62,25 +65,37 @@
                                         @forelse ($dayta as $data)
                                             <tr>
                                                 <td class="text-center">
-                                                    <img src="{{ $data->img_full_path }}" class="rounded" style="width: 150px">
+                                                    <img src="{{ $data->img_full_path }}" class="rounded"
+                                                         style="width: 150px">
                                                 </td>
                                                 <td>{{ $data->title }}</td>
                                                 @php
-                                                    $course_id = $data->id
+                                                    $examId = $data->id
                                                 @endphp
-                                                <td> <a href="{{url("/lesson/$course_id/section/")}}" class="badge badge-primary">Manage Materi</a> </td>
-                                                <td> <a href="{{url("/lesson/$course_id/students/")}}" class="badge badge-primary">Manage Siswa</a> </td>
-                                                <td> <a href="{{url("/lesson/$course_id")}}"><button type="button" class="btn btn-outline-primary">Lihat Kelas</button></a></td>
+                                                <td><a href="{{url("/exam/$examId/question/")}}"
+                                                       class="badge badge-primary">Manage Pertanyaan</a></td>
+                                                <td><a href="{{url("/lesson/$examId/students/")}}"
+                                                       class="badge badge-primary">Manage Siswa</a></td>
+                                                <td><a href="{{url("/lesson/$examId")}}">
+                                                        <button type="button" class="btn btn-outline-primary">Lihat
+                                                            Kelas
+                                                        </button>
+                                                    </a></td>
                                                 <td class="text-center">
-                                                    <form id="delete-post-form" action="{{ route('lesson.destroy', $data->id) }}" method="POST">
+                                                    <form id="delete-post-form"
+                                                          action="{{ route('lesson.destroy', $data->id) }}"
+                                                          method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button  onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger ">HAPUS</button>
+                                                        <button onclick="return confirm('Are you sure?')"
+                                                                class="btn btn-sm btn-danger ">HAPUS
+                                                        </button>
                                                     </form>
                                                 </td>
 
                                                 <td>
-                                                    <a href="{{ route('lesson.edit', $data->id) }}" class="btn btn-sm btn-primary">EDIT</a>
+                                                    <a href="{{ route('lesson.edit', $data->id) }}"
+                                                       class="btn btn-sm btn-primary">EDIT</a>
                                                 </td>
                                                 {{-- <td><a href="" class="button" data-id="{{$blog->id}}">Delete</a></td> --}}
                                             </tr>
@@ -116,11 +131,11 @@
                             confirmButtonText: "Yes!",
                             showCancelButton: true,
                         },
-                        function() {
+                        function () {
                             $.ajax({
                                 type: "POST",
                                 url: "{{url('/destroy')}}",
-                                data: {id:id},
+                                data: {id: id},
                                 success: function (data) {
                                     //
                                 }
@@ -134,31 +149,30 @@
             <!-- Datatables -->
             <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
             <script>
-                $(document).ready(function() {
-                    $('#basic-datatables').DataTable({
-                    });
+                $(document).ready(function () {
+                    $('#basic-datatables').DataTable({});
 
-                    $('#multi-filter-select').DataTable( {
+                    $('#multi-filter-select').DataTable({
                         "pageLength": 5,
                         initComplete: function () {
-                            this.api().columns().every( function () {
+                            this.api().columns().every(function () {
                                 var column = this;
                                 var select = $('<select class="form-control"><option value=""></option></select>')
-                                    .appendTo( $(column.footer()).empty() )
-                                    .on( 'change', function () {
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function () {
                                         var val = $.fn.dataTable.util.escapeRegex(
                                             $(this).val()
                                         );
 
                                         column
-                                            .search( val ? '^'+val+'$' : '', true, false )
+                                            .search(val ? '^' + val + '$' : '', true, false)
                                             .draw();
-                                    } );
+                                    });
 
-                                column.data().unique().sort().each( function ( d, j ) {
-                                    select.append( '<option value="'+d+'">'+d+'</option>' )
-                                } );
-                            } );
+                                column.data().unique().sort().each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>')
+                                });
+                            });
                         }
                     });
 
@@ -169,7 +183,7 @@
 
                     var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-                    $('#addRowButton').click(function() {
+                    $('#addRowButton').click(function () {
                         $('#add-row').dataTable().fnAddData([
                             $("#addName").val(),
                             $("#addPosition").val(),
@@ -191,7 +205,6 @@
                 toastr.error('{{ session('error') }}', 'GAGAL!');
                 @endif
             </script>
-
 
 @endsection
 

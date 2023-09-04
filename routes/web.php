@@ -71,6 +71,11 @@
                 Route::get('new', 'MentorExamController@viewCreateNew');
                 Route::post('store', 'MentorExamController@storeNewExam');
                 Route::get('manage', 'MentorExamController@viewManageExam');
+                Route::get('{id}/question', 'MentorExamController@viewManageQuestion');
+                Route::post('save-question', 'MentorExamController@storeQuestion');
+                Route::any('mquestions', 'MentorExamController@fetchQuestions');
+                Route::any('question/edit-questions', 'MentorExamController@fetchQuestions')->name("edit_question");
+                Route::any('update-question-order', 'MentorExamController@updateQuestionOrder')->name("update_question_order");
             });
         });
 
