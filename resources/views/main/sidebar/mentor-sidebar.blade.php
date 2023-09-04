@@ -21,6 +21,33 @@
 </li>
 
 <li class="nav-item">
+    <a data-toggle="collapse" href="#exam">
+        <i class="fas fa-pen-square"></i>
+        <p>Exam</p>
+        <span class="caret"></span>
+    </a>
+    <div class="collapse  {{ Request::is('exam/*') ? 'show' : '' }}" id="exam">
+        <ul class="nav nav-collapse">
+            <li class="{{ Request::is('/exam/new') ? 'active' : '' }}">
+                <a href="{{ url('/exam/new') }}">
+                    <span class="sub-item">Tambah Exam Baru</span>
+                </a>
+            </li>
+            <li class="{{ Request::is('/exam/n') ? 'active' : '' }}">
+                <a href="{{ url('/exam/new') }}">
+                    <span class="sub-item">Manage Exam</span>
+                </a>
+            </li>
+            <li class="{{ Request::is('blog/create') ? 'active' : '' }}">
+                <a href="{{ url('/blog/create') }}">
+                    <span class="sub-item">Tulis Blog</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
+
+<li class="nav-item">
     <a data-toggle="collapse" href="#base">
         <i class="fas fa-pen-alt"></i>
         <p>Blogs</p>

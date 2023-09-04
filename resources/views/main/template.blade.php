@@ -8,8 +8,9 @@
     <link rel="icon" href="{{asset('atlantis/examples')}}/assets/img/icon.ico" type="image/x-icon"/>
 
 
-    <!-- Optional JavaScript -->
+    <!-- Optional Javiracript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/demo.css">
 
     <!--   Core JS Files   -->
     <script src="{{asset('atlantis/examples')}}/assets/js/core/jquery.3.2.1.min.js"></script>

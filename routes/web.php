@@ -66,6 +66,12 @@
             Route::get('/student/{id}/all-scores', 'ScoreController@seeByStudent');
             Route::post('/update-scores', 'CourseSectionController@updateScores');
             Route::post('/course/submission/scoring', 'FinalProjectController@score')->name('course.submission.scoring');
+
+            Route::prefix("exam")->group(function (){
+                Route::get('new', 'MentorExamController@viewCreateNew');
+                Route::post('store', 'MentorExamController@storeNewExam');
+                Route::get('manage', 'MentorExamController@viewManageExam');
+            });
         });
 
 
