@@ -61,72 +61,72 @@
     <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.min.css">
 
-        <style>
-            .loader-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999; /* Make sure the loader is above everything else */
-            }
+    <style>
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999; /* Make sure the loader is above everything else */
+        }
 
-            .loader {
-                border: 4px solid #f3f3f3; /* Light gray border */
-                border-top: 4px solid #3498db; /* Blue border for loading indicator */
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                animation: spin 2s linear infinite; /* Spin animation */
-            }
+        .loader {
+            border: 4px solid #f3f3f3; /* Light gray border */
+            border-top: 4px solid #3498db; /* Blue border for loading indicator */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite; /* Spin animation */
+        }
 
-            .loader-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999; /* Make sure the loader is above everything else */
-            }
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999; /* Make sure the loader is above everything else */
+        }
 
-            .blinking-overlay {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                animation: blink 1s infinite;
-            }
+        .blinking-overlay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: blink 1s infinite;
+        }
 
-            .centered-image {
-                max-width: 20%; /* Adjust the maximum width of the image */
-                max-height: 20vh; /* Adjust the maximum height of the image */
-            }
+        .centered-image {
+            max-width: 20%; /* Adjust the maximum width of the image */
+            max-height: 20vh; /* Adjust the maximum height of the image */
+        }
 
-            @keyframes blink {
-                0%, 100% {
-                    opacity: 0;
-                }
-                50% {
-                    opacity: 1;
-                }
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0;
             }
+            50% {
+                opacity: 1;
+            }
+        }
 
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-                100% {
-                    transform: rotate(360deg);
-                }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
-        </style>
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/demo.css"> --}}
@@ -134,55 +134,63 @@
 <body>
 
 
-    <div id="loaderOverlay" class="loader-overlay">
-        <div class="blinking-overlay">
-             <img src="{{URL::to('/')}}/mdln_long.png" alt="navbar brand"  class="centered-image">
-        </div>
+<div id="loaderOverlay" class="loader-overlay">
+    <div class="blinking-overlay">
+        <img src="{{URL::to('/')}}/mdln_long.png" alt="navbar brand" class="centered-image">
     </div>
+</div>
 
 <div class="wrapper">
-    <div class="main-header">
-        <!-- Logo Header -->
-        <div class="logo-header" data-background-color="blue">
 
-            <a href="{{url('/home')}}" class="logo">
-                <p class="navbar-brand text-white">{{config('app.name')}}</p>
-                {{-- <img src="{{URL::to('/')}}/home_assets/esd_3.png" alt="navbar brand" class="navbar-brand"> --}}
-            </a>
-            <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
-                    data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+    @if(!isset($showCompact))
+        <div class="main-header">
+            <!-- Logo Header -->
+            <div class="logo-header" data-background-color="blue">
+
+                <a href="{{url('/home')}}" class="logo">
+                    <p class="navbar-brand text-white">{{config('app.name')}}</p>
+                    {{-- <img src="{{URL::to('/')}}/home_assets/esd_3.png" alt="navbar brand" class="navbar-brand"> --}}
+                </a>
+                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
+                        data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon">
 						<i class="icon-menu"></i>
 					</span>
-            </button>
-            <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
-            <div class="nav-toggle">
-                <button class="btn btn-toggle toggle-sidebar">
-                    <i class="icon-menu"></i>
                 </button>
+                <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+                <div class="nav-toggle">
+                    <button class="btn btn-toggle toggle-sidebar">
+                        <i class="icon-menu"></i>
+                    </button>
+                </div>
             </div>
+            <!-- End Logo Header -->
+
+            <!-- Navbar Header -->
+            @auth
+                @include('main.nav_bar')
+            @endauth
+
+            <!-- End Navbar -->
         </div>
-        <!-- End Logo Header -->
 
-        <!-- Navbar Header -->
-        @auth
-            @include('main.nav_bar')
-        @endauth
+        <!-- Sidebar -->
+        @include('main.side-bar')
+        <!-- End Sidebar -->
 
-        <!-- End Navbar -->
-    </div>
+    @endif
 
-    <!-- Sidebar -->
-    @include('main.side-bar')
-    <!-- End Sidebar -->
+    @if(!isset($showCompact))
+        <div class="main-panel">
+            @endif
+            <div class="content">
+                @yield('breadcumb')
+                @yield('main')
+            </div>
+            @if(!isset($showCompact))
 
-
-    <div class="main-panel">
-        <div class="content">
-            @yield('breadcumb')
-            @yield('main')
         </div>
-    </div>
+    @endif
     {{--
                     <footer class="footer">
                     <div class="container-fluid">
@@ -210,7 +218,6 @@
                         </div>
                     </div>
                 </footer> --}}
-</div>
 
 </div>
 

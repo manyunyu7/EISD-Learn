@@ -85,7 +85,8 @@
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item"><a href="{{url("/")."/exam/manage"}}">Exam</a></li>
                             <li class="breadcrumb-item"><a href="">{{$exam->title}}</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Pertanyaan & Jawaban</li>
+                            <li class="breadcrumb-item" aria-current="page"><a href="{{url("/")."/exam/".$exam->id."/question"}}">Soal & Jawaban</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit Urutan</li>
                         </ol>
                     </nav>
                 </div>
@@ -93,112 +94,8 @@
                 <!-- End Page Header -->
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
-                        <!-- Add New Post Form -->
-                        <div class="card card-small mb-3">
-                            <div class="card-body">
-                                <input type="hidden" name="exam_id" value="{{ $exam->id }}">
 
-                                <div class="form-group">
-                                    <img class="rounded" id="imgPreview" src=""
-                                         style="max-height: 300px; max-width: 100%;">
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Gambar Soal</label>
-                                    <input id="input-image" type="file" onchange="previewPhoto()"
-                                           class="form-control @error('image') is-invalid @enderror"
-                                           name="image"
-                                           accept="image/*">
-
-                                    <!-- error message untuk title -->
-                                    @error('image')
-                                    <div class="alert alert-danger mt-2">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Jenis Pertanyaan</label>
-                                    <select id="questionType" class="form-control" name="questionType">
-                                        <option value="essay">Choose</option>
-                                        <option value="multiple_choice">Pilihan Ganda</option>
-                                        <option value="essay">Essay</option>
-                                        <option value="true_false">True/False</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="font-weight-bold">Pertanyaan</label>
-                                    <input type="text" class="form-control" name="title"
-                                           placeholder="Masukkan Pertanyaan">
-                                </div>
-
-                                <div id="choices" style="display: none;">
-                                    <div class="form-group">
-                                    </div>
-                                    <button type="button" class="btn btn-primary btn-border add-choice">Tambah
-                                        Pilihan
-                                    </button>
-                                </div>
-
-                                <div id="recommendation" style="display: none;">
-                                    <div class="alert alert-info">Rekomendasi: Gunakan pertanyaan True/False untuk
-                                        pertanyaan dengan dua pilihan yang jelas (benar/salah).
-                                    </div>
-                                </div>
-
-                                <div id="essay" style="display: none;">
-                                    <div class="form-group">
-                                        <label class="font-weight-bold">Jawaban Essay</label>
-                                        <textarea class="form-control" name="essay_answer" rows="5"
-                                                  placeholder="Masukkan Jawaban Essay"></textarea>
-                                    </div>
-                                </div>
-
-                                <button id="saveQuestion" type="submit" class="btn btn-success mt-5">Simpan Pertanyaan
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Modal for editing questions and answers -->
-                        <div class="modal fade" id="editQuestionModal" tabindex="-1"
-                             aria-labelledby="editQuestionModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editQuestionModalLabel">Edit Question and
-                                            Answers</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- Edit question and answers form -->
-                                        <form id="editQuestionForm">
-                                            <div class="mb-3">
-                                                <label for="editedQuestion" class="form-label">Question</label>
-                                                <textarea class="form-control" id="editedQuestion" name="editedQuestion"
-                                                          rows="3"></textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="editedAnswers" class="form-label">Answers</label>
-                                                <textarea class="form-control" id="editedAnswers" name="editedAnswers"
-                                                          rows="3"></textarea>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <button type="button" class="btn btn-primary" id="saveQuestionChanges">Save
-                                            Changes
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Showing Added Questions -->
+                        <!-- / Add New Post Form -->
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card border-0 shadow rounded">
@@ -208,13 +105,12 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="mb-3">
-                                            <button id="refreshQuestions" type="button"
-                                                    class="btn btn-primary btn-border btn-round">
+                                            <button id="refreshQuestions" type="button" class="btn btn-primary btn-border btn-round">
                                                 Refresh
                                             </button>
-                                            <a id="save-order-link"
-                                               href="{{url("/")."/exam/".$exam->id."/question-order"}}"
-                                               class="btn btn-primary btn-round">Ubah Urutan Soal</a>
+                                            <button id="save-order-button" type="button" class="btn btn-primary btn-border btn-round">
+                                                Simpan Urutan
+                                            </button>
                                         </div>
 
                                         <div id="questions-list" class="mt-5">
@@ -222,10 +118,7 @@
                                         </div>
 
                                         <script>
-                                            // Add an event listener to fetch questions when the page is ready
-                                            document.addEventListener('DOMContentLoaded', function () {
-                                                fetchQuestions();
-                                            });
+                                            // Function to fetch questions from the server
 
                                             // Attach a click event handler to the "Refresh" button
                                             $('#refreshQuestions').click(function () {
@@ -267,19 +160,16 @@
 
                                                     // Create the HTML structure for displaying the question and its choices
                                                     var questionHTML = '<div class="card-body">' +
-                                                        '<h5 class="card-title mb-3">Question: ' + question.question + '</h5>';
+                                                        '<h5 class="card-title">Question: ' + question.question + '</h5>';
 
                                                     // Check if the question has choices
                                                     if (choices && choices.length > 0) {
                                                         questionHTML += '<ul class="list-group">';
                                                         choices.forEach(function (choice) {
-                                                            questionHTML += '<li class="list-group-item">' + choice.text + ' (Score: ' + choice.score + ')</li>';
+                                                            questionHTML += '<li class="list-group-item">Choice: ' + choice.text + ' (Score: ' + choice.score + ')</li>';
                                                         });
                                                         questionHTML += '</ul>';
                                                     }
-
-                                                    // Add an "Edit" button for each question
-                                                    questionHTML += '<button type="button" class="mt-5 btn btn-primary btn-border edit-question-button" data-question-id="' + question.id + '">Edit</button>';
 
                                                     questionCard.innerHTML = questionHTML;
 
@@ -292,48 +182,24 @@
                                                     questionIds.push(question.id);
                                                 });
 
-                                                // Function to open the specific URI in a new window
-                                                function openNewWindow(questionId) {
-                                                    // Get the base URL
-                                                    var baseUrl = window.location.origin;
-
-                                                    // Construct the URL for the specific question's edit page
-                                                    var url = baseUrl + '/exam/question/' + questionId + '/edit';
-
-                                                    // Open the URL in a new window
-                                                    var newWindow = window.open(url, '_blank', 'width=500,height=500');
-
-                                                    // Check if the new window is closed at regular intervals
-                                                    var interval = setInterval(function () {
-                                                        if (newWindow.closed) {
-                                                            // The new window is closed, trigger a questions refres
-                                                            fetchQuestions()
-                                                            clearInterval(interval); // Stop the polling
-                                                        }
-                                                    }, 1000); // Check every 1 second (adjust as needed)
-                                                }
-
-                                                // Attach a click event listener to each "Edit" button
-                                                document.querySelectorAll('.edit-question-button').forEach(function (editButton) {
-                                                    editButton.addEventListener('click', function () {
-                                                        // Get the question ID from the button's data attribute
-                                                        var questionId = this.getAttribute('data-question-id');
-
-                                                        // Open the specific URI in a new window
-                                                        openNewWindow(questionId);
-                                                    });
+                                                $('#questions-list').sortable({
+                                                    update: function (event, ui) {
+                                                        // Get the new order of question IDs
+                                                        var newOrder = $('#questions-list').sortable('toArray', { attribute: 'data-question-id' });
+                                                        console.log(newOrder); // This will log the array of question IDs in the new order
+                                                    }
                                                 });
+
                                                 // Assign the question IDs to the data-question-id attribute for sorting
                                                 questionIds.forEach(function (id, index) {
                                                     questionsList.children[index].setAttribute('data-question-id', id);
                                                 });
                                             }
-
                                             // Attach a click event handler to the "Refresh" button
                                             var refreshButton = document.getElementById('refreshQuestions');
                                             // Add click event handler for the "Save Order" button
                                             document.getElementById('save-order-button').addEventListener('click', function () {
-                                                var newOrder = $('#questions-list').sortable('toArray', {attribute: 'data-question-id'});
+                                                var newOrder = $('#questions-list').sortable('toArray', { attribute: 'data-question-id' });
                                                 saveQuestionOrder(newOrder);
                                             });
                                             refreshButton.addEventListener('click', function () {
@@ -359,7 +225,7 @@
                                                         'Content-Type': 'application/json',
                                                         'X-CSRF-TOKEN': csrfToken, // Include the CSRF token in the headers
                                                     },
-                                                    body: JSON.stringify({newOrder: newOrder}),
+                                                    body: JSON.stringify({ newOrder: newOrder }),
                                                 })
                                                     .then(response => response.json())
                                                     .then(data => {
