@@ -29,7 +29,7 @@ class MentorExamController extends Controller
 
     public function fetchQuestions()
     {
-        $questions = ExamQuestionAnswers::all(); // Assuming you have a "Question" model
+        $questions = ExamQuestionAnswers::orderBy('order', 'desc')->get();
 
         return response()->json($questions);
     }
