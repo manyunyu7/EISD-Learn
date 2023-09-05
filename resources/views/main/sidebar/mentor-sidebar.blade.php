@@ -33,9 +33,14 @@
                     <span class="sub-item">Tambah Exam Baru</span>
                 </a>
             </li>
-            <li class="{{ Request::is('/exam/n') ? 'active' : '' }}">
-                <a href="{{ url('/exam/new') }}">
+            <li class="{{ Request::is('/exam/manage') ? 'active' : '' }}">
+                <a href="{{ url('/exam/manage') }}">
                     <span class="sub-item">Manage Exam</span>
+                </a>
+            </li>
+            <li class="{{ Request::is('/exam/session') ? 'active' : '' }}">
+                <a href="{{ url('/exam/session') }}">
+                    <span class="sub-item">Session</span>
                 </a>
             </li>
             <li class="{{ Request::is('blog/create') ? 'active' : '' }}">

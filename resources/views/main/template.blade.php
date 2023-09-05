@@ -53,13 +53,15 @@
         });
     </script>
 
-    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
 
     @yield('head-section')
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.min.css">
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
+    <!---Select2 To MultiSelect -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <style>
         .loader-overlay {
@@ -73,6 +75,11 @@
             align-items: center;
             justify-content: center;
             z-index: 9999; /* Make sure the loader is above everything else */
+        }
+
+        .hidden-actions {
+            display: none;
+            padding: 10px;
         }
 
         .loader {
@@ -130,8 +137,10 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/demo.css"> --}}
+
 </head>
 <body>
+
 
 
 <div id="loaderOverlay" class="loader-overlay">
@@ -139,6 +148,28 @@
         <img src="{{URL::to('/')}}/mdln_long.png" alt="navbar brand" class="centered-image">
     </div>
 </div>
+<script>
+    var loaderOverlay = document.getElementById('loaderOverlay');
+    // Function to show the loading overlay
+    function showLoaderOverlay() {
+        if (loaderOverlay) {
+            loaderOverlay.style.display = '';
+        }
+    }
+
+    // Function to hide the loading overlay
+    function hideLoaderOverlay() {
+        setTimeout(function () {
+            if (loaderOverlay) {
+                loaderOverlay.style.display = 'none';
+            }
+        }, 1000);
+    }
+</script>
+<script>
+    showLoaderOverlay()
+    hideLoaderOverlay()
+</script>
 
 <div class="wrapper">
 
@@ -250,10 +281,10 @@
 <!-- Atlantis DEMO methods, don't include it in your project! -->
 {{-- <script src="{{asset('atlantis/examples')}}/assets/js/setting-demo.js"></script>--}}
 {{-- <script src="{{asset('atlantis/examples')}}/assets/js/demo.js"></script>  --}}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 <script>
-    const loaderOverlay = document.getElementById("loaderOverlay");
 
     window.addEventListener("load", () => {
         // Calculate the loading time
@@ -270,56 +301,5 @@
 </script>
 
 @yield('script')
-<script>
-
-
-    var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
-
-    var mytotalIncomeChart = new Chart(totalIncomeChart, {
-        type: 'bar',
-        data: {
-            labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
-            datasets: [{
-                label: "Total Income",
-                backgroundColor: '#ff9e27',
-                borderColor: 'rgb(23, 125, 255)',
-                data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                display: false,
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        display: false //this will remove only the label
-                    },
-                    gridLines: {
-                        drawBorder: false,
-                        display: false
-                    }
-                }],
-                xAxes: [{
-                    gridLines: {
-                        drawBorder: false,
-                        display: false
-                    }
-                }]
-            },
-        }
-    });
-
-    $('#lineChart').sparkline([105, 103, 123, 100, 95, 105, 115], {
-        type: 'line',
-        height: '70',
-        width: '100%',
-        lineWidth: '2',
-        lineColor: '#ffa534',
-        fillColor: 'rgba(255, 165, 52, .14)'
-    });
-</script>
 </body>
 </html>

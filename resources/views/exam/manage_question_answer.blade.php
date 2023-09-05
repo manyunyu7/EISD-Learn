@@ -279,7 +279,9 @@
                                                     }
 
                                                     // Add an "Edit" button for each question
-                                                    questionHTML += '<button type="button" class="mt-5 btn btn-primary btn-border edit-question-button" data-question-id="' + question.id + '">Edit</button>';
+                                                    questionHTML += '<button type="button" class="mt-5 btn btn-primary btn-border edit-question-button mr-2" data-question-id="' + question.id + '">Edit</button>';
+
+                                                    questionHTML += '<button type="button" class="mt-5 btn btn-danger btn-border delete-question-button" data-question-id="' + question.id + '">Hapus Pertanyaan</button>';
 
                                                     questionCard.innerHTML = questionHTML;
 
@@ -430,6 +432,8 @@
                         </div>
                         <!-- / Post Overview -->
                         <!-- Post Overview -->
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
                         <div class='card card-small mb-3'>
                             <div class="card-header border-bottom">
                                 <h6 class="m-0">Categories</h6>
@@ -498,24 +502,7 @@
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                 <script>
 
-                    var loaderOverlay = document.getElementById('loaderOverlay');
                     var questionForm = document.getElementById('questionForm');
-
-                    // Function to show the loading overlay
-                    function showLoaderOverlay() {
-                        if (loaderOverlay) {
-                            loaderOverlay.style.display = '';
-                        }
-                    }
-
-                    // Function to hide the loading overlay
-                    function hideLoaderOverlay() {
-                        setTimeout(function () {
-                            if (loaderOverlay) {
-                                loaderOverlay.style.display = 'none';
-                            }
-                        }, 1000);
-                    }
 
                     hideLoaderOverlay();
                     document.addEventListener('DOMContentLoaded', function () {

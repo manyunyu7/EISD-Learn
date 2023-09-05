@@ -72,7 +72,16 @@
                 Route::post('store', 'MentorExamController@storeNewExam');
                 Route::post('update-question', 'MentorExamController@updateQuestion');
                 Route::get('manage', 'MentorExamController@viewManageExam');
+
+                Route::get('session', 'MentorExamSessionController@viewManageSession');
+
                 Route::get('{id}/question', 'MentorExamController@viewManageQuestion');
+                Route::get('{id}/session', 'MentorExamSessionController@viewManageSession');
+
+                Route::post('store-exam-session', 'MentorExamSessionController@storeSession');
+                Route::get('refresh-session-table', 'MentorExamSessionController@getExamSession');
+                Route::post('delete-exam-session', 'MentorExamSessionController@destroyExamSession');
+
                 Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion');
                 Route::get('{id}/question-order', 'MentorExamController@viewManageQuestionOrder');
                 Route::post('save-question', 'MentorExamController@storeQuestion');
