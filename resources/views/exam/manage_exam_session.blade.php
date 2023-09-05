@@ -139,6 +139,12 @@
 
                             // Function to create a table row based on item data
                             function createTableRow(item) {
+
+                                const baseUrl =  window.location.origin; // Replace with your actual base URL
+                                const examId = 123; // Replace this with your actual examId value
+
+                                const seeSessionUrl = `${baseUrl}/exam/session/${item.id}/view`;
+
                                 const row = document.createElement('tr');
                                 row.innerHTML = `
                                 <td>${item.start_date}</td>
@@ -153,13 +159,13 @@
                                 <td>${createBadge(item.allow_multiple)}</td>
                                 <td class="text-center">
                                     <div class="form-button-action">
-                                        <a href="{{ url("/lesson/" . $examId) }}" class="btn btn-link btn-primary btn-lg" title="Lihat Kelas">
+                                        <a href="${seeSessionUrl}" class="btn btn-link btn-primary btn-lg" title="Lihat Kelas">
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         <button class="btn btn-link btn-danger btn-lg delete-item" title="Hapus" data-toggle="modal" data-target="#deleteConfirmationModal" data-item-id="${item.id}" data-item-instruction="${item.instruction}">
                                             <i class="fa fa-trash"></i>
                                         </button>
-                                        <a href="{{ route('lesson.edit', $examId) }}" class="btn btn-link btn-primary btn-lg" title="Edit">
+                                        <a href="${seeSessionUrl}" class="btn btn-link btn-primary btn-lg" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                     </div>

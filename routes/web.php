@@ -75,6 +75,12 @@
 
                 Route::get('session', 'MentorExamSessionController@viewManageSession');
 
+
+                Route::prefix("session")->group(function (){
+                    Route::get('{id}/view', 'MentorExamSessionController@viewDetailSession');
+                    Route::any('{id}/mquestions', 'MentorExamSessionController@fetchQuestions');
+                });
+
                 Route::get('{id}/question', 'MentorExamController@viewManageQuestion');
                 Route::get('{id}/session', 'MentorExamSessionController@viewManageSession');
 

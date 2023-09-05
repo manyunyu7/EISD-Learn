@@ -12,6 +12,30 @@ use Illuminate\Support\Facades\Auth;
 class MentorExamSessionController extends Controller
 {
 
+    public function viewDetailSession(Request $request,$id){
+
+        $data = ExamSession::findOrFail($id);
+        $exam = Exam::findOrFail($data->exam_id);
+
+        $students = User::where("role","=","student")->get();
+        $examId = $exam->id;
+        $examId = strval($examId);
+        $showCompact=true;
+        $compact = compact('showCompact','data','exam',"students",'examId');
+        if($request->dump==true){
+            return $compact;
+        }
+        return view("exam.session.session_detail")->with($compact);
+    }
+
+    public function fetchQuestions($id)
+    {
+        $exam = ExamSession::findOrFail($id);
+        $questions = json_decode($exam->questions_answers);
+
+        return response()->json($questions);
+    }
+
     public function viewManageSession(Request $request,$id){
         $dayta= ExamSession::where('created_by', '=', Auth::id())
             ->where('exam_id', '=', $id)
