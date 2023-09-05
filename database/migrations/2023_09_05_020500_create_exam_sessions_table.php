@@ -30,6 +30,7 @@ class CreateExamSessionsTable extends Migration
             $table->foreign('exam_id')->references('id')->on('exams')->onDelete('restrict');
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('restrict');
+            $table->json("questions_answers")->nullable();
             $table->timestamps();
         });
     }

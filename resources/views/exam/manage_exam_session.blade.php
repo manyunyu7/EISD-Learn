@@ -153,12 +153,6 @@
                                 <td>${createBadge(item.allow_multiple)}</td>
                                 <td class="text-center">
                                     <div class="form-button-action">
-                                        <a href="{{ url("/lesson/" . $examId) }}" class="btn btn-link btn-primary btn-lg" title="Manage Pertanyaan">
-                                            <i class="fa fa-question-circle"></i>
-                                        </a>
-                                        <a href="{{ url("/lesson/" . $examId) }}" class="btn btn-link btn-primary btn-lg" title="Manage Sesi Quiz">
-                                            <i class="fa fa-clipboard"></i>
-                                        </a>
                                         <a href="{{ url("/lesson/" . $examId) }}" class="btn btn-link btn-primary btn-lg" title="Lihat Kelas">
                                             <i class="fa fa-eye"></i>
                                         </a>
