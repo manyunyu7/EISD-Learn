@@ -134,6 +134,18 @@ class ExamTakerController extends Controller
             "Submit Exam Session : " . $session->id . " with score :" . $userScore, "Exam Taker"
         );
 
+        if($request->isFinished==true){
+            return response()->json([
+                "scores" => $userScore,
+                "answer" => $answers
+            ]);
+        }else{
+            return response()->json([
+                "scores" => 168,
+                "answer" => $answers
+            ]);
+        }
+
         return response()->json([
             "scores" => $userScore,
             "answer" => $answers

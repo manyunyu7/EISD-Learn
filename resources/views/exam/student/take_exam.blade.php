@@ -48,18 +48,18 @@
                 <div id="timer" class="timer">00:00:00</div>
             </div>
 
-{{--            <div class="mt-4">--}}
-{{--                <nav aria-label="breadcrumb">--}}
-{{--                    <ol class="breadcrumb">--}}
-{{--                        <li class="breadcrumb-item"><a href="#">Home</a></li>--}}
-{{--                        <li class="breadcrumb-item"><a href="{{url("/")."/exam/manage"}}">Exam</a></li>--}}
-{{--                        <li class="breadcrumb-item"><a href="">{{$exam->title}}</a></li>--}}
-{{--                        <li class="breadcrumb-item"><a href="{{url("/")."/exam/".$exam->id."/session"}}">Session</a>--}}
-{{--                        </li>--}}
-{{--                        <li class="breadcrumb-item active" aria-current="page">Pertanyaan & Jawaban</li>--}}
-{{--                    </ol>--}}
-{{--                </nav>--}}
-{{--            </div>--}}
+            {{--            <div class="mt-4">--}}
+            {{--                <nav aria-label="breadcrumb">--}}
+            {{--                    <ol class="breadcrumb">--}}
+            {{--                        <li class="breadcrumb-item"><a href="#">Home</a></li>--}}
+            {{--                        <li class="breadcrumb-item"><a href="{{url("/")."/exam/manage"}}">Exam</a></li>--}}
+            {{--                        <li class="breadcrumb-item"><a href="">{{$exam->title}}</a></li>--}}
+            {{--                        <li class="breadcrumb-item"><a href="{{url("/")."/exam/".$exam->id."/session"}}">Session</a>--}}
+            {{--                        </li>--}}
+            {{--                        <li class="breadcrumb-item active" aria-current="page">Pertanyaan & Jawaban</li>--}}
+            {{--                    </ol>--}}
+            {{--                </nav>--}}
+            {{--            </div>--}}
 
             <section id="exam-information">
                 <div class="row">
@@ -67,7 +67,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">Quiz : {{$exam->title}}</h3>
-{{--                                <h3 class="card-subtitle">Sesi : {{$session->id}}</h3>--}}
+                                {{--                                <h3 class="card-subtitle">Sesi : {{$session->id}}</h3>--}}
                                 <hr>
 
                                 <img width="300px" src="http://0.0.0.0:5253/home_assets/img/esd_3.png" alt="">
@@ -280,9 +280,8 @@
                                                 fetchQuestions();
                                             });
 
-                                            document.getElementById('question-form').addEventListener('submit', function (event) {
-                                                event.preventDefault(); // Prevent the default form submission behavior
 
+                                            function submitAnswer(isFinished) {
                                                 var examId = {{ $exam->id }};
                                                 var sessionId = {{ $session->id }};
 
@@ -328,16 +327,25 @@
                                                     const confettiSettings = {
                                                         particleCount: 100,
                                                         spread: 70,
-                                                        origin: { y: 0.6 },
+                                                        origin: {y: 0.6},
                                                     };
-
-                                                    confetti(confettiSettings);
+                                                    if (isFinished === true) {
+                                                        confetti(confettiSettings);
+                                                    }
                                                 }
 
                                                 // Send userAnswers with fetch (replace with your API endpoint)
-                                                showLoaderOverlay();
+                                                if (isFinished === true)
+                                                    showLoaderOverlay();
                                                 const csrfToken = '{{ csrf_token() }}';
-                                                fetch('/your-api-endpoint', {
+
+                                                let url = "";
+                                                if (isFinished) {
+                                                    url = "/your-api-endpoint?isFinished=true"
+                                                } else {
+                                                    url = "/your-api-endpoint?isFinished=false"
+                                                }
+                                                fetch(url, {
                                                     method: 'POST',
                                                     body: JSON.stringify(userAnswers),
                                                     headers: {
@@ -353,35 +361,40 @@
                                                     })
                                                     .then(function (data) {
                                                         hideLoaderOverlayNow();
-                                                        console.log({ data: data.scores });
                                                         triggerConfetti();
                                                         var score = data.scores;
-                                                        Swal.fire({
-                                                            title: "Your Score",
-                                                            text: `You scored ${score} points!`, // Display the score
-                                                            icon: "success",
-                                                            confirmButtonText: "OK",
-                                                        })
-                                                            .then((result) => {
-                                                                // The first SweetAlert is closed, now show the second one after 2 seconds
-                                                                if (result.isConfirmed) {
-                                                                    console.log('Answers submitted successfully.');
-                                                                    return new Promise((resolve) => {
-                                                                        setTimeout(() => {
-                                                                            resolve();
-                                                                        }, 3000); // Delay for 2 seconds
-                                                                    });
-                                                                }
+
+                                                        if (isFinished === true)
+                                                            Swal.fire({
+                                                                title: "Your Score",
+                                                                text: `You scored ${score} points!`, // Display the score
+                                                                icon: "success",
+                                                                confirmButtonText: "OK",
                                                             })
-                                                            .then((result) => {
-                                                                // The second SweetAlert is closed (if opened), you can add more chains if needed
-                                                            });
+                                                                .then((result) => {
+                                                                    // The first SweetAlert is closed, now show the second one after 2 seconds
+                                                                    if (result.isConfirmed) {
+                                                                        return new Promise((resolve) => {
+                                                                            setTimeout(() => {
+                                                                                resolve();
+                                                                            }, 3000); // Delay for 2 seconds
+                                                                        });
+                                                                    }
+                                                                })
+                                                                .then((result) => {
+                                                                    // The second SweetAlert is closed (if opened), you can add more chains if needed
+                                                                });
                                                     })
                                                     .catch(function (error) {
                                                         hideLoaderOverlayNow();
                                                         // Handle network error
                                                         console.error('Network error:', error);
                                                     });
+                                            }
+
+                                            document.getElementById('question-form').addEventListener('submit', function (event) {
+                                                event.preventDefault(); // Prevent the default form submission behavior
+                                                submitAnswer(true);
                                             });
                                             // Attach a click event handler to the "Refresh" button
                                             $('#refreshQuestions').click(function () {
@@ -393,6 +406,12 @@
                                             function displayQuestions() {
                                                 var questionsList = document.getElementById('questions-list');
                                                 questionsList.innerHTML = ''; // Clear previous questions
+
+                                                questionsList.addEventListener('click', function (event) {
+                                                    if (event.target && event.target.nodeName === 'INPUT') {
+                                                        submitAnswer(false); // Call your function here
+                                                    }
+                                                });
 
                                                 // Calculate the start and end index for the current page.
                                                 var startIndex = (currentPage - 1) * questionsPerPage;
@@ -407,7 +426,7 @@
                                                         questionCard.className = 'card mb-3';
 
                                                         var questionTypeUi = "ssssss";
-                                                        var mQuestionType  = question.question_type;
+                                                        var mQuestionType = question.question_type;
                                                         if (mQuestionType === "multiple_choice_single") {
                                                             questionTypeUi = "Pilihlah satu jawaban yang benar";
                                                         } else if (mQuestionType === "multiple_choice") {
@@ -420,7 +439,6 @@
                                                         questionHTML += '<h5 class="card-title text-dark">Question: ' + question.question + '</h5>';
                                                         // Add questionType as "small" after the choices
                                                         questionHTML += '<p class="text-dark  mb-3">' + questionTypeUi + '</p>'; // Adding "small" class conditionally
-                                                        console.log(questionTypeUi)
 
                                                         // Parse the choices JSON string into an array
                                                         var choices = JSON.parse(question.choices);
@@ -439,21 +457,26 @@
                                                             choices.forEach(function (choice, choiceIndex) {
                                                                 var inputName = 'question_' + question.id;
 
-                                                                // Use checkboxes for multiple_choice_single and radio buttons for multiple_choice
-                                                                if (mQuestionType === "multiple_choice") {
-                                                                    questionHTML += '<label class="selectgroup-item" style="width: 100%;">';
-                                                                    questionHTML += '<input type="checkbox" name="' + inputName + '" value="' + choice.text + '" class="selectgroup-input">';
-                                                                    questionHTML += '<span class="selectgroup-button" style="text-align: left;">' + choice.text + '</span>';
-                                                                    questionHTML += '</label>';
-                                                                } else {
-                                                                    questionHTML += '<label class="selectgroup-item" style="width: 100%;">';
-                                                                    questionHTML += '<input type="radio" name="' + inputName + '" value="' + choice.text + '" class="selectgroup-input">';
-                                                                    questionHTML += '<span class="selectgroup-button" style="text-align: left;">' + choice.text + '</span>';
-                                                                    questionHTML += '</label>';
-                                                                }
+                                                                // Create an input element
+                                                                var inputElement = document.createElement(mQuestionType === "multiple_choice" ? 'input' : 'input');
+                                                                inputElement.type = mQuestionType === "multiple_choice" ? 'checkbox' : 'radio';
+                                                                inputElement.name = inputName;
+                                                                inputElement.value = choice.text;
+                                                                inputElement.className = 'selectgroup-input';
+
+                                                                // Create a label for the input element
+                                                                var labelElement = document.createElement('label');
+                                                                labelElement.className = 'selectgroup-item';
+                                                                labelElement.style.width = '100%';
+                                                                labelElement.appendChild(inputElement);
+                                                                labelElement.innerHTML += '<span class="selectgroup-button" style="text-align: left;">' + choice.text + '</span>';
+
+                                                                // Append the label to your questionHTML
+                                                                questionHTML += labelElement.outerHTML;
 
                                                                 questionObject.answers.push(choice.text);
                                                             });
+
 
                                                         }
 
@@ -469,8 +492,7 @@
                                                         questionsList.appendChild(questionCard);
                                                     });
 
-                                                    // Now questionObjects contains the desired JSON array of objects
-                                                    console.log(questionObjects);
+
                                                 }
                                             }
 
