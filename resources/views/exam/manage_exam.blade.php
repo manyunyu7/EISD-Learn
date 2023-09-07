@@ -141,7 +141,6 @@
                                     <th>JUDUL</th>
                                     <th>Soal</th>
                                     <th>Sesi Exam</th>
-                                    <th>CONTENT</th>
                                     <th>Hapus</th>
                                     <th>Edit</th>
                                 </tr>
@@ -159,14 +158,11 @@
                                         <td><a href="{{url("/exam/$examId/question/")}}" class="badge badge-primary">Manage Pertanyaan</a>
                                         </td>
                                         <td><a href="{{url("/exam/$examId/session/")}}" class="badge badge-primary">Manage Sesi Quiz</a></td>
-                                        <td><a href="{{url("/lesson/$examId")}}">
-                                                <button type="button" class="btn btn-outline-primary">Lihat Kelas</button>
-                                            </a></td>
                                         <td class="text-center">
-                                            <form id="delete-post-form" action="{{ route('lesson.destroy', $data->id) }}" method="POST">
+                                            <form id="delete-post-form" action="{{ route('exam.delete', $data->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger ">HAPUS</button>
+                                                <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">HAPUS</button>
                                             </form>
                                         </td>
 

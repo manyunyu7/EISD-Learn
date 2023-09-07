@@ -122,7 +122,8 @@
                                     <label class="font-weight-bold">Jenis Pertanyaan</label>
                                     <select id="questionType" class="form-control" name="questionType">
                                         <option value="essay">Choose</option>
-                                        <option value="multiple_choice">Pilihan Ganda</option>
+                                        <option value="multiple_choice_single">Pilihan Ganda (Single)</option>
+                                        <option value="multiple_choice">Pilihan Ganda (Multiple Select)</option>
                                         <option value="essay">Essay</option>
                                         <option value="true_false">True/False</option>
                                     </select>
@@ -236,8 +237,8 @@
                                             function fetchQuestions() {
                                                 // Show the loading overlay when the fetch starts
                                                 showLoaderOverlay();
-
-                                                fetch('{{ url('exam/mquestions') }}') // Replace with your Laravel route
+                                                var url = window.location.origin + "/exam/mquestions?id=" + <?= $exam->id ?>;
+                                                fetch(url) // Replace with your Laravel route
                                                     .then(response => response.json())
                                                     .then(data => {
                                                         // Hide the loading overlay when the data is loaded
@@ -269,8 +270,16 @@
                                                     var questionHTML = '<div class="card-body">' +
                                                         '<h5 class="card-title mb-3">Question: ' + question.question + '</h5>';
 
+                                                    var questionType = "";
+                                                    if (question.question_type === "multiple_choice_single") {
+                                                        questionType = "Pilihlah satu jawaban yang benar";
+                                                    } else if (question.question_type === "multiple_choice") {
+                                                        questionType = "Pilihlah jawaban-jawaban yang anda anggap benar";
+                                                    }
+
                                                     // Check if the question has choices
                                                     if (choices && choices.length > 0) {
+                                                        questionHTML += '<p class="small">' + questionType + '</p>'; // Adding questionType as "small"
                                                         questionHTML += '<ul class="list-group">';
                                                         choices.forEach(function (choice) {
                                                             questionHTML += '<li class="list-group-item">' + choice.text + ' (Score: ' + choice.score + ')</li>';
@@ -440,8 +449,6 @@
                             </div>
                             <div class='card-body p-0'>
                                 <div class="container">
-
-
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item px-3 pb-2 row">
                                             <div class="custom-control custom-checkbox mb-1 col-12">
@@ -535,6 +542,7 @@
                                                 text: 'Question saved successfully',
                                             });
                                         }, 1000);
+                                        fetchQuestions()
                                     } else {
                                         // Handle any errors here and show an error message with SweetAlert
                                         setTimeout(function () {
@@ -581,6 +589,10 @@
                                 choicesDiv.style.display = 'none';
                                 recommendationDiv.style.display = 'none';
                                 essayDiv.style.display = 'block';
+                            }else if (selectedOption === 'multiple_choice_single') {
+                                choicesDiv.style.display = 'block';
+                                recommendationDiv.style.display = 'none';
+                                essayDiv.style.display = 'none';
                             }
                         });
 

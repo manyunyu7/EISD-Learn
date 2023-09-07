@@ -130,7 +130,8 @@
                                                 // Show the loading overlay when the fetch starts
                                                 showLoaderOverlay();
 
-                                                fetch('{{ url('exam/mquestions') }}') // Replace with your Laravel route
+                                                var url = window.location.origin + "/exam/mquestions?id=" + <?= $exam->id ?>;
+                                                fetch(url) // Replace with your Laravel route
                                                     .then(response => response.json())
                                                     .then(data => {
                                                         // Hide the loading overlay when the data is loaded

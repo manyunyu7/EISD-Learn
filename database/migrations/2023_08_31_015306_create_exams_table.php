@@ -23,6 +23,7 @@ class CreateExamsTable extends Migration
             $table->longText('description')->nullable();
             $table->string('randomize')->nullable();
             $table->string('can_access')->nullable();
+            $table->string('is_deleted')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('restrict');
             $table->timestamps();

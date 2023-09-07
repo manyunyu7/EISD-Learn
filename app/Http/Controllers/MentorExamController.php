@@ -11,53 +11,72 @@ use Illuminate\Support\Facades\Auth;
 
 class MentorExamController extends Controller
 {
-    public function viewCreateNew(){
+    public function viewCreateNew()
+    {
         return view("exam.create_new_exam");
     }
 
 
-    public function viewManageQuestion(Request $request,$id){
-        $dayta=Exam::where("created_by",'=',Auth::id())->get();
+    public function deleteExam(Request $request, $id)
+    {
         $exam = Exam::findOrFail($id);
-        $compact = compact('dayta','exam');
 
-        if($request->dump==true){
+        $exam->is_deleted = "y";
+        $exam->save();
+
+        return back()->with(['success' => 'Berhasil Menghapus Exam !']);
+        return response()->json(["message" => "success"]);
+    }
+
+    public function viewManageQuestion(Request $request, $id)
+    {
+        $dayta = Exam::where("created_by", '=', Auth::id())->get();
+        $exam = Exam::findOrFail($id);
+        $compact = compact('dayta', 'exam');
+
+        if ($request->dump == true) {
             return $compact;
         }
         return view("exam.manage_question_answer")->with($compact);
     }
 
-    public function viewEditQuestion(Request $request,$id){
+    public function viewEditQuestion(Request $request, $id)
+    {
         $question = ExamQuestionAnswers::findOrFail($id);
         $exam = Exam::findOrFail($question->exam_id);
-        $choices = json_decode($question->choices,true);
+        $choices = json_decode($question->choices, true);
         $showCompact = true;
-        $compact = compact('question','exam','showCompact','choices');
-        if($request->dump==true){
+        $compact = compact('question', 'exam', 'showCompact', 'choices');
+        if ($request->dump == true) {
             return $compact;
         }
         return view("exam.edit_question")->with($compact);
     }
 
-    public function viewManageQuestionOrder(Request $request,$id){
-        $dayta=Exam::where("created_by",'=',Auth::id())->get();
+    public function viewManageQuestionOrder(Request $request, $id)
+    {
+        $dayta = Exam::where("created_by", '=', Auth::id())->get();
         $exam = Exam::findOrFail($id);
-        $compact = compact('dayta','exam');
+        $compact = compact('dayta', 'exam');
 
-        if($request->dump==true){
+        if ($request->dump == true) {
             return $compact;
         }
         return view("exam.manage_question_answer_order")->with($compact);
     }
 
-    public function fetchQuestions()
+    public function fetchQuestions(Request $request)
     {
-        $questions = ExamQuestionAnswers::orderBy('order', 'asc')->get();
+        $id = $request->id;
+        $questions = ExamQuestionAnswers::orderBy('order', 'asc')->where(
+            "exam_id", "=", $id
+        )->get();
 
         return response()->json($questions);
     }
 
-    public function storeQuestion(Request $request){
+    public function storeQuestion(Request $request)
+    {
 
         $validatedData = $request->validate([
 //            'question' => 'required',
@@ -104,7 +123,8 @@ class MentorExamController extends Controller
         return response()->json(['message' => 'Question stored successfully'], 200);
     }
 
-    public function updateQuestion(Request $request){
+    public function updateQuestion(Request $request)
+    {
 
         $validatedData = $request->validate([
 //            'question' => 'required',
@@ -161,7 +181,8 @@ class MentorExamController extends Controller
     }
 
 
-    public function updateQuestionOrder(Request $request) {
+    public function updateQuestionOrder(Request $request)
+    {
         $newOrder = $request->input('newOrder');
 
         // Loop through the new order and update the 'order' field in the database
@@ -174,19 +195,24 @@ class MentorExamController extends Controller
     }
 
 
-    public function viewManageExam(Request $request){
-        $dayta=Exam::where("created_by",'=',Auth::id())->get();
+    public function viewManageExam(Request $request)
+    {
+        $dayta = Exam::where("created_by", '=', Auth::id())
+            ->where("is_deleted", "<>", "y")
+            ->orWhereNull("is_deleted")
+            ->get();
         $compact = compact('dayta');
 
-        if($request->dump==true){
+        if ($request->dump == true) {
             return $compact;
         }
         return view("exam.manage_exam")->with($compact);
     }
 
-    public function storeNewExam(Request $request){
+    public function storeNewExam(Request $request)
+    {
         $exam = new Exam();
-        $user_id  = Auth::id();
+        $user_id = Auth::id();
         $exam->title = $request->title;
         $exam->randomize = $request->randomize;
         $exam->can_access = $request->can_access;

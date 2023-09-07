@@ -22,6 +22,7 @@ class CreateExamSessionsTable extends Migration
             $table->string('can_access')->nullable();
             $table->string('public_access')->nullable();
             $table->string('show_result_on_end')->nullable();
+            $table->string('time_limit_minute')->nullable();
             $table->string('allow_review')->nullable();
             $table->string('show_score_on_review')->nullable();
             $table->string('allow_multiple')->nullable();

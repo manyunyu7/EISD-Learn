@@ -70,17 +70,23 @@ class MentorExamSessionController extends Controller
     }
 
 
+    public function getSessionData(Request $request,$id){
+        $session = ExamSession::findOrFail($id);
+        return $session;
+    }
+
     public function storeSession(Request $request){
         $examSession = new ExamSession();
         $examSession->start_date = $request->start_date;
         $examSession->end_date = $request->end_date;
-        $examSession->instruction = $request->instruction;
-        $examSession->description = $request->description;
+        $examSession->instruction = $request->instruction ?? '';
+        $examSession->description = $request->description ?? '';
         $examSession->can_access = $request->can_access;
         $examSession->public_access = $request->public_access;
         $examSession->show_result_on_end = $request->show_result_on_end;
         $examSession->allow_review = $request->allow_review;
         $examSession->show_score_on_review = $request->show_score_on_review;
+        $examSession->time_limit_minute = $request->time_limit;
         $examSession->allow_multiple = $request->allow_multiple;
         $examSession->exam_id = $request->exam_id;
         $examSession->created_by = Auth::id();
@@ -88,6 +94,31 @@ class MentorExamSessionController extends Controller
 
         $questionsAnswers = ExamQuestionAnswers::where("exam_id","=",$examSession->exam_id)->get();
         $examSession->questions_answers=$questionsAnswers;
+
+        if($examSession->save()){
+            return response()->json(["message"=>"success"],200);
+        }else{
+            return response()->json(["message"=>"failed"],500);
+        }
+    }
+
+    public function updateSessionData(Request $request){
+        $examSession = ExamSession::findOrFail($request->id);
+        $examSession->start_date = $request->start_date;
+        $examSession->end_date = $request->end_date;
+        $examSession->instruction = $request->instruction ?? '';
+        $examSession->description = $request->description ?? '';
+        $examSession->can_access = $request->can_access;
+        $examSession->public_access = $request->public_access;
+        $examSession->show_result_on_end = $request->show_result_on_end;
+        $examSession->allow_review = $request->allow_review;
+        $examSession->show_score_on_review = $request->show_score_on_review;
+        $examSession->time_limit_minute = $request->time_limit;
+        $examSession->allow_multiple = $request->allow_multiple;
+
+        //exam question should be the same with existing
+//        $questionsAnswers = ExamQuestionAnswers::where("exam_id","=",$examSession->exam_id)->get();
+//        $examSession->questions_answers=$questionsAnswers;
 
         if($examSession->save()){
             return response()->json(["message"=>"success"],200);

@@ -150,75 +150,39 @@
                                                 var questionsList = document.getElementById('questions-list');
                                                 questionsList.innerHTML = ''; // Clear previous questions
 
-                                                var questionIds = []; // Create an array to store the question IDs in the new order
-
                                                 questions.forEach(function (question) {
                                                     var questionCard = document.createElement('div');
                                                     questionCard.className = 'card mb-3';
 
+                                                    // Create the HTML structure for displaying the question
+                                                    var questionHTML = '<div class="card-body">';
+                                                    questionHTML += '<h5 class="card-title mb-3">Question: ' + question.question + '</h5>';
+
                                                     // Parse the choices JSON string into an array
                                                     var choices = JSON.parse(question.choices);
 
-                                                    // Create the HTML structure for displaying the question and its choices
-                                                    var questionHTML = '<div class="card-body">' +
-                                                        '<h5 class="card-title mb-3">Question: ' + question.question + '</h5>';
-
                                                     // Check if the question has choices
                                                     if (choices && choices.length > 0) {
-                                                        questionHTML += '<ul class="list-group">';
-                                                        choices.forEach(function (choice) {
-                                                            questionHTML += '<li class="list-group-item">' + choice.text + ' (Score: ' + choice.score + ')</li>';
+                                                        // Create a form element for the choices
+                                                        questionHTML += '<form style="text-align: left; width: 100%;">';
+
+                                                        choices.forEach(function (choice, index) {
+                                                            // Create a label with the selectgroup-item class for each choice
+                                                            questionHTML += '<label class="selectgroup-item" style="width: 100%;">';
+                                                            questionHTML += '<input type="checkbox" name="question_' + question.id + '[]" value="' + choice.text + '" class="selectgroup-input">';
+                                                            questionHTML += '<span class="selectgroup-button" style="text-align: left;">' + choice.text + '</span>';
+                                                            questionHTML += '</label>';
                                                         });
-                                                        questionHTML += '</ul>';
+
+                                                        questionHTML += '</form>';
                                                     }
 
+                                                    questionHTML += '</div>'; // Close the card-body div
                                                     questionCard.innerHTML = questionHTML;
-
-                                                    // Add the question's ID as a data attribute to the questionCard
-                                                    questionCard.setAttribute('data-question-id', question.id);
-
                                                     questionsList.appendChild(questionCard);
-
-                                                    // Add the question's ID to the array
-                                                    questionIds.push(question.id);
-                                                });
-
-                                                // Function to open the specific URI in a new window
-                                                function openNewWindow(questionId) {
-                                                    // Get the base URL
-                                                    var baseUrl = window.location.origin;
-
-                                                    // Construct the URL for the specific question's edit page
-                                                    var url = baseUrl + '/exam/question/' + questionId + '/edit';
-
-                                                    // Open the URL in a new window
-                                                    var newWindow = window.open(url, '_blank', 'width=500,height=500');
-
-                                                    // Check if the new window is closed at regular intervals
-                                                    var interval = setInterval(function () {
-                                                        if (newWindow.closed) {
-                                                            // The new window is closed, trigger a questions refres
-                                                            fetchQuestions()
-                                                            clearInterval(interval); // Stop the polling
-                                                        }
-                                                    }, 1000); // Check every 1 second (adjust as needed)
-                                                }
-
-                                                // Attach a click event listener to each "Edit" button
-                                                document.querySelectorAll('.edit-question-button').forEach(function (editButton) {
-                                                    editButton.addEventListener('click', function () {
-                                                        // Get the question ID from the button's data attribute
-                                                        var questionId = this.getAttribute('data-question-id');
-
-                                                        // Open the specific URI in a new window
-                                                        openNewWindow(questionId);
-                                                    });
-                                                });
-                                                // Assign the question IDs to the data-question-id attribute for sorting
-                                                questionIds.forEach(function (id, index) {
-                                                    questionsList.children[index].setAttribute('data-question-id', id);
                                                 });
                                             }
+
 
                                             // Attach a click event handler to the "Refresh" button
                                             var refreshButton = document.getElementById('refreshQuestions');

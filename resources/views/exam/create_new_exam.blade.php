@@ -135,7 +135,7 @@
                                             @enderror
                                         </div>
 
-                                        <div class="form-group">
+                                        <div class="form-group d-none">
                                             <h4 class="font-weight-bold">Tanggal Mulai</h4>
                                             <input id="inputTitle" type="datetime-local"
                                                    class="form-control @error('startDate') is-invalid @enderror"
@@ -143,7 +143,7 @@
                                                    value="{{ old('startDate') }}" placeholder="Masukkan Judul Exam/Quiz">
                                         </div>
 
-                                        <div class="form-group">
+                                        <div class="form-group d-none">
                                             <h4 class="font-weight-bold">Tanggal Selesai</h4>
                                             <input id="inputTitle" type="datetime-local"
                                                    class="form-control @error('endDate') is-invalid @enderror"
@@ -154,21 +154,21 @@
                                         </div>
 
 
-                                        <div class="form-check">
+                                        <div class="form-check d-none">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" name="randomize" type="checkbox" value="y">
+                                                <input class="form-check-input" name="randomize" type="checkbox" value="n">
                                                 <span class="form-check-sign">Acak Soal ?</span>
                                             </label>
                                         </div>
 
-                                        <div class="form-check">
+                                        <div class="form-check d-none">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" name="can_access" type="checkbox" value="y">
+                                                <input class="form-check-input" name="can_access" type="xcheckbox" value="n">
                                                 <span class="form-check-sign">Apakah Exam bisa diakses siswa ?</span>
                                             </label>
                                         </div>
 
-                                        <div class="form-group">
+                                        <div class="form-group d-none">
                                             <h4 class="font-weight-bold">Instruksi</h4>
                                             <p>Masukkan Instruksi Quiz/Exam disini</p>
                                             <textarea

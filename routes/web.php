@@ -27,6 +27,7 @@
     Route::post('/profile', 'ProfileController@update')->name('profile.update')->middleware('auth');
 
     Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
+    Route::any('/your-api-endpoint', 'ExamTakerController@submitQuiz');
 
 
     Route::get('/datatable', function () {
@@ -72,6 +73,7 @@
                 Route::post('store', 'MentorExamController@storeNewExam');
                 Route::post('update-question', 'MentorExamController@updateQuestion');
                 Route::get('manage', 'MentorExamController@viewManageExam');
+                Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
 
                 Route::get('session', 'MentorExamSessionController@viewManageSession');
 
@@ -79,6 +81,9 @@
                 Route::prefix("session")->group(function (){
                     Route::get('{id}/view', 'MentorExamSessionController@viewDetailSession');
                     Route::any('{id}/mquestions', 'MentorExamSessionController@fetchQuestions');
+                    Route::any('{id}/edit', 'MentorExamSessionController@editSession');
+                    Route::any('{id}/data', 'MentorExamSessionController@getSessionData');
+                    Route::any('update', 'MentorExamSessionController@updateSessionData');
                 });
 
                 Route::get('{id}/question', 'MentorExamController@viewManageQuestion');
@@ -100,6 +105,20 @@
 
         Route::get('/progress', 'StudentProgressController@startSection');
 
+        Route::prefix("quiz")->group(function (){
+
+            Route::prefix("session")->group(function (){
+                Route::get('{id}/initial', 'ExamTakerController@viewInitialTakeSession');
+                Route::get('{id}/take-play', 'ExamTakerController@viewInitialTakeSession');
+                Route::get('{id}/play', 'ExamTakerController@viewInitialTakeSession');
+                Route::get('{id}/view', 'MentorExamSessionController@viewDetailSession');
+                Route::any('{id}/mquestions', 'ExamTakerController@fetchQuestions');
+                Route::any('save-answers', 'ExamTakerController@saveAnswers');
+            });
+
+
+            Route::any('{id}/mquestions', 'MentorExamSessionController@fetchQuestions');
+        });
 
         Route::group(['middleware' => ['student']], function () {
 
@@ -110,6 +129,8 @@
             Route::delete('/portfolio/{portfolio}/destroy', 'PortfolioController@destroy')->name('portfolio.destroy');
             Route::post('/portfolio/store', 'PortfolioController@store')->name('portfolio.store');
             Route::post('/portfolio/{portfolio}/update', 'PortfolioController@update')->name('portfolio.update');
+
+
 
 
             Route::post('/course/register', 'LessonController@studentRegister')->name('course.register');

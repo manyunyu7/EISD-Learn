@@ -116,6 +116,48 @@
             max-height: 20vh; /* Adjust the maximum height of the image */
         }
 
+        /* CSS for the timer */
+        .timer {
+            font-size: 24px;
+            color: black; /* Initial color */
+            animation: blink 1s step-end infinite; /* Blinking animation */
+        }
+
+        @keyframes blink {
+            50% {
+                color: transparent; /* Blinking color */
+            }
+        }
+
+        /* Floating timer container */
+        .timer-container {
+            position: fixed;
+            top: 10px; /* Adjust the top position as needed */
+            right: 10px; /* Adjust the right position as needed */
+            background-color: white; /* You can adjust the background color as needed */
+            z-index: 9999;
+            padding: 10px;
+            border: 1px solid #ccc; /* Add a border for style */
+            border-radius: 5px;
+        }
+
+        /* Style for the timer */
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: black; /* You can adjust the text color as needed */
+        }
+
+        /* Define the style for cards outside the specified index range */
+        .outside-index-card {
+            background-color: #ffcccc; /* Change the background color to light red */
+            border: 2px solid #ff0000; /* Add a red border */
+            color: #ff0000; /* Change the text color to red */
+            display: none; /* Hide the card */
+        }
+
+        /* Additional styling for the timer as needed */
+
         @keyframes blink {
             0%, 100% {
                 opacity: 0;
@@ -164,6 +206,14 @@
                 loaderOverlay.style.display = 'none';
             }
         }, 1000);
+    }
+
+    function hideLoaderOverlayNow() {
+        setTimeout(function () {
+            if (loaderOverlay) {
+                loaderOverlay.style.display = 'none';
+            }
+        }, 0);
     }
 </script>
 <script>

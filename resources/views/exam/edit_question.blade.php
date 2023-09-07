@@ -96,99 +96,102 @@
                         <!-- Add New Post Form -->
                         <div class="card card-small mb-3">
                             <div class="card-body">
-                                    <input type="hidden" name="exam_id" value="{{ $exam->id }}">
-                                    <input type="hidden" name="question_id" value="{{ $question->id }}">
+                                <input type="hidden" name="exam_id" value="{{ $exam->id }}">
+                                <input type="hidden" name="question_id" value="{{ $question->id }}">
 
-                                    <div class="form-group">
-                                        <img class="rounded" id="imgPreview" src=""
-                                             style="max-height: 300px; max-width: 100%;">
+                                <div class="form-group">
+                                    <img class="rounded" id="imgPreview" src=""
+                                         style="max-height: 300px; max-width: 100%;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="font-weight-bold">GAMBAR</label>
+                                    <input id="input-image" type="file" onchange="previewPhoto()"
+                                           class="form-control @error('image') is-invalid @enderror"
+                                           name="image"
+                                           accept="image/*">
+
+                                    <!-- error message untuk title -->
+                                    @error('image')
+                                    <div class="alert alert-danger mt-2">
+                                        {{ $message }}
                                     </div>
+                                    @enderror
+                                </div>
 
-                                    <div class="form-group">
-                                        <label class="font-weight-bold">GAMBAR</label>
-                                        <input id="input-image" type="file" onchange="previewPhoto()"
-                                               class="form-control @error('image') is-invalid @enderror"
-                                               name="image"
-                                               accept="image/*">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Jenis Pertanyaan</label>
+                                    <select id="questionType" class="form-control" name="questionType">
+                                        <option @if($question->question_type=="multiple_choice_single") selected
+                                                @endif value="multiple_choice_single">Pilihan Ganda Single
+                                        </option>
+                                        <option @if($question->question_type=="multiple_choice") selected
+                                                @endif value="multiple_choice">Pilihan Ganda
+                                        </option>
+                                        <option @if($question->question_type=="essay") selected
+                                                @endif value="essay">Essay
+                                        </option>
+                                        <option value="true_false">True/False</option>
+                                    </select>
+                                </div>
 
-                                        <!-- error message untuk title -->
-                                        @error('image')
-                                        <div class="alert alert-danger mt-2">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Pertanyaan</label>
+                                    <input type="text" class="form-control" value="{{$question->question}}"
+                                           name="title"
+                                           placeholder="Masukkan Pertanyaan">
+                                </div>
 
-                                    <div class="form-group">
-                                        <label class="font-weight-bold">Jenis Pertanyaan</label>
-                                        <select id="questionType" class="form-control" name="questionType">
-                                            <option @if($question->question_type=="multiple_choice") selected
-                                                    @endif value="multiple_choice">Pilihan Ganda
-                                            </option>
-                                            <option @if($question->question_type=="essay") selected
-                                                    @endif value="essay">Essay
-                                            </option>
-                                            <option value="true_false">True/False</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="font-weight-bold">Pertanyaan</label>
-                                        <input type="text" class="form-control" value="{{$question->question}}"
-                                               name="title"
-                                               placeholder="Masukkan Pertanyaan">
-                                    </div>
-
-                                    <div id="choices" style="
-                                    @if($question->question_type!="multiple_choice")
+                                <div id="choices" style="
+                                    @if($question->question_type!="multiple_choice" && $question->question_type!="multiple_choice_single")
                                     display: none;"
-                                        @endif>
-                                        <div class="form-group">
-                                            @if(is_array($choices))
-                                                @forelse($choices as $choice)
-                                                    <div class="form-group">
-                                                        <label class="font-weight-bold">Pilihan</label>
-                                                        <div class="input-group">
-                                                            <input type="text" class="form-control" name="choice[]"
-                                                                   placeholder="Pilihan" value="{{ $choice['text'] }}">
-                                                            <input type="number" class="form-control" name="score[]"
-                                                                   placeholder="Skor" value="{{ $choice['score'] }}">
-                                                            <div class="input-group-append">
-                                                                <button type="button" class="btn btn-danger remove-choice">
-                                                                    Hapus
-                                                                </button>
-                                                            </div>
+                                    @endif>
+                                    <div class="form-group">
+                                        @if(is_array($choices))
+                                            @forelse($choices as $choice)
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold">Pilihan</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" name="choice[]"
+                                                               placeholder="Pilihan" value="{{ $choice['text'] }}">
+                                                        <input type="number" class="form-control" name="score[]"
+                                                               placeholder="Skor" value="{{ $choice['score'] }}">
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-danger remove-choice">
+                                                                Hapus
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                @empty
-                                                    <p>No choices available.</p>
-                                                @endforelse
-                                            @else
-                                                <p>Choices is not an array.</p>
-                                            @endif
-                                        </div>
-                                        <button type="button" class="btn btn-primary btn-border add-choice">Tambah
-                                            Pilihan
-                                        </button>
+                                                </div>
+                                            @empty
+                                                <p>No choices available.</p>
+                                            @endforelse
+                                        @else
+                                            <p>Choices is not an array.</p>
+                                        @endif
                                     </div>
-
-                                    <div id="recommendation" style="display: none;">
-                                        <div class="alert alert-info">Rekomendasi: Gunakan pertanyaan True/False untuk
-                                            pertanyaan dengan dua pilihan yang jelas (benar/salah).
-                                        </div>
-                                    </div>
-
-                                    <div id="essay" style="display: none;">
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Jawaban Essay</label>
-                                            <textarea class="form-control" name="essay_answer" rows="5"
-                                                      placeholder="Masukkan Jawaban Essay"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <button id="saveQuestion" type="submit" class="btn btn-success mt-5">Simpan
-                                        Pertanyaan
+                                    <button type="button" class="btn btn-primary btn-border add-choice">Tambah
+                                        Pilihan
                                     </button>
+                                </div>
+
+                                <div id="recommendation" style="display: none;">
+                                    <div class="alert alert-info">Rekomendasi: Gunakan pertanyaan True/False untuk
+                                        pertanyaan dengan dua pilihan yang jelas (benar/salah).
+                                    </div>
+                                </div>
+
+                                <div id="essay" style="display: none;">
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">Jawaban Essay</label>
+                                        <textarea class="form-control" name="essay_answer" rows="5"
+                                                  placeholder="Masukkan Jawaban Essay"></textarea>
+                                    </div>
+                                </div>
+
+                                <button id="saveQuestion" type="submit" class="btn btn-success mt-5">Simpan
+                                    Pertanyaan
+                                </button>
                             </div>
                         </div>
 
@@ -425,6 +428,10 @@
                                 choicesDiv.style.display = 'none';
                                 recommendationDiv.style.display = 'none';
                                 essayDiv.style.display = 'block';
+                            } else if (selectedOption === 'multiple_choice_single') {
+                                choicesDiv.style.display = 'block';
+                                recommendationDiv.style.display = 'none';
+                                essayDiv.style.display = 'none';
                             }
                         });
 
