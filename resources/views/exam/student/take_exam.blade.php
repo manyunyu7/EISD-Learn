@@ -71,6 +71,17 @@
                                 <hr>
 
                                 <img width="300px" src="http://0.0.0.0:5253/home_assets/img/esd_3.png" alt="">
+
+
+                                <div class="form-group">
+                                    <label for="fullName">Nama Peserta Quiz :</label>
+                                    <input type="text" id="fullName" name="fullName" class="form-control" placeholder="Enter your full name" required
+                                           @auth
+                                               value="{{ Auth::user()->name }}"
+                                        @endauth
+                                    >
+                                </div>
+
                                 <!-- Subject -->
                                 <div class="form-group d-none">
                                     <label>Nama Quiz:</label>
@@ -115,9 +126,10 @@
                                 </div>
 
 
+
                                 <!-- Start Exam Button -->
                                 <button id="startExamButton" type="button"
-                                        class="btn btn-primary btn-border btn-round mb-3"
+                                        class="btn btn-primary btn-border btn-round mb-3 mt-3"
                                         data-toggle="modal" data-target="#confirmationModal">
                                     Start Exam
                                 </button>
@@ -404,10 +416,10 @@
                                                     } else {
                                                         url = "/your-api-endpoint"
                                                     }
-
                                                     const requestBody = {
                                                         userAnswers: userAnswers,
                                                         isFinished: isFinished,
+                                                        fullName: document.getElementById('fullName').value // Assuming you have an input field with id "fullName"
                                                     };
 
                                                     fetch(url, {

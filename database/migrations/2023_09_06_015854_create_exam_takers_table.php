@@ -19,6 +19,7 @@ class CreateExamTakersTable extends Migration
             $table->unsignedBigInteger('session_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
             $table->foreign('session_id')->references('id')->on('exam_sessions')->onDelete('restrict');
+            $table->string('guest_name')->nullable();
             $table->string('current_score')->nullable();
             $table->json("user_answers")->nullable();
             $table->string("is_finished")->nullable();

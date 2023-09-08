@@ -88,6 +88,8 @@ class ExamTakerController extends Controller
         $sessionId = $payload['sessionId'];
         $answers = $payload['answers'];
 
+        $name = $payload["fullName"];
+
         // Load the exam session
         $session = ExamSession::findOrFail($sessionId);
 
@@ -195,6 +197,7 @@ class ExamTakerController extends Controller
             $examResult->session_id = $sessionId;
             $examResult->user_answers = ($answers);
             $examResult->current_score = $userScore;
+            $examResult->guest_name = $name;
             $examResult->save();
             $dimanaYa = "yessy";
         }
@@ -215,6 +218,7 @@ class ExamTakerController extends Controller
             $examResult->session_id = $sessionId;
             $examResult->user_answers = ($answers);
             $examResult->current_score = $userScore;
+            $examResult->guest_name = $name;
             $examResult->save();
             $dimanaYa = "yossy";
         }
@@ -226,6 +230,7 @@ class ExamTakerController extends Controller
                 $examResult->session_id = $sessionId;
                 $examResult->user_answers = ($answers);
                 $examResult->current_score = $userScore;
+                $examResult->guest_name = $name;
                 $examResult->finished_at = Carbon::now();
                 $examResult->is_finished = "y";
                 $examResult->save();
@@ -242,6 +247,7 @@ class ExamTakerController extends Controller
                 $examResult->session_id = $sessionId;
                 $examResult->user_answers = ($answers);
                 $examResult->current_score = $userScore;
+                $examResult->guest_name = $name;
                 $examResult->is_finished = "y";
                 $examResult->finished_at = Carbon::now();
                 $examResult->save();
