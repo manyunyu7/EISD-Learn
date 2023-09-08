@@ -219,10 +219,7 @@
 
                     // Add click event handler for the Confirm Start button
                     confirmStartButton.addEventListener('click', function () {
-                        // Start the exam here, e.g., show the exam-area and the timer
-                        examArea.style.display = 'block'; // Show the exam-area
-                        setInterval(updateTimer, 1000); // Update timer every second
-                        document.getElementById("floating-timer").removeAttribute("style");
+                        submitAnswer(false,true)
                     });
                 });
             </script>
@@ -281,7 +278,7 @@
                                             });
 
 
-                                            function submitAnswer(isFinished) {
+                                            function submitAnswer(isFinished,isInitial) {
                                                 var examId = {{ $exam->id }};
                                                 var sessionId = {{ $session->id }};
 
@@ -341,13 +338,19 @@
 
                                                 let url = "";
                                                 if (isFinished) {
-                                                    url = "/your-api-endpoint?isFinished=true"
+                                                    url = "/your-api-endpoint"
                                                 } else {
-                                                    url = "/your-api-endpoint?isFinished=false"
+                                                    url = "/your-api-endpoint"
                                                 }
+
+                                                const requestBody = {
+                                                    userAnswers: userAnswers,
+                                                    isFinished: isFinished,
+                                                };
+
                                                 fetch(url, {
                                                     method: 'POST',
-                                                    body: JSON.stringify(userAnswers),
+                                                    body: JSON.stringify(requestBody),
                                                     headers: {
                                                         'Content-Type': 'application/json',
                                                         'X-CSRF-TOKEN': csrfToken, // Include the CSRF token in the headers
@@ -355,38 +358,59 @@
                                                 })
                                                     .then(function (response) {
                                                         if (!response.ok) {
-                                                            console.error('Network error:', error);
+                                                            console.error('Network error:', response);
                                                         }
                                                         return response.json();
                                                     })
                                                     .then(function (data) {
-                                                        hideLoaderOverlayNow();
-                                                        triggerConfetti();
+                                                        hideLoaderOverlay();
                                                         var score = data.scores;
+                                                        var message = data.message;
+                                                        var error = data.error;
 
-                                                        if (isFinished === true)
+                                                        if (error == true) {
                                                             Swal.fire({
-                                                                title: "Your Score",
-                                                                text: `You scored ${score} points!`, // Display the score
-                                                                icon: "success",
+                                                                title: "Error",
+                                                                text: `${message}`, // Display the score
+                                                                icon: "error",
                                                                 confirmButtonText: "OK",
                                                             })
-                                                                .then((result) => {
-                                                                    // The first SweetAlert is closed, now show the second one after 2 seconds
-                                                                    if (result.isConfirmed) {
-                                                                        return new Promise((resolve) => {
-                                                                            setTimeout(() => {
-                                                                                resolve();
-                                                                            }, 3000); // Delay for 2 seconds
-                                                                        });
-                                                                    }
+                                                        } else {
+
+                                                            if(isInitial){
+                                                                const examArea = document.getElementById('exam-area'); // Get the exam-area section
+                                                                // Start the exam here, e.g., show the exam-area and the timer
+                                                                examArea.style.display = 'block'; // Show the exam-area
+                                                                setInterval(updateTimer, 1000); // Update timer every second
+                                                                document.getElementById("floating-timer").removeAttribute("style");
+                                                            }
+
+                                                            if (isFinished === true) {
+                                                                Swal.fire({
+                                                                    title: "Your Score",
+                                                                    text: `You scored ${score} points!`, // Display the score
+                                                                    icon: "success",
+                                                                    confirmButtonText: "OK",
                                                                 })
-                                                                .then((result) => {
-                                                                    // The second SweetAlert is closed (if opened), you can add more chains if needed
-                                                                });
+                                                                    .then((result) => {
+                                                                        // The first SweetAlert is closed, now show the second one after 2 seconds
+                                                                        if (result.isConfirmed) {
+                                                                            return new Promise((resolve) => {
+                                                                                setTimeout(() => {
+                                                                                    resolve();
+                                                                                }, 3000); // Delay for 2 seconds
+                                                                            });
+                                                                        }
+                                                                    })
+                                                                    .then((result) => {
+                                                                        triggerConfetti();
+                                                                    });
+                                                            }
+                                                        }
+
                                                     })
                                                     .catch(function (error) {
-                                                        hideLoaderOverlayNow();
+                                                        hideLoaderOverlay();
                                                         // Handle network error
                                                         console.error('Network error:', error);
                                                     });
@@ -394,7 +418,7 @@
 
                                             document.getElementById('question-form').addEventListener('submit', function (event) {
                                                 event.preventDefault(); // Prevent the default form submission behavior
-                                                submitAnswer(true);
+                                                submitAnswer(true,false);
                                             });
                                             // Attach a click event handler to the "Refresh" button
                                             $('#refreshQuestions').click(function () {
@@ -409,7 +433,7 @@
 
                                                 questionsList.addEventListener('click', function (event) {
                                                     if (event.target && event.target.nodeName === 'INPUT') {
-                                                        submitAnswer(false); // Call your function here
+                                                        submitAnswer(false,false); // Call your function here
                                                     }
                                                 });
 
