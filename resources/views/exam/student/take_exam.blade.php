@@ -269,7 +269,6 @@
                                                     clearInterval(timerInterval);
                                                 }
 
-
                                                 const startExamButton = document.getElementById('startExamButton');
                                                 const confirmStartButton = document.getElementById('confirmStartButton');
                                                 const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
@@ -327,8 +326,6 @@
                                                             console.log("Waktu Habis Gan")
                                                         }
 
-
-
                                                         // Stop the timer when time is up
                                                         stopTimer();
                                                     } else {
@@ -361,6 +358,20 @@
                                                         sessionId: sessionId, // Include sessionId
                                                         answers: [],
                                                     };
+
+                                                    if(isFinished){
+                                                        const startExamButton = document.getElementById('startExamButton');
+                                                        const examArea = document.getElementById('exam-area'); // Get the exam-area section
+                                                        const examEndArea = document.getElementById('exam-end'); // Get the exam-area section
+                                                        examArea.style.display = 'none'; // Show the exam-area
+                                                        // Start the exam here, e.g., show the exam-area and the timer
+                                                        examEndArea.style.display = 'block'; // Show the exam-area
+                                                        startExamButton.style.display = 'none'; // Show the exam-area
+                                                        stopTimer();
+
+                                                        isTimerTriggered = true;
+                                                        document.getElementById("floating-timer").setAttribute("style", "display: none;");
+                                                    }
 
                                                     // Loop through the inputs and collect user answers
                                                     inputs.forEach(function (input) {
