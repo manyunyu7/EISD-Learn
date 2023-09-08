@@ -134,24 +134,42 @@ class ExamTakerController extends Controller
             $allowMultipleAttempt = true;
         }
 
-        //check if
-        $isFirstFinishedAttempt = false;
 
+        if ($session->public_access == "n") {
+            if (Auth::user() == null)
+                return response()->json([
+                    "scores" => 0,
+                    "message" => "Anda harus login untuk mengerjakan quiz ini",
+                    "error" => true
+                ], 403);
+        }
+
+
+        if ($session->can_access == "n") {
+            return response()->json([
+                "scores" => 0,
+                "message" => "Quiz sedang tidak tersedia, hubungi Dept Training untuk memulai quiz",
+                "error" => true
+            ], 409);
+        }
+
+        //check if
         $finishedAttemptCount = ExamTaker::where('user_id', '=', Auth::id())
             ->where('session_id', '=', $sessionId)
             ->where(function ($query) {
                 $query->whereNotNull('finished_at');
             })
             ->count();
-        if(!$allowMultipleAttempt){
-            if($finishedAttemptCount>0){
+        if (!$allowMultipleAttempt) {
+            if ($finishedAttemptCount > 0) {
                 return response()->json([
                     "scores" => 0,
-                    "message"=> "Anda sudah mengambil sesi quiz ini",
-                    "error"=>true
-                ],409);
+                    "message" => "Anda sudah mengambil sesi quiz ini, quiz hanya bisa diambil satu kali",
+                    "error" => true
+                ], 409);
             }
         }
+
 
         //check if there is existing same session that unfinished
         //count the number of existing sessions that are unfinished
@@ -182,11 +200,10 @@ class ExamTakerController extends Controller
         }
 
 
-
 //        if(!$allowMultipleAttempt && !$isFirstAttempt)
 
         //if not finished and not first attempt
-        if ($request->isFinished != true && $isFirstUnfinishedAttempt!=true) {
+        if ($request->isFinished != true && $isFirstUnfinishedAttempt != true) {
             $examResult = ExamTaker::where(
                 "session_id", '=', $sessionId
             )->where(
@@ -202,8 +219,8 @@ class ExamTakerController extends Controller
             $dimanaYa = "yossy";
         }
 
-        if($request->isFinished == true){
-            if($isFirstUnfinishedAttempt){
+        if ($request->isFinished == true) {
+            if ($isFirstUnfinishedAttempt) {
                 $examResult = new ExamTaker();
                 $examResult->user_id = Auth::id();
                 $examResult->session_id = $sessionId;
@@ -213,7 +230,7 @@ class ExamTakerController extends Controller
                 $examResult->is_finished = "y";
                 $examResult->save();
                 $dimanaYa = "priskilla";
-            }else{
+            } else {
                 $examResult = ExamTaker::where(
                     "session_id", '=', $sessionId
                 )->where(
@@ -243,7 +260,6 @@ class ExamTakerController extends Controller
         }
 
 
-
         if ($request->isFinished == true) {
             return response()->json([
                 "d" => $dimanaYa,
@@ -253,8 +269,8 @@ class ExamTakerController extends Controller
                 "scores" => $userScore,
                 "answer" => $answers,
                 "session" => $session,
-                "message"=> "Sukses",
-                "error"=>false
+                "message" => "Sukses",
+                "error" => false
             ]);
         } else {
             return response()->json([
@@ -265,8 +281,8 @@ class ExamTakerController extends Controller
                 "attempt_count" => $unfinishedAttemptCount,
                 "answer" => $answers,
                 "session" => $session,
-                "message"=> "Sukses",
-                "error"=>false
+                "message" => "Sukses",
+                "error" => false
             ]);
         }
 

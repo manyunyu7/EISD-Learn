@@ -15,7 +15,7 @@ class CreateExamTakersTable extends Migration
     {
         Schema::create('exam_takers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('session_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
             $table->foreign('session_id')->references('id')->on('exam_sessions')->onDelete('restrict');
