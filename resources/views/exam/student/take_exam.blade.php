@@ -70,12 +70,12 @@
                                 {{--                                <h3 class="card-subtitle">Sesi : {{$session->id}}</h3>--}}
                                 <hr>
 
-                                <img width="300px" src="{{url('/')}}/home_assets/img/esd_3.png" alt="">
-
+                                <img class="card-img-top" src="{{ url('/') }}/home_assets/img/esd_3.png" alt="" style="max-width: 300px; height: auto;">
 
                                 <div class="form-group">
                                     <label for="fullName">Nama Peserta Quiz :</label>
-                                    <input type="text" id="fullName" name="fullName" class="form-control" placeholder="Enter your full name" required
+                                    <input type="text" id="fullName" name="fullName" class="form-control"
+                                           placeholder="Enter your full name" required
                                            @auth
                                                value="{{ Auth::user()->name }}"
                                         @endauth
@@ -182,17 +182,16 @@
                                 <h3 class="card-title">Waktu Habis</h3>
                                 {{-- <h3 class="card-subtitle">Sesi : {{$session->id}}</h3> --}}
                                 <hr>
-                                <div class="form-group">
-                                    <label>Quiz Selesai, Terima kasih sudah mengikuti kuis {{$exam->title}}, jawaban anda telah disimpan dan terkirim</label>
-                                </div>
-
+                                <label>Quiz Selesai, Terima kasih sudah mengikuti kuis {{$exam->title}}, jawaban anda
+                                    telah disimpan dan terkirim</label>
                                 <script>
                                     function goBack() {
                                         window.history.back();
                                     }
                                 </script>
                                 <!-- Button to go back to the previous page -->
-                                <a href="javascript:void(0);" onclick="goBack()" class="btn btn-primary btn-outlined">Go Back</a>
+                                <a href="javascript:void(0);" onclick="goBack()" class="btn btn-primary btn-outlined mt-5">Go
+                                    Back</a>
                             </div>
                         </div>
                     </div>
@@ -341,10 +340,10 @@
                                                 // Add click event handler for the Confirm Start button
                                                 confirmStartButton.addEventListener('click', function () {
                                                     startExamButton.style.display = 'none'; // Show the exam-area
-                                                    submitAnswer(false,true)
+                                                    submitAnswer(false, true)
                                                 });
 
-                                                function submitAnswer(isFinished,isInitial) {
+                                                function submitAnswer(isFinished, isInitial) {
                                                     var examId = {{ $exam->id }};
                                                     var sessionId = {{ $session->id }};
                                                     var showResultOnEnd = "{{$session->show_result_on_end}}";
@@ -359,7 +358,7 @@
                                                         answers: [],
                                                     };
 
-                                                    if(isFinished){
+                                                    if (isFinished) {
                                                         const startExamButton = document.getElementById('startExamButton');
                                                         const examArea = document.getElementById('exam-area'); // Get the exam-area section
                                                         const examEndArea = document.getElementById('exam-end'); // Get the exam-area section
@@ -458,7 +457,7 @@
                                                                 })
                                                             } else {
 
-                                                                if(isInitial){
+                                                                if (isInitial) {
                                                                     const examArea = document.getElementById('exam-area'); // Get the exam-area section
                                                                     // Start the exam here, e.g., show the exam-area and the timer
                                                                     examArea.style.display = 'block'; // Show the exam-area
@@ -499,7 +498,7 @@
 
                                                 document.getElementById('question-form').addEventListener('submit', function (event) {
                                                     event.preventDefault(); // Prevent the default form submission behavior
-                                                    submitAnswer(true,false);
+                                                    submitAnswer(true, false);
                                                 });
                                                 // Attach a click event handler to the "Refresh" button
                                                 $('#refreshQuestions').click(function () {
@@ -514,7 +513,7 @@
 
                                                     questionsList.addEventListener('click', function (event) {
                                                         if (event.target && event.target.nodeName === 'INPUT') {
-                                                            submitAnswer(false,false); // Call your function here
+                                                            submitAnswer(false, false); // Call your function here
                                                         }
                                                     });
 
