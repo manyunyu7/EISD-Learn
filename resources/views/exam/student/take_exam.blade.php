@@ -70,7 +70,7 @@
                                 {{--                                <h3 class="card-subtitle">Sesi : {{$session->id}}</h3>--}}
                                 <hr>
 
-                                <img width="300px" src="http://0.0.0.0:5253/home_assets/img/esd_3.png" alt="">
+                                <img width="300px" src="{{url('/')}}/home_assets/img/esd_3.png" alt="">
 
 
                                 <div class="form-group">
