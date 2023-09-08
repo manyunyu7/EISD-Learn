@@ -112,7 +112,6 @@
                                     <div>{{$totalScore}}</div>
                                 </div>
 
-
                                 <!-- Student Name -->
                                 <div class="form-group d-none">
                                     <label>Student Name:</label>
@@ -124,8 +123,6 @@
                                     <label>Good Luck</label>
                                     <span></span>
                                 </div>
-
-
 
                                 <!-- Start Exam Button -->
                                 <button id="startExamButton" type="button"
@@ -140,7 +137,6 @@
                                         yang tersedia<strong></strong></p>
                                     <hr>
                                 </div>
-
 
                                 <!-- Confirmation Modal -->
                                 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"

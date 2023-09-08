@@ -265,7 +265,6 @@ class ExamTakerController extends Controller
             $showScore = true;
         }
 
-
         if ($request->isFinished == true) {
             return response()->json([
                 "d" => $dimanaYa,
