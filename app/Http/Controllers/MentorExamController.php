@@ -100,7 +100,7 @@ class MentorExamController extends Controller
         }
 
         // Handle different question types
-        if ($request->questionType === 'multiple_choice') {
+        if ($request->questionType != "essay") {
             // Create an array to hold choices and scores
             $choices = [];
             foreach ($request->choice as $index => $choiceText) {
@@ -157,7 +157,7 @@ class MentorExamController extends Controller
         }
 
         // Handle different question types
-        if ($request->questionType === 'multiple_choice') {
+        if ($request->questionType != "essay") {
             // Create an array to hold choices and scores
             $choices = [];
             foreach ($request->choice as $index => $choiceText) {

@@ -87,8 +87,7 @@ class ExamTakerController extends Controller
         $examId = $payload['examId'];
         $sessionId = $payload['sessionId'];
         $answers = $payload['answers'];
-
-        $name = $payload["fullName"];
+        $name = $request->fullName;
 
         // Load the exam session
         $session = ExamSession::findOrFail($sessionId);
