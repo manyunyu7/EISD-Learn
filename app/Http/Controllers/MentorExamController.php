@@ -16,6 +16,17 @@ class MentorExamController extends Controller
         return view("exam.create_new_exam");
     }
 
+    public function viewEditExam(Request $request,$id)
+    {
+        $data = Exam::findOrFail($id);
+        $exam=$data;
+        $compact = compact('data','exam');
+        if($request->dump==true){
+            return $compact;
+        }
+        return view("exam.edit_exam")->with($compact);
+    }
+
 
     public function deleteExam(Request $request, $id)
     {
@@ -223,6 +234,36 @@ class MentorExamController extends Controller
             return $compact;
         }
         return view("exam.manage_exam")->with($compact);
+    }
+
+    public function updateExam(Request $request)
+    {
+        $exam = Exam::findOrFail($request->id);
+        $user_id = Auth::id();
+        $exam->title = $request->title;
+        $exam->randomize = $request->randomize;
+        $exam->can_access = $request->can_access;
+        $exam->start_date = $request->startDate;
+        $exam->end_date = $request->endDate;
+        $exam->instruction = $request->instruction;
+        $exam->description = $request->description;
+        $exam->created_by = $user_id;
+
+        if ($request->file('image') != "") {
+            Storage::disk('local')->delete('public/exam/cover/' . $exam->image);
+            $image = $request->file('image');
+            $name = $image->hashName();
+            $image->storeAs('public/exam/cover/', $name);
+            $exam->image = $name;
+        }
+
+        if ($exam->save()) {
+            //redirect dengan pesan sukses
+            return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect('exam/new')->with(['error' => 'Gagal Menyimpan Exam']);
+        }
     }
 
     public function storeNewExam(Request $request)

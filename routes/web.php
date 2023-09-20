@@ -37,8 +37,6 @@
     Route::redirect('/course', '/classes');
 
 
-
-
     Route::get('/template', function () {
         return view('template.atlantis');
     });
@@ -71,10 +69,11 @@
             Route::prefix("exam")->group(function (){
                 Route::get('new', 'MentorExamController@viewCreateNew');
                 Route::post('store', 'MentorExamController@storeNewExam');
+                Route::post('update', 'MentorExamController@updateExam');
                 Route::post('update-question', 'MentorExamController@updateQuestion');
                 Route::get('manage', 'MentorExamController@viewManageExam');
                 Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
-                Route::get('{id}/edit', 'MentorExamController@editExam')->name("exam.edit");
+                Route::get('{id}/edit', 'MentorExamController@viewEditExam')->name("exam.edit");
 
                 Route::get('session', 'MentorExamSessionController@viewManageSession');
 

@@ -469,7 +469,7 @@
                     <i class="flaticon-right-arrow"></i>
                 </li>
                 <li class="nav-item">
-                    <a href="#">{{$exam->title}}</a>
+                    <a href="{{url("/")."/exam/".$exam->id."/edit"}}">{{$exam->title}}</a>
                 </li>
                 <li class="separator">
                     <i class="flaticon-right-arrow"></i>
@@ -670,8 +670,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="basic-datatables"
-                                   class="table table-bordered mt-3 @if (count($dayta) < 1) d-none @endif">
+                            <table id="basic-datatables" class="table table-bordered mt-3">
                                 <thead>
                                 <tr>
                                     <th>Start Date</th>

@@ -167,7 +167,7 @@
                                         </td>
 
                                         <td>
-                                            <a href="{{ route('lesson.edit', $data->id) }}" class="btn btn-sm btn-primary">EDIT</a>
+                                            <a href="{{ route('exam.edit', $data->id) }}" class="btn btn-sm btn-primary">EDIT</a>
                                         </td>
                                         {{-- <td><a href="" class="button" data-id="{{$blog->id}}">Delete</a></td> --}}
                                     </tr>

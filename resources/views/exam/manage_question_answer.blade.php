@@ -84,7 +84,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item"><a href="{{url("/")."/exam/manage"}}">Exam</a></li>
-                            <li class="breadcrumb-item"><a href="">{{$exam->title}}</a></li>
+                            <li class="breadcrumb-item"><a href="{{url("/")."/exam/".$exam->id."/edit"}}">{{$exam->title}}</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Pertanyaan & Jawaban</li>
                         </ol>
                     </nav>
