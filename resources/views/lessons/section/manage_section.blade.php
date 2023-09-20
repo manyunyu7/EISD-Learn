@@ -219,6 +219,18 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label>Quiz/Ujian Jika Ada</label>
+                                            <select class="form-control" name="quiz_session_id">
+                                                @foreach($examSessions as $examSession)
+                                                    <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }}
+                                                        , Sesi : ( {{$examSession->start_date}}
+                                                        - {{$examSession->end_date}})
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="font-weight-bold">Materi Ke- :</label>
                                             <div class="container row">
                                                 <input id="section_order" type="text" min="0"
@@ -372,8 +384,14 @@
                                                                 <div class="form-group">
                                                                     <label>Konten Bisa Diakses ?</label>
                                                                     <select class="form-control" name="access">
-                                                                        <option value="y" {{$data->can_be_accessed === "y" ? "selected" : ""}}>Ya</option>
-                                                                        <option value="n" {{$data->can_be_accessed === "n" ? "selected" : ""}}>Tidak</option>
+                                                                        <option
+                                                                            value="y" {{$data->can_be_accessed === "y" ? "selected" : ""}}>
+                                                                            Ya
+                                                                        </option>
+                                                                        <option
+                                                                            value="n" {{$data->can_be_accessed === "n" ? "selected" : ""}}>
+                                                                            Tidak
+                                                                        </option>
                                                                     </select>
                                                                 </div>
 

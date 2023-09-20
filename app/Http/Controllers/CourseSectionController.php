@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
+use App\Models\ExamSession;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -22,16 +23,26 @@ use Illuminate\Support\Facades\DB;
 
 class CourseSectionController extends Controller
 {
-    public function manage_section(Lesson $lesson)
+    public function manage_section(Request $request, Lesson $lesson)
     {
         $user_id = Auth::id();
         $lesson_id = $lesson->id;
+        $examSessions = ExamSession::where(function ($query) {
+            $query->whereNull('is_deleted')
+                ->orWhere('is_deleted', '<>', 'y');
+        })->get();
+
         if ($user_id != $lesson->mentor_id) {
             abort(401, 'Unauthorized');
         }
         $dayta = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         // $dayta = DB::select("select * from view_course_section  where mentor_id = $user_id");
-        return view('lessons.section.manage_section', compact('lesson'), compact('dayta'));
+        $compact = compact('dayta', 'examSessions', 'lesson');
+
+        if ($request->dump == true) {
+            return $compact;
+        }
+        return view('lessons.section.manage_section', $compact);
     }
 
     public function updateScores(Request $request)
@@ -50,32 +61,36 @@ class CourseSectionController extends Controller
         return response()->json(['message' => 'Scores updated successfully']);
     }
 
-    public function viewInputScore(Request $request, $lessonId,$sectionId){
+    public function viewInputScore(Request $request, $lessonId, $sectionId)
+    {
         $lesson = Lesson::findOrFail($lessonId);
         $section = CourseSection::findOrFail($sectionId);
-        $students = DB::select(DB::raw("
-        SELECT
-            ss.id as student_section_id,
-            ss.student_id,
-            ss.score,
-            l.course_title,
-            l.id as course_id,
-            u.name as student_name,
-            u.email as student_email,
-            u.profile_url as student_profile_url,
-            s.section_title,
-            s.section_order,
-            s.id as section_id,
-            ss.created_at as taken_at
-        FROM student_section ss
-        LEFT JOIN users u ON ss.student_id = u.id
-        LEFT JOIN course_section s ON ss.section_id = s.id
-        LEFT JOIN lessons l on s.course_id = l.id
-        WHERE s.id = '$sectionId'
-    "));
 
-        $compact = compact('students','lesson');
-        if($request->dump==true){
+
+        $students = DB::table('student_section')
+            ->select([
+                'student_section.id as student_section_id',
+                'student_section.student_id',
+                'student_section.score',
+                'lessons.course_title',
+                'lessons.id as course_id',
+                'users.name as student_name',
+                'users.email as student_email',
+                'users.profile_url as student_profile_url',
+                'course_section.section_title',
+                'course_section.section_order',
+                'course_section.id as section_id',
+                'student_section.created_at as taken_at',
+            ])
+            ->leftJoin('users', 'student_section.student_id', '=', 'users.id')
+            ->leftJoin('course_section', 'student_section.section_id', '=', 'course_section.id')
+            ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+            ->where('course_section.id', $sectionId)
+            ->get();
+
+
+        $compact = compact('students', 'lesson');
+        if ($request->dump == true) {
             return $compact;
         }
         return view('lessons.section.input_score', $compact);
@@ -87,7 +102,7 @@ class CourseSectionController extends Controller
     }
 
     // SEE SECTION
-    public function see_section(Request $request,Lesson $lesson, CourseSection $section)
+    public function see_section(Request $request, Lesson $lesson, CourseSection $section)
     {
         // Find the next and previous sections
         $nextSectionId = null;
@@ -96,7 +111,7 @@ class CourseSectionController extends Controller
 
         if (!Auth::check()) {
             MyHelper::addAnalyticEvent(
-                "Belum Login Buka Section","Course Section"
+                "Belum Login Buka Section", "Course Section"
             );
             abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
@@ -125,7 +140,7 @@ class CourseSectionController extends Controller
         if (Auth::user()->role == "student") {
             if ($lessonObject->can_be_accessed == "n") {
                 MyHelper::addAnalyticEvent(
-                    "Reject Section Diluar Jadwal","Course Section"
+                    "Reject Section Diluar Jadwal", "Course Section"
                 );
                 abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
             }
@@ -181,8 +196,8 @@ class CourseSectionController extends Controller
         if (Auth::check()) {
             if (Auth::user()->role == "student") {
 
-                if($section->can_be_accessed=="n"){
-                    abort(401,"Materi baru dapat diakses pada jadwal yang telah ditentukan");
+                if ($section->can_be_accessed == "n") {
+                    abort(401, "Materi baru dapat diakses pada jadwal yang telah ditentukan");
                 }
                 $sectionTakenByStudent = FacadesDB::table('student_section as ss')
                     ->select('section_id')
@@ -281,7 +296,7 @@ class CourseSectionController extends Controller
                     abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
                 }
             }
-            if($isEligibleStudent){
+            if ($isEligibleStudent) {
                 $this->startSection($currentSectionId);
             }
         }
@@ -292,12 +307,12 @@ class CourseSectionController extends Controller
             'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered');
 
 
-        if($request->dump==true){
+        if ($request->dump == true) {
             return $compact;
         }
 
         MyHelper::addAnalyticEvent(
-            "Buka Section","Course Section"
+            "Buka Section", "Course Section"
         );
 
         return view('lessons.course_play', $compact);
@@ -336,7 +351,7 @@ class CourseSectionController extends Controller
     public function create_section(Lesson $lesson)
     {
         MyHelper::addAnalyticEvent(
-            "Buka Halaman Buat Section","Create Section"
+            "Buka Halaman Buat Section", "Create Section"
         );
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
@@ -354,11 +369,11 @@ class CourseSectionController extends Controller
         ini_set('memory_limit', '1024000M');
         $rules = [
             'title' => 'required',
-            'video' => 'required',
-            'content' => 'required',
+//            'video' => 'required',
+//            'content' => 'required',
             'section_order' => 'required|unique:course_section',
             'course_id' => 'required',
-            'course_name' => 'required',
+//            'course_name' => 'required',
         ];
         $customMessages = [
             'required' => 'Mohon Isi Kolom :attribute terlebih dahulu'
@@ -367,10 +382,15 @@ class CourseSectionController extends Controller
         $this->validate($request, $rules, $customMessages);
         $lesson_id = $request->course_id;
 
-        $video = $request->file('video');
-        $video->storeAs("public/class/content/$lesson_id/", $video->hashName());
+        if($request->video!=null){
+            $video = $request->file('video');
+            $video->storeAs("public/class/content/$lesson_id/", $video->hashName());
+        }
+
         $section_order = $lesson_id . "-" . $request->section_order;
         // abort(404,$section_order);
+
+
 
         // Check for duplicate entry
         $existingSection = CourseSection::where('section_order', $section_order)
@@ -382,15 +402,28 @@ class CourseSectionController extends Controller
             return redirect("lesson/$lesson_id/section")->withErrors([$errorMessage])->withInput();
         }
 
+        // Create an instance of CourseSection
+        $inputDeyta = new CourseSection();
 
-        $inputDeyta = CourseSection::create([
-            'section_video' => $video->hashName(),
-            'section_content' => $request->content,
-            'section_order' => $section_order,
-            'can_be_accessed' => $request->access,
-            'course_id' => $lesson_id,
-            'section_title' => $request->title,
-        ]);
+        // Set common attributes
+        $inputDeyta->course_id = $lesson_id ?? '';
+        $inputDeyta->section_content = $request->content ?? '';
+        $inputDeyta->section_order = $section_order ?? '';
+        $inputDeyta->can_be_accessed = $request->access ?? '';
+        $inputDeyta->quiz_session_id = $request->quiz_session_id ?? '';
+        $inputDeyta->section_title = $request->title ?? '';
+        $inputDeyta->section_video = " ";
+
+        if ($request->hasFile('video') && $request->file('video')->isValid()) {
+            // Handle the video file if it's present and valid
+            $video = $request->file('video');
+            $video->storeAs("public/class/content/$lesson_id/", $video->hashName());
+            $inputDeyta->section_video = $video->hashName();
+        }
+
+        // Save the CourseSection object
+        $inputDeyta->save();
+
 
         if ($inputDeyta) {
             //redirect dengan pesan sukses
@@ -453,6 +486,7 @@ class CourseSectionController extends Controller
                 'section_order' => $section_order,
                 'course_id' => $lesson_id,
                 'can_be_accessed' => $request->access,
+                'quiz_session_id' => $request->quiz_session_id,
                 'section_title' => $request->section_u_title,
             ]);
         } else if ($request->file('section_u_video') != "") {
@@ -468,6 +502,7 @@ class CourseSectionController extends Controller
                 'section_order' => $section_order,
                 'course_id' => $lesson_id,
                 'can_be_accessed' => $request->access,
+                'quiz_session_id' => $request->quiz_session_id,
                 'section_title' => $request->section_u_title,
             ]);
         } else {
