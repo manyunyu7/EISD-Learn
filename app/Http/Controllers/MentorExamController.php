@@ -194,6 +194,22 @@ class MentorExamController extends Controller
         return response()->json(['message' => 'Question order updated successfully']);
     }
 
+    public function deleteQuestion($id)
+    {
+        try {
+            $question = ExamQuestionAnswers::findOrFail($id);
+
+            // Perform any additional logic for deleting the question
+            // For example, you can perform validation or checks here
+
+            $question->delete(); // Delete the question
+
+            return response()->json(['message' => 'Question deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete question'], 500);
+        }
+    }
+
 
     public function viewManageExam(Request $request)
     {

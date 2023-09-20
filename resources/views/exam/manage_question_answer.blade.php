@@ -290,7 +290,7 @@
                                                     // Add an "Edit" button for each question
                                                     questionHTML += '<button type="button" class="mt-5 btn btn-primary btn-border edit-question-button mr-2" data-question-id="' + question.id + '">Edit</button>';
 
-                                                    questionHTML += '<button type="button" class="mt-5 btn btn-danger btn-border delete-question-button" data-question-id="' + question.id + '">Hapus Pertanyaan</button>';
+                                                    questionHTML += '<button type="button" class="mt-5 btn btn-danger btn-border delete-question-button" data-question-id="' + question.id + '" data-toggle="modal">Hapus Pertanyaan</button>';
 
                                                     questionCard.innerHTML = questionHTML;
 
@@ -510,11 +510,75 @@
                 <script>
 
                     var questionForm = document.getElementById('questionForm');
+                    // Get the base URL programmatically
+                    const baseUrl = window.location.protocol + '//' + window.location.host;
 
                     hideLoaderOverlay();
                     document.addEventListener('DOMContentLoaded', function () {
-                        var storeQuestionButton = document.getElementById('saveQuestion');
+                        // Event listener for showing the modal when a delete button is clicked
+                        // Event listener for showing the confirmation dialog when a delete button is clicked
+                        document.addEventListener('click', function (e) {
+                            if (e.target && e.target.classList.contains('delete-question-button')) {
+                                const questionId = e.target.getAttribute('data-question-id');
+                                // Show the SweetAlert confirmation dialog with the question ID
+                                Swal.fire({
+                                    title: 'Are you sure?',
+                                    // text: `Do you want to delete question with ID: ${questionId}?`,
+                                    text: `Do you want to delete this question ?`,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d9534f',
+                                    cancelButtonColor: '#5bc0de',
+                                    confirmButtonText: 'Yes, delete it!',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Update the URL to the desired endpoint by combining the base URL and endpoint
+                                        const deleteUrl = `${baseUrl}/exam/question/${questionId}/delete`;
+                                        // Perform a fetch request to delete the question using its ID
+                                        showLoaderOverlay(); // Show the loading overlay
+                                        fetch(deleteUrl, {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            }
+                                        })
+                                            .then((response) => {
+                                                if (response.ok) {
+                                                    // Reload the page or update the UI as needed
+                                                    fetchQuestions();
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Success',
+                                                        text: 'Question deleted successfully',
+                                                    });
+                                                    hideLoaderOverlay()
+                                                    fetchQuestions();
+                                                } else {
+                                                    // Handle errors here
+                                                    console.error('Error deleting question');
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error',
+                                                        text: 'Error deleting question',
+                                                    });
+                                                }
+                                            })
+                                            .catch((error) => {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: 'Error deleting question',
+                                                });
+                                                hideLoaderOverlay()
+                                                console.error('Fetch error:', error);
+                                            });
+                                    }
+                                });
+                            }
+                        });
 
+
+                        var storeQuestionButton = document.getElementById('saveQuestion');
                         // Attach a click event handler to the 'abcdButton' element
                         storeQuestionButton.addEventListener('click', function (e) {
                             e.preventDefault(); // Prevent the default form submission

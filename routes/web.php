@@ -74,6 +74,7 @@
                 Route::post('update-question', 'MentorExamController@updateQuestion');
                 Route::get('manage', 'MentorExamController@viewManageExam');
                 Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
+                Route::get('{id}/edit', 'MentorExamController@editExam')->name("exam.edit");
 
                 Route::get('session', 'MentorExamSessionController@viewManageSession');
 
@@ -94,6 +95,8 @@
                 Route::post('delete-exam-session', 'MentorExamSessionController@destroyExamSession');
 
                 Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion');
+                Route::post('question/{id}/delete', 'MentorExamController@deleteQuestion');
+
                 Route::get('{id}/question-order', 'MentorExamController@viewManageQuestionOrder');
                 Route::post('save-question', 'MentorExamController@storeQuestion');
                 Route::any('mquestions', 'MentorExamController@fetchQuestions');
