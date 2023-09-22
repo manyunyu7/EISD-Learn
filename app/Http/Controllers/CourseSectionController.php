@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
+use App\Models\Exam;
 use App\Models\ExamSession;
 use Illuminate\Http\Request;
 use Exception;
@@ -108,7 +109,9 @@ class CourseSectionController extends Controller
         $nextSectionId = null;
         $prevSectionId = null;
         $currentSectionId = $section->id;
-
+        $currentSection = CourseSection::findOrFail($currentSectionId);
+        $isExam=false;
+        $title = "";
         if (!Auth::check()) {
             MyHelper::addAnalyticEvent(
                 "Belum Login Buka Section", "Course Section"
@@ -301,9 +304,38 @@ class CourseSectionController extends Controller
             }
         }
 
+        $examSession = null;
+        $exam = null;
+        $question_count=0;
+        $totalScore = 0;
+        $session=null;
+
+        if($currentSection->quiz_session_id!=null && $currentSection->quiz_session_id!="null"){
+            $isExam=true;
+            $examSession = ExamSession::find($currentSection->quiz_session_id);
+            $exam = Exam::find($examSession->exam_id);
+            $session = $examSession;
+            $questions = json_decode($session->questions_answers);
+            $totalScore = 0;
+            $title=$exam->title;
+            foreach ($questions as $question) {
+                if (isset($question->choices)) {
+                    $choices = json_decode($question->choices, true);
+
+                    foreach ($choices as $choice) {
+                        if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
+                            $totalScore += (int)$choice['score'];
+                        }
+                    }
+                }
+            }
+            $question_count = count($questions);
+        }
+
+
         $compact = compact('isEligibleStudent', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
-            'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection',
-            'firstSectionId', 'lastSectionId', 'isPrecedingTaken',
+            'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection','isExam','title',
+            'firstSectionId', 'lastSectionId', 'isPrecedingTaken','examSession','exam','session','question_count','totalScore',
             'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered');
 
 
@@ -315,7 +347,11 @@ class CourseSectionController extends Controller
             "Buka Section", "Course Section"
         );
 
-        return view('lessons.course_play', $compact);
+        if($isExam){
+            return view('exam.student.take_exam_on_session', $compact);
+        }else{
+            return view('lessons.course_play', $compact);
+        }
     }
 
 

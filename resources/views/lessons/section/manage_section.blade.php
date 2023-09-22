@@ -221,6 +221,9 @@
                                         <div class="form-group">
                                             <label>Quiz/Ujian Jika Ada</label>
                                             <select class="form-control" name="quiz_session_id">
+                                                <option>
+                                                    Tidak Ada Quiz
+                                                </option>
                                                 @foreach($examSessions as $examSession)
                                                     <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }}
                                                         , Sesi : ( {{$examSession->start_date}}

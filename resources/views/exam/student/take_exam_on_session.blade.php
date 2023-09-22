@@ -1,4 +1,4 @@
-@extends('main.template')
+@extends('lessons._template')
 
 @section('head-section')
     <script src="{{ asset('library/ckeditor/ckeditor.js') }}"></script>

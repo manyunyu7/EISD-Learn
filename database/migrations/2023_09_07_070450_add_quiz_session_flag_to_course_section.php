@@ -9,8 +9,7 @@ class AddQuizSessionFlagToCourseSection extends Migration
     public function up()
     {
         Schema::table('course_section', function (Blueprint $table) {
-            $table->unsignedBigInteger('quiz_session_id')->nullable();
-            $table->foreign('quiz_session_id')->references('id')->on('exam_sessions')->onDelete('restrict');
+            $table->string('quiz_session_id')->nullable();
         });
     }
 
