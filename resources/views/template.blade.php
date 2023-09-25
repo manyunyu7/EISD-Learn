@@ -13,22 +13,21 @@
     <!-- Fonts and icons -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
-        WebFont.load({
-            google: {
-                "families": ["Lato:300,400,700,900"]
-            },
-            custom: {
-                "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
-                urls: ['{{asset('
-                    atlantis / examples ')}}/assets/css/fonts.min.css'
-                ]
-            },
-            active: function () {
-                sessionStorage.fonts = true;
-            }
-        });
+        {{--WebFont.load({--}}
+        {{--    google: {--}}
+        {{--        "families": ["Lato:300,400,700,900"]--}}
+        {{--    },--}}
+        {{--    custom: {--}}
+        {{--        "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],--}}
+        {{--        urls: ['{{asset('--}}
+        {{--            atlantis/examples ')}}/assets/css/fonts.min.css'--}}
+        {{--        ]--}}
+        {{--    },--}}
+        {{--    active: function () {--}}
+        {{--        sessionStorage.fonts = true;--}}
+        {{--    }--}}
+        {{--});--}}
     </script>
-    <script src="home.js"></script>
     <style>
         @font-face {
             font-family: gloss;
@@ -50,7 +49,6 @@
     @yield('styling')
 
     <!-- CSS Files -->
-    <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/bootstrap.min.css">
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.min.css"> --}}
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">

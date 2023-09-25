@@ -177,13 +177,54 @@
                                     }
                                 </script>
                                 <!-- Button to go back to the previous page -->
-                                <a href="javascript:void(0);" onclick="goBack()" class="btn btn-primary btn-outlined mt-5">Go
+                                <a href="javascript:void(0);" onclick="goBack()" class="btn d-none btn-primary btn-outlined mt-5">Go
                                     Back</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+
+            @if($hasTakenAnyExam)
+                <section id="exam-result">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title">Riwayat Hasil Quiz : {{$exam->title}}</h3>
+                                    <div class="table-responsive">
+                                        <table id="basic-datatables" class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Tanggal Selesai</th>
+                                                <th scope="col">Nilai</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @forelse ($examResults as $data)
+                                                <tr>
+                                                    <td>{{ $data->finished_at }}</td>
+                                                    <td> {{$data->current_score}}</td>
+
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="9" class="text-center">
+                                                        <div class="alert alert-danger">
+                                                            Anda Belum Mengambil Quiz
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            @endif
 
             {{--            <div class="mt-4">--}}
             {{--                <nav aria-label="breadcrumb">--}}
@@ -341,12 +382,14 @@
 
                                                 // Add click event handler for the Confirm Start button
                                                 confirmStartButton.addEventListener('click', function () {
-                                                    startExamButton.style.display = 'none'; // Show the exam-area
+                                                    // startExamButton.style.display = 'none'; // Show the exam-area
                                                     submitAnswer(false, true)
                                                 });
 
                                                 function submitAnswer(isFinished, isInitial) {
+                                                    var courseId = {{ $courseId }};
                                                     var examId = {{ $exam->id }};
+                                                    var sectionId = {{ $currentSectionId }};
                                                     var sessionId = {{ $session->id }};
                                                     var showResultOnEnd = "{{$session->show_result_on_end}}";
 
@@ -356,6 +399,8 @@
                                                     // Create an object to store user answers with question IDs as keys
                                                     var userAnswers = {
                                                         examId: examId, // Include examId
+                                                        sectionId: sectionId, // Include sessionId
+                                                        courseId: courseId, // Include sessionId
                                                         sessionId: sessionId, // Include sessionId
                                                         answers: [],
                                                     };
@@ -427,6 +472,10 @@
                                                     const requestBody = {
                                                         userAnswers: userAnswers,
                                                         isFinished: isFinished,
+                                                        examId: examId, // Include examId
+                                                        sectionId: sectionId, // Include sessionId
+                                                        courseId: courseId, // Include sessionId
+                                                        sessionId: sessionId, // Include sessionId
                                                         fullName: document.getElementById('fullName').value // Assuming you have an input field with id "fullName"
                                                     };
 

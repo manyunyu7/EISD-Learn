@@ -23,6 +23,8 @@ class CreateExamTakersTable extends Migration
             $table->string('current_score')->nullable();
             $table->json("user_answers")->nullable();
             $table->string("is_finished")->nullable();
+            $table->string("course_flag")->nullable();
+            $table->string("course_section_flag")->nullable();
             $table->dateTime('started_at')->nullable();
             $table->dateTime('finished_at')->nullable();
             $table->timestamps();

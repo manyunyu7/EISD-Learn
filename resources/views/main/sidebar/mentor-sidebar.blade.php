@@ -43,11 +43,6 @@
                     <span class="sub-item">Session</span>
                 </a>
             </li>
-            <li class="{{ Request::is('blog/create') ? 'active' : '' }}">
-                <a href="{{ url('/blog/create') }}">
-                    <span class="sub-item">Tulis Blog</span>
-                </a>
-            </li>
         </ul>
     </div>
 </li>

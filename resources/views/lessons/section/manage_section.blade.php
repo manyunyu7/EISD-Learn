@@ -221,13 +221,12 @@
                                         <div class="form-group">
                                             <label>Quiz/Ujian Jika Ada</label>
                                             <select class="form-control" name="quiz_session_id">
-                                                <option>
+                                                <option value="">
                                                     Tidak Ada Quiz
                                                 </option>
                                                 @foreach($examSessions as $examSession)
                                                     <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }}
-                                                        , Sesi : ( {{$examSession->start_date}}
-                                                        - {{$examSession->end_date}})
+                                                       - {{$examSession->title}}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -337,16 +336,13 @@
 
                             <h4 class="card-title">Manage Materi Kelas</h4>
                             <div class="table-responsive">
-                                <table id="basic-datatables" class="table table-bordered w-100 @if (count($dayta) < 1)
-                  d-none
-                  @endif">
+                                <table id="basic-datatables" class="table table-bordered w-100 @if (count($dayta) < 1)   d-none @endif">
                                     <thead>
                                     <tr>
                                         <th scope="col">Urutan</th>
                                         <th scope="col">Judul Materi</th>
                                         <th scope="col">Materi</th>
                                         <th scope="col">Input Nilai</th>
-                                        {{--                                        <th scope="col">MATERI</th>--}}
                                         <th scope="col">Hapus Materi</th>
 
                                     </tr>
@@ -399,6 +395,17 @@
                                                                 </div>
 
                                                                 <div class="form-group">
+                                                                    <select class="form-control" name="quiz_session_id">
+                                                                        <option>-</option>
+                                                                        @foreach($examSessions as $examSession)
+                                                                            <option value="{{ $examSession->id }}" @if($data->quiz_session_id == $examSession->id) selected @endif>
+                                                                                {{ $examSession->quiz_name }}, Sesi: ({{ $examSession->start_date }} - {{ $examSession->end_date }})
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="form-group">
                                                                     <label for="">Ganti File</label>
                                                                     <input id="input-video"
                                                                            type="file"
@@ -409,6 +416,7 @@
                                                                     <small id="helpId" class="form-text text-muted">Kosongkan
                                                                         Jika Tidak Ingin Diganti</small>
                                                                 </div>
+
 
                                                                 <div class="form-group">
                                                                     @php
@@ -443,6 +451,7 @@
                                                                         changes
                                                                     </button>
                                                                 </div>
+                                                            </div>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -520,6 +529,7 @@
                                                         </button>
                                                     </form>
                                                 </td>
+                                            </div>
                                         </tr>
                                     @empty
                                         <div class="alert alert-danger">

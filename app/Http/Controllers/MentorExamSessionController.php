@@ -84,6 +84,7 @@ class MentorExamSessionController extends Controller
         $examSession->can_access = $request->can_access;
         $examSession->public_access = $request->public_access;
         $examSession->show_result_on_end = $request->show_result_on_end;
+        $examSession->title = $request->title;
         $examSession->allow_review = $request->allow_review;
         $examSession->show_score_on_review = $request->show_score_on_review;
         $examSession->time_limit_minute = $request->time_limit;
@@ -109,6 +110,7 @@ class MentorExamSessionController extends Controller
         $examSession->instruction = $request->instruction ?? '';
         $examSession->description = $request->description ?? '';
         $examSession->can_access = $request->can_access;
+        $examSession->title = $request->title;
         $examSession->public_access = $request->public_access;
         $examSession->show_result_on_end = $request->show_result_on_end;
         $examSession->allow_review = $request->allow_review;

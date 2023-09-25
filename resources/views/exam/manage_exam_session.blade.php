@@ -22,6 +22,7 @@
                     "dataSrc": "" // This is where the data array is located in your JSON response
                 },
                 "columns": [
+                    {"data": "title"},
                     {"data": "start_date"},
                     {"data": "end_date"},
                     {"data": "instruction"},
@@ -109,6 +110,7 @@
                         console.log(data)
                         document.getElementById('edit_item_id').value = data.id;
                         document.getElementById('start_date_edit').value = data.start_date;
+                        document.getElementById('title_edit').value = data.title;
                         document.getElementById('end_date_edit').value = data.end_date;
                         document.getElementById('instruction_edit').value = data.instruction;
                         document.getElementById('time_limit_edit').value = data.time_limit_minute
@@ -374,6 +376,11 @@
                         <input type="hidden" id="edit_item_id" name="id" value="">
 
                         <div class="form-group">
+                            <label>Judul Sesi</label>
+                            <input placeholder="Judul" id="title_edit" type="text" class="form-control" name="title">
+                        </div>
+
+                        <div class="form-group">
                             <label for="start_date">Start Dates</label>
                             <input type="datetime-local" class="form-control" id="start_date_edit" name="start_date">
                         </div>
@@ -542,6 +549,14 @@
 
                                             <div class="row">
                                                 <!-- First Column -->
+
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label>Judul Sesi</label>
+                                                        <input placeholder="Judul" type="text" class="form-control"
+                                                               name="title">
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="start_date" data-toggle="tooltip"
@@ -673,6 +688,7 @@
                             <table id="basic-datatables" class="table table-bordered mt-3">
                                 <thead>
                                 <tr>
+                                    <th>Judul</th>
                                     <th>Start Date</th>
                                     <th>End Date</th>
                                     <th>Instruction</th>

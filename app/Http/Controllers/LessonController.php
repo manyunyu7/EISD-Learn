@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ExamTaker;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -141,6 +142,9 @@ class LessonController extends Controller
         Storage::disk('local')->delete($course_trailer_file);
 
         $lesson->delete();
+
+        // Delete related records in ExamTaker
+        ExamTaker::where('course_flag', $id)->delete();
 
         if ($lesson) {
             //redirect dengan pesan sukses

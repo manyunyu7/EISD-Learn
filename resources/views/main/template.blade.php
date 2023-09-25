@@ -61,7 +61,7 @@
     <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.min.css">
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
     <!---Select2 To MultiSelect -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 
     <style>
         .loader-overlay {
@@ -184,7 +184,6 @@
 <body>
 
 
-
 <div id="loaderOverlay" class="loader-overlay">
     <div class="blinking-overlay">
         <img src="{{URL::to('/')}}/mdln_long.png" alt="navbar brand" class="centered-image">
@@ -192,6 +191,7 @@
 </div>
 <script>
     var loaderOverlay = document.getElementById('loaderOverlay');
+
     // Function to show the loading overlay
     function showLoaderOverlay() {
         if (loaderOverlay) {
@@ -337,6 +337,7 @@
 <script>
 
     window.addEventListener("load", () => {
+        console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
         // Calculate the loading time
         const loadingTime = Date.now() - performance.timing.navigationStart;
 
@@ -348,6 +349,8 @@
             loaderOverlay.style.display = "none";
         }
     });
+
+
 </script>
 
 @yield('script')

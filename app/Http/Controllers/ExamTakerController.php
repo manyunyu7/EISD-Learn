@@ -88,6 +88,8 @@ class ExamTakerController extends Controller
         $sessionId = $payload['sessionId'];
         $answers = $payload['answers'];
         $name = $request->fullName;
+        $courseId = $request->courseId;
+        $sectionId = $request->sectionId;
 
         // Load the exam session
         $session = ExamSession::findOrFail($sessionId);
@@ -128,7 +130,6 @@ class ExamTakerController extends Controller
             }
         }
 
-
         //check if the session allow multiple attempt
         $allowMultipleAttempt = false;
         if ($session->allow_multiple == "y") {
@@ -136,14 +137,21 @@ class ExamTakerController extends Controller
         }
 
 
-        if ($session->public_access == "n") {
-            if (Auth::user() == null)
-                return response()->json([
-                    "scores" => 0,
-                    "message" => "Anda harus login untuk mengerjakan quiz ini",
-                    "error" => true
-                ], 403);
+        //if the session is already deleted;
+        if ($session->is_deleted == "y") {
+            return response()->json([
+                "scores" => 0,
+                "message" => "Quiz sudah tidak tersedia",
+                "error" => true
+            ], 409);
         }
+
+        if (Auth::user() == null)
+            return response()->json([
+                "scores" => 0,
+                "message" => "Anda harus login untuk mengerjakan quiz ini",
+                "error" => true
+            ], 403);
 
 
         if ($session->can_access == "n") {
@@ -154,13 +162,26 @@ class ExamTakerController extends Controller
             ], 409);
         }
 
-        //check if
+        //check if user already have finished attempt
         $finishedAttemptCount = ExamTaker::where('user_id', '=', Auth::id())
             ->where('session_id', '=', $sessionId)
             ->where(function ($query) {
                 $query->whereNotNull('finished_at');
             })
             ->count();
+
+        //check if user take exam from course
+        //if positive then we change the query to also check the session.
+        if ($courseId != null && $sectionId != null) {
+            $finishedAttemptCount = ExamTaker::where('user_id', '=', Auth::id())
+                ->where('session_id', '=', $sessionId)
+                ->where('course_section_flag', '=', $sectionId)
+                ->where(function ($query) {
+                    $query->whereNotNull('finished_at');
+                })
+                ->count();
+        }
+
         if (!$allowMultipleAttempt) {
             if ($finishedAttemptCount > 0) {
                 return response()->json([
@@ -195,6 +216,8 @@ class ExamTakerController extends Controller
             $examResult->user_id = Auth::id();
             $examResult->session_id = $sessionId;
             $examResult->user_answers = ($answers);
+            $examResult->course_flag = $courseId;
+            $examResult->course_section_flag = $sectionId;
             $examResult->current_score = $userScore;
             $examResult->guest_name = $name;
             $examResult->save();
@@ -216,6 +239,8 @@ class ExamTakerController extends Controller
             $examResult->user_id = Auth::id();
             $examResult->session_id = $sessionId;
             $examResult->user_answers = ($answers);
+            $examResult->course_flag = $courseId;
+            $examResult->course_section_flag = $sectionId;
             $examResult->current_score = $userScore;
             $examResult->guest_name = $name;
             $examResult->save();
@@ -230,6 +255,8 @@ class ExamTakerController extends Controller
                 $examResult->user_answers = ($answers);
                 $examResult->current_score = $userScore;
                 $examResult->guest_name = $name;
+                $examResult->course_flag = $courseId;
+                $examResult->course_section_flag = $sectionId;
                 $examResult->finished_at = Carbon::now();
                 $examResult->is_finished = "y";
                 $examResult->save();
@@ -245,12 +272,14 @@ class ExamTakerController extends Controller
                 $examResult->user_id = Auth::id();
                 $examResult->session_id = $sessionId;
                 $examResult->user_answers = ($answers);
+                $examResult->course_flag = $courseId;
+                $examResult->course_section_flag = $sectionId;
                 $examResult->current_score = $userScore;
                 $examResult->guest_name = $name;
                 $examResult->is_finished = "y";
                 $examResult->finished_at = Carbon::now();
                 $examResult->save();
-                $dimanaYa = "yossy";
+                $dimanaYa = "yoxy";
             }
         }
 
