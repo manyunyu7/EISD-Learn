@@ -110,11 +110,46 @@ class CourseSectionController extends Controller
             ->get();
 
 
-        $compact = compact('students', 'lesson');
+        $userAttempts = DB::table('exam_takers')
+            ->select('users.name as user_name','users.email as user_email', 'exam_takers.user_id', DB::raw('COUNT(*) as attempt'))
+            ->selectRaw('MAX(exam_takers.current_score) as last_score')
+            ->selectRaw('MAX(exam_takers.finished_at) as finished_at')
+            ->join('users', 'exam_takers.user_id', '=', 'users.id')
+            ->where('exam_takers.course_section_flag', $sectionId)
+            ->groupBy('exam_takers.user_id', 'users.name')
+            ->get();
+
+
+
+        $isHaveExam = false;
+        $isHaveSession = false;
+        $examSessionId = $section->quiz_session_id;
+        $examSessionTitle = "";
+        $examTitle = "";
+        $examSession = null;
+        $exam = null;
+        if ($examSessionId != null) {
+            $examSession = ExamSession::find($examSessionId);
+            if ($examSession != null) {
+                $examSessionTitle = $examSession->title;
+                $exam = Exam::find($examSession->exam_id);
+
+                if($exam!=null){
+                    $examTitle = $exam->title;
+                    $isHaveExam = true;
+                }
+                $isHaveSession = true;
+                $examSessionTitle = $examSession->title;
+            }
+        }
+
+        $compact = compact('isHaveExam','isHaveSession', 'exam',
+            'examTitle',
+            'examSession', 'examSessionTitle', 'students', 'lesson','userAttempts');
         if ($request->dump == true) {
             return $compact;
         }
-        return view('lessons.section.input_score', $compact);
+        return view('lessons.section.see_score', $compact);
     }
 
 
