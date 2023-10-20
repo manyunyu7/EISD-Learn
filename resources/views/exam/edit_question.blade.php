@@ -128,10 +128,10 @@
                                         <option @if($question->question_type=="multiple_choice") selected
                                                 @endif value="multiple_choice">Pilihan Ganda
                                         </option>
-                                        <option @if($question->question_type=="essay") selected
+                                        <option class="d-none" @if($question->question_type=="essay") selected
                                                 @endif value="essay">Essay
                                         </option>
-                                        <option value="true_false">True/False</option>
+                                        <option class="d-none" value="true_false">True/False</option>
                                     </select>
                                 </div>
 

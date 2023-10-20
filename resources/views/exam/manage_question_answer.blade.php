@@ -124,8 +124,8 @@
                                         <option value="essay">Choose</option>
                                         <option value="multiple_choice_single">Pilihan Ganda (Single)</option>
                                         <option value="multiple_choice">Pilihan Ganda (Multiple Select)</option>
-                                        <option value="essay">Essay</option>
-                                        <option value="true_false">True/False</option>
+                                        <option class="d-none" value="essay">Essay</option>
+                                        <option class="d-none" value="true_false">True/False</option>
                                     </select>
                                 </div>
 
