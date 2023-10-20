@@ -9,7 +9,6 @@ class MobileUploaderController extends Controller
 {
     public function upload(Request $request)
     {
-        return $request->all();
         // Validate the uploaded files
 //        $request->validate([
 //            'files.*' => 'required|file|mimes:jpeg,png,pdf,doc,docx',
