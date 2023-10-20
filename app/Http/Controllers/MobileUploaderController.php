@@ -34,12 +34,12 @@ class MobileUploaderController extends Controller
         ];
         // Send files using Guzzle
         $client = new Client();
-        $bearer = $request->bearer();
+        $bearer = $request->bearer;
         try {
             $response = $client->post('https://api-ithub.modernland.co.id/api/v1/helpdesk', [
                 'headers' => [
                     'Accept' => 'application/json',
-                    'Authorization' => 'Bearer $bearer',
+                    'Authorization' => "Bearer $bearer",
                 ],
                 'multipart' => array_merge(
                     $this->buildMultipartData($data),
