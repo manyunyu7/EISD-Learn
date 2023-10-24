@@ -14,6 +14,14 @@ class MobileUploaderController extends Controller
 //            'files.*' => 'required|file|mimes:jpeg,png,pdf,doc,docx',
 //        ]);
 
+        $url = "";
+
+        if($request->dev==true){
+            $url = "https://github.modernland.co.id/api/v1/helpdesk";
+        }else{
+            $url = "https://api-ithub.modernland.co.id/api/v1/helpdesk";
+        }
+
         // Get the uploaded files
         $files = $request->file('files');
 
@@ -36,7 +44,7 @@ class MobileUploaderController extends Controller
         $client = new Client();
         $bearer = $request->bearer;
         try {
-            $response = $client->post('https://api-ithub.modernland.co.id/api/v1/helpdesk', [
+            $response = $client->post($url, [
                 'headers' => [
                     'Accept' => 'application/json',
                     'Authorization' => "Bearer $bearer",
