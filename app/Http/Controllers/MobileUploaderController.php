@@ -16,7 +16,7 @@ class MobileUploaderController extends Controller
 
         $url = "";
 
-        if($request->dev==true){
+        if($request->dev=="true"){
             $url = "https://github.modernland.co.id/api/v1/helpdesk";
         }else{
             $url = "https://api-ithub.modernland.co.id/api/v1/helpdesk";
