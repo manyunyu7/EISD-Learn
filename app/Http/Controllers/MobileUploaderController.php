@@ -38,6 +38,8 @@ class MobileUploaderController extends Controller
             'site_id' => $request->site_id,
             'sub_location_site_id' => $request->sub_location_site_id,
             'type_id' => $request->type_id,
+            'created_by' => $request->user_id,
+            'is_self_request' => $request->is_self_request,
             'description' => $request->description,
         ];
         // Send files using Guzzle

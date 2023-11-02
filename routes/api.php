@@ -20,5 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::post('/upload', 'MobileUploaderController@upload');
-Route::post('/close-ticket', 'MobileUploaderController@closeTicket');
+Route::any('/close-ticket', 'MobileUploaderController@closeTicket');
 
