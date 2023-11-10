@@ -37,6 +37,7 @@ class MobileUploaderController extends Controller
         $data = [
             'site_id' => $request->site_id,
             'sub_location_site_id' => $request->sub_location_site_id,
+            'location_detail' => $request->location_detail,
             'type_id' => $request->type_id,
             'created_by' => $request->user_id,
             'is_self_request' => $request->is_self_request,
