@@ -133,11 +133,8 @@
                             <button class="btn btn-primary btn-border btn-round mb-3">Tambah Kelas Baru
                             </button>
                         </a>
-
                         <div class="table-responsive">
-                            <table id="basic-datatables" class="table table-bordered table-responsive       @if (count($dayta) < 1)
-                        d-none
-                      @endif">
+                            <table id="basic-datatables" class="table table-bordered  @if (count($dayta) < 1) d-none @endif">
                                 <thead>
                                 <tr>
                                     <th scope="col">GAMBAR</th>
@@ -147,7 +144,7 @@
                                     <th scope="col">CONTENT</th>
                                     <th scope="col">PENULIS</th>
                                     <th scope="col">KATEGORI</th>
-                                    <th  scope="col"></th>
+                                    <th scope="col"></th>
                                     <th scope="col"></th>
                                 </tr>
                                 </thead>
@@ -167,7 +164,6 @@
                                         <td>{{ $data->mentor_name}}</td>
                                         @php
                                             $cat = $data->course_category;
-
                                         @endphp
                                         <td>{{  $cat }}</td>
                                         <td class="text-center">
@@ -177,11 +173,9 @@
                                                 <button  onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger ">HAPUS</button>
                                             </form>
                                         </td>
-
                                         <td>
                                             <a href="{{ route('lesson.edit', $data->id) }}" class="btn btn-sm btn-primary">EDIT</a>
                                         </td>
-                                        {{-- <td><a href="" class="button" data-id="{{$blog->id}}">Delete</a></td> --}}
                                     </tr>
                                 @empty
                                     <div class="alert alert-danger">
