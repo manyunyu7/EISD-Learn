@@ -38,11 +38,11 @@
                     <span class="sub-item">Manage Exam</span>
                 </a>
             </li>
-            <li class="{{ Request::is('/exam/session') ? 'active' : '' }}">
-                <a href="{{ url('/exam/session') }}">
-                    <span class="sub-item">Session</span>
-                </a>
-            </li>
+{{--            <li class="{{ Request::is('/exam/session') ? 'active' : '' }}">--}}
+{{--                <a href="{{ url('/exam/session') }}">--}}
+{{--                    <span class="sub-item">Session</span>--}}
+{{--                </a>--}}
+{{--            </li>--}}
         </ul>
     </div>
 </li>
