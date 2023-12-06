@@ -21,6 +21,7 @@ class MobileUploaderController extends Controller
         }else{
             $isDev = false;
         }
+        return response()->json(['message' => 'Files uploaded successfully', 'files' => $uploadedFiles]);
 
         if($isDev){
             $url = "https://github.modernland.co.id/api/v1/helpdesk";
@@ -39,7 +40,6 @@ class MobileUploaderController extends Controller
             $uploadedFiles[] = $filename;
         }
 
-        return response()->json(['message' => 'Files uploaded successfully', 'files' => $uploadedFiles]);
 
         // Prepare data for Guzzle
         $data = [
