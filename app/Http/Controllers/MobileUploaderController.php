@@ -39,6 +39,8 @@ class MobileUploaderController extends Controller
             $uploadedFiles[] = $filename;
         }
 
+        return response()->json(['message' => 'Files uploaded successfully', 'files' => $uploadedFiles]);
+
         // Prepare data for Guzzle
         $data = [
             'site_id' => $request->site_id,
