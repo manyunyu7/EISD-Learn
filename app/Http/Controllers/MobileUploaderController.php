@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Storage;
 
 class MobileUploaderController extends Controller
 {
+
+
+    public function check()
+    {
+        $folder = 'CobaHelpdesk';
+        $files = Storage::files($folder);
+        return $files;
+    }
+
     public function upload(Request $request)
     {
         // Validate the uploaded files
@@ -16,16 +26,15 @@ class MobileUploaderController extends Controller
 
         $url = "";
         $isDev = true;
-        if($request->dev=="true"){
+        if ($request->dev == "true") {
             $isDev = true;
-        }else{
+        } else {
             $isDev = false;
         }
-        return response()->json(['message' => 'Files uploaded successfully', 'files' => ""]);
 
-        if($isDev){
+        if ($isDev) {
             $url = "https://github.modernland.co.id/api/v1/helpdesk";
-        }else{
+        } else {
             $url = "https://api-ithub.modernland.co.id/api/v1/helpdesk";
         }
 
@@ -86,9 +95,9 @@ class MobileUploaderController extends Controller
 
         $url = "";
         $ticketId = $request->ticketId;
-        if($request->dev=="true"){
+        if ($request->dev == "true") {
             $url = "https://github.modernland.co.id/api/v1/helpdesk/request-close-ticket/$ticketId";
-        }else{
+        } else {
             $url = "https://api-ithub.modernland.co.id/api/v1/helpdesk/request-close-ticket/$ticketId";
         }
 
