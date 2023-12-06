@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
@@ -15,8 +16,14 @@ class MobileUploaderController extends Controller
 //        ]);
 
         $url = "";
-
+        $isDev = true;
         if($request->dev=="true"){
+            $isDev = true;
+        }else{
+            $isDev = false;
+        }
+
+        if($isDev){
             $url = "https://github.modernland.co.id/api/v1/helpdesk";
         }else{
             $url = "https://api-ithub.modernland.co.id/api/v1/helpdesk";
@@ -29,7 +36,7 @@ class MobileUploaderController extends Controller
         $uploadedFiles = [];
         foreach ($files as $file) {
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/IsengIsengAja', $filename);
+            $file->storeAs('public/CobaHelpdesk', $filename);
             $uploadedFiles[] = $filename;
         }
 
@@ -63,8 +70,24 @@ class MobileUploaderController extends Controller
             // You can handle the response here
 
             return response()->json(['message' => 'Files uploaded successfully', 'files' => $uploadedFiles]);
-        } catch (\Exception $e) {
+        } catch (RequestException $e) {
+            // Guzzle RequestException captures HTTP errors
+            $response = $e->getResponse();
+
+            if ($response) {
+                // Guzzle error response
+                $errorBody = $response->getBody()->getContents();
+                $statusCode = $response->getStatusCode();
+            } else {
+                // If there is no response, handle the exception
+                $errorBody = $e->getMessage();
+                $statusCode = 500; // Set a default status code
+            }
+
             // Handle errors here
+            return response()->json(['error' => $errorBody], $statusCode);
+        } catch (\Exception $e) {
+            // Handle other exceptions here
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
