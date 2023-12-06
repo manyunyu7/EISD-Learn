@@ -21,7 +21,7 @@ class MobileUploaderController extends Controller
         }else{
             $isDev = false;
         }
-        return response()->json(['message' => 'Files uploaded successfully', 'files' => $uploadedFiles]);
+        return response()->json(['message' => 'Files uploaded successfully', 'files' => ""]);
 
         if($isDev){
             $url = "https://github.modernland.co.id/api/v1/helpdesk";
