@@ -97,7 +97,7 @@ class MobileUploaderController extends Controller
         $uploadedFiles = [];
         foreach ($files as $file) {
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/IsengIsengAja', $filename);
+            $file->storeAs('public/CobaHelpdesk', $filename);
             $uploadedFiles[] = $filename;
         }
 
@@ -146,7 +146,7 @@ class MobileUploaderController extends Controller
         foreach ($files as $uploadedFile) {
             $fileData[] = [
                 'name' => 'files',
-                'contents' => file_get_contents(storage_path("app/public/IsengIsengAja/{$uploadedFile}")),
+                'contents' => file_get_contents(storage_path("app/public/CobaHelpdesk/{$uploadedFile}")),
                 'filename' => $uploadedFile,
             ];
         }
