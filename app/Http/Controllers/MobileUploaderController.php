@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
@@ -70,24 +69,8 @@ class MobileUploaderController extends Controller
             // You can handle the response here
 
             return response()->json(['message' => 'Files uploaded successfully', 'files' => $uploadedFiles]);
-        } catch (RequestException $e) {
-            // Guzzle RequestException captures HTTP errors
-            $response = $e->getResponse();
-
-            if ($response) {
-                // Guzzle error response
-                $errorBody = $response->getBody()->getContents();
-                $statusCode = $response->getStatusCode();
-            } else {
-                // If there is no response, handle the exception
-                $errorBody = $e->getMessage();
-                $statusCode = 500; // Set a default status code
-            }
-
-            // Handle errors here
-            return response()->json(['error' => $errorBody], $statusCode);
         } catch (\Exception $e) {
-            // Handle other exceptions here
+            // Handle errors here
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
