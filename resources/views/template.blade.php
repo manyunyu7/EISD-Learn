@@ -111,8 +111,12 @@
                     transform: rotate(360deg);
                 }
             }
-        </style>
 
+            
+        </style>
+        @stack("InternalStyle")
+
+        
     <!-- Lottie Animate -->
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 

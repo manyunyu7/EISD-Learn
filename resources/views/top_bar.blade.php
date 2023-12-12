@@ -8,21 +8,7 @@
     </button>
     <div class="collapse navbar-collapse" id="collapsibleNavId">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link" href="{{url('/')}}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url('/classes')}}">Kelas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link"  href="{{url('/blogs')}}">Blog</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url('/portfolios')}}">Portfolio</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Podcast</a>
-            </li>
+            
 
             <li class="nav-item dropdownv d-none">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown"
@@ -40,13 +26,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('login') }}">
                              <button type="button"
-                                class="btn btn-outline-primary">Login</button>
+                                class="btn btn-danger"
+                                style="width: 100px; height:50px;">Login</button>
                                 <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('register') }}"> <button type="button"
-                                class="btn btn-outline-primary">Register</button> <span
-                                class="sr-only">(current)</span></a>
                     </li>
                 @endif
             @else
