@@ -20,18 +20,17 @@
         .headerText {
             font-size: 28px; /* Atur ukuran teks sesuai keinginan Anda */
         }
-        
 
     </style>
 @endpush
-    
+
 
     <div class="container w-100" data-aos="flip-right" >
     </div>
     {{-- HEADER SECTION --}}
     <div style="text-align: center; background-color: #F5F5F5; min-height:100%" class="section1">
         <div class="row">
-            <div class="col" style="text-align: left; margin: 35px; ">
+            <div class="col-md-12 col-sm-12 col-lg-6 col-12" style="text-align: left; padding: 35px; ">
                 <br><br><br>
                 <img style="width: 200px; height:175px;" src="{{ URL::to('/') }}/ic_toga.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
                 <h3 style="font-size: 50px;"><b>Selamat Datang di</b></h3>
@@ -39,22 +38,20 @@
                 <span class="badge bg-danger" style="color: white;"><b> Learning</b></span></h1>
                 <h1><b><span class="badge bg-danger" style="color: white; font-size: 88px;">Management System</span></b></h1>
                 <span class="headerText">
-                    Metode pendidikan yang menggunakan teknnologi digital untuk memberikan 
-                    akses fleksibel dan mandiri kepada karyawan untuk melakukan pelatihan atau 
+                    Metode pendidikan yang menggunakan teknnologi digital untuk memberikan
+                    akses fleksibel dan mandiri kepada karyawan untuk melakukan pelatihan atau
                     pembelajaran melalui platform online
                 </span>
                 <br><br><br>
 
-                <button type="button" class="btn btn-danger" 
-                    style="width: 130px; height:50px;" 
+                <button type="button" class="btn btn-danger"
+                    style="width: 130px; height:50px;"
                     href="{{ url('login') }}">
                     <b>Get Started</b>
                 </button>
             </div>
-            <div class="col">
-                <br><br><br><br><br><br><br><br><br><br>
-                {{-- <p class="gloss mb-0"  style="font-family: 'Bebas Neue', sans-serif !important; color: #BB0014 !important; background-color: #F5F5F5;">{{ config('app.name') }}</p> --}}
-                <img style="width: 1350px; height: 950px;" src="{{ URL::to('/') }}/headerIMG.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
+            <div class="col-md-12 col-sm-12 col-lg-6 col-12">
+                <img style="object-fit: contain; height: 100vh; position: absolute; bottom: 0; right: 0;" src="{{ URL::to('/') }}/headerIMG.png" alt="Illustration of the evolution of development by octocats" class="">
             </div>
         </div>
     </div>
@@ -68,11 +65,11 @@
         <div class="col-md-6" data-aos="flip-left">
             <br><br>
             {{-- <h1 style="margin-left: 50px"><span class="badge bg-dark" style="color: white;  height:65px; text-align: center;"><b> Pembelajaran</b></span></h1> --}}
-            
+
 
             <div class="row" style="margin-left: 50px">
                 <div class="col-2">
-                    <button type="label" class="btn btn-dark" 
+                    <button type="label" class="btn btn-dark"
                         style="width: 285px; height:56px; font-size:30px; pointer-events: none;">
                         <b>Pembelajaran</b>
                     </button>
@@ -131,7 +128,7 @@
         <div class="col-md-6" data-aos="flip-left">
             <br><br>
             {{-- <h1 style="margin-left: 50px"><span class="badge bg-dark" style="color: white; width: 114px; height:56px; font-size: 30px;"><b> FAQ</b></span></h1> --}}
-            <button type="label" class="btn btn-dark" 
+            <button type="label" class="btn btn-dark"
                     style="width: 114px; height:56px; font-size:30px; pointer-events: none;">
                     <b>FAQ</b>
             </button>
