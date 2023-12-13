@@ -20,6 +20,7 @@
         .headerText {
             font-size: 28px; /* Atur ukuran teks sesuai keinginan Anda */
         }
+        
 
     </style>
 @endpush
@@ -27,6 +28,7 @@
 
     <div class="container w-100" data-aos="flip-right" >
     </div>
+    {{-- HEADER SECTION --}}
     <div style="text-align: center; background-color: #F5F5F5; min-height:100%" class="section1">
         <div class="row">
             <div class="col" style="text-align: left; margin: 35px; ">
@@ -57,6 +59,7 @@
         </div>
     </div>
 
+    {{-- PEMBELAJARAN SECTION --}}
     <div class="container-fluid row h4-container" >
         <div class="col-md-6 center ">
             <br><br>
@@ -64,7 +67,20 @@
         </div>
         <div class="col-md-6" data-aos="flip-left">
             <br><br>
-            <h1 style="margin-left: 50px"><span class="badge bg-dark" style="color: white;  height:65px; text-align: center;"><b> Pembelajaran</b></span></h1>
+            {{-- <h1 style="margin-left: 50px"><span class="badge bg-dark" style="color: white;  height:65px; text-align: center;"><b> Pembelajaran</b></span></h1> --}}
+            
+
+            <div class="row" style="margin-left: 50px">
+                <div class="col-2">
+                    <button type="label" class="btn btn-dark" 
+                        style="width: 285px; height:56px; font-size:30px; pointer-events: none;">
+                        <b>Pembelajaran</b>
+                    </button>
+                    <br><br>
+                </div>
+                <div class="col-10">
+                </div>
+            </div>
             <br>
 
             <div class="row" style="margin-left: 50px">
@@ -110,13 +126,16 @@
     </div>
     <hr>
 
-{{-- BATAS --}}
-
+    {{-- FAQ SECTION --}}
     <div class="container-fluid row h4-container" >
         <div class="col-md-6" data-aos="flip-left">
             <br><br>
-            <h1 style="margin-left: 50px"><span class="badge bg-dark" style="color: white;  height:65px; text-align: center;"><b> Pembelajaran</b></span></h1>
-            <br>
+            {{-- <h1 style="margin-left: 50px"><span class="badge bg-dark" style="color: white; width: 114px; height:56px; font-size: 30px;"><b> FAQ</b></span></h1> --}}
+            <button type="label" class="btn btn-dark" 
+                    style="width: 114px; height:56px; font-size:30px; pointer-events: none;">
+                    <b>FAQ</b>
+            </button>
+            <br><br>
             <div class="accordion" id="accordionExample">
                 <div class="accordion-item">
                   <h2 class="accordion-header" id="headingOne">
@@ -162,221 +181,13 @@
         </div>
     </div>
 
-    <div class="container-fluid jargon jargon-6">
-        <div class=" row">
-            <div class="col-md-6 d-flex justify-content-center center" data-aos="zoom-in-up">
-                <div class="ml-3">
-                    <div>
-                        <h2>Persiapan Kerja
-                            Jadi Lebih Optimal</h2>
-                    </div>
-                    <div>
-                        <p>{{ config('app.name') }} mempelajari corporate culture, keahlian kerja, kompetensi yang dibutuhkan di Modernland</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <lottie-player src="https://lottie.host/de4087d3-35d5-41fb-9af5-1bc46fce0dc9/g0rmfNzz8R.json" mode="bounce" background="TRANSPARENT" speed="1" style="width: 100%; height:300px;" hover loop autoplay>
-                </lottie-player>
-            </div>
-        </div>
-    </div>
-
-    <div>
-        <hr>
-    </div>
-
-
-
-    {{-- <div class="row justify-content-center align-items-center">
-            <div class="col-md-3 pl-md-0 " data-aos="flip-left">
-                <div class="card-pricing2 card-success">
-                    <div class="pricing-header">
-                        <h3 class="fw-bold">1 Bulan</h3>
-                        <span class="sub-title">Paket Coba-Coba</span>
-                    </div>
-                    <div class="price-value">
-                        <div class="value">
-                            <span class="currency">Rp.</span>
-                            <span class="amount">75<span></span></span>
-                            <span class="month">Ribu</span>
-                        </div>
-                    </div>
-                    <ul class="pricing-content">
-                        <li>50GB Disk Space</li>
-                    </ul>
-                    <a href="#" class="btn btn-success btn-border btn-lg w-75 fw-bold mb-3">Daftar</a>
-                </div>
-            </div>
-            <div class="col-md-3 pl-md-0 pr-md-0" data-aos="flip-right" data-aos-delay="500">
-                <div class="card-pricing2 card-primary">
-                    <div class="pricing-header">
-                        <h3 class="fw-bold">3 Bulan</h3>
-                        <span class="sub-title">Short Intercourse</span>
-                    </div>
-                    <div class="price-value">
-                        <div class="value">
-                            <span class="currency">Rp.</span>
-                            <span class="amount">150<span></span></span>
-                            <span class="month">Ribu</span>
-                        </div>
-                    </div>
-                    <ul class="pricing-content">
-                        <li>60GB Disk Space</li>
-                    </ul>
-                    <a href="#" class="btn btn-primary btn-border btn-lg w-75 fw-bold mb-3">Daftar</a>
-                </div>
-            </div>
-            <div class="col-md-3 pr-md-0" data-aos="flip-right" data-aos-delay="1000">
-                <div class="card-pricing2 card-secondary">
-                    <div class="pricing-header">
-                        <h3 class="fw-bold">1 Tahun</h3>
-                        <span class="sub-title">Bootcamp</span>
-                    </div>
-                    <div class="price-value">
-                        <div class="value">
-                            <span class="currency">Rp.</span>
-                            <span class="amount">750<span></span></span>
-                            <span class="month">Ribu</span>
-                        </div>
-                    </div>
-                    <ul class="pricing-content">
-                        <li>70GB Disk Space</li>
-                    </ul>
-                    <a href="#" class="btn btn-secondary btn-border btn-lg w-75 fw-bold mb-3">Daftar</a>
-                </div>
-            </div>
-
-        </div> --}}
-
-    {{-- <div class="container-fluid">
-            <hr>
-        </div> --}}
-
-
-    <div class="container-fluid jargon jargon-path row">
-        <div class="col-md-12 text-center" data-aos="flip-right">
-            <br>
-            <h1 class="center">Belajar Instant Berkualitas</h1>
-            <p class="center"> Dengan 3 Langkah Mudah</p>
-        </div>
-
-        <div class="col-md-4 center text-center" data-aos="bounce" data-aos-duration="1500">
-            <lottie-player class="center" src="https://assets1.lottiefiles.com/packages/lf20_jcikwtux.json" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay>
-            </lottie-player>
-            <br><br><br>
-            <h4>Daftar</h4>
-        </div>
-
-        <div class="col-md-4 center text-center" data-aos="bounce" data-aos-duration="1500">
-            <lottie-player class="center" src="https://assets9.lottiefiles.com/packages/lf20_e9kjkvml.json" background="transparent" speed="3" style="width: 200px; height: 200px;" loop autoplay>
-            </lottie-player>
-            <br><br><br>
-            <h4>Belajar</h4>
-        </div>
-
-
-
-        <div class="col-md-4 center text-center" data-aos="bounce" data-aos-duration="1500">
-            <lottie-player class="center" src="https://assets10.lottiefiles.com/packages/lf20_n7DAEZ.json" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay>
-            </lottie-player>
-            <br><br><br>
-            <h4>Evaluasi</h4>
-        </div>
-    </div>
-
-    <!-- <div>
-        <hr>
-    </div> -->
-
-    <div class="container center jargon">
-
-        <div style="margin-top: 50px;" class="text-center mb-4" data-aos="zoom-in-up">
-            <!-- <h1>Team</h1> -->
-            <img src=" {{URL::to('/')}}/home_assets/img/esd_3.png" alt="" style="width: 280px; ">
-            <p>Developed by : MDLN IT & HR</p>
-        </div>
-
-
-        <div class="container-fluid row">
-            <!-- <div class="col-md-12 col-lg-4 col-12 card ">
-                <div class="card-body">
-                    <div class="text-center">
-                        <img class="mb-4 text-center" width="150px" height="150px" src="{{ URL::to('/') }}/home_assets/img/lecturer1.png" alt="">
-                    </div>
-                    <h4 class="mt-2 text-center card-title">Rahmat Fauzi, M.T</h4>
-                    <p class="card-text text-center">Pembina Lab Riset EISD & Dosen Pengampu Mata Kuliah WAD 2020</p>
-                    <p class="card-text text-center">- Pembina Proyek Mata Kuliah WAD - </p>
-                </div>
-            </div> -->
-            <!--
-            <div class="col-md-12 col-lg-4 col-12 card ">
-                <div class="card-body">
-                    <div class="text-center">
-                        <img class="mb-4 text-center" width="150px" height="150px" src="{{ URL::to('/') }}/home_assets/img/student_henry.png" alt="">
-                    </div>
-                    <h4 class="mt-2 text-center card-title">Henry Augusta Harsono</h4>
-                    <p class="card-text text-center">Asisten Laboratorium Riset EISD & Sistem Informasi Telkom University 2018</p>
-                    <p class="card-text text-center"><a href="https://github.com/henryaugusta">https://github.com/henryaugusta</a>
-                    </p>
-                </div>
-            </div> -->
-
-            <!-- <div class="col-md-12 col-lg-4 col-12 card ">
-                <div class="card-body">
-                    <div class="text-center">
-                        <img class="mb-4 text-center" width="150px" height="150px" src="{{ URL::to('/') }}/home_assets/img/firriezky.png" alt="">
-                    </div>
-                    <h4 class="mt-2 text-center card-title">Muhammad Firriezky</h4>
-                    <p class="card-text text-center">Mahasiswa Sistem Informasi Telkom University 2018</p>
-                    <p class="card-text text-center"><a href="https://github.com/firriezky">https://github.com/firriezky</a>
-                    </p>
-                </div>
-            </div> -->
-        </div>
-    </div>
-
-
-    <div>
-        <hr>
-    </div>
-
-
-    <div class="container-fluid jargon jargon-client mt-5">
-        {{-- <div class="center">
-                <h3 style="text-align: center;">Member Kami Dari Berbagai Kampus dan Perusahaan</h3>
-            </div>
-            <div class="d-flex justify-content-center mb-5">
-                <img class="center img-fluid" src="./home_assets/img/members-campus-companies.png" alt="">
-            </div> --}}
-
-    </div>
-
-    <div class=" container-fluid jargon jargon-final bg">
-        <br><br><br>
-        <div class="d-flex justify-content-center">
-            <img class="" src="./home_assets/img/members.png" alt="" height="60px">
-        </div>
-        <div class=" center text-center">
-            <h3 style="text-align: center;">"Mari Bergabung Dengan Ratusan User Lainnya di
-                {{ config('app.name') }}"
-            </h3>
-    {{--        <p>Tidak perlu download / kartu kredit. Cukup daftar langsung belajar.</p>--}}
-            <p>Creating Forward</p>
-            <br><br>
-    {{--        <button type="button" name="" id="" class="btn btn-primary btn-lg btn-block">Uji Coba Gratis</button>--}}
-            <br><br>
-        </div>
-    </div>
-
-
-        <script>
-            console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
-            console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
-            console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
-            console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
-            console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
-            console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
-        </script>
+    <script>
+        console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
+        console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
+        console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
+        console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
+        console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
+        console.log("%c 💻 Modernland.com is Hiring: %chttps://careers.blibli.com%c ", "background:#000;color:#0f0;font-family:Lucida console;font-size:20px;letter-spacing:-1px;display:block;padding:5px;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 5px 3px -5px rgba(0, 0, 0, 0.5), 0 -13px 5px -10px rgba(255,255,255,0.4) inset;animation:blink 1s infinite;", "color:#0f0;text-decoration:underline;", "@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}");
+    </script>
 
     @endsection
