@@ -52,9 +52,9 @@
                 </button>
             </div>
             <div class="col">
-                <br><br><br><br><br><br><br><br>
+                <br><br><br><br><br><br><br><br><br><br>
                 {{-- <p class="gloss mb-0"  style="font-family: 'Bebas Neue', sans-serif !important; color: #BB0014 !important; background-color: #F5F5F5;">{{ config('app.name') }}</p> --}}
-                <img style="width: 1430px; height: 1000px;" src="{{ URL::to('/') }}/headerIMG.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
+                <img style="width: 1350px; height: 950px;" src="{{ URL::to('/') }}/headerIMG.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
             </div>
         </div>
     </div>
