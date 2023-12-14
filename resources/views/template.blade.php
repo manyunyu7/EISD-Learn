@@ -94,6 +94,47 @@
                 max-height: 20vh; /* Adjust the maximum height of the image */
             }
 
+            .footerLogo{
+                max-width: 100%; 
+                max-height: auto;
+                margin-left: -550px
+            }
+            .footerAddress{
+                margin-left: -550px;
+                color: #8C94A3;
+            }
+            .footerCentral{
+                color: #8C94A3;
+                text-align: center;
+            }
+
+
+            .social-icon a {
+            align-items: center;
+            background: hsla(#363B47);
+            border: 1px solid hsla(0, 0%, 100%, 0.5);
+            display: inline-flex;
+            height: 42px;
+            justify-content: center;
+            line-height: 1;
+            padding: 30px;
+            width: 42px;
+            transition: background 0.3s, border-color 0.3s;
+            margin-left: 10px;
+            
+            }
+
+            /* Efek hover */
+            .social-icon a:hover {
+            background: hsla(0, 100%, 57%, 0.913);
+            border-color: hsla(0, 0%, 100%, 0.7);
+            }
+
+
+
+
+
+
             @keyframes blink {
                 0%, 100% {
                     opacity: 0;
@@ -129,6 +170,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <!-- Bootstrap CSS 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
@@ -146,18 +189,41 @@
 <footer class=" footer" style="background-color: #1D2026">
         <div class="container">
             <div class="row">
-                <div class="col">
-                    1 of 2
-                </div>
-                <div class="col">
+                <div class="col-4">
                     <div class="row">
-                        <b>You're not Login (Login Here)</b>
-                        <span>Copyright @2024 PT. Modernland Realty Tbk.</span>
-                        <span>All Right Reserved</span>
+                        <img src="{{URL::to('/')}}/logoPutih.png" alt="navbar brand" class="centered-image footerLogo">
+                    </div>
+                    <div class="footerAddress">
+                        <br>
+                        <b>Commercial Area 5th, Green Central City, Jl.Gajah Mada</b><br>
+                        <b>RT.3/RW.5, Glodok, Kec. Taman Sari</b><br>
+                        <b>Jakarta, Daerah Khusus Ibukota Jakarta</b><br>
+                        <b>11120</b><br>
                     </div>
                 </div>
-                <div class="col">
-                    2 of 2
+                <div class="col-4">
+                    <div class="row footerCentral">
+                        <br><br><br><br><br>
+                        <b style="color: white">You're not Login (Login Here)</b>
+                        <b>Copyright @2024 PT. Modernland Realty Tbk.</b>
+                        <b>All Right Reserved</b>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="social-icon">
+                        <a href="https://github.com/KevinValerian21/">
+                            <img src="{{URL::to('/')}}/Facebook.svg" alt="">
+                        </a>
+                        <a href="https://www.instagram.com/kevinvarn21">
+                            <img src="{{URL::to('/')}}/Instagram.svg" alt="">
+                        </a>
+                        <a href="https://www.linkedin.com/in/kevinvalerianninia">
+                            <img src="{{URL::to('/')}}/Linkedin.svg" alt="">
+                        </a>
+                        <a href="https://www.instagram.com/kevinvarn21">
+                            <img src="{{URL::to('/')}}/Youtube.svg" alt="">
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -175,6 +241,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
