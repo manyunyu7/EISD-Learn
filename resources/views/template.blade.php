@@ -94,46 +94,127 @@
                 max-height: 20vh; /* Adjust the maximum height of the image */
             }
 
-            .footerLogo{
-                max-width: 100%; 
-                max-height: auto;
-                margin-left: -550px
-            }
-            .footerAddress{
-                margin-left: -550px;
-                color: #8C94A3;
-            }
-            .footerCentral{
-                color: #8C94A3;
-                text-align: center;
-            }
-
-
-            .social-icon a {
-            align-items: center;
-            background: hsla(#363B47);
-            border: 1px solid hsla(0, 0%, 100%, 0.5);
-            display: inline-flex;
-            height: 42px;
-            justify-content: center;
-            line-height: 1;
-            padding: 30px;
-            width: 42px;
-            transition: background 0.3s, border-color 0.3s;
-            margin-left: 10px;
             
+            
+
+
+            /* Penyesuaian untuk tampilan lebih kecil */
+            @media screen and (max-width: 768px) {
+                
             }
 
-            /* Efek hover */
-            .social-icon a:hover {
-            background: hsla(0, 100%, 57%, 0.913);
-            border-color: hsla(0, 0%, 100%, 0.7);
+            /* Penyesuaian untuk tampilan sedang */
+            @media screen and (min-width: 820px) and (max-width: 1180px) {
+                .footerLogo{
+                    max-width: 100%; 
+                    max-height: auto;
+                    margin-left: -550px
+                 }
+                .footerAddress{
+                    margin-left: -550px;
+                    color: #8C94A3;
+                }
+                .footerCentral{
+                    color: #8C94A3;
+                    margin-right: 750px;
+                    text-align: center;
+                }
+                .footerSocmed{
+                    margin-left: 1350px;
+                    
+                }
+                .col-4.footerSocmed {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-right: 850px;
+                    margin-top: -150px;
+                }
+
+                .social-icon {
+                    display: flex;
+                }
+
+                .social-icon a {
+                    align-items: center;
+                    background: hsla(#363B47);
+                    border: 1px solid hsla(0, 0%, 100%, 0.5);
+                    display: inline-flex;
+                    height: 42px;
+                    justify-content: center;
+                    line-height: 1;
+                    width: 42px;
+                    transition: background 0.3s, border-color 0.3s;
+                    margin: 0 10px;  /* Adjust as needed */
+                }
+
+                /* Efek hover */
+                .social-icon a:hover {
+                    background: hsla(0, 100%, 57%, 0.913);
+                    border-color: hsla(0, 0%, 100%, 0.7);
+                }
             }
 
+            /* Penyesuaian untuk tampilan besar */
+            @media screen and (min-width: 1440px) {
+                .wrapper {
+                    display: grid;
+                    grid-template-columns : (auto-fit,
+                                            minmax(min(11.25rem, 100%), 1 fr));
+                    grid-gap: 1 rem;
+                }
+                .footerLogo{
+                    max-width: 500%; 
+                    max-height: auto;
+                    margin-left: -550px
+                }
+                .footerAddress{
+                    margin-left: -550px;
+                    color: #8C94A3;
+                    padding-right: 80%;
+                }
+                .footerCentral{
+                    color: #8C94A3;
+                    margin-right: 750px;
+                    text-align: center;
+                }
+                .footerSocmed{
+                    margin-left: 1350px;
+                    
+                }
+                .col-4.footerSocmed {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-right: 850px;
+                    margin-top: -150px;
+                }
 
+                .social-icon {
+                    display: flex;
+                }
 
+                .social-icon a {
+                    align-items: center;
+                    background: hsla(#363B47);
+                    border: 1px solid hsla(0, 0%, 100%, 0.5);
+                    display: inline-flex;
+                    height: 42px;
+                    justify-content: center;
+                    line-height: 1;
+                    width: 42px;
+                    transition: background 0.3s, border-color 0.3s;
+                    margin: 0 10px;  /* Adjust as needed */
+                }
 
+                /* Efek hover */
+                .social-icon a:hover {
+                    background: hsla(0, 100%, 57%, 0.913);
+                    border-color: hsla(0, 0%, 100%, 0.7);
+                }
+            }
 
+            
 
             @keyframes blink {
                 0%, 100% {
@@ -209,7 +290,7 @@
                         <b>All Right Reserved</b>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-4 footerSocmed">
                     <div class="social-icon">
                         <a href="https://github.com/KevinValerian21/">
                             <img src="{{URL::to('/')}}/Facebook.svg" alt="">
