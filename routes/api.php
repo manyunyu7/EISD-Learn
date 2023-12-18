@@ -28,6 +28,6 @@ Route::prefix("integration")->group(function (){
     Route::get("/check-user-exist/{userId}","ModernlandIntegrationController@checkId");
     Route::get("/user/id","ModernlandIntegrationController@getUserById");
     Route::get("/available-users","ModernlandIntegrationController@getAvailableUsers");
-    Route::get("/create-new-user","ModernlandIntegrationController@createNewUser");
+    Route::post("/create-new-user","ModernlandIntegrationController@createNewUser");
 });
 
