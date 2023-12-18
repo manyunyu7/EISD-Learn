@@ -99,28 +99,70 @@
 
 
             /* Penyesuaian untuk tampilan lebih kecil */
-            @media screen and (max-width: 768px) {
-                
+            @media screen and (max-width: 767px) {
+                .row {
+                    flex-direction: column; /* Mengubah tata letak kolom menjadi satu di bawah yang lain */
+                    text-align: center; /* Pusatkan konten dalam kolom */
+                }
+
+                .col-4 {
+                    width: 100%; /* Gunakan lebar penuh pada tampilan layar yang lebih kecil */
+                    margin-bottom: 20px; /* Tambahkan margin antara kolom */
+                }
+
+                .footerSocmed {
+                    margin-left: 0; /* Atur margin kembali ke nilai default */
+                }
+
+                .col-4.footerSocmed {
+                    margin-right: 0; /* Atur margin kembali ke nilai default */
+                    margin-top: 0; /* Atur margin kembali ke nilai default */
+                }
+                .col-4{
+                    margin-left: 110px;
+                    column-width: 50%;
+                }
+
+                .footerLogo{
+                    max-width: 50%; 
+                    max-height: auto;
+                    margin-left: 90px
+                 }
+                 .footerAddress{
+                    margin-left: -50px;
+                    color: #8C94A3;
+                }
+                .footerAddress b{
+                    font-size: 8px;
+
+                }
             }
+
 
             /* Penyesuaian untuk tampilan sedang */
             @media screen and (min-width: 820px) and (max-width: 1180px) {
                 .footerLogo{
-                    max-width: 100%; 
+                    max-width: 30%; 
                     max-height: auto;
-                    margin-left: -550px
+                    margin-left: -50px
                  }
                 .footerAddress{
-                    margin-left: -550px;
+                    margin-left: -50px;
                     color: #8C94A3;
+                }
+                .footerAddress b{
+                    font-size: 9px;
                 }
                 .footerCentral{
                     color: #8C94A3;
                     margin-right: 750px;
                     text-align: center;
                 }
+                .footerCentral b{
+                    font-size: 9px;
+                }
                 .footerSocmed{
-                    margin-left: 1350px;
+                    margin-left: 520px;
                     
                 }
                 .col-4.footerSocmed {
@@ -128,7 +170,7 @@
                     justify-content: center;
                     align-items: center;
                     margin-right: 850px;
-                    margin-top: -150px;
+                    margin-top: -200px;
                 }
 
                 .social-icon {
@@ -140,10 +182,10 @@
                     background: hsla(#363B47);
                     border: 1px solid hsla(0, 0%, 100%, 0.5);
                     display: inline-flex;
-                    height: 42px;
+                    height: 32px;
                     justify-content: center;
                     line-height: 1;
-                    width: 42px;
+                    width: 32px;
                     transition: background 0.3s, border-color 0.3s;
                     margin: 0 10px;  /* Adjust as needed */
                 }
@@ -270,11 +312,11 @@
 <footer class=" footer" style="background-color: #1D2026">
         <div class="container">
             <div class="row">
-                <div class="col-4">
+                <div class="col-4" >
                     <div class="row">
                         <img src="{{URL::to('/')}}/logoPutih.png" alt="navbar brand" class="centered-image footerLogo">
                     </div>
-                    <div class="footerAddress">
+                    <div class="footerAddress" >
                         <br>
                         <b>Commercial Area 5th, Green Central City, Jl.Gajah Mada</b><br>
                         <b>RT.3/RW.5, Glodok, Kec. Taman Sari</b><br>
@@ -282,7 +324,7 @@
                         <b>11120</b><br>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-4 " style="background-color: red">
                     <div class="row footerCentral">
                         <br><br><br><br><br>
                         <b style="color: white">You're not Login (Login Here)</b>
@@ -290,7 +332,7 @@
                         <b>All Right Reserved</b>
                     </div>
                 </div>
-                <div class="col-4 footerSocmed">
+                <div class="col-4 footerSocmed" style="background-color: red">
                     <div class="social-icon">
                         <a href="https://github.com/KevinValerian21/">
                             <img src="{{URL::to('/')}}/Facebook.svg" alt="">
