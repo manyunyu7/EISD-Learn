@@ -23,3 +23,11 @@ Route::post('/upload', 'MobileUploaderController@upload');
 Route::any('/check', 'MobileUploaderController@check');
 Route::any('/close-ticket', 'MobileUploaderController@closeTicket');
 
+
+Route::prefix("integration")->group(function (){
+    Route::get("/check-user-exist/{userId}","ModernlandIntegrationController@checkId");
+    Route::get("/user/id","ModernlandIntegrationController@getUserById");
+    Route::get("/available-users","ModernlandIntegrationController@getAvailableUsers");
+    Route::get("/create-new-user","ModernlandIntegrationController@createNewUser");
+});
+
