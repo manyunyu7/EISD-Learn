@@ -309,7 +309,7 @@
 @yield('body')
 
 
-<footer class=" footer" style="background-color: #1D2026">
+{{--<footer class=" footer" style="background-color: #1D2026">
         <div class="container">
             <div class="row">
                 <div class="col-4" >
@@ -350,7 +350,8 @@
                 </div>
             </div>
         </div>
-</footer>
+</footer>--}}
+@include('main.footer')
 
 
 <!-- Optional JavaScript -->
