@@ -342,7 +342,7 @@
                                         <th scope="col">Urutan</th>
                                         <th scope="col">Judul Materi</th>
                                         <th scope="col">Materi</th>
-                                        <th scope="col">Input Nilai</th>
+{{--                                        <th scope="col">Input Nilai</th>--}}
                                         <th scope="col">Hapus Materi</th>
 
                                     </tr>
@@ -505,13 +505,13 @@
                                                         Lihat/Edit Detail
                                                     </button>
                                                 </td>
-                                                <td>
-                                                    <a href="{{url("/lesson/".$data->lesson_id."/section/".$data->section_id."/input-score")}}">
-                                                        <button type="button" class="btn btn-primary">
-                                                            Input Nilai
-                                                        </button>
-                                                    </a>
-                                                </td>
+{{--                                                <td>--}}
+{{--                                                    <a href="{{url("/lesson/".$data->lesson_id."/section/".$data->section_id."/input-score")}}">--}}
+{{--                                                        <button type="button" class="btn btn-primary">--}}
+{{--                                                            Input Nilai--}}
+{{--                                                        </button>--}}
+{{--                                                    </a>--}}
+{{--                                                </td>--}}
                                                 {{--                                                <td>--}}
                                                 {{--                                                    <button type="button" class="btn btn-outline-primary"--}}
                                                 {{--                                                            data-toggle="modal"--}}

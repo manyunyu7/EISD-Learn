@@ -1,0 +1,1 @@
+[13-Jul-2023 04:36:18 UTC] PHP Fatal error:  Allowed memory size of 1610612736 bytes exhausted (tried to allocate 24318453 bytes) in phar:///usr/local/bin/composer1.phar/src/Composer/Util/RemoteFilesystem.php on line 462
