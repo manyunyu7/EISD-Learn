@@ -72,11 +72,10 @@
         }
     }
 
-
     /* Penyesuaian untuk tampilan sedang */
     @media screen and (min-width: 820px) and (max-width: 1180px) {
         .footerLogo{
-            max-width: 120%; 
+            max-width: 80%; 
             max-height: auto;
             margin-left: -30px;
             padding-right: 45%;
@@ -183,10 +182,10 @@
             background: hsla(#363B47);
             border: 1px solid hsla(0, 0%, 100%, 0.5);
             display: inline-flex;
-            height: 42px;
+            height: 55px;
+            width: 55px;
             justify-content: center;
             line-height: 1;
-            width: 42px;
             transition: background 0.3s, border-color 0.3s;
             margin: 0 10px;  /* Adjust as needed */
         }
@@ -222,16 +221,16 @@
     </ul>
     <div class="b-footer">
         <div class="social-icon">
-            <a href="https://github.com/KevinValerian21/">
+            <a href="https://facebook.com/modernlandrealty/">
                 <img src="{{URL::to('/')}}/Facebook.svg" alt="">
             </a>
-            <a href="https://www.instagram.com/kevinvarn21">
+            <a href="https://www.instagram.com/modernlandrealty">
                 <img src="{{URL::to('/')}}/Instagram.svg" alt="">
             </a>
-            <a href="https://www.linkedin.com/in/kevinvalerianninia">
+            <a href="https://www.linkedin.com/company/modernland/mycompany/">
                 <img src="{{URL::to('/')}}/Linkedin.svg" alt="">
             </a>
-            <a href="https://www.instagram.com/kevinvarn21">
+            <a href="https://www.youtube.com/channel/UCY55_aSJ51DrMuucN4M4kuw">
                 <img src="{{URL::to('/')}}/Youtube.svg" alt="">
             </a>
         </div>

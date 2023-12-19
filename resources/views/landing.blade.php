@@ -49,6 +49,17 @@
             display: block; 
             margin-top: 55px;
         }
+        .imgHeader_2{
+            max-width: 100%; 
+            height: auto; 
+            margin-left: 15px;
+        }
+        .tblContent{
+            margin-left: 50px;
+            margin-top: -30px;
+            width: 110%;
+            text-align: left;
+        }
         .imgPembelajaran{
             width: 20vw; 
             height:auto;
@@ -82,7 +93,7 @@
     }
 
     /* Penyesuaian untuk tampilan sedang */
-    @media screen and (min-width: 820px) and (max-width: 1180px) {
+    @media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: portrait){
         /* Adjust widths for medium-sized screens */
         .section1 {
             width: 60%;
@@ -105,24 +116,137 @@
             font-size: 45px;
         }
         .mdln-{
-            font-size: 44px;
+            font-size: 52px;
         }
         .imagesHeader{
-            max-width: 160%; 
+            max-width: 138%; 
             height: auto; 
             display: block; 
-            margin-top: 250px;
+            margin-top: 450px;
+            margin-left: -550px;
+        }
+        .imgHeader_2{
+            max-width: 70%; 
+            height: auto; 
+        }
+        .tblContent{
+            margin-left: -130px;
+            margin-top: -50px;
+            width: 80%;
+        }
+        .BtnModulTitle{
+            width: 185px; 
+            height: auto; 
+            pointer-events: none;
+            margin-left: -220px;
+            margin-bottom: 30px;
         }
         .imgPembelajaran{
             width: 10vw; 
             height:auto;
             margin-left: -50px
         }
+        
         .titlePembelajaran{
             font-size: 18px;
         }
         .deskripsiPembelajaran{
             font-size: 13px;
+        }
+        
+        .BtnModulTitle{
+            width: 185px; 
+            height: 50px; 
+            pointer-events: none;
+            margin-left: -220px
+        }
+        .modulTitle{
+            font-size:20px; 
+        }
+        .BtnModulTitle_FAQ{
+            width: 114px; 
+            height:50px; 
+            pointer-events: none;
+            margin-left: 15px
+        }
+        .modulTitle_FAQ{
+            font-size:20px;
+        }
+    }
+    /* Penyesuaian untuk tampilan sedang */
+    @media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: landscape){
+        /* Adjust widths for medium-sized screens */
+        .section1 {
+            width: 60%;
+        }
+
+        .section2 {
+            width: 40%;
+        }
+
+        /* Adjust badge and text sizes for medium-sized screens */
+        
+        .badge {
+            font-size: 60px;
+        }
+
+        span {
+            font-size: 16px;
+        }
+        .mdln{
+            font-size: 45px;
+        }
+        .mdln-{
+            font-size: 52px;
+        }
+        .imagesHeader{
+            max-width: 138%; 
+            height: auto; 
+            display: block; 
+            margin-top: 200px;
+            margin-left: -200px;
+        }
+        .imgHeader_2{
+            max-width: 100%; 
+            height: auto; 
+        }
+        .tblContent{
+            margin-left: 50px;
+            margin-top: -50px;
+            width: 110%;
+        }
+        .imgPembelajaran{
+            width: 10vw; 
+            height:auto;
+            margin-left: -50px
+        }
+        
+        .titlePembelajaran{
+            font-size: 20px;
+        }
+        .deskripsiPembelajaran{
+            font-size: 15px;
+        }
+        
+        .BtnModulTitle{
+            width: 195px; 
+            height: 50px; 
+            pointer-events: none;
+            margin-left: -40px;
+            margin-bottom: 25px;
+            
+        }
+        .modulTitle{
+            font-size:25px; 
+        }
+        .BtnModulTitle_FAQ{
+            width: 114px; 
+            height:50px; 
+            pointer-events: none;
+            margin-left: 15px
+        }
+        .modulTitle_FAQ{
+            font-size:20px;
         }
     }
 
@@ -162,6 +286,9 @@
             width: 8vw; 
             height:auto;
             margin-left: -15px
+        }
+        .tblContent{
+            margin-left: 50px;
         }
         .titlePembelajaran{
             font-size: 48px;
@@ -228,60 +355,81 @@
     <div class="container-fluid row h4-container" >
         <div class="col-md-6 center ">
             <br><br>
-            <img width="100%" src="{{ URL::to('/') }}/headerIMG_2.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none">
+            <img width="100%" src="{{ URL::to('/') }}/headerIMG_2.png" alt="Illustration of the evolution of development by octocats" class="home-footer-illustration position-relative z-1 width-full d-block events-none imgHeader_2">
         </div>
         <div class="col-md-6" data-aos="flip-left">
             <br><br>
-            <div class="row" style="margin-left: 50px">
-                <div class="col-2">
-                    <button class="btn btn-dark BtnModulTitle">
-                        <span class="modulTitle"><b>Pembelajaran</b></span>
-                    </button>                    
-                    <br><br>
+            <div>
+                <div class="row" style="margin-left: 50px">
+                    <div class="col-2">
+                        <button class="btn btn-dark BtnModulTitle">
+                            <span class="modulTitle"><b>Pembelajaran</b></span>
+                        </button>            
+                        <br><br>
+                    </div>
                 </div>
-                <div class="col-10">
-                </div>
-            </div>
-            <br>
+                <br>
+                <table class="tblContent">
 
-            <div class="row" style="margin-left: 50px">
-                <div class="col-2">
-                    <img  src="{{ URL::to('/') }}/ic_pelatihan.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
-                </div>
-                <div class="col-10">
-                    <h4 class="titlePembelajaran"><b>Pelatihan</b></h4>
-                    <p class="deskripsiPembelajaran">Materi pelatihan disajikan dalam bentuk yang menarik dengan elemen interaktif.</p>
-                </div>
-            </div>
-            <br>
-            <div class="row" style="margin-left: 50px">
-                <div class="col-2">
-                    <img  src="{{ URL::to('/') }}/ic_evaluasi.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
-                </div>
-                <div class="col-10">
-                    <h4 class="titlePembelajaran"><b>Ujian dan Evaluasi</b></h4>
-                    <p class="deskripsiPembelajaran">Dapat mengukur pemahaman karyawan melalui ujian dan evaluasi secara online.</p>
-                </div>
-            </div>
-            <br>
-            <div class="row" style="margin-left: 50px">
-                <div class="col-2">
-                    <img  src="{{ URL::to('/') }}/ic_leaderboard.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
-                </div>
-                <div class="col-10">
-                    <h4 class="titlePembelajaran"><b>Leaderboard</b></h4>
-                    <p class="deskripsiPembelajaran">Menghadirkan elemen kompetisi dan motivasi tambahan dalam proses pembelajaran online.</p>
-                </div>
-            </div>
-            <br>
-            <div class="row" style="margin-left: 50px">
-                <div class="col-2">
-                    <img  src="{{ URL::to('/') }}/ic_video.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
-                </div>
-                <div class="col-10">
-                    <h4 class="titlePembelajaran"><b>Video Pembelajaran</b></h4>
-                    <p class="deskripsiPembelajaran">Pembelajaran berbasis video dalam membantu menyampaikan informasi dengan cara yang lebih  menarik.</p>
-                </div>
+                    <tr>
+                        <td>
+                            <div class="col-2">
+                                <img  src="{{ URL::to('/') }}/ic_pelatihan.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-10">
+                                <h4 class="titlePembelajaran"><b>Pelatihan</b></h4>
+                                <p class="deskripsiPembelajaran">Materi pelatihan disajikan dalam bentuk yang menarik dengan elemen interaktif.</p>
+                            </div>
+                        </td>
+                        
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="col-2">
+                                <img  src="{{ URL::to('/') }}/ic_evaluasi.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-10">
+                                <h4 class="titlePembelajaran"><b>Ujian dan Evaluasi</b></h4>
+                                <p class="deskripsiPembelajaran">Dapat mengukur pemahaman karyawan melalui ujian dan evaluasi secara online.</p>
+                            </div>
+                        </td>
+                        
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="col-2">
+                                <img  src="{{ URL::to('/') }}/ic_leaderboard.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-10">
+                                <h4 class="titlePembelajaran"><b>Leaderboard</b></h4>
+                                <p class="deskripsiPembelajaran">Menghadirkan elemen kompetisi dan motivasi tambahan dalam proses pembelajaran online.</p>
+                            </div>
+                        </td>
+                        
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="col-2">
+                                <img  src="{{ URL::to('/') }}/ic_video.png" alt="Illustration of the evolution of development by octocats" class="imgPembelajaran home-footer-illustration position-relative z-1 width-full d-block events-none">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-10">
+                                <h4 class="titlePembelajaran"><b>Video Pembelajaran</b></h4>
+                                <p class="deskripsiPembelajaran">Pembelajaran berbasis video dalam membantu menyampaikan informasi dengan cara yang lebih  menarik.</p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
@@ -381,7 +529,7 @@
                 <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-headingNine">
                     <button class="accordion-button collapsed fa_Text" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine">
-                    <span>Apakag Leaderboard tersedia di Modernland Learning?</span>
+                    <span>Apakah Leaderboard tersedia di Modernland Learning?</span>
                     </button>
                 </h2>
                 <div id="flush-collapseNine" class="accordion-collapse collapse" aria-labelledby="flush-headingNine" data-bs-parent="#accordionFlushExample">
