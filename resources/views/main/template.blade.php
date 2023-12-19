@@ -226,7 +226,7 @@
     @if(!isset($showCompact))
         <div class="main-header">
             <!-- Logo Header -->
-            <div class="logo-header" data-background-color="blue">
+            <div class="logo-header" data-background-color="dark">
 
                 <a href="{{url('/home')}}" class="logo">
                     <p class="navbar-brand text-white">{{config('app.name')}}</p>

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
+<nav class="navbar navbar-header navbar-expand-lg" data-background-color="white">
 
     <div class="container-fluid">
         @auth
