@@ -99,20 +99,20 @@
                                 <h6 class="m-0">Akses Konten</h6>
                             </div>
                             <div class='card-body container-fluid'>
-{{--                                <small class="form-text text-muted"><strong>Kosongkan Input Ini</strong> jika kelas ini bisa diakses setiap saat oleh siswa</small>--}}
-{{--                                <div class="form-group">--}}
-{{--                                    <label>Tanggal Start</label>--}}
-{{--                                    <div class="input-group">--}}
-{{--                                        <input type="datetime-local" class="form-control" name="start_time">--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
+                                {{--                                <small class="form-text text-muted"><strong>Kosongkan Input Ini</strong> jika kelas ini bisa diakses setiap saat oleh siswa</small>--}}
+                                {{--                                <div class="form-group">--}}
+                                {{--                                    <label>Tanggal Start</label>--}}
+                                {{--                                    <div class="input-group">--}}
+                                {{--                                        <input type="datetime-local" class="form-control" name="start_time">--}}
+                                {{--                                    </div>--}}
+                                {{--                                </div>--}}
 
-{{--                                <div class="form-group">--}}
-{{--                                    <label>Tanggal Selesai</label>--}}
-{{--                                    <div class="input-group">--}}
-{{--                                        <input type="datetime-local" class="form-control" name="end_time">--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
+                                {{--                                <div class="form-group">--}}
+                                {{--                                    <label>Tanggal Selesai</label>--}}
+                                {{--                                    <div class="input-group">--}}
+                                {{--                                        <input type="datetime-local" class="form-control" name="end_time">--}}
+                                {{--                                    </div>--}}
+                                {{--                                </div>--}}
 
                                 <div class="form-group">
                                     <label>Konten Bisa Diakses ? </label>
@@ -139,7 +139,8 @@
 
                                 <div class="form-group">
                                     <input required id="input-video" type="file" onchange="previewVideo()"
-                                           class="form-control @error('video') is-invalid @enderror" name="video">
+                                           class="form-control @error('video') is-invalid @enderror"
+                                           name="video" accept="video/*">
 
                                     <!-- error message untuk video -->
                                     @error('video')
@@ -174,23 +175,13 @@
 
                                 <div class="form-group">
                                     <label class="form-label">Category</label>
-                                    <select class="form-control" name="category" id="">
-                                        <option value="Management Trainee">Management Trainee</option>
-                                        <option value="General">General</option>
-                                        <option value="Design">Design</option>
-                                        <option value="Finance & Accounting">Finance & Accounting</option>
-                                        <option value="Human Resource and Development">Human Resource and Development
-                                        </option>
-                                        <option value="3D Modelling">3D Modelling</option>
-                                        <option value="Digital Management">Digital Management</option>
-                                        <option value="Marketing and Business">Marketing and Business</option>
-                                        <option value="Food and Beverage">Food and Beverage</option>
-                                        <option value="Management">Management</option>
-                                        <option value="Social and Politics">Social and Politics</option>
-                                        <option value="Office">Office</option>
-                                        <option value="Outdoor">Outdoor Activity</option>
-                                        <option value="Junior High School">Junior High School</option>
-                                        <option value="Senior High School">Senior High School</option>
+
+                                    <select class="form-control" name="category_id" id="">
+                                        @forelse($categories as $item)
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                        @empty
+
+                                        @endforelse
                                     </select>
                                 </div>
 
@@ -207,7 +198,7 @@
                                             <label class="font-weight-bold">GAMBAR</label>
                                             <input id="input-image" type="file" onchange="previewPhoto()"
                                                    class="form-control @error('image') is-invalid @enderror"
-                                                   name="image">
+                                                   name="image" accept="image/*">
 
                                             <!-- error message untuk title -->
                                             @error('image')

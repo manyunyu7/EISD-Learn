@@ -213,8 +213,11 @@
     hideLoaderOverlay()
 </script>
 
+@yield('main')
+
+
 <div class="wrapper">
-    <div class="main-header">
+    <div class="main-header d-none">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="blue">
 
@@ -247,20 +250,19 @@
         <!-- End Navbar -->
     </div>
 
-    <!-- Sidebar -->
-    @include('lessons._side-bar')
-    <!-- End Sidebar -->
+{{--    <!-- Sidebar -->--}}
+{{--    @include('lessons._side-bar')--}}
+{{--    <!-- End Sidebar -->--}}
 
 
     <div class="main-panel">
-        <div class="content">
             @yield('breadcumb')
-            @yield('main')
-        </div>
+
     </div>
-</div>
+
 
 </div>
+
 
 
 <!-- Chart JS -->

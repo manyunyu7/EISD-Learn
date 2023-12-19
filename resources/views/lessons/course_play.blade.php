@@ -12,6 +12,11 @@
             overflow: hidden;
         }
 
+        /* Custom CSS for animation */
+        .rightist {
+            transition: margin-left 0.5s;
+        }
+
         .course_section_name {
             white-space: nowrap;
             overflow: hidden;
@@ -31,6 +36,43 @@
                 /* Add any additional styles for small screens */
             }
         }
+
+        /* Custom CSS for animation */
+        .rightist {
+            transition: margin-right 0.5s;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+        .rightist.hidden {
+            margin-right: -33.33333333%; /* Hide by moving out of view */
+        }
+        .rightist.show {
+            margin-right: 0; /* Show by resetting margin */
+        }
+        .full-width{
+            width: 100%;
+        }
+        @media (max-width: 767px) {
+            .rightist {
+                position: static;
+                margin-right: 0;
+                display: none;
+            }
+        }
+        .leftist {
+            transition: width 0.5s;
+            width: 66.66666667%; /* Initial width */
+            float: left;
+        }
+        .leftist.full-width {
+            width: 100%; /* Occupy the entire width */
+        }
+
     </style>
     <link rel="stylesheet" href="{{ URL::to('/') }}/library/feylabs-video-css.css"/>
     <script src="https://cdn.plyr.io/3.6.3/demo.js" crossorigin="anonymous"></script>
@@ -41,31 +83,69 @@
     @push('custom-scripts')
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
         <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+{{--        <script>--}}
+{{--            // Check if the current URL contains "xyz"--}}
+{{--            var currentUrl = window.location.href;--}}
+{{--            if (currentUrl.indexOf("xyz") === -1) {--}}
+{{--                // Initialize Video.js--}}
+{{--                document.addEventListener("DOMContentLoaded", function () {--}}
+{{--                    var videoPlayer = document.getElementById("myVideo");--}}
+{{--                    let previousTime = 0;--}}
+
+{{--                    videoPlayer.ontimeupdate = function () {--}}
+{{--                        setTimeout(() => {--}}
+{{--                            console.log("hello world " + videoPlayer.currentTime);--}}
+{{--                            previousTime = videoPlayer.currentTime;--}}
+{{--                        }, 1);--}}
+{{--                    };--}}
+
+{{--                    videoPlayer.onseeking = function () {--}}
+{{--                        if (videoPlayer.currentTime > previousTime) {--}}
+{{--                            videoPlayer.currentTime = previousTime;--}}
+{{--                        }--}}
+{{--                    };--}}
+{{--                });--}}
+{{--            }--}}
+{{--        </script>--}}
+
         <script>
-            // Check if the current URL contains "xyz"
-            var currentUrl = window.location.href;
-            if (currentUrl.indexOf("xyz") === -1) {
-                // Initialize Video.js
-                document.addEventListener("DOMContentLoaded", function () {
-                    var videoPlayer = document.getElementById("myVideo");
-                    let previousTime = 0;
+            function toggleRight() {
+                var rightist = document.getElementById('rightist');
+                var leftist = document.getElementById('leftist');
 
-                    videoPlayer.ontimeupdate = function () {
-                        setTimeout(() => {
-                            console.log("hello world " + videoPlayer.currentTime);
-                            previousTime = videoPlayer.currentTime;
-                        }, 1);
-                    };
+                rightist.classList.toggle('hidden');
+                rightist.classList.toggle('show');
 
-                    videoPlayer.onseeking = function () {
-                        if (videoPlayer.currentTime > previousTime) {
-                            videoPlayer.currentTime = previousTime;
-                        }
-                    };
-                });
+                if (rightist.classList.contains('hidden')) {
+                    leftist.classList.add('full-width');
+                } else {
+                    leftist.classList.remove('full-width');
+                }
             }
         </script>
     @endpush
+
+
+    <div class="container">
+        <button class="btn btn-primary" onclick="toggleRight()">Toggle Right</button>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class=" leftist bg-warning" id="leftist">
+                <!-- Left Content -->
+                <h1>Leftist Content</h1>
+                <p>This content occupies 2/3 of the screen on larger screens and fills the entire screen on smaller screens.</p>
+            </div>
+            <div class=" rightist show position-absolute" id="rightist">
+                <!-- Right Content -->
+                <h1>Rightist Content</h1>
+                <p>This content occupies 1/3 of the screen on larger screens and fills the entire screen on smaller screens.</p>
+            </div>
+        </div>
+    </div>
+
+
+
 
 
     <div class="container-fluid">
@@ -221,7 +301,7 @@
 
                         </div>
 
-                        <h4 class="card-title">{{ $lesson->course_title }}</h4> 
+                        <h4 class="card-title">{{ $lesson->course_title }}</h4>
 
                         <p class="card-text">Materi Ke : {{ $sectionSpec->section_order }}</p>
                         {!! $sectionSpec->section_content !!}

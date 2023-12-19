@@ -1,9 +1,4 @@
 <?php
-
-
-
-
-
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +26,7 @@ Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('p
 // Route::post('/class/class-list/check/{lessonId}', 'DetailClassController@viewStudents')->name('view_students.viewStudents')->middleware('auth');
 // Route::post('/class/class-list/students/{lessonId}')->name('view_students.viewStudents')->middleware('auth');
 
-// Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
+ Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
 Route::any('/your-api-endpoint', 'ExamTakerController@submitQuiz');
 
 
