@@ -48,6 +48,17 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::post('/dfef', 'ProfileController@updatePasswordz');
 
     Route::group(['middleware' => ['mentor']], function () {
+
+
+        Route::prefix("lesson")->group(function (){
+            Route::get('category', ['uses' => 'LessonCategoryController@manage']);
+            Route::get('category/create', ['uses' => 'LessonCategoryController@create']);
+            Route::post('category/store', 'LessonCategoryController@store')->name('lesson_category.store');
+            Route::any('category/{id}/delete', 'LessonCategoryController@destroy')->name('lesson_category.destroy');
+            Route::get('category/{id}/update', 'LessonCategoryController@update')->name('lesson_category.update');
+            Route::post('category/{id}/edit', 'LessonCategoryController@edit')->name('lesson_category.edit');
+        });
+
         Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
         Route::get('/lesson/store', 'LessonController@add');
         Route::get('/lesson/{lesson}/students/', 'LessonController@seeStudent');
