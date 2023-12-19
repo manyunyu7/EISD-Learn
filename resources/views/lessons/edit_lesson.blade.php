@@ -212,46 +212,14 @@
                                 @endphp
                                 <div class="form-group">
                                     <label class="form-label">Category</label>
-                                    <select class="form-control" name="category" id="">
-                                        <option value="Select Category">Select Category</option>
-                                        <option {{ $category == 'Management Trainee' ? 'selected' : '' }} value="Management Trainee">Management Trainee
-                                        </option>
-                                        <option {{ $category == 'General' ? 'selected' : '' }} value="General">General
-                                        </option>
-
-                                        <option {{ $category == 'Design' ? 'selected' : '' }} value="Design">Design
-                                        </option>
-                                        <option
-                                            {{ $category == '3D Modelling' ? 'selected' : '' }} value="3D Modelling">3D
-                                            Modelling
-                                        </option>
-                                        <option {{ $category == 'Digital Management' ? 'selected' : '' }}
-                                                value="Digital Management">Digital Management
-                                        </option>
-                                        <option
-                                            {{ $category == 'Marketing and Business' ? 'selected' : '' }}value="Marketing and Business">
-                                            Marketing and Business
-                                        </option>
-                                        <option {{ $category == 'Food and Beverage' ? 'selected' : '' }}
-                                                value="Food and Beverage">Food and Beverage
-                                        </option>
-                                        <option {{ $category == 'Management' ? 'selected' : '' }} value="Management">
-                                            Management
-                                        </option>
-                                        <option {{ $category == 'Social and Politics' ? 'selected' : '' }}
-                                                value="Social and Politics">Social and Politics
-                                        </option>
-                                        <option {{ $category == 'Office' ? 'selected' : '' }} value="Office">Office
-                                        </option>
-                                        <option {{ $category == 'Outdoor' ? 'selected' : '' }} value="Outdoor">Outdoor
-                                            Activity
-                                        </option>
-                                        <option {{ $category == 'Junior High School' ? 'selected' : '' }}
-                                                value="Junior High School">Junior High School
-                                        </option>
-                                        <option {{ $category == 'Senior High School' ? 'selected' : '' }}
-                                                value="Senior High School">Senior High School
-                                        </option>
+                                    <select class="form-control" name="category_id" id="">
+                                        @forelse($categories as $item)
+                                            <option value="{{$item->id}}" @if($item->id == $lesson->category_id) selected @endif>
+                                                {{$item->name}}
+                                            </option>
+                                        @empty
+                                            <!-- Handle the case where there are no categories -->
+                                        @endforelse
                                     </select>
                                 </div>
                             </div>
