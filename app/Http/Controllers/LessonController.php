@@ -167,10 +167,14 @@ class LessonController extends Controller
 
     public function edit(Request $request,Lesson $lesson)
     {
+
+        $categories = LessonCategory::all();
+        $compact = compact('lesson','categories');
+
         if($request->dump==true){
-            return $lesson;
+            return $compact;
         }
-        return view('lessons.edit_lesson', compact('lesson'));
+        return view('lessons.edit_lesson', compact('lesson','categories'));
     }
 
 
@@ -266,61 +270,65 @@ class LessonController extends Controller
      */
     public function update(Request $request, Lesson $lesson)
     {
+        // Validate the request data
         $this->validate($request, [
             'title' => 'required',
-            'content' => 'required'
+            'content' => 'required',
         ]);
+
+        // Find the lesson by ID
         $lesson = Lesson::findOrFail($lesson->id);
-        $cat = $request->input('category');
+        $cat = LessonCategory::findOrFail($request->category_id)->name;
+        $image = $request->file('image');
+        $video = $request->file('video');
 
-        if ($request->file('image') == "" && $request->file('video') == "") {
-            $lesson->update([
-                'course_title' => $request->title,
-                'course_description' => $request->content,
-                'course_category' => $request->input('category')
-            ]);
-        } else if ($request->file('video') == "" && $request->file('image') != "") {
-            //hapus old image
+        // Update image if it exists in the request
+        if ($image) {
+            // Delete old image
             Storage::disk('local')->delete('public/class/cover/' . $lesson->image);
-            //upload new image
-            $image = $request->file('image');
+            // Upload new image
             $image->storeAs('public/class/cover', $image->hashName());
-            $lesson->update([
-                'course_cover_image' => $image->hashName(),
-                'course_title' => $request->title,
-                'course_category' => $request->input('category'),
-                'course_description' => $request->content
-            ]);
-        } else if ($request->file('image') == "" && $request->file('video') != "") {
-            //Kalau image tidak diubah tapi video diubah
-            //hapus old video
-            Storage::disk('local')->delete('public/class/trailer' . $lesson->video);
-            //upload new video
-            $video = $request->file('video');
-            $cat = $request->input('category');
+        }
+
+        // Update video if it exists in the request
+        if ($video) {
+            // Delete old video
+            Storage::disk('local')->delete('public/class/trailer/' . $lesson->video);
+            // Upload new video
             $video->storeAs('public/class/trailer', $video->hashName());
+        }
 
-            $lesson->update([
-                'course_title' => $request->title,
+        // Prepare data to be updated
+        $lessonData = [
+            'course_title' => $request->title,
+            'course_category' => $cat,
+            'course_description' => $request->content,
+            'category_id' => $request->category_id,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'can_be_accessed' => $request->can_be_accessed,
+        ];
+
+        // If image exists, add it to the data
+        if ($image) {
+            $lessonData['course_cover_image'] = $image->hashName();
+        }
+
+        // If video exists, add video-related data to the data
+        if ($video) {
+            $lessonData = array_merge($lessonData, [
                 'course_trailer' => $video->hashName(),
-                'course_category' => $request->input('category'),
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
-                'can_be_accessed' => $request->can_be_accessed,
-                'course_description' => $request->content
             ]);
-        } else {
         }
-        if ($lesson) {
-            //redirect dengan pesan sukses
-            return redirect('lesson/manage')->with(['success' => 'Data Berhasil Diupdate!']);
-        } else {
-            //redirect dengan pesan error
-            return redirect('lesson/manage')->with(['error' => 'Data Gagal Diupdate!']);
-        }
+
+        // Update the lesson with the prepared data
+        $lesson->update($lessonData);
+
+        // Redirect with success or error message
+        return $lesson
+            ? redirect('lesson/manage')->with(['success' => 'Data Berhasil Diupdate!'])
+            : redirect('lesson/manage')->with(['error' => 'Data Gagal Diupdate!']);
     }
-
-
 
     /**
      * store
