@@ -219,6 +219,20 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label>Quiz/Ujian Jika Ada</label>
+                                            <select class="form-control" name="quiz_session_id">
+                                                <option value="">
+                                                    Tidak Ada Quiz
+                                                </option>
+                                                @foreach($examSessions as $examSession)
+                                                    <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }}
+                                                       - {{$examSession->title}}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="font-weight-bold">Materi Ke- :</label>
                                             <div class="container row">
                                                 <input id="section_order" type="text" min="0"
@@ -322,16 +336,13 @@
 
                             <h4 class="card-title">Manage Materi Kelas</h4>
                             <div class="table-responsive">
-                                <table id="basic-datatables" class="table table-bordered w-100 @if (count($dayta) < 1)
-                  d-none
-                  @endif">
+                                <table id="basic-datatables" class="table table-bordered w-100 @if (count($dayta) < 1)   d-none @endif">
                                     <thead>
                                     <tr>
                                         <th scope="col">Urutan</th>
                                         <th scope="col">Judul Materi</th>
                                         <th scope="col">Materi</th>
-                                        <th scope="col">Input Nilai</th>
-                                        {{--                                        <th scope="col">MATERI</th>--}}
+{{--                                        <th scope="col">Input Nilai</th>--}}
                                         <th scope="col">Hapus Materi</th>
 
                                     </tr>
@@ -372,8 +383,25 @@
                                                                 <div class="form-group">
                                                                     <label>Konten Bisa Diakses ?</label>
                                                                     <select class="form-control" name="access">
-                                                                        <option value="y" {{$data->can_be_accessed === "y" ? "selected" : ""}}>Ya</option>
-                                                                        <option value="n" {{$data->can_be_accessed === "n" ? "selected" : ""}}>Tidak</option>
+                                                                        <option
+                                                                            value="y" {{$data->can_be_accessed === "y" ? "selected" : ""}}>
+                                                                            Ya
+                                                                        </option>
+                                                                        <option
+                                                                            value="n" {{$data->can_be_accessed === "n" ? "selected" : ""}}>
+                                                                            Tidak
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <select class="form-control" name="quiz_session_id">
+                                                                        <option>-</option>
+                                                                        @foreach($examSessions as $examSession)
+                                                                            <option value="{{ $examSession->id }}" @if($data->quiz_session_id == $examSession->id) selected @endif>
+                                                                                {{ $examSession->quiz_name }}, Sesi: ({{ $examSession->start_date }} - {{ $examSession->end_date }})
+                                                                            </option>
+                                                                        @endforeach
                                                                     </select>
                                                                 </div>
 
@@ -388,6 +416,7 @@
                                                                     <small id="helpId" class="form-text text-muted">Kosongkan
                                                                         Jika Tidak Ingin Diganti</small>
                                                                 </div>
+
 
                                                                 <div class="form-group">
                                                                     @php
@@ -422,6 +451,7 @@
                                                                         changes
                                                                     </button>
                                                                 </div>
+                                                            </div>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -475,13 +505,13 @@
                                                         Lihat/Edit Detail
                                                     </button>
                                                 </td>
-                                                <td>
-                                                    <a href="{{url("/lesson/".$data->lesson_id."/section/".$data->section_id."/input-score")}}">
-                                                        <button type="button" class="btn btn-primary">
-                                                            Input Nilai
-                                                        </button>
-                                                    </a>
-                                                </td>
+{{--                                                <td>--}}
+{{--                                                    <a href="{{url("/lesson/".$data->lesson_id."/section/".$data->section_id."/input-score")}}">--}}
+{{--                                                        <button type="button" class="btn btn-primary">--}}
+{{--                                                            Input Nilai--}}
+{{--                                                        </button>--}}
+{{--                                                    </a>--}}
+{{--                                                </td>--}}
                                                 {{--                                                <td>--}}
                                                 {{--                                                    <button type="button" class="btn btn-outline-primary"--}}
                                                 {{--                                                            data-toggle="modal"--}}
@@ -499,6 +529,7 @@
                                                         </button>
                                                     </form>
                                                 </td>
+                                            </div>
                                         </tr>
                                     @empty
                                         <div class="alert alert-danger">

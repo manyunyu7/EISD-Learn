@@ -10,7 +10,7 @@
     <div class="container-fluid">
 
 
-        <div class="container mt-5">
+        <div class="mt-5">
 
             <div class="mt-4">
                 <nav aria-label="breadcrumb">
@@ -70,8 +70,7 @@
                                     Baru
                                 </button>
                             </a>
-                            <table id="basic-datatables" class="table table-bordered table-responsive     @if (count($students) < 1)
-               d-none      @endif">
+                            <table id="basic-datatables" class="table table-bordered table-responsive">
                                 <thead>
                                 <tr>
                                     <th>Photo</th>

@@ -147,7 +147,7 @@ class MyHelper
         $data->user_id=$userId;
         $data->event=$event;
         $data->is_logged_in=$is_logged_in;
-        $data->page=$is_logged_in;
+        $data->page=$page;
 
         $data->save();
     }
@@ -213,6 +213,36 @@ class MyHelper
     public static function reqSellImgPath()
     {
         return "photo/profile";
+    }
+
+    public static function mySuccess($data = null, $message = 'Success', $status = 200)
+    {
+        return self::generateResponse(true, $data, $message, $status);
+    }
+
+    public static function myError($message = 'Error', $status = 500)
+    {
+        return self::generateResponse(false, null, $message, $status);
+    }
+
+    private static function generateResponse($success, $data, $message, $status)
+    {
+        $statusCode = 0;
+        if($success){
+            $statusCode=1;
+        }else{
+            $statusCode=0;
+        }
+        return response()->json([
+            'http_response'=>$status,
+            'status_code'=>$statusCode,
+            'meta' => [
+                'success' => $success,
+                'status' => $status,
+                'message' => $message,
+            ],
+            'result' => $data,
+        ], $status);
     }
 
 }

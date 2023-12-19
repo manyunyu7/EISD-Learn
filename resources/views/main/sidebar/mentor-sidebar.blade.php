@@ -11,11 +11,43 @@
                     <span class="sub-item">Manage Kelas</span>
                 </a>
             </li>
+            <li class="{{ Request::is('lesson/category') ? 'active' : '' }}">
+                <a href="{{ url('/lesson/category') }}">
+                    <span class="sub-item">Class Category</span>
+                </a>
+            </li>
             <li class="{{ Request::is('lesson/create') ? 'active' : '' }}">
                 <a href="{{ url('/lesson/create') }}">
                     <span class="sub-item">Buat Kelas</span>
                 </a>
             </li>
+        </ul>
+    </div>
+</li>
+
+<li class="nav-item">
+    <a data-toggle="collapse" href="#exam">
+        <i class="fas fa-pen-square"></i>
+        <p>Exam</p>
+        <span class="caret"></span>
+    </a>
+    <div class="collapse  {{ Request::is('exam/*') ? 'show' : '' }}" id="exam">
+        <ul class="nav nav-collapse">
+            <li class="{{ Request::is('/exam/new') ? 'active' : '' }}">
+                <a href="{{ url('/exam/new') }}">
+                    <span class="sub-item">Tambah Exam Baru</span>
+                </a>
+            </li>
+            <li class="{{ Request::is('/exam/manage') ? 'active' : '' }}">
+                <a href="{{ url('/exam/manage') }}">
+                    <span class="sub-item">Manage Exam</span>
+                </a>
+            </li>
+{{--            <li class="{{ Request::is('/exam/session') ? 'active' : '' }}">--}}
+{{--                <a href="{{ url('/exam/session') }}">--}}
+{{--                    <span class="sub-item">Session</span>--}}
+{{--                </a>--}}
+{{--            </li>--}}
         </ul>
     </div>
 </li>

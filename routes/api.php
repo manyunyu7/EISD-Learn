@@ -17,3 +17,17 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('/upload', 'MobileUploaderController@upload');
+Route::any('/check', 'MobileUploaderController@check');
+Route::any('/close-ticket', 'MobileUploaderController@closeTicket');
+
+
+Route::prefix("integration")->group(function (){
+    Route::get("/check-user-exist/{userId}","ModernlandIntegrationController@checkId");
+    Route::get("/user/id","ModernlandIntegrationController@getUserById");
+    Route::get("/available-users","ModernlandIntegrationController@getAvailableUsers");
+    Route::post("/create-new-user","ModernlandIntegrationController@createNewUser");
+});
+

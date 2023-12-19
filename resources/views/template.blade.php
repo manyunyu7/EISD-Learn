@@ -13,22 +13,21 @@
     <!-- Fonts and icons -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
-        WebFont.load({
-            google: {
-                "families": ["Lato:300,400,700,900"]
-            },
-            custom: {
-                "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
-                urls: ['{{asset('
-                    atlantis / examples ')}}/assets/css/fonts.min.css'
-                ]
-            },
-            active: function () {
-                sessionStorage.fonts = true;
-            }
-        });
+        {{--WebFont.load({--}}
+        {{--    google: {--}}
+        {{--        "families": ["Lato:300,400,700,900"]--}}
+        {{--    },--}}
+        {{--    custom: {--}}
+        {{--        "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],--}}
+        {{--        urls: ['{{asset('--}}
+        {{--            atlantis/examples ')}}/assets/css/fonts.min.css'--}}
+        {{--        ]--}}
+        {{--    },--}}
+        {{--    active: function () {--}}
+        {{--        sessionStorage.fonts = true;--}}
+        {{--    }--}}
+        {{--});--}}
     </script>
-    <script src="home.js"></script>
     <style>
         @font-face {
             font-family: gloss;
@@ -50,7 +49,6 @@
     @yield('styling')
 
     <!-- CSS Files -->
-    <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/bootstrap.min.css">
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.min.css"> --}}
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -113,8 +111,12 @@
                     transform: rotate(360deg);
                 }
             }
-        </style>
 
+            
+        </style>
+        @stack("InternalStyle")
+
+        
     <!-- Lottie Animate -->
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
@@ -141,53 +143,24 @@
 @yield('body')
 
 
-<footer class=" footer">
-    <div class="l-footer">
-        <img src="{{URL::to('/')}}/home_assets/img/esd_3.png" alt="" style="width: 280px; ">
-        <hr>
-
-        <p>
-            Resource Belajar Digital Modernland Realty Tbk</p>
-
-    </div>
-    <ul class="r-footer">
-        <li>
-            <h2>
-                Social</h2>
-            <ul class="box">
-                <li><a href="#">Facebook</a></li>
-                <li><a href="#">Twitter</a></li>
-                <li><a href="#">Pinterest</a></li>
-                <li><a href="#">Dribbble</a></li>
-            </ul>
-        </li>
-        <li class="features">
-            <h2>
-                Explore</h2>
-            <ul class="box h-box">
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Pricing</a></li>
-                <li><a href="#">Sales</a></li>
-                <li><a href="#">Tickets</a></li>
-                <li><a href="#">Certifications</a></li>
-                <li><a href="#">Customer Service</a></li>
-            </ul>
-        </li>
-        <li>
-            <h2>
-                Legal</h2>
-            <ul class="box">
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms of Use</a></li>
-                <li><a href="#">Contract</a></li>
-            </ul>
-        </li>
-
-    </ul>
-    <div class="b-footer">
-        <p>
-            All rights reserved by © Kamis, <?php echo date('d F Y H:i:s'); ?> </p>
-    </div>
+<footer class=" footer" style="background-color: #1D2026">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    1 of 2
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <b>You're not Login (Login Here)</b>
+                        <span>Copyright @2024 PT. Modernland Realty Tbk.</span>
+                        <span>All Right Reserved</span>
+                    </div>
+                </div>
+                <div class="col">
+                    2 of 2
+                </div>
+            </div>
+        </div>
 </footer>
 
 

@@ -1,0 +1,168 @@
+{
+  "data": {
+    "average": 80,
+    "bid": {
+      "price1": "81",
+      "price2": "80",
+      "price3": "79",
+      "price4": "78",
+      "price5": "77",
+      "price6": "76",
+      "price7": "75",
+      "price8": "74",
+      "price9": "73",
+      "price10": "72",
+      "que_num1": "-",
+      "que_num2": "-",
+      "que_num3": "-",
+      "que_num4": "-",
+      "que_num5": "-",
+      "que_num6": "-",
+      "que_num7": "-",
+      "que_num8": "-",
+      "que_num9": "-",
+      "que_num10": "-",
+      "volume1": "1119500",
+      "volume2": "2631500",
+      "volume3": "6643500",
+      "volume4": "5821100",
+      "volume5": "1656200",
+      "volume6": "988700",
+      "volume7": "1426300",
+      "volume8": "1310600",
+      "volume9": "80600",
+      "volume10": "87400"
+    },
+    "change": 2,
+    "close": 81,
+    "country": "ID",
+    "domestic": "100.00",
+    "down": "125",
+    "exchange": "IDX",
+    "fbuy": 11352000,
+    "fnet": -193682700,
+    "foreign": "0.00",
+    "frequency": 258,
+    "fsell": 205034700,
+    "high": 82,
+    "id": "MDLN-0",
+    "lastprice": 81,
+    "low": 79,
+    "offer": {
+      "price1": "82",
+      "price2": "83",
+      "price3": "84",
+      "price4": "85",
+      "price5": "86",
+      "price6": "87",
+      "price7": "88",
+      "price8": "89",
+      "price9": "90",
+      "price10": "91",
+      "que_num1": "-",
+      "que_num2": "-",
+      "que_num3": "-",
+      "que_num4": "-",
+      "que_num5": "-",
+      "que_num6": "-",
+      "que_num7": "-",
+      "que_num8": "-",
+      "que_num9": "-",
+      "que_num10": "-",
+      "volume1": "2122400",
+      "volume2": "3024600",
+      "volume3": "1036800",
+      "volume4": "2339000",
+      "volume5": "2771900",
+      "volume6": "450800",
+      "volume7": "1272300",
+      "volume8": "2068200",
+      "volume9": "1475300",
+      "volume10": "461600"
+    },
+    "open": 80,
+    "percentage_change": 2.53,
+    "previous": 79,
+    "status": "Active",
+    "symbol": "MDLN",
+    "symbol_2": "MDLN",
+    "symbol_3": "",
+    "tradeable": 1,
+    "unchanged": "914",
+    "up": "243",
+    "value": 887468600,
+    "volume": 11054600,
+    "corp_action": {
+      "active": false,
+      "icon": "https://assets.stockbit.com/images/corp_action_event_icon.svg",
+      "text": "Perusahaan Memiliki Corporate Action"
+    },
+    "notation": [],
+    "uma": false,
+    "is_foreignbs_exist": false,
+    "iepiev": null,
+    "market_data": [
+      {
+        "label": "All Market",
+        "frequency": {
+          "raw": "258",
+          "formatted": "258"
+        },
+        "volume": {
+          "raw": "11054600",
+          "formatted": "11.1 M"
+        },
+        "value": {
+          "raw": "887468600",
+          "formatted": "887 M"
+        }
+      },
+      {
+        "label": "Regular",
+        "frequency": {
+          "raw": "258",
+          "formatted": "258"
+        },
+        "volume": {
+          "raw": "11054600",
+          "formatted": "11.1 M"
+        },
+        "value": {
+          "raw": "887468600",
+          "formatted": "887 M"
+        }
+      },
+      {
+        "label": "Nego",
+        "frequency": {
+          "raw": "0",
+          "formatted": "0"
+        },
+        "volume": {
+          "raw": "0",
+          "formatted": "0"
+        },
+        "value": {
+          "raw": "0",
+          "formatted": "0"
+        }
+      },
+      {
+        "label": "Cash",
+        "frequency": {
+          "raw": "0",
+          "formatted": "0"
+        },
+        "volume": {
+          "raw": "0",
+          "formatted": "0"
+        },
+        "value": {
+          "raw": "0",
+          "formatted": "0"
+        }
+      }
+    ]
+  },
+  "message": "Orderbook successfully created"
+}

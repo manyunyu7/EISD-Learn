@@ -84,9 +84,70 @@
 
                 <div class="container-fluid">
                     @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
-                        <div class='embed-responsive' style='padding-bottom:150%'>
-                            <object data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}' type='application/pdf' width='100%' height='100%'></object>
-                        </div>
+
+{{--                        <div class='embed-responsive' style='padding-bottom:150%'>--}}
+{{--                            <object--}}
+{{--                                data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}'--}}
+{{--                                type='application/pdf' width='100%' height='100%'></object>--}}
+{{--                        </div>--}}
+{{--                    --}}
+                        <iframe id="pdfIframe" onload="" src="{{url("/")."/library/viewerjs/src/#"}}{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
+                                width="100%" height="550" allowfullscreen="" webkitallowfullscreen=""></iframe>
+
+                        <!-- Add this single <script> tag to the body of your HTML document -->
+
+
+                        <script>
+                            // Listen for a message from the iframe
+                            window.addEventListener('message', function(event) {
+                                if (event.data === 'iframeLoaded') {
+                                    startTracking();
+                                }
+                            });
+
+                            function startTracking() {
+                                console.log('Tracking started.');
+
+                                function getCurrentPage() {
+                                    var iframe = document.getElementById('pdfIframe');
+                                    var currentPage = iframe.contentWindow.document.querySelector('.toolbarField.pageNumber').value;
+                                    return parseInt(currentPage, 10);
+                                }
+
+                                function getTotalPages() {
+                                    var iframe = document.getElementById('pdfIframe');
+                                    var totalPages = iframe.contentWindow.document.querySelector('.toolbarLabel').textContent;
+                                    var match = totalPages.match(/of (\d+)/);
+                                    if (match && match[1]) {
+                                        return parseInt(match[1], 10);
+                                    }
+                                    return 0;
+                                }
+
+                                function calculatePercentageCompletion() {
+                                    var currentPage = getCurrentPage();
+                                    var totalPages = getTotalPages();
+
+                                    if (totalPages === 0) {
+                                        return 0;
+                                    }
+
+                                    return (currentPage / totalPages) * 100;
+                                }
+
+                                function updatePageInfo() {
+                                    var currentPage = getCurrentPage();
+                                    var totalPages = getTotalPages();
+                                    var percentageCompletion = calculatePercentageCompletion();
+
+                                    console.log('Current Page:', currentPage);
+                                    console.log('Total Pages:', totalPages);
+                                    console.log('Percentage Completion:', percentageCompletion + '%');
+                                }
+
+                                setInterval(updatePageInfo, 1000);
+                            }
+                        </script>
                     @else
                         @php
                             $videoFormats = ['mp4', 'webm', 'ogg']; // Add more video formats as needed
@@ -97,12 +158,15 @@
                         @if (in_array($fileExtension, $videoFormats))
                             <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
                                    class="video-mask" disablePictureInPicture controlsList="nodownload">
-                                <source src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
+                                <source
+                                    src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
                             </video>
                         @elseif (in_array($fileExtension, $imageFormats))
-                            <img src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}" alt="Image">
+                            <img
+                                src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
+                                alt="Image">
                         @else
-                            <p>Unsupported file format</p>
+
                         @endif
                     @endif
                 </div>
