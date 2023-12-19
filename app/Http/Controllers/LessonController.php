@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExamTaker;
+use App\Models\LessonCategory;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -25,11 +26,19 @@ class LessonController extends Controller
 {
 
     //Redirect to Create Lesson View
-    public function create()
+    public function create(Request $request)
     {
-        return view('lessons.create_lesson');
+        $categories = LessonCategory::all();
+        $compact = compact('categories');
+
+        if($request->dump==true){
+            return $compact;
+        }
+        return view('lessons.create_lesson')->with($compact);
     }
 
+
+    //use above function, this function seems not used.
     public function add()
     {
         return view('lesson.create');
@@ -328,7 +337,6 @@ class LessonController extends Controller
             'image' => 'required',
             'title' => 'required',
             'content' => 'required',
-            'category' => 'required_without_all',
         ]);
 
         //upload image
@@ -339,13 +347,17 @@ class LessonController extends Controller
         $video->storeAs('public/class/trailer', $video->hashName());
         $user_id = Auth::id();
 
-        $cats = $request->input('category');
+        $cat = LessonCategory::findOrFail($request->category_id);
+        if($cat!=null){
+            $cat = $cat->name;
+        }
 
         $inputDeyta = Lesson::create([
             'course_cover_image' => $image->hashName(),
             'course_title' => $request->title,
             'course_trailer' => $video->hashName(),
             'course_category' => $cat,
+            'category_id' => $request->category_id,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'can_be_accessed' => $request->access,
