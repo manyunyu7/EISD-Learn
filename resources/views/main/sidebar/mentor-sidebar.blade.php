@@ -11,6 +11,11 @@
                     <span class="sub-item">Manage Kelas</span>
                 </a>
             </li>
+            <li class="{{ Request::is('lesson/category') ? 'active' : '' }}">
+                <a href="{{ url('/lesson/category') }}">
+                    <span class="sub-item">Class Category</span>
+                </a>
+            </li>
             <li class="{{ Request::is('lesson/create') ? 'active' : '' }}">
                 <a href="{{ url('/lesson/create') }}">
                     <span class="sub-item">Buat Kelas</span>
