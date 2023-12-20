@@ -90,6 +90,11 @@
         .modulTitle_FAQ{
             font-size:20px;
         }
+        .accordion-body p{
+            font-size: 13px;
+            text-align: left;
+        }
+    
     }
 
     /* Penyesuaian untuk tampilan sedang */
@@ -172,6 +177,10 @@
         .modulTitle_FAQ{
             font-size:20px;
         }
+        .accordion-body p{
+            font-size: 14px;
+            text-align: left;
+        }
     }
     /* Penyesuaian untuk tampilan sedang */
     @media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: landscape){
@@ -200,11 +209,11 @@
             font-size: 52px;
         }
         .imagesHeader{
-            max-width: 138%; 
+            max-width: 120%; 
             height: auto; 
             display: block; 
             margin-top: 200px;
-            margin-left: -200px;
+            margin-left: -150px;
         }
         .imgHeader_2{
             max-width: 100%; 
@@ -213,10 +222,10 @@
         .tblContent{
             margin-left: 50px;
             margin-top: -50px;
-            width: 110%;
+            width: 100%;
         }
         .imgPembelajaran{
-            width: 10vw; 
+            width: 8vw; 
             height:auto;
             margin-left: -50px
         }
@@ -247,6 +256,10 @@
         }
         .modulTitle_FAQ{
             font-size:20px;
+        }
+        .accordion-body p{
+            font-size: 14px;
+            text-align: left;
         }
     }
 
@@ -316,6 +329,10 @@
         }
         .fa_Text{
             font-size: 20px; 
+        }
+        .accordion-body p{
+            font-size: 24px;
+            text-align: left;
         }
     }
 </style>
@@ -451,7 +468,11 @@
                     </button>
                   </h2>
                   <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Modernland Learning adalah platform pembelajaran digital yang memungkinkan karyawan untuk mengakses materi pelatihan dan kursus secara online.
+                        </p>
+                    </div>
                   </div>
                 </div>
                 <div class="accordion-item">
@@ -461,7 +482,11 @@
                     </button>
                   </h2>
                   <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Setelah login ke platform, anda dapat mengaksesnya dari perangkat apa pun dengan koneksi internet.
+                        </p>
+                    </div>
                   </div>
                 </div>
                 <div class="accordion-item">
@@ -471,7 +496,11 @@
                     </button>
                   </h2>
                   <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Beberapa course mungkin memiliki batas waktu. Namun, sebagian besar dapat diakses sesuai dengan kebutuhan dan kenyamanan Anda.
+                        </p>
+                    </div>
                   </div>
                 </div>
 
@@ -482,7 +511,11 @@
                         </button>
                     </h2>
                     <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                        <div class="accordion-body">
+                            <p>
+                                Modernland Learning memungkinkan pengembangan mandiri, akses fleksibel, dan meningkatkan efisiensi waktu pembelajaran.
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -492,7 +525,11 @@
                     </button>
                 </h2>
                 <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Ya, kemajuan Anda dipantau.
+                        </p>
+                    </div>
                 </div>
                 </div>
                 <div class="accordion-item">
@@ -502,7 +539,11 @@
                     </button>
                 </h2>
                 <div id="flush-collapseSix" class="accordion-collapse collapse" aria-labelledby="flush-headingSix" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Saat ini, materi hanya dapat diakses secara online. Namun materi yang ada di dalam kelas dapat diunduh.
+                        </p>
+                    </div>
                 </div>
                 </div>
 
@@ -513,7 +554,11 @@
                     </button>
                 </h2>
                 <div id="flush-collapseSeven" class="accordion-collapse collapse" aria-labelledby="flush-headingSeven" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Setiap kursus mungkin memiliki elemen evaluasi seperti pre-test, post-test, maupun quiz untuk mengukur pemahaman Anda.
+                        </p>
+                    </div>
                 </div>
                 </div>
                 <div class="accordion-item">
@@ -523,7 +568,11 @@
                     </button>
                 </h2>
                 <div id="flush-collapseEight" class="accordion-collapse collapse" aria-labelledby="flush-headingEight" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Ya, Modernland Learning menyediakan sumber daya tambahan seperti bacaan, video, dan tautan untuk memperkaya pembelajaran Anda.
+                        </p>
+                    </div>
                 </div>
                 </div>
                 <div class="accordion-item">
@@ -533,7 +582,11 @@
                     </button>
                 </h2>
                 <div id="flush-collapseNine" class="accordion-collapse collapse" aria-labelledby="flush-headingNine" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                    <div class="accordion-body">
+                        <p>
+                            Ya, leaderboard tersedia di Modernland Learning.
+                        </p>
+                    </div>
                 </div>
                 </div>
             </div>

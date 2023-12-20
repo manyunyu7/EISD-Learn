@@ -73,7 +73,7 @@
     }
 
     /* Penyesuaian untuk tampilan sedang */
-    @media screen and (min-width: 820px) and (max-width: 1180px) {
+    @media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: portrait) {
         .footerLogo{
             max-width: 80%; 
             max-height: auto;
@@ -92,11 +92,13 @@
         .footerCentral{
             color: #8C94A3;
             margin-right: 750px;
+            margin-top: -120px;
             text-align: center;
         }
         .footerCentral b{
             font-size: 12px;
             margin-left: 220px;
+            padding: 3px;
         }
         .footerSocmed{
             margin-left: 520px;
@@ -113,7 +115,7 @@
 
         .social-icon {
             display: flex;
-            margin-left: 520px;
+            margin-left: 500px;
             padding-right: 110px;
         }
 
@@ -122,10 +124,10 @@
             background: hsla(#363B47);
             border: 1px solid hsla(0, 0%, 100%, 0.5);
             display: inline-flex;
-            height: 32px;
+            height: 40px;
             justify-content: center;
             line-height: 1;
-            width: 32px;
+            width: 40px;
             transition: background 0.3s, border-color 0.3s;
             margin: 0 10px;  /* Adjust as needed */
         }
@@ -136,6 +138,87 @@
             border-color: hsla(0, 0%, 100%, 0.7);
         }
     }
+    /* Penyesuaian untuk tampilan sedang */
+    @media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: landscape) {
+        .footerLogo,
+        .footerAddress,
+        .footerCentral,
+        .col-4.footerSocmed,
+        .social-icon {
+            margin: 0; /* Reset margin */
+            padding: 0; /* Reset padding */
+        }
+
+        .footerLogo {
+            max-width: 180%;
+            max-height: auto;
+            margin-left: -20px;
+            padding-right: 45%;
+            align-items: center;
+        }
+
+        .footerAddress {
+            margin-left: -30px;
+            color: #8C94A3;
+            padding-right: 35%;
+            b {
+                font-size: 12px;
+            }
+        }
+
+        .footerCentral {
+            color: #8C94A3;
+            text-align: center;
+            margin-left: -350px;
+            margin-top: 65px;
+            b {
+                font-size: 12px;
+            }
+        }
+
+        .footerSocmed {
+            /* Adjust margin and positioning as needed */
+            margin-left: 0px;
+            margin-bottom: 110px;
+        }
+
+        .col-4.footerSocmed {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Adjust margin and positioning as needed */
+            margin-right: -100px;
+            margin-top: 0;
+        }
+
+        .social-icon {
+            display: flex;
+            /* Adjust margin and positioning as needed */
+            margin-left: 850px;
+            margin-top: -210px;
+            padding-right: 10px;
+        }
+
+        .social-icon a {
+            align-items: center;
+            background: hsla(#363B47);
+            border: 1px solid hsla(0, 0%, 100%, 0.5);
+            display: inline-flex;
+            height: 40px;
+            justify-content: center;
+            line-height: 1;
+            width: 40px;
+            transition: background 0.3s, border-color 0.3s;
+            margin: 0 10px;  /* Adjust as needed */
+
+            /* Efek hover */
+            &:hover {
+                background: hsla(0, 100%, 57%, 0.913);
+                border-color: hsla(0, 0%, 100%, 0.7);
+            }
+        }
+    }
+
 
     /* Penyesuaian untuk tampilan besar */
     @media screen and (min-width: 1440px) {

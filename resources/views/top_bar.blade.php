@@ -1,3 +1,37 @@
+<style>
+    /* Penyesuaian untuk tampilan sedang */
+    @media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: landscape){
+        .btnLogin{
+            width: 80px; 
+            height:40px;
+            margin-right: 40px;
+        }
+        .btnLogin span{
+            font-size: 20px;
+        }
+    }
+    @media screen and (min-width: 820px) and (max-width: 1180px) and (orientation: portrait){
+        .btnLogin{
+            width: 80px; 
+            height:40px;
+            margin-right: 340px;
+        }
+        .btnLogin span{
+            font-size: 20px;
+        }
+    }
+    @media screen and (min-width: 1440px) {
+        .btnLogin{
+            width: 100px; 
+            height: 50px;
+            margin-right: 20px;
+        }
+        .btnLogin span{
+            font-size: 22px;
+        }
+    }
+</style>
+
 <nav class="navbar navbar-expand-sm navbar-custom navbar-lights ticky-top ">
     <a class="navbar-brand" href="#">
         <img width="300px"  src="{{URL::to('/')}}/home_assets/img/esd_3.png" alt="">
@@ -26,8 +60,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('login') }}">
                              <button type="button"
-                                class="btn btn-danger"
-                                style="width: 100px; height:50px;">Login</button>
+                                class="btn btn-danger btnLogin"><span>Login</span></button>
                                 <span class="sr-only">(current)</span></a>
                     </li>
                 @endif
@@ -60,4 +93,5 @@
     </div>
     <hr>
 </nav>
+
 
