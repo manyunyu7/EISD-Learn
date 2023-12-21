@@ -20,6 +20,7 @@ class CreateMDLNUserLoginsTable extends Migration
             $table->string("device_type")->nullable();
             $table->string("user_name")->nullable();
             $table->string("user_dept")->nullable();
+            $table->string("set_logged_out")->nullable();
             $table->timestamps();
         });
     }
