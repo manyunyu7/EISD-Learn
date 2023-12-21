@@ -23,6 +23,8 @@ Route::post('/upload', 'MobileUploaderController@upload');
 Route::any('/check', 'MobileUploaderController@check');
 Route::any('/close-ticket', 'MobileUploaderController@closeTicket');
 
+Route::post("/save-mdln-login-info",'MDLNUserLoginController@saveLoginInfo');
+
 
 Route::prefix("integration")->group(function (){
     Route::get("/check-user-exist/{userId}","ModernlandIntegrationController@checkId");
