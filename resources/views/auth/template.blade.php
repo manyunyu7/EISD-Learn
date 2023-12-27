@@ -17,7 +17,7 @@
         }
 
         body {
-            background-color: #0F0E20 !important;
+            background-color: #1D2026 !important;
             height: 100% !important;
         }
 
