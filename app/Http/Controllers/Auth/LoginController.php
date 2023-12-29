@@ -53,6 +53,18 @@ class LoginController extends Controller
             $this->username() => 'required',
             'password' => 'required|string',
         ]);
+        
+        
+        $remember_me = $request->has('remember_me') ? true : false;
+        if (auth()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')], $remember_me))
+        {
+            $user = auth()->user();
+            // dd($user);
+        }else{
+            return back()->with('error','your username and password are wrong.');
+        }
+
+
         MyHelper::addAnalyticEvent(
             "Validate Login","auth"
         );

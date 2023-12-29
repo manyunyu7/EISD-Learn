@@ -7,7 +7,7 @@
                         <div class="card" style="border-radius: 30px;">
                             <div class="mt-4">
                                 <div>
-                                    <h1 style="text-align: center"><b>Login</b></h1>
+                                    <h1 style="text-align: center"><b>Forgot Password</b></h1>
                                 </div>
                             </div>
 
@@ -35,40 +35,12 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                                        <div class="input-group">
-                                            <input 
-                                                type="password" 
-                                                class="password form-control @error('password') is-invalid @enderror" 
-                                                id="exampleInputPassword1" 
-                                                placeholder="Password"
-                                                name="password"
-                                                required 
-                                                autocomplete="current-password"
-                                            >
-                                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                        </div>
-                                        @error('password')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <div class="mb-3 form-check d-flex justify-content-start">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Remember me</label>
-                                        </div>
-                                    </div>
                                     <div class="mb-3 ">
                                         <button type="submit" class="btn btn-danger btn-block ">Submit</button>
                                     </div>
                                     <div class="mb-3 d-flex justify-content-end">
-                                        <a class="btn btn-link link_forgotPwd" href="{{ url('forgotpass') }}" style="color: #FF1D01;">
-                                            {{ __('Forgot Password?') }}
+                                        <a class="btn btn-link" href="{{ url('login') }}" style="color: #FF1D01;">
+                                            {{ __('Back to Login?') }}
                                         </a>
                                     </div>
                                 </form>

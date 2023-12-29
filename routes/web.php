@@ -22,6 +22,7 @@
     Route::get('/blogs', 'LandingController@blogs');
     Route::get('/home', 'HomeController@index');
     Route::get('/portfolios', 'LandingController@portfolios');
+    Route::view('forgotpass', 'auth.forgotpass');
 
     Route::get('/profile', 'ProfileController@index')->middleware('auth');
     Route::post('/profile', 'ProfileController@update')->name('profile.update')->middleware('auth');
