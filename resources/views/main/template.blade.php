@@ -222,22 +222,23 @@
 </script>
 
 <div class="wrapper">
-
+    
     @if(!isset($showCompact))
         <div class="main-header">
             <!-- Logo Header -->
-            <div class="logo-header" data-background-color="blue">
-
+            <div class="logo-header" style="background-color: #1D2026">
                 <a href="{{url('/home')}}" class="logo">
-                    <p class="navbar-brand text-white">{{config('app.name')}}</p>
-                    {{-- <img src="{{URL::to('/')}}/home_assets/esd_3.png" alt="navbar brand" class="navbar-brand"> --}}
+                    <div style="text-align: center;">
+                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg" 
+                             style="width: 80%; 
+                                    height: auto;
+                                    display: flex;
+                                    margin-top: 5px;
+                             "
+                        >
+                    </div>
                 </a>
-                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
-                        data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon">
-						<i class="icon-menu"></i>
-					</span>
-                </button>
+                
                 <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
                 <div class="nav-toggle">
                     <button class="btn btn-toggle toggle-sidebar">
@@ -272,34 +273,6 @@
 
         </div>
     @endif
-    {{--
-        <footer class="footer">
-        <div class="container-fluid">
-            <nav class="pull-left">
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://www.themekita.com">
-                        {{ config('app.name') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Help
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Licenses
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="copyright ml-auto">
-                2018,made with <i class="fa fa-heart heart text-danger"></i> by <a href="http://henryaugusta.feylabs.my.id">Feylaboratiry</a>
-            </div>
-        </div>
-    </footer> --}}
-
 </div>
 
 

@@ -43,5 +43,31 @@
         width: 100%;
         height: 205px;
     }
+    .social-icon a {
+        align-items: center;
+        background: hsla(#363B47);
+        border: 1px solid hsla(0, 0%, 100%, 0.5);
+        display: inline-flex;
+        height: 40px;
+        justify-content: center;
+        line-height: 1;
+        width: 40px;
+        transition: background 0.3s, border-color 0.3s;
+        margin: 0 2px;  /* Adjust as needed */
+        position: relative; /* Tambahkan ini */
 
+    
+
+        /* Tambahkan aturan untuk ikon pada hover */
+        &:hover {
+            background: #96b3d0;
+            border-color: hsla(0, 0%, 100%, 0.7);
+        }
+    }
+
+.btnColor {
+    background-color: #F5F7FA;
+}
+
+    
 </style>
