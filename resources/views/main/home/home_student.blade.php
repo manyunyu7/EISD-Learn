@@ -90,7 +90,12 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="ml-auto mt-5"> {{-- Align to the right with ml-auto --}}
+                            <div class="portfolio-container">
+                                <img src="{{ url('/HomeIcons/Portfolio.svg') }}" alt="Portfolio Icon">
+                                <p>https://www.kevinvalerian.com</p>
+                            </div>
                             <div class="social-icon">
                                 <a href="https://facebook.com/#" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/HomeIcons/Facebook.svg') }}"  alt="Facebook Icon">
@@ -139,93 +144,87 @@
                 </div>
             </div>
 
+            {{-- DASHBOARD --}}
+            <div class="col-md-12">
+                <h2><b>Dashboard</b></h2>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="background-color: #FFEEE8">
+                    <div class="card-body">
+                        <div class="dashboard-container">
+                            <img src="{{ url('/DashboardIcons/Frame 322.png') }}" alt="Portfolio Icon">
+                            <h1>0</h1>
+                            <p>Enrolled Courses</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="background-color: #EBEBFF">
+                    <div class="card-body">
+                        <div class="dashboard-container">
+                            <img src="{{ url('/DashboardIcons/Frame 323.png') }}" alt="Portfolio Icon">
+                            <h1>0</h1>
+                            <p>Active Courses</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="background-color: #E1F7E3">
+                    <div class="card-body">
+                        <div class="dashboard-container">
+                            <img src="{{ url('/DashboardIcons/Frame 324.png') }}" alt="Portfolio Icon">
+                            <h1>0</h1>
+                            <p>Completed Courses</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
+
+            {{-- MY CLASS --}}
+            <div class="col-md-12">
+                <h2><b>My Class</b></h2>
+            </div>
             {{-- DAFTAR KELASS --}}
             <div class="col-md-12">
                 <div class="card"> {{-- card --}}
                     <div class="card-body">
-                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd d-flex justify-content-center"
-                            id="pills-tab-without-border" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill"
-                                   href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd"
-                                   aria-selected="true">Kelas Yang Sedang Anda Ikuti</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-contact-tab-nobd" data-toggle="pill"
-                                   href="#pills-contact-nobd" role="tab" aria-controls="pills-contact-nobd"
-                                   aria-selected="false">Cari Kelas Baru</a>
-                            </li>
-                        </ul>
                         <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                  aria-labelledby="pills-home-tab-nobd">
-                                <div class="">
-                                    <div class="">
-                                        <div class="card-head-row card-tools-still-right">
-                                            <h4 class="card-title">Daftar Kelas Yang Sedang Anda Ikuti</h4>
-                                        </div>
-                                        <p class="card-category">
-                                            Kelas Yang Saat Ini Anda Pelajari</p>
-                                    </div>
+                                <div class="container-myClass">
                                     <div class="card-body">
                                         <div class="row row-eq-height">
                                             @forelse ($classRegistered as $data)
-                                                <div class="col-lg-4 col-sm-6 my-2">
-                                                    <div class="album-poster-parent"
-                                                         style="background-color: white !important">
-                                                        <a href="javascript:void();" class="album-poster"
-                                                           data-switch="0">
-                                                            <img class="fufufu"
-                                                                 onerror="this.onerror=null; this.src='./assets/album/n5'"
-                                                                 src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                                                                 alt="La Noyee">
-                                                        </a>
-                                                        <br>
-                                                        <div class="course-info">
-                                                            <h4>{{ $data->course_title }}</h4>
-
-                                                        </div>
-                                                        <p><span
-                                                                class="badge badge-primary">{{ $data->course_category }}</span>
-                                                        </p>
-
-                                                        <div class="d-flex">
-                                                            <div class="avatar">
-                                                                <img
-                                                                    src="{{ Storage::url('public/profile/') . $data->mentor_profile_url }}"
-                                                                    alt="..." class="avatar-img rounded-circle">
-                                                            </div>
-                                                            <div class="info-post ml-2">
-                                                                <p style="margin-bottom: 1px !important"
-                                                                   class="username">
-                                                                    {{ $data->mentor_name }}</p>
-                                                                {{ $data->created_at }}
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="mt-2">
-                                                            <a href="{{ url("/lesson/$data->id") }}">
-                                                                <button type="submit"
-                                                                        class="btn btn-outline-primary btn-xs btn-block mb-2">
-                                                                    Lanjutkan
-                                                                    Belajar
-                                                                </button>
-                                                            </a>
-                                                            <form action="{{ route('course.drop') }}" method="POST"
-                                                                  enctype="multipart/form-data">
-                                                                @csrf
-                                                                <input class="d-none" type="text" name="course_id"
-                                                                       value="{{ $data->id }}" id="">
-                                                                <button type="submit"
-                                                                        class="btn btn-outline-danger btn-xs">Arsipkan
-                                                                    Kelas
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
+                                            <div class="col-lg-4 col-sm-6 my-2">
+                                                <div class="card" style="background-color: white !important">
+                                                    <a href="javascript:void();" data-switch="0">
+                                                        <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
+                                                             src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                                                             alt="La Noyee">
+                                                    </a>
+                                                    <br>
+                                                    <p>
+                                                        <span class="badge badge-danger">{{ $data->course_category }}</span>
+                                                    </p>
+                                                    <div class="course-info">
+                                                        <h4>{{ $data->course_title }}</h4>
                                                     </div>
-                                                </div>
+                                                    <hr>
+                                                    <div class="button-container">
+                                                        <button type="button" class="btn btn-custom"><span>Check</span></button>
+                                                        <p>100% Completed</p>
+                                                    </div>
+                                                    <hr>
+                                                    <div style="display: flex; justify-content: center; align-items: center;">
+                                                        <img style="width: 5%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
+                                                        <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 9 </b> students</p>
+                                                    </div>
+                                                </div> 
+                                            </div>
+                                            
 
                                                 {{-- <p>{{ $data->mentor_name }}</p> --}}
                                             @empty

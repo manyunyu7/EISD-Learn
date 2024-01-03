@@ -29,11 +29,11 @@
         margin-bottom: 50px;
     }
 
-    h3 {
+    /* h3 {
         font-size: 34px;
         margin-bottom: 34px;
         border-bottom: 4px solid #ffffff;
-    }
+    } */
 
 
     .fufufu {
@@ -65,9 +65,84 @@
         }
     }
 
-.btnColor {
-    background-color: #F5F7FA;
-}
+    .btnColor {
+        background-color: #F5F7FA;
+    }
+    .portfolio-container {
+        display: flex;
+        align-items: center;
+    }
 
-    
+    .portfolio-container img {
+        margin-top: 2px; /* Sesuaikan margin sesuai kebutuhan */
+        margin-left: 5px;
+    }
+    .portfolio-container p {
+        margin-top: 15px; /* Sesuaikan margin sesuai kebutuhan */
+        margin-left: 10px;
+    }
+
+    .dashboard-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .dashboard-container h1{
+        display: inline-block;
+        vertical-align: top;
+        margin: -20px 10px 0 20px;
+        color: black; /* Sesuaikan warna teks sesuai kebutuhan */
+        padding: 0; /* Nolkan padding jika tidak diperlukan */
+    }
+    .dashboard-container p {
+        font-size: 18px;
+        display: inline-block;
+        vertical-align: top;
+        margin: 35px 30px 0 -25px;
+        color: black; /* Sesuaikan warna teks sesuai kebutuhan */
+        padding: 0; /* Nolkan padding jika tidak diperlukan */
+    }
+
+    .dashboard-container img {
+        margin-top: 2px;
+        margin-left: 5px;
+    }
+    .container-myClass p{
+        margin-left: 10px;
+    }
+    .container-myClass h4{
+        margin-left: 10px;
+    }
+
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+        margin-left: 10px;
+    }
+
+    .button-container button {
+        width: auto; /* Adjust the width as needed */
+    }
+
+    .button-container p{
+        margin-right: 28px;
+        font-size: 15px;
+        color: #23BD33;
+        font-weight: bold;
+    }
+    .card hr {
+        margin: 5px 0; /* Adjust the margin as needed */
+    }
+    .btn-custom {
+        background-color: #208DBB;
+        color: white;
+        border-radius: 10px !important;
+    }
+    .btn-custom span{
+        font-weight: bold;
+        font-size: 16px;
+    }
 </style>
