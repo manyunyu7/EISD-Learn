@@ -270,9 +270,10 @@
                 @yield('main')
             </div>
             @if(!isset($showCompact))
-
+            @include('main.footer_afterLogin')
         </div>
     @endif
+
 </div>
 
 

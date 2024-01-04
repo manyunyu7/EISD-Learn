@@ -119,7 +119,7 @@
                     </div>
 
                 </div>
-                <div class="col-md-4">
+                {{-- <div class="col-md-4">
                     <div class="card card-profile">
                         <div class="card-header" style="background-image: url('../assets/img/blogpost.jpg')">
                             <div class="profile-picture">
@@ -171,7 +171,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
