@@ -179,7 +179,7 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/demo.css"> --}}
-
+    
 </head>
 <body>
 
@@ -270,7 +270,6 @@
                 @yield('main')
             </div>
             @if(!isset($showCompact))
-            @include('main.footer_afterLogin')
         </div>
     @endif
 

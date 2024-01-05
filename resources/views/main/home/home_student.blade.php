@@ -4,10 +4,11 @@
 
 
 @section('script')
-    @include('main.home.script_student')
+    {{-- @include('main.home.script_student') --}}
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+
+    {{-- <script>
         var userScores = @json($userScores);
 
         var sectionTitles = userScores.map(score => score.section_title);
@@ -60,7 +61,45 @@
                 }
             }
         });
-    </script>
+    </script> --}}
+
+    <script>
+        const DISPLAY = true;
+        const BORDER = true;
+        const CHART_AREA = true;
+        const TICKS = true;
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
+            datasets: [
+              {
+                label: 'Blue Line',
+                data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
+                borderColor: 'blue',
+                borderWidth: 2,
+                fill: false
+              },
+              {
+                label: 'Red Line',
+                data: [5, 9, 8, 2, 6, 7, 5, 9, 8, 2, 6, 7],
+                borderColor: 'red',
+                borderWidth: 2,
+                fill: false
+              }
+            ]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      </script>
+       
 @endsection
 
 @section('main')
@@ -141,11 +180,7 @@
                                  aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
                                     <div class="">
-                                        <div class="card-head-row card-tools-still-right">
-                                            <h4 class="card-title">Daftar Kelas Yang Sedang Anda Ikuti</h4>
-                                        </div>
-                                        <p class="card-category">
-                                            Kelas Yang Saat Ini Anda Pelajari</p>
+                                        <canvas id="myChart" height="60"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -477,24 +512,6 @@
                 </div>
             </div>
             
-            {{-- GRAFIK SKOR --}}
-            <div class="col-md-12 col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Grafik Skormu</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-sub">
-                            Performa Skor Per Materi
-                        </div>
-
-                        <div style="height: 370px">
-                            <canvas id="userScoresChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {{-- LEADERBOARD --}}
             <div class="col-md-12 col-12">
                 <div class="card">
