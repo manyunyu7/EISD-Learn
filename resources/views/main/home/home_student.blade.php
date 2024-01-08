@@ -240,8 +240,8 @@
                         <div class="card-body">
                             <div class="row row-eq-height">
                                 @forelse ($classRegistered as $data)
-                                <div class="col-lg-12 col-sm-6 my-2">
-                                    <div class="card" style="background-color: white !important">
+                                {{-- <div class="col-lg-12 col-sm-6 my-2">
+                                    <div class="card myclassCard" style="background-color: white !important">
                                         <a href="javascript:void();" data-switch="0">
                                             <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
                                                  src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
@@ -253,6 +253,7 @@
                                         </p>
                                         <div class="course-info">
                                             <h4>{{ $data->course_title }}</h4>
+                                            <br>
                                         </div>
                                         <hr>
                                         <div class="button-container">
@@ -263,6 +264,36 @@
                                         <div style="display: flex; justify-content: center; align-items: center;">
                                             <img style="width: 5%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
                                             <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 9 </b> students</p>
+                                        </div>
+                                    </div> 
+                                </div> --}}
+                                <div class="col-lg-12 col-sm-6 my-2">
+                                    <div class="card recommendationCard" style="background-color: white !important">
+                                        <a href="javascript:void();" data-switch="0">
+                                            <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
+                                                    src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                                                    alt="La Noyee">
+                                        </a>
+                                        <br>
+                                        <p>
+                                            <span class="badge badge-danger">{{ $data->course_category }}</span>
+                                        </p>
+                                        <div class="course-info">
+                                            <h4>{{ $data->course_title }}</h4>
+                                            <br>
+                                        </div>
+                                        <hr>
+                                        <div class="toga-container">
+                                            <button type="button" class="btn btn-custom"><span>Check</span></button>
+                                            <p id="progressCourse">100% Completed</p>
+                                            {{-- <img style="width: 12%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                            <p>Modernland Training</p>
+                                            <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt=""> --}}
+                                        </div>
+                                        <hr>
+                                        <div style="display: flex; justify-content: center; align-items: center;">
+                                            <img style="width: 7%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
+                                            <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 25 </b> students</p>
                                         </div>
                                     </div> 
                                 </div>
@@ -371,7 +402,7 @@
 
 
 
-            {{-- MY CLASS --}}
+            {{-- RECOMMENDATION --}}
             <div class="col-md-12">
                 <h2><b>Recommendation</b></h2>
             </div>
@@ -384,7 +415,7 @@
                             <div class="row row-eq-height">
                                 @forelse ($classRegistered as $data)
                                 <div class="col-lg-12 col-sm-6 my-2">
-                                    <div class="card" style="background-color: white !important">
+                                    <div class="card recommendationCard" style="background-color: white !important">
                                         <a href="javascript:void();" data-switch="0">
                                             <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
                                                     src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
@@ -396,22 +427,24 @@
                                         </p>
                                         <div class="course-info">
                                             <h4>{{ $data->course_title }}</h4>
+                                            <br>
                                         </div>
                                         <hr>
-                                        <div class="button-container">
-                                            <button type="button" class="btn btn-custom"><span>Check</span></button>
-                                            <p>100% Completed</p>
+                                        <div class="toga-container">
+                                            <img style="width: 12%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                            <p>Modernland Training</p>
+                                            <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
                                         </div>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
-                                            <img style="width: 5%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
-                                            <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 9 </b> students</p>
+                                            <img style="width: 7%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
+                                            <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 25 </b> students</p>
                                         </div>
                                     </div> 
                                 </div>
                                 
 
-                                    {{-- <p>{{ $data->mentor_name }}</p> --}}
+                                {{-- <p>{{ $data->mentor_name }}</p> --}}
                                 @empty
                                     <div class="w-100 d-flex justify-content-center">
                                         <script

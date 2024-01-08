@@ -125,6 +125,7 @@
 
     .button-container button {
         width: auto; /* Adjust the width as needed */
+        height: 2px;
     }
 
     .button-container p{
@@ -134,9 +135,17 @@
         font-weight: bold;
     }
     .card hr {
-        margin: 5px 0; /* Adjust the margin as needed */
+        margin: -2px 0; /* Adjust the margin as needed */
+    }
+    .recommendationCard hr{
+        margin: -15px; /* Adjust the margin as needed */
+    }
+    .myclassCard hr{
+        margin: -15px;
     }
     .btn-custom {
+        width: 20%; 
+        margin: 10px;
         background-color: #208DBB;
         color: white;
         border-radius: 10px !important;
@@ -144,5 +153,33 @@
     .btn-custom span{
         font-weight: bold;
         font-size: 16px;
+        margin-left: -10px;
+
+    }
+    #progressCourse {
+        width: 100%;
+        margin-right: 150px;
+        margin-top: 15px;
+        font-size: 14px;
+        color: #23BD33;
+    }
+
+
+    .toga-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+        margin-left: 10px;
+    }
+    .toga-container p{
+        width: 100%;
+        margin-right: 150px;
+        margin-top: 15px;
+        font-size: 14px;
+        color: #8C94A3;
+    }
+    #dotsThree{
+        margin-right: 20px;
     }
 </style>

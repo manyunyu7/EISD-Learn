@@ -45,9 +45,8 @@ class LandingController extends Controller
 
     public function portfolios()
     {
-        $dayta = DB::select("select * from view_course");
-        $portfolio = DB::select("select * from view_project");
-        return view('portfolio')->with(compact('dayta','portfolio'));
+        $classes = DB::select("select * from view_course");
+        return view('portfolio')->with(compact('classes'));
     }
 
     public function blogs()
