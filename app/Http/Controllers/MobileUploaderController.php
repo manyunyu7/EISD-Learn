@@ -2,21 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Storage;
 
 class MobileUploaderController extends Controller
 {
-
-
-    public function check()
-    {
-        $folder = 'CobaHelpdesk';
-        $files = Storage::files($folder);
-        return $files;
-    }
-
     public function upload(Request $request)
     {
         // Validate the uploaded files
@@ -31,6 +22,7 @@ class MobileUploaderController extends Controller
         } else {
             $isDev = false;
         }
+        return response()->json(['message' => 'Files uploaded successfully', 'files' => ""]);
 
         if ($isDev) {
             $url = "https://github.modernland.co.id/api/v1/helpdesk";
@@ -43,10 +35,13 @@ class MobileUploaderController extends Controller
 
         // Move each file to the public/IsengIsengAja directory
         $uploadedFiles = [];
-        foreach ($files as $file) {
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/CobaHelpdesk', $filename);
-            $uploadedFiles[] = $filename;
+
+        if (!empty($files) && !is_null($files)) {
+            foreach ($files as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/CobaHelpdesk', $filename);
+                $uploadedFiles[] = $filename;
+            }
         }
 
 
@@ -106,10 +101,13 @@ class MobileUploaderController extends Controller
 
         // Move each file to the public/IsengIsengAja directory
         $uploadedFiles = [];
-        foreach ($files as $file) {
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/CobaHelpdesk', $filename);
-            $uploadedFiles[] = $filename;
+        // Check if files exist
+        if (!empty($files) && !is_null($files)) {
+            foreach ($files as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/CobaHelpdesk', $filename);
+                $uploadedFiles[] = $filename;
+            }
         }
 
         // Prepare data for Guzzle
@@ -136,9 +134,34 @@ class MobileUploaderController extends Controller
             // You can handle the response here
 
             return response()->json(['message' => 'Files uploaded successfully', 'files' => $uploadedFiles]);
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+            $responseData = json_decode($responseBodyAsString, true);
+
+            // Check if the response contains a message
+            $errorMessage = isset($responseData['meta']['message']) ? $responseData['meta']['message'] : 'Unknown error';
+
+            // Return a response to the Flutter app with the error message
+            return response()->json([
+                'meta' => [
+                    'success' => false,
+                    'status' => $responseData['meta']['status'] ?? 500,
+                    'message' => $errorMessage,
+                ],
+                'result' => $responseData['result'] ?? null,
+            ], $responseData['meta']['status'] ?? 500);
         } catch (\Exception $e) {
             // Handle errors here
-            return response()->json(['error' => $e->getMessage()], 500);
+            // Return a response to the Flutter app with meta and result
+            return response()->json([
+                'meta' => [
+                    'success' => true,
+                    'status' => 500,
+                    'message' => 'Data received successfully',
+                ],
+                'result' => $e,
+            ], 500);
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
+use App\Models\StudentSection;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -36,9 +37,10 @@ class HomeController extends Controller
             ->select('student_id', DB::raw('AVG(score) as average_score'))
             ->groupBy('student_id');
 
+
         $leaderboardQuery = DB::table(DB::raw('student_section ss'))
             ->select(
-                'u.name as student_name', 'u.profile_url','u.id',
+                'u.name as student_name', 'u.profile_url', 'u.id',
                 DB::raw('SUM(ss.score) as total_score'),
                 'avg_subquery.average_score as average_score',
                 DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as highest_score'),
@@ -49,24 +51,34 @@ class HomeController extends Controller
             ->groupBy('ss.student_id', 'u.name', 'avg_subquery.average_score')
             ->orderByDesc('total_score');
 
-        $topThreeQuery =  DB::table(DB::raw('student_section ss'))
-            ->select(
-                'u.name as student_name', 'u.profile_url',
-                DB::raw('SUM(ss.score) as total_score'),
-                DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as lowest_score'),
-                DB::raw('(SELECT MIN(score) FROM student_section WHERE student_id = u.id) as highest_score')
-            )
-            ->join('users as u', 'ss.student_id', '=', 'u.id')
-            ->groupBy('ss.student_id', 'u.name')
-            ->orderByDesc('total_score')->get();
 
-        $topThree = $topThreeQuery;
+        $topThreeQuery = array();
+        $studentSectionCount = StudentSection::all()->count();
+        if ($studentSectionCount > 0) {
+            $topThreeQuery = DB::table(DB::raw('student_section ss'))
+                ->select(
+                    'u.name as student_name', 'u.profile_url',
+                    DB::raw('SUM(ss.score) as total_score'),
+                    DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as lowest_score'),
+                    DB::raw('(SELECT MIN(score) FROM student_section WHERE student_id = u.id) as highest_score')
+                )
+                ->join('users as u', 'ss.student_id', '=', 'u.id')
+                ->groupBy('ss.student_id', 'u.name')
+                ->orderByDesc('total_score')->get();
+        }
+
         // Check if the authenticated user's role is "mentor"
         if (Auth::user()->role != "mentor") {
             $leaderboardQuery->limit(5);
         }
 
-        $leaderboard = $leaderboardQuery->get();
+        $topThree = $topThreeQuery;
+
+        $leaderboard = array();
+        if ($studentSectionCount > 0) {
+            $leaderboard = $leaderboardQuery->get();
+        }
+
         if (Auth::check() && Auth::user()->role == 'mentor') {
             $userId = Auth::user()->id;
             $user_name = Auth::user()->name;
@@ -101,7 +113,7 @@ class HomeController extends Controller
             }
 
             MyHelper::addAnalyticEvent(
-                "Buka Dashboard Mentor","Dashboard"
+                "Buka Dashboard Mentor", "Dashboard"
             );
             return view('main.dashboard')
                 ->with(compact(
@@ -143,7 +155,7 @@ class HomeController extends Controller
                 ->count();
 
             MyHelper::addAnalyticEvent(
-                "Buka Dashboard Student","Dashboard"
+                "Buka Dashboard Student", "Dashboard"
             );
             return view('main.dashboard')
                 ->with(compact(
