@@ -176,10 +176,27 @@
         width: 100%;
         margin-right: 150px;
         margin-top: 15px;
-        font-size: 14px;
+        font-size: 16px;
         color: #8C94A3;
     }
     #dotsThree{
         margin-right: 20px;
     }
+
+
+    /* CSS untuk Tab Pertama */
+    .container-myClass .myClassList .card {
+        width: 100%;
+        height: auto;
+        /* Gaya lainnya */
+    }
+
+    /* CSS untuk Tab Kedua */
+    .container-otherClass .otherClassList .card {
+        width: 100%;
+        height: auto;
+        /* Gaya lainnya */
+    }
+
+
 </style>

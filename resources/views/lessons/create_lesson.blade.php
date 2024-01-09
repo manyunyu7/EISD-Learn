@@ -175,12 +175,14 @@
                                 <div class="form-group">
                                     <label class="form-label">Category</label>
                                     <select class="form-control" name="category" id="">
+                                        <option value="Management Trainee">Management Trainee</option>
+                                        <option value="General">General</option>
                                         <option value="Design">Design</option>
                                         <option value="Finance & Accounting">Finance & Accounting</option>
                                         <option value="Human Resource and Development">Human Resource and Development
                                         </option>
                                         <option value="3D Modelling">3D Modelling</option>
-                                        <option value="IT/Programming">IT / Programming</option>
+                                        <option value="Digital Management">Digital Management</option>
                                         <option value="Marketing and Business">Marketing and Business</option>
                                         <option value="Food and Beverage">Food and Beverage</option>
                                         <option value="Management">Management</option>

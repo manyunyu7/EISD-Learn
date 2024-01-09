@@ -214,14 +214,19 @@
                                     <label class="form-label">Category</label>
                                     <select class="form-control" name="category" id="">
                                         <option value="Select Category">Select Category</option>
+                                        <option {{ $category == 'Management Trainee' ? 'selected' : '' }} value="Management Trainee">Management Trainee
+                                        </option>
+                                        <option {{ $category == 'General' ? 'selected' : '' }} value="General">General
+                                        </option>
+
                                         <option {{ $category == 'Design' ? 'selected' : '' }} value="Design">Design
                                         </option>
                                         <option
                                             {{ $category == '3D Modelling' ? 'selected' : '' }} value="3D Modelling">3D
                                             Modelling
                                         </option>
-                                        <option {{ $category == 'IT/Programming' ? 'selected' : '' }}
-                                                value="IT/Programming">IT / Programming
+                                        <option {{ $category == 'Digital Management' ? 'selected' : '' }}
+                                                value="Digital Management">Digital Management
                                         </option>
                                         <option
                                             {{ $category == 'Marketing and Business' ? 'selected' : '' }}value="Marketing and Business">

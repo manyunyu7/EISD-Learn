@@ -98,7 +98,9 @@
             }
           }
         });
-      </script>
+    </script>
+
+    
        
 @endsection
 
@@ -412,12 +414,12 @@
                         aria-labelledby="pills-home-tab-nobd">
                     <div class="container-myClass">
                         <div class="card-body">
-                            <div class="row row-eq-height">
-                                @forelse ($classRegistered as $data)
-                                <div class="col-lg-12 col-sm-6 my-2">
+                            <div class="row row-eq-height myClassList">
+                                @forelse ($classes as $data)
+                                <div class="col-lg-3 col-sm-6 my-2">
                                     <div class="card recommendationCard" style="background-color: white !important">
                                         <a href="javascript:void();" data-switch="0">
-                                            <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
+                                            <img class="card-img-top"  onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
                                                     src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
                                                     alt="La Noyee">
                                         </a>
@@ -437,8 +439,8 @@
                                         </div>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
-                                            <img style="width: 7%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
-                                            <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 25 </b> students</p>
+                                            <img style="width: 6%; height: auto;  margin-top: 12px" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
+                                            <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> 25 </b> students</p>
                                         </div>
                                     </div> 
                                 </div>
@@ -474,7 +476,7 @@
                                 Cari Kelas Lain Yang Mungkin Menarik Untuk Dipelajari</p>
                         </div>
                         <div class="card-body">
-                            <div class="row row-eq-height">
+                            <div class="row row-eq-height otherClassList">
                                 @forelse ($classes as $data)
                                     <div class="col-lg-4 col-sm-6 my-2">
                                         <div class="album-poster-parent"
