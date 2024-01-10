@@ -67,7 +67,7 @@
                         <div class="card-body">
                             <div class="row row-eq-height">
                                 @forelse ($classes as $data)
-                                <div class="col-lg-12 col-sm-6 my-2">
+                                <div class="col-lg-3 col-sm-6 my-2">
                                     <div class="card recommendationCard" style="background-color: white !important">
                                         <a href="javascript:void();" data-switch="0">
                                             <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
@@ -76,25 +76,102 @@
                                         </a>
                                         <br>
                                         <p>
-                                            <span class="badge badge-danger">{{ $data->course_category }}</span>
+                                            <span class="badge dynamic-badge" style=" border-radius: 0; font-size: 13px; font-weight: bold">{{ $data->course_category }}</span>
                                         </p>
                                         <div class="course-info">
                                             <h4>{{ $data->course_title }}</h4>
                                             <br>
                                         </div>
                                         <hr>
-                                        <div class="toga-container">
+                                        <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
                                             <img style="width: 12%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
                                             <p>Modernland Training</p>
-                                            <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
-                                        </div>
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                                <div class="dropdown-user-scroll scrollbar-outer">
+                                                    <li>
+                                                        <a class="dropdown-item" href="#">Join Class</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href='{{ url("/class/class-list/view-class/").'/'.$data->id }}'>
+                                                            <span class="link-collapse">View Class</span>
+                                                        </a>
+                                                    </li>
+                                                </div>
+                                            </ul>
+                                        </li>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
-                                            <img style="width: 7%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
-                                            <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 25 </b> students</p>
+                                            <img style="width: 6%; height: auto; margin-top: 12px" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
+                                            <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> 25 </b> students</p>
                                         </div>
                                     </div> 
                                 </div>
+                                <script>
+                                    var badges = document.querySelectorAll('.dynamic-badge');
+                                
+                                    badges.forEach(function (badge) {
+                                        var selectedCategory = badge.textContent;
+                                        var badgeColor, textColor;
+                                
+                                        switch (selectedCategory) {
+                                            case 'Management Trainee':
+                                                badgeColor = '#f7c8ca';
+                                                textColor = '#D02025';
+                                                break;
+                                            case 'General':
+                                                badgeColor = 'blue';
+                                                break;
+                                            case 'Design':
+                                                badgeColor = 'green';
+                                                break;
+                                            case 'Finance & Accounting':
+                                                badgeColor = 'purple';
+                                                break;
+                                            case 'Human Resource and Development':
+                                                badgeColor = 'orange';
+                                                break;
+                                            case '3D Modelling':
+                                                badgeColor = 'pink';
+                                                break;
+                                            case 'Digital Management':
+                                                badgeColor = '#EBEBFF';
+                                                textColor = '#342F98';
+                                                break;
+                                            case 'Marketing and Business':
+                                                badgeColor = 'yellow';
+                                                break;
+                                            case 'Food and Beverage':
+                                                badgeColor = 'brown';
+                                                break;
+                                            case 'Management':
+                                                badgeColor = 'teal';
+                                                break;
+                                            case 'Social and Politics':
+                                                badgeColor = 'indigo';
+                                                break;
+                                            case 'Office':
+                                                badgeColor = 'maroon';
+                                                break;
+                                            case 'Outdoor Activity':
+                                                badgeColor = 'lime';
+                                                break;
+                                            case 'Junior High School':
+                                                badgeColor = 'navy';
+                                                break;
+                                            case 'Senior High School':
+                                                badgeColor = 'olive';
+                                                break;
+                                
+                                            default:
+                                                badgeColor = 'gray';
+                                        }
+                                
+                                        badge.style.backgroundColor = badgeColor;
+                                        badge.style.color = textColor; // Set text color to white
+                                    });
+                                </script>
                                 
 
                                 {{-- <p>{{ $data->mentor_name }}</p> --}}

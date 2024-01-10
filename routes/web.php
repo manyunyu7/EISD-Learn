@@ -50,6 +50,7 @@
     Route::group(['middleware’' => ['auth']], function () {
 
         Route::post('/dfef', 'ProfileController@updatePasswordz');
+        Route::get('/class/class-list/view-class/{id}', 'DetailClassController@viewClass');
 
         Route::group(['middleware' => ['mentor']], function () {
             Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
