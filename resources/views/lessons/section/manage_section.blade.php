@@ -531,6 +531,7 @@
                                                 </td>
                                             </div>
                                         </tr>
+                                        
                                     @empty
                                         <div class="alert alert-danger">
                                             Kelas Ini Belum Memiliki Materi

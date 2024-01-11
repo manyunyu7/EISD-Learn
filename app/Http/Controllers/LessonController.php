@@ -321,6 +321,7 @@ class LessonController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
         ini_set('upload_max_filesize', '500M');
         ini_set('post_max_size', '500M');
         // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
@@ -350,7 +351,8 @@ class LessonController extends Controller
             'end_time' => $request->end_time,
             'can_be_accessed' => $request->access,
             'mentor_id' => $user_id,
-            'course_description' => $request->content
+            'course_description' => $request->content,
+            'text_descriptions' => $request->content
         ]);
 
         if ($inputDeyta) {

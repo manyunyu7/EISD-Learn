@@ -117,7 +117,7 @@ class CourseSectionController extends Controller
             ->join('users', 'exam_takers.user_id', '=', 'users.id')
             ->where('exam_takers.course_section_flag', $sectionId)
             ->groupBy('exam_takers.user_id', 'users.name')
-            ->get();
+            ->get(); 
 
 
 
