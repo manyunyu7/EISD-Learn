@@ -66,20 +66,31 @@
 
     <div class="row mt--2 border-primary col-md-12">
       <!-- Yellow Container -->
-      <div class="col-md-10 border-primary" >
+      <div class="col-md-10 " >
           <div class="col-md-12">
             <h1><b>{{ $data->course_title }}</b></h1>
             <div class="row mb-5">
-                <div class="col-md-6" >
-                    <p>
-                        <span class="badge dynamic-badge" style="border-radius: 0; font-size: 16px; font-weight: bold">{{ $data->course_category }}</span>
+                <div class="border-primary" style="width:100%; display: flex; align-items: center; flex-wrap: wrap;">
+
+                    <!-- Kategori -->
+                    <p class="col-md-6" style="margin: 0; margin-right: 10px;">
+                      <span class="badge dynamic-badge" style="border-radius: 0; font-size: 16px; font-weight: bold;">{{ $data->course_category }}</span>
                     </p>
+                  
+                    <!-- Mentor Label -->
+                    <div id="mentorLabel" class="mt--2 col-md-6" style="width: 100%; display: flex; align-items: center; 
+                      @media (max-width: 767px) { order: 2; }">
+                      
+                      <div style="padding: 10px; display: flex; align-items: center;">
+                        <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto; margin-top: 12px;" 
+                          src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}" alt="Clock Icon">
+                        <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top: 12px;">Modernland Training</p>
+                    </div>
+                    </div>
                 </div>
-                <div class="col-md-6" >
-                    <img style="width: 5%; height: auto; margin-left: 380px; margin-top:-3px" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
-                    <p style="margin-left: 420px;
-                    margin-top: -25px;">Modernland Training</p>
-                </div>
+                  
+                  
+                  
                 <div class="col-md-12 mt-3">
                   <a href="javascript:void();" data-switch="0">
                     <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
@@ -89,18 +100,38 @@
 
 
                   <h2 class="mt-3"><b>Deskripsi</b></h2>
-                  <p>{!! $data->course_description !!}</p>
+                  <p style="font-size: 16px;">{!! $data->course_description !!}</p>
 
+                  <div  style="display: flex; align-items: center;">
+                    <h2 style="margin: 0; margin-right: 10px;">
+                        <b>Silabus</b>
+                    </h2>
+                    
 
-                  <h2 class="mt-3"><b>Silabus</b></h2>
+                    <div class="mb-3" style="width: 630%;">
+                        <div style="padding: 10px; display: flex; align-items: center;">
+                            <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;margin-top:12px" src="{{ url('/Icons/Folder.svg') }}" alt="Clock Icon">
+                            <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:12px">{{ $jumlahSection }} Sections</p>
+                        </div>
+                    </div>
+                    <div class="mb-3" style="width: 100%;">
+                        <div style="padding: 10px; display: flex; align-items: center;">
+                            <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;margin-top:12px" src="{{ url('/Icons/Clock.svg') }}" alt="Clock Icon">
+                            <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:12px">30m</p>
+                        </div>
+                    </div>
+                  
+                </div>
+                  
+                  {{-- margin-left: 858px; --}}
                   @forelse ($dayta as $data)
                   <div style="border-collapse: collapse; width: 100%;">
                     <div style="border: 1px solid #ccc; padding: 10px; display: flex; align-items: center;">
-                      <p style="margin: 0; margin-right: 10px;">
+                      <p style="margin: 0; margin-right: 10px; font-size: 16px">
                         {{ $data->section_title }}
                       </p>
                       <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;" src="{{ url('/Icons/Clock.svg') }}" alt="Clock Icon">
-                      <p style="margin: 0; margin-top: -6px; margin-right: 8px; margin-top:1px">30m</p>
+                      <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:1px">30m</p>
                     </div>
                   </div>
                   @empty

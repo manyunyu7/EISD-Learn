@@ -34,7 +34,9 @@ class DetailClassController extends Controller
             ->orderBy('c.section_order', 'ASC')
             ->get();
         // return $dayta;
-        return view("lessons.view_class")->with(compact("data","dayta"));
+
+        $jumlahSection = $dayta->count();
+        return view("lessons.view_class")->with(compact("data","dayta", "jumlahSection"));
     }
     
 }
