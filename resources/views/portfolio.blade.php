@@ -3,14 +3,15 @@
 
 @section('head-section')
     @include('main.home._styling_home_student')
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> --}}
+
 @endsection
 
 
 @section('script')
     {{-- @include('main.home.script_student') --}}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     <script>
         const DISPLAY = true;
         const BORDER = true;
@@ -47,14 +48,72 @@
           }
         });
       </script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  
        
 @endsection
 
 @section('main')
 <br><br>
+    <div class="col-md-12" >
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
+                <li class="breadcrumb-item"><a href={{ url('/portfolios') }}>Class List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Detail Class</li>
+            </ol>
+        </nav>
+        <div class="row page-inner">
+            <div class="col-md-5 col-lg-3">
+              <p>Sort by:</p>
+                <div class="btn-group">
+                    <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px" id="sortBtn"><span>Latest</span></button>
+                    <button type="button" class="btn btnSort-custom dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+                        <span class="visually-hidden"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuReference" style="width: 100%;" id="referenceDropdown">
+                        <li><a class="dropdown-item text-left" href="#" onclick="changeText('Latest')">Latest</a></li>
+                        <li><a class="dropdown-item text-left" href="#" onclick="changeText('Recommend')">Recommend</a></li>
+                        <li><a class="dropdown-item text-left" href="#" onclick="changeText('Most Student')">Most Student</a></li>
+                    </ul>
+                </div>
+                
+                <script>
+                    function changeText(selectedText) {
+                        document.getElementById('sortBtn').innerHTML = '<span>' + selectedText + '</span>';
+                    }
+                </script>
+                
+            </div>
+            <div class="col-md-5 col-lg-3 ">
+              <p>Category:</p>
+              <div class="btn-group">
+                <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px" id="categoryBtn"><span>All Category</span></button>
+                <button type="button" class="btn btnSort-custom dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+                    <span class="visually-hidden"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuReference" style="width: 100%;" id="referenceDropdown">
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeText('Management Trainee')">Management Trainee</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeText('Digital Management')">Digital Management</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeText('General')">General</a></li>
+                </ul>
+            </div>
+            
+            <script>
+                function changeText(selectedText) {
+                    document.getElementById('categoryBtn').innerHTML = '<span>' + selectedText + '</span>';
+                }
+            </script>
+            </div>
+            <div class="col-md-2 col-lg-6">
+                
+            </div>
+        </div>
+    </div>
+    
     <div class="page-inner mt--5">
-        <div class="row mt--2 border-primary">
-
+        <div class="row mt-3 border-primary">
             {{-- RECOMMENDATION --}}
             <div class="col-md-12">
                 <h2><b>Recommendation</b></h2>

@@ -150,6 +150,7 @@
         color: white;
         border-radius: 10px !important;
     }
+    
     .btn-custom span{
         font-weight: bold;
         font-size: 16px;
@@ -174,7 +175,7 @@
     }
     .toga-container p{
         width: 100%;
-        margin-right: 150px;
+        /* margin-right: 150px; */
         margin-top: 15px;
         font-size: 16px;
         color: #8C94A3;
@@ -196,6 +197,13 @@
         width: 100%;
         height: auto;
         /* Gaya lainnya */
+    }
+
+
+    .btnSort-custom{
+        background-color: #E9EAF0!important;
+        color: rgb(40, 40, 40);
+        border-radius: 0px !important;
     }
 
 </style>
