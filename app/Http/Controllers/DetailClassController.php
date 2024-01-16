@@ -33,7 +33,6 @@ class DetailClassController extends Controller
             ->where('a.id', $id)
             ->orderBy('c.section_order', 'ASC')
             ->get();
-        // return $dayta;
 
         $jumlahSection = $dayta->count();
         return view("lessons.view_class")->with(compact("data","dayta", "jumlahSection"));

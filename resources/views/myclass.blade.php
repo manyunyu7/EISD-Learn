@@ -64,11 +64,9 @@
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Class List</li>
+                <li class="breadcrumb-item active" aria-current="page">My Class</li>
             </ol>
         </nav>
-
-        
     </div>
     
     <div class="row mt--2 border-primary col-md-12">
@@ -126,7 +124,7 @@
         <div class="row mt-3 border-primary col-md-12">
             {{-- RECOMMENDATION PAGES--}}
             <div class="col-md-12">
-                <h2><b>Recommendation</b></h2>
+                <h2><b>My Class</b></h2>
             </div>
             {{-- DAFTAR KELASS --}}
             <div class="tab-content mt-1" id="pills-without-border-tabContent">
@@ -135,7 +133,7 @@
                     <div class="container-myClass">
                         <div class="card-body">
                             <div class="row row-eq-height">
-                                @forelse ($classes as $data)
+                                @forelse ($myClasses as $data)
                                 <div class="col-lg-3 col-sm-6 my-2">
                                     <div class="card recommendationCard" style="background-color: white !important">
                                         <a href="javascript:void();" data-switch="0">
@@ -181,20 +179,19 @@
                                                     </div>
                                                     <div class="modal-body center" style="justify-content: center">
                                                         <p>Untuk masuk ke dalam kelas, silakan masukan PIN terlebih dahulu</p>
-                                                      <form method="POST" action="{{ url('/proses-input') }}">
+                                                      <form>
                                                         <div class="mb-3">
-                                                          <input name="content" style="border: 1px solid #ced4da;" class="form-control" type="text" id="pin" required placeholder="Masukan PIN disini">
+                                                          <input style="border: 1px solid #ced4da;" class="form-control" id="message-text" placeholder="Masukan PIN disini">
                                                         </div>
                                                       </form>
                                                     </div>
                                                     <div class="modal-footer">
                                                       <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                                                      <button type="submit" class="btn " style="background-color: #208DBB"><span style="color: white">Submit</span></button>
+                                                      <button type="button" class="btn " style="background-color: #208DBB"><span style="color: white">Submit</span></button>
                                                     </div>
                                                   </div>
                                                 </div>
                                             </div>
-
                                               
 
 
@@ -304,7 +301,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row row-eq-height">
-                                @forelse ($classes as $data)
+                                @forelse ($myClasses as $data)
                                     <div class="col-lg-4 col-sm-6 my-2">
                                         <div class="album-poster-parent"
                                                 style="background-color: white !important">

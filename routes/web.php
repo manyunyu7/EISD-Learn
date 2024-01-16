@@ -21,7 +21,7 @@
     Route::get('/classes', 'LandingController@classes');
     Route::get('/blogs', 'LandingController@blogs');
     Route::get('/home', 'HomeController@index');
-    Route::get('/portfolios', 'LandingController@portfolios');
+
     Route::view('forgotpass', 'auth.forgotpass');
 
     Route::get('/profile', 'ProfileController@index')->middleware('auth');
@@ -47,11 +47,20 @@
     });
 
 
+    // ROUTING SETELAH LOGIN
     Route::group(['middleware’' => ['auth']], function () {
 
         Route::post('/dfef', 'ProfileController@updatePasswordz');
         Route::get('/class/class-list/view-class/{id}', 'DetailClassController@viewClass');
+        Route::get('/class-list', 'ClassListController@classList');
+        Route::get('/my-class', 'MyClassController@myClass');
+        // Route::get('/class/class-list/', 'CountingController@countStudents');
+        // In your web.php or routes file
+        Route::post('/register/class/{class_id}', 'YourController@registerClass')->name('register.class');
+        Route::post('/input-data', 'ClassListController@input_data');
 
+
+        // ROUTING KHUSUS MENTOR
         Route::group(['middleware' => ['mentor']], function () {
             Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
             Route::get('/lesson/store', 'LessonController@add');
@@ -119,11 +128,12 @@
                 Route::any('{id}/mquestions', 'ExamTakerController@fetchQuestions');
                 Route::any('save-answers', 'ExamTakerController@saveAnswers');
             });
-
+  
 
             Route::any('{id}/mquestions', 'MentorExamSessionController@fetchQuestions');
         });
 
+        // ROUTING KHUSUS STUDENTS
         Route::group(['middleware' => ['student']], function () {
 
             Route::get('/portfolio/see/{portfolio}/', 'PortfolioController@show')->name('portfolio.show');
