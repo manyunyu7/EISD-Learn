@@ -19,7 +19,6 @@ class DetailClassController extends Controller
                 'a.mentor_id',
                 'b.name as mentor_name',
                 'c.id as section_id',
-                'c.quiz_session_id',
                 'c.section_order',
                 'c.section_title',
                 'c.section_content',
@@ -34,6 +33,7 @@ class DetailClassController extends Controller
             ->orderBy('c.section_order', 'ASC')
             ->get();
 
+        // return $dayta;
         $jumlahSection = $dayta->count();
         return view("lessons.view_class")->with(compact("data","dayta", "jumlahSection"));
     }

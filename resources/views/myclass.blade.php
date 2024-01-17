@@ -150,53 +150,10 @@
                                             <br>
                                         </div>
                                         <hr>
-                                        <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
-                                            <img style="width: 12%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
-                                            <p>{{ $data->mentor_name }}</p>
-                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                                                <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-user animated fadeIn">
-                                                <div class="dropdown-user-scroll scrollbar-outer">
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Join Class</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
-                                                            <span class="link-collapse">View Class</span>
-                                                        </a>
-                                                    </li>
-                                                </div>
-                                            </ul>
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                  <div class="modal-content">
-                                                    <div class="modal-header">
-                                                      <h1 class="modal-title" id="exampleModalLabel"><b>Masukan PIN</b></h1>
-                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                      </button>
-                                                    </div>
-                                                    <div class="modal-body center" style="justify-content: center">
-                                                        <p>Untuk masuk ke dalam kelas, silakan masukan PIN terlebih dahulu</p>
-                                                      <form>
-                                                        <div class="mb-3">
-                                                          <input style="border: 1px solid #ced4da;" class="form-control" id="message-text" placeholder="Masukan PIN disini">
-                                                        </div>
-                                                      </form>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                                                      <button type="button" class="btn " style="background-color: #208DBB"><span style="color: white">Submit</span></button>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                            </div>
-                                              
-
-
-                                            
-                                        </li>
+                                        <div class="toga-container col-12">
+                                            <button type="button" class="btn btn-custom col-3"><span>Check</span></button>
+                                            <p id="progressCourse" class="col-8">100% Completed</p>
+                                        </div>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
                                             <img style="width: 6%; height: auto; margin-top: 12px" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
@@ -384,6 +341,29 @@
                         error ') }}', ' {{ Session::get('error') }}');
 
                 </script>
+            
+            <!-- Add this script at the end of your view file -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Check for the presence of the success message
+                    @if(session('success'))
+                        // Display an alert with the success message
+                        alert("{{ session('success') }}");
+                    @endif
+                });
+            </script>
+            <!-- Add this script at the end of your view file -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Check for the presence of the error message
+                    @if(session('error'))
+                        // Display an alert with the error message
+                        alert("{{ session('error') }}");
+                    @endif
+                });
+            </script> 
+
+
 
     @endif
 

@@ -161,7 +161,7 @@
                                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                                 <div class="dropdown-user-scroll scrollbar-outer">
                                                     <li>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Join Class</a>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $data->id }}" data-bs-whatever="@mdo">Join Class</a>
                                                         <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
                                                             <span class="link-collapse">View Class</span>
@@ -170,35 +170,35 @@
                                                 </div>
                                             </ul>
                                             <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                  <div class="modal-content">
-                                                    <div class="modal-header">
-                                                      <h1 class="modal-title" id="exampleModalLabel"><b>Masukan PIN</b></h1>
-                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                      </button>
-                                                    </div>
-                                                    <div class="modal-body center" style="justify-content: center">
-                                                        <p>Untuk masuk ke dalam kelas, silakan masukan PIN terlebih dahulu</p>
-                                                      <form method="POST" action="{{ url('/proses-input') }}">
-                                                        <div class="mb-3">
-                                                          <input name="content" style="border: 1px solid #ced4da;" class="form-control" type="text" id="pin" required placeholder="Masukan PIN disini">
+                                            <form method="POST" action="{{ url('/input-pin') }}">
+                                                {{-- cek Token CSRF --}}
+                                                @csrf 
+                                                <div class="modal fade" id="exampleModal{{ $data->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                        <h1 class="modal-title" id="exampleModalLabel"><b>Masukan PIN</b></h1>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
                                                         </div>
-                                                      </form>
+                                                        <div class="modal-body center" style="justify-content: center">
+                                                            <p>Untuk masuk ke dalam kelas, silakan masukan PIN terlebih dahulu</p>
+                                                            <div class="mb-3">
+                                                                <!-- Hidden Input -->
+                                                                <input type="hidden" id="hiddenField" name="idClass" value='{{ $data->id }}'>
+                                                                <!-- PIN Input -->
+                                                                <input name="pin" style="border: 1px solid #ced4da;" class="form-control" type="text" id="pin" required placeholder="Masukan PIN disini">
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn " style="background-color: #208DBB"><span style="color: white">Submit</span></button>
+                                                        </div>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                                                      <button type="submit" class="btn " style="background-color: #208DBB"><span style="color: white">Submit</span></button>
                                                     </div>
-                                                  </div>
                                                 </div>
-                                            </div>
-
-                                              
-
-
-                                            
+                                            </form>
                                         </li>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">

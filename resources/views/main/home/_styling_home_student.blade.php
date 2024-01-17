@@ -146,6 +146,7 @@
     .btn-custom {
         width: 20%; 
         margin: 10px;
+        padding: 0px 10px;
         background-color: #208DBB;
         color: white;
         border-radius: 10px !important;
@@ -154,15 +155,17 @@
     .btn-custom span{
         font-weight: bold;
         font-size: 16px;
+        text-align: justify;
         margin-left: -10px;
 
     }
     #progressCourse {
         width: 100%;
-        margin-right: 150px;
+        /* margin-right: 150px; */
         margin-top: 15px;
-        font-size: 14px;
+        font-size: 17px;
         color: #23BD33;
+        text-align: end;
     }
 
 

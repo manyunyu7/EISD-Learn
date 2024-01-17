@@ -230,45 +230,18 @@
             </div>
             
 
-            {{-- MY CLASS --}}
+            {{-- MY CLASS--}}
             <div class="col-md-12">
                 <h2><b>My Class</b></h2>
             </div>
             {{-- DAFTAR KELASS --}}
             <div class="tab-content mt-1" id="pills-without-border-tabContent">
                 <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
-                     aria-labelledby="pills-home-tab-nobd">
+                        aria-labelledby="pills-home-tab-nobd">
                     <div class="container-myClass">
                         <div class="card-body">
                             <div class="row row-eq-height">
-                                @forelse ($classRegistered as $data)
-                                {{-- <div class="col-lg-12 col-sm-6 my-2">
-                                    <div class="card myclassCard" style="background-color: white !important">
-                                        <a href="javascript:void();" data-switch="0">
-                                            <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
-                                                 src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                                                 alt="La Noyee">
-                                        </a>
-                                        <br>
-                                        <p>
-                                            <span class="badge badge-danger">{{ $data->course_category }}</span>
-                                        </p>
-                                        <div class="course-info">
-                                            <h4>{{ $data->course_title }}</h4>
-                                            <br>
-                                        </div>
-                                        <hr>
-                                        <div class="button-container">
-                                            <button type="button" class="btn btn-custom"><span>Check</span></button>
-                                            <p>100% Completed</p>
-                                        </div>
-                                        <hr>
-                                        <div style="display: flex; justify-content: center; align-items: center;">
-                                            <img style="width: 5%; height: auto;" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
-                                            <p style="font-size: 15px; margin-left: 10px; margin-top:18px"><b> 9 </b> students</p>
-                                        </div>
-                                    </div> 
-                                </div> --}}
+                                @forelse ($myClasses as $data)
                                 <div class="col-lg-3 col-sm-6 my-2">
                                     <div class="card recommendationCard" style="background-color: white !important">
                                         <a href="javascript:void();" data-switch="0">
@@ -285,17 +258,14 @@
                                             <br>
                                         </div>
                                         <hr>
-                                        <div class="toga-container">
-                                            <button type="button" class="btn btn-custom"><span>Check</span></button>
-                                            <p id="progressCourse">100% Completed</p>
-                                            {{-- <img style="width: 12%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
-                                            <p>Modernland Training</p>
-                                            <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt=""> --}}
+                                        <div class="toga-container col-12">
+                                            <button type="button" class="btn btn-custom col-3"><span>Check</span></button>
+                                            <p id="progressCourse" class="col-8">100% Completed</p>
                                         </div>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
                                             <img style="width: 6%; height: auto; margin-top: 12px" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
-                                            <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> 25 </b> students</p>
+                                            <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> {{ $data->num_students_registered }} </b> students</p>
                                         </div>
                                     </div> 
                                 </div>
@@ -365,7 +335,7 @@
                                 </script>
                                 
 
-                                    {{-- <p>{{ $data->mentor_name }}</p> --}}
+                                {{-- <p>{{ $data->mentor_name }}</p> --}}
                                 @empty
                                     <div class="w-100 d-flex justify-content-center">
                                         <script
@@ -385,7 +355,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="pills-contact-nobd" role="tabpanel"
-                     aria-labelledby="pills-contact-tab-nobd">
+                        aria-labelledby="pills-contact-tab-nobd">
                     <div class="">
                         <div class="">
                             <div class="card-head-row card-tools-still-right">
@@ -396,16 +366,16 @@
                         </div>
                         <div class="card-body">
                             <div class="row row-eq-height">
-                                @forelse ($classes as $data)
+                                @forelse ($myClasses as $data)
                                     <div class="col-lg-4 col-sm-6 my-2">
                                         <div class="album-poster-parent"
-                                             style="background-color: white !important">
+                                                style="background-color: white !important">
                                             <a href="javascript:void();" class="album-poster"
-                                               data-switch="0">
+                                                data-switch="0">
                                                 <img class="fufufu"
-                                                     onerror="this.onerror=null; this.src='./assets/album/n5'"
-                                                     src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                                                     alt="La Noyee">
+                                                        onerror="this.onerror=null; this.src='./assets/album/n5'"
+                                                        src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                                                        alt="La Noyee">
                                             </a>
                                             <br>
                                             <div class="course-info">
@@ -424,7 +394,7 @@
                                                 </div>
                                                 <div class="info-post ml-2">
                                                     <p style="margin-bottom: 1px !important"
-                                                       class="username">
+                                                        class="username">
                                                         {{ $data->mentor_name }}</p>
                                                     {{ $data->created_at }}
                                                 </div>
@@ -439,10 +409,10 @@
                                                     </button>
                                                 </a>
                                                 <form action="{{ route('course.register') }}" method="POST"
-                                                      enctype="multipart/form-data">
+                                                        enctype="multipart/form-data">
                                                     @csrf
                                                     <input class="d-none" type="text" name="course_id"
-                                                           value="{{ $data->id }}" id="">
+                                                            value="{{ $data->id }}" id="">
                                                     <button type="submit"
                                                             class="btn btn-outline-primary btn-xs">Daftar
                                                         Kelas
@@ -469,7 +439,7 @@
 
             
             {{-- LEADERBOARD --}}
-            <div class="col-md-12 col-12">
+            {{-- <div class="col-md-12 col-12">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Leaderboard Score Management Trainee</div>
@@ -497,8 +467,6 @@
                                             <div class="user-profile text-center">
                                                 <div class="name">
                                                     <strong>#{{$index+1}}</strong> {{$student->student_name}}</div>
-                                                {{--                                    <div class="job">Total Skor </div>--}}
-                                                {{--                                    <div class="desc">A man who hates loneliness</div>--}}
                                                 <div class="social-media d-none">
                                                     <a class="btn btn-info btn-twitter btn-sm btn-link" href="#">
                                                         <span class="btn-label just-icon"><i
@@ -525,14 +493,6 @@
                                                     <div class="number">{{$student->total_score}}</div>
                                                     <div class="title">Total Point</div>
                                                 </div>
-                                                {{--                                                <div class="col">--}}
-                                                {{--                                                    <div class="number">{{$student->highest_score}}</div>--}}
-                                                {{--                                                    <div class="title">Nilai Tertinggi</div>--}}
-                                                {{--                                                </div>--}}
-                                                {{--                                                <div class="col">--}}
-                                                {{--                                                    <div class="number">{{$student->lowest_score}}</div>--}}
-                                                {{--                                                    <div class="title">Nilai Terendah</div>--}}
-                                                {{--                                                </div>--}}
                                             </div>
                                         </div>
                                     </div>
@@ -574,7 +534,6 @@
                                 <th>Rank</th>
                                 <th>Name</th>
                                 <th>Total Score</th>
-                                {{--                                <th>Nilai Rata-Rata</th>--}}
                             </tr>
                             </thead>
                             <tbody class="scrollable-table-body">
@@ -597,7 +556,6 @@
                                         @endif
                                     </td>
                                     <td>{{ $student->total_score }}</td>
-                                    {{--                                    <td>{{ $student->average_score }}</td>--}}
                                 </tr>
                             @endforeach
                             </tbody>
@@ -605,10 +563,10 @@
 
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- SKORING --}}
-            <div class="col-md-6 col-12">
+            {{-- <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Skor Per Modul</div>
@@ -640,7 +598,7 @@
 
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
 
             @if (session()->has('success'))

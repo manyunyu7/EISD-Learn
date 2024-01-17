@@ -55,9 +55,7 @@
         Route::get('/class-list', 'ClassListController@classList');
         Route::get('/my-class', 'MyClassController@myClass');
         // Route::get('/class/class-list/', 'CountingController@countStudents');
-        // In your web.php or routes file
-        Route::post('/register/class/{class_id}', 'YourController@registerClass')->name('register.class');
-        Route::post('/input-data', 'ClassListController@input_data');
+        Route::post('/input-pin', 'ClassListController@validatePIN');
 
 
         // ROUTING KHUSUS MENTOR

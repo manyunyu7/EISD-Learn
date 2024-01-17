@@ -49,6 +49,7 @@ class LoginController extends Controller
      */
     protected function validateLogin(Request $request)
     {
+         // Melakukan validasi data permintaan menggunakan validasi bawaan Laravel
         $this->validate($request, [
             $this->username() => 'required',
             'password' => 'required|string',
