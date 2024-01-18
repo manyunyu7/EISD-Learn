@@ -1,4 +1,4 @@
-@extends('main.template')
+@extends('main.tem plate')
 @section('main')
 
     <div class="container-fluid">
@@ -21,68 +21,90 @@
                 </div>
             @endif
 
-            <h4 class="page-title">User Profile</h4>
+            <h4 class="page-title">Akun Saya</h4>
             <div class="row">
-                <div class="col-md-8">
-                    <div class="card card-with-nav">
-                        <div class="card-header">
-                            <div class="row row-nav-line">
-                                <ul class="nav nav-tabs nav-line nav-color-secondary w-100 pl-3" role="tablist">
-                                    <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#home"
-                                                            role="tab" aria-selected="true">Profile</a></li>
-                                </ul>
+                <div class="col-md-8" >
+                    <div class="">
+                        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Nama Lengkap</label>
+                                        <input id="inputTitle" type="text"
+                                               class="form-control @error('name') is-invalid has-error @enderror"
+                                               name="name" value="{{ old('name', Auth::user()->name) }}"
+                                               placeholder="Nama Anda" readonly>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Nama Belakang</label>
+                                        <input type="text" class="form-control-file form-control" name="imagez"
+                                               id="" placeholder="" aria-describedby="fileHelpId" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input type="text"
+                                               class="form-control @error('username') is-invalid has-error @enderror"
+                                               name="username" placeholder="Username"
+                                               value="{{ old('email', Auth::user()->username) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email"
+                                               class="form-control @error('email') is-invalid has-error @enderror"
+                                               name="email" placeholder="Email"
+                                               value="{{ old('email', Auth::user()->email) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Jabatan</label>
+                                        <input type="text"
+                                               class="form-control @error('email') is-invalid has-error @enderror"
+                                               name="jabatan" placeholder="Jabatan"
+                                               value="{{ old('jabatan', Auth::user()->jabatan) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Department</label>
+                                        <input type="text"
+                                               class="form-control @error('email') is-invalid has-error @enderror"
+                                               name="department" placeholder="Department"
+                                               value="{{ old('department', Auth::user()->department) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Unit Business</label>
+                                        <input type="text"
+                                               class="form-control @error('email') is-invalid has-error @enderror"
+                                               name="unit_business" placeholder="Unit Business"
+                                               value="{{ old('location', Auth::user()->location) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>No Telepon</label>
+                                        <input type="text"
+                                               class="form-control  @error('phone') is-invalid has-error @enderror"
+                                               value="{{ old('phone', Auth::user()->contact) }}" name="phone"
+                                               placeholder="Phone" readonly>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-                                @csrf
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Name</label>
-                                            <input id="inputTitle" type="text"
-                                                   class="form-control @error('name') is-invalid has-error @enderror"
-                                                   name="name" value="{{ old('name', Auth::user()->name) }}"
-                                                   placeholder="Nama Anda">
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Ganti Foto</label>
-                                            <input type="file" class="form-control-file form-control" name="imagez"
-                                                   id="" placeholder="" aria-describedby="fileHelpId">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Email</label>
-                                            <input type="email"
-                                                   class="form-control @error('email') is-invalid has-error @enderror"
-                                                   name="email" placeholder="Email"
-                                                   value="{{ old('email', Auth::user()->email) }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-12">
-
-                                        <div class="form-group">
-                                            <label>Phone</label>
-                                            <input type="text"
-                                                   class="form-control  @error('phone') is-invalid has-error @enderror"
-                                                   value="{{ old('phone', Auth::user()->contact) }}" name="phone"
-                                                   placeholder="Phone">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-right mt-3 mb-3">
-                                    <button class="btn btn-success">Save</button>
-                                    <button class="btn btn-danger">Reset</button>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="text-right mt-3 mb-3">
+                                <button class="btn btn-success">Save Changes</button>
+                                {{-- <button class="btn btn-danger">Reset</button> --}}
+                            </div>
+                        </form>
                     </div>
                     <div class="card card-with-nav">
                         <div class="card-header">
@@ -118,6 +140,15 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="col-md-4" style="background-color: salmon">
+                    <div class="card mt-5">
+                        <div class="card-body">
+                            <div class="text-center">
+                                <img src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}" onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; class="rounded" alt="...">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {{-- <div class="col-md-4">
                     <div class="card card-profile">

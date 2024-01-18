@@ -72,20 +72,18 @@ class ProfileController extends Controller
             "Update Foto Profile","Profile"
         );
 
-        $this->validate($request, [
-            'imagez' => 'image|mimes:png,jpg,jpeg',
-            'name' => 'required',
-            'phone' => 'required',
-            'phone' => 'required',
-//            'jobs'   => 'required',
-//            'motto'   => 'required',
-            'email' => 'required',
-        ]);
+        // $this->validate($request, [
+        //     'imagez' => 'image|mimes:png,jpg,jpeg',
+        //     'name' => 'required',
+        //     'phone' => 'required',
+        //     'phone' => 'required',
+        //    'jobs'   => 'required',
+        //    'motto'   => 'required',
+        //     'email' => 'required',
+        // ]);
 
         $user = User::findOrFail(Auth::user()->id);
-        // if ($user) {
-        //     abort(401,$user);
-        // }
+        // return $user;
 
         if ($request->file('imagez') == "") {
             $user->update([
@@ -111,7 +109,9 @@ class ProfileController extends Controller
                 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
-                'jobs' => $request->jobs,
+                'jabatan' => $request->jabatan,
+                'department' => $request->department,
+                'location' => $request->unit_business,
                 'email' => $request->email,
             ]);
         }
