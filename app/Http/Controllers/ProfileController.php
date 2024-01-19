@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
-
+use DB;
 
 class ProfileController extends Controller
 {
@@ -85,7 +85,7 @@ class ProfileController extends Controller
         $user = User::findOrFail(Auth::user()->id);
         // return $user;
 
-        if ($request->file('imagez') == "") {
+        if ($request->file('profile_image') == "") {
             $user->update([
                 'name' => $request->name,
                 'contact' => $request->phone,
@@ -94,7 +94,7 @@ class ProfileController extends Controller
                 'jobs' => "",
                 'email' => $request->email,
             ]);
-        } else if ($request->file('imagez') != "") {
+        } else if ($request->file('profile_image') != "") {
             // Storage::url('public/profile/') . Auth::user()->profile_url;
             //hapus old image
             if ($user->profile_url == "error.png") {
@@ -102,7 +102,7 @@ class ProfileController extends Controller
                 Storage::disk('local')->delete('public/profile/' . $user->profile_url);
             }
             //upload new image
-            $image = $request->file('imagez');
+            $image = $request->file('profile_image');
             $image->storeAs('public/profile/', $image->hashName());
             $user->update([
                 'profile_url' => $image->hashName(),
@@ -115,6 +115,18 @@ class ProfileController extends Controller
                 'email' => $request->email,
             ]);
         }
+
+
+        $userID = Auth::id();
+        $profilURL = DB::select("SELECT
+                    profile_url
+                    FROM
+                        users
+                    WHERE
+                        id = $userID
+                    ");
+        $profilURL->storeAs('public/profile/', $profilURL->hashName());
+        
         if ($user) {
             //redirect dengan pesan sukses
             return redirect('profile')->with(['success' => 'Data Berhasil Diupdate!']);
@@ -122,5 +134,25 @@ class ProfileController extends Controller
             //redirect dengan pesan error
             return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
         }
+
+       
     }
+
+
+    // public function profilPict()
+    // {
+    //     $userID = Auth::id();
+    //     $profilURL = DB::select("SELECT
+    //                 profile_url
+    //                 FROM
+    //                     users
+    //                 WHERE
+    //                     id = $userID
+    //                 ");
+    //     return $profilURL;
+    //     return view('profile')->with(compact('profilURL'));
+    // }
+
+    
+
 }
