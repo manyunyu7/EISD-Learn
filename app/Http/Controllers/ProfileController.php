@@ -60,6 +60,18 @@ class ProfileController extends Controller
         return password_verify($plainPassword, $hashedPassword);
     }
 
+    // Contoh di dalam controller
+    public function showFullName()
+    {
+        $fullName = Auth::user()->name;
+        $nameParts = explode(' ', $fullName);
+        $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
+        $end_ofName = implode(' ', array_slice($nameParts, 2));
+
+        return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
+    }
+
+
 
     /**
      * update
@@ -83,11 +95,13 @@ class ProfileController extends Controller
         // ]);
 
         $user = User::findOrFail(Auth::user()->id);
-        // return $user;
-
+        $first_name = $request->input('first_name');
+        $end_name = $request->input('end_name');
+        $complete_name = $first_name.' '.$end_name;
+        
         if ($request->file('profile_image') == "") {
             $user->update([
-                'name' => $request->name,
+                'name' => $complete_name,
                 'contact' => $request->phone,
                 'institute' => "",
                 'motto' => "",
@@ -109,23 +123,12 @@ class ProfileController extends Controller
                 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
-                'jabatan' => $request->jabatan,
-                'department' => $request->department,
-                'location' => $request->unit_business,
+                'jobs' => $request->jobs,
                 'email' => $request->email,
             ]);
         }
 
-
-        $userID = Auth::id();
-        $profilURL = DB::select("SELECT
-                    profile_url
-                    FROM
-                        users
-                    WHERE
-                        id = $userID
-                    ");
-        $profilURL->storeAs('public/profile/', $profilURL->hashName());
+       
         
         if ($user) {
             //redirect dengan pesan sukses

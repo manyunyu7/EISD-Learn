@@ -42,8 +42,8 @@
                                                 <div class="form-group">
                                                     <label>Nama Lengkap</label>
                                                     <input id="inputTitle" type="text"
-                                                        class="form-control @error('name') is-invalid has-error @enderror"
-                                                        name="name" value="{{ old('name', Auth::user()->name) }}"
+                                                        class="form-control @error('first_name') is-invalid has-error @enderror"
+                                                        name="first_name" value="{{ $twoWords_ofName }}"
                                                         placeholder="Nama Anda" readonly>
             
                                                 </div>
@@ -51,8 +51,9 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Nama Belakang</label>
-                                                    <input type="text" class="form-control-file form-control" name="imagez"
-                                                        id="" placeholder="" aria-describedby="fileHelpId" readonly>
+                                                    <input type="text" class="form-control-file form-control" 
+                                                           name="end_name" value="{{ $end_ofName }}"
+                                                           id="" placeholder="" aria-describedby="fileHelpId" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -122,37 +123,15 @@
                                             <div class="card">
                                                 <img id="profileImage" 
                                                      src="{{ Storage::url('public/profile/').Auth::user()->profile_url }}" 
-                                                     {{-- onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}';"  --}}
+                                                     onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
                                                      class="rounded" 
                                                      alt="...">
                                             </div>
                                             <div class="input-group mb-3">
                                                 <input type="file" name="profile_image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                             </div>
-                                            <p style="color: red">{{ Auth::user()->profile_url }}</p>
+                                            {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
                                             <small width="100%">Image size should be under 1 MB and image ratio needs to be 1:1</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="card card-profile">
-                                    <div class="card-header" style="background-image: url('../assets/img/blogpost.jpg')">
-                                        <div class="profile-picture">
-                                            <div class="avatar avatar-xl">
-                                                <img src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
-                                                    alt="..." class="avatar-img rounded-circle">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="user-profile text-center">
-                                            <div class="name">{{ Auth::user()->name }}</div>
-                                            <div class="job">{{ Auth::user()->jabatan }}</div>
-                                            <div class="view-profile d-none">
-                                                <a href="#" class="btn btn-secondary btn-block">Simpan Foto Profile</a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -188,7 +167,114 @@
                             
                             <div class="col-md-12" >
                                 <div class="text-right mt-3 mb-3">
-                                    <button class="btn btn-success">Save Changes</button>
+                                    <button class="btn btn-custom">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <h4 class="page-title">Media Sosial</h4>
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                        <div class="row">
+                            {{-- SECTION PROFILE FORM --}}
+                            <div class="col-md-12" >
+                                <div class="">
+                                        @csrf
+                                        <div class="row mt-3">
+                                            <div class="col-md-12 ">
+                                                <div class="form-group">
+                                                    <label>Personal Website</label>
+                                                    <input type="text"
+                                                        class="form-control @error('website') is-invalid has-error @enderror"
+                                                        name="website" placeholder="Personal website or portfolio URL"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Facebook</label>
+                                                    <input type="text"
+                                                        class="form-control @error('facebook') is-invalid has-error @enderror"
+                                                        name="facebook" placeholder="Username"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Instagram</label> 
+                                                    <input type="text"
+                                                        class="form-control @error('email') is-invalid has-error @enderror"
+                                                        name="jabatan" placeholder="Username"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>LinkedIn</label>
+                                                    <input type="text"
+                                                        class="form-control @error('linkedin') is-invalid has-error @enderror"
+                                                        name="linkedin" placeholder="Username"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Twitter</label>
+                                                    <input type="text"
+                                                        class="form-control  @error('twitter') is-invalid has-error @enderror"
+                                                        name="twitter" placeholder="Username"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Whatsapp</label>
+                                                    <input type="text"
+                                                        class="form-control  @error('phone') is-invalid has-error @enderror"
+                                                        name="phone" placeholder="Phone Number"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Youtube</label>
+                                                    <input type="text"
+                                                        class="form-control @error('youtube') is-invalid has-error @enderror"
+                                                        name="youtube" placeholder="Username"
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                
+                                
+                            </div>
+                            <div class="col-md-12" >
+                                <div class="text-right mt-3 mb-3">
+                                    <button class="btn btn-custom">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <h4 class="page-title">Ubah Password</h4>
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                        <div class="row">
+                            @csrf
+                            <div class="col-md-2" >
+                                <div class="mt-3 mb-3">
+                                    <button class="btn btn-custom">Change Password</button>
                                 </div>
                             </div>
                         </div>

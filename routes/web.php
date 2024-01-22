@@ -25,6 +25,7 @@
     Route::view('forgotpass', 'auth.forgotpass');
 
     Route::get('/profile', 'ProfileController@index')->middleware('auth');
+    Route::get('/profile', 'ProfileController@showFullName')->middleware('auth');
     Route::post('/profile', 'ProfileController@update')->name('profile.update')->middleware('auth');
     // Route::post('/profile', 'ProfileController@updateProfile')->name('profile.updateProfile')->middleware('auth');
 

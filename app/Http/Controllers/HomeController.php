@@ -156,6 +156,7 @@ class HomeController extends Controller
 
 
 
+
             $userID = Auth::id();
             $myClasses = DB::select("SELECT
             a.*, 

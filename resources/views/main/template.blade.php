@@ -62,7 +62,8 @@
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
     <!---Select2 To MultiSelect -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .loader-overlay {
             position: fixed;
@@ -175,6 +176,21 @@
                 transform: rotate(360deg);
             }
         }
+
+
+        .btn-custom {
+            width: auto; 
+            height: 45px;
+            margin: 10px;
+            padding: 0px 10px;
+            background-color: #208DBB;
+            color: white;
+            border-radius: 10px !important;
+        }
+
+
+        /* STYLE CSS FOR SOCMED SECTION AT PROFILE PAGES */
+       
     </style>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
