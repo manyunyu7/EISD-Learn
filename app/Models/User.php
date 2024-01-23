@@ -27,6 +27,13 @@ class User extends Authenticatable
         'institute',
         'jobs',
         'motto',
+        'url_personal_website',
+        'url_facebook',
+        'url_instagram',
+        'url_linkedin',
+        'url_twitter',
+        'url_whatsapp',
+        'url_youtube',
     ];
 
     /**

@@ -179,7 +179,7 @@
             <h4 class="page-title">Media Sosial</h4>
             <div class="card">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('profile.updateSocMed') }}" enctype="multipart/form-data">
                         <div class="row">
                             {{-- SECTION PROFILE FORM --}}
                             <div class="col-md-12" >
@@ -191,7 +191,7 @@
                                                     <label>Personal Website</label>
                                                     <input type="text"
                                                         class="form-control @error('website') is-invalid has-error @enderror"
-                                                        name="website" placeholder="Personal website or portfolio URL"
+                                                        name="website" value="{{ old('url_personal_website', Auth::user()->url_personal_website) }}" placeholder="Personal website or portfolio URL"
                                                     >
                                                 </div>
                                             </div>
@@ -201,6 +201,7 @@
                                                     <input type="text"
                                                         class="form-control @error('facebook') is-invalid has-error @enderror"
                                                         name="facebook" placeholder="Username"
+                                                        value="{{ old('url_facebook', Auth::user()->url_facebook) }}"
                                                     >
                                                 </div>
                                             </div>
@@ -209,7 +210,8 @@
                                                     <label>Instagram</label> 
                                                     <input type="text"
                                                         class="form-control @error('email') is-invalid has-error @enderror"
-                                                        name="jabatan" placeholder="Username"
+                                                        name="instagram" placeholder="Username"
+                                                        value="{{ old('url_instagram', Auth::user()->url_instagram) }}"
                                                     >
                                                 </div>
                                             </div>
@@ -219,6 +221,7 @@
                                                     <input type="text"
                                                         class="form-control @error('linkedin') is-invalid has-error @enderror"
                                                         name="linkedin" placeholder="Username"
+                                                        value="{{ old('url_linkedin', Auth::user()->url_linkedin) }}"
                                                     >
                                                 </div>
                                             </div>
@@ -228,6 +231,7 @@
                                                     <input type="text"
                                                         class="form-control  @error('twitter') is-invalid has-error @enderror"
                                                         name="twitter" placeholder="Username"
+                                                        value="{{ old('url_twitter', Auth::user()->url_twitter) }}"
                                                     >
                                                 </div>
                                             </div>
@@ -236,7 +240,8 @@
                                                     <label>Whatsapp</label>
                                                     <input type="text"
                                                         class="form-control  @error('phone') is-invalid has-error @enderror"
-                                                        name="phone" placeholder="Phone Number"
+                                                        name="whatsapp" placeholder="Phone Number"
+                                                        value="{{ old('url_whatsapp', Auth::user()->url_whatsapp) }}"
                                                     >
                                                 </div>
                                             </div>
@@ -246,13 +251,12 @@
                                                     <input type="text"
                                                         class="form-control @error('youtube') is-invalid has-error @enderror"
                                                         name="youtube" placeholder="Username"
+                                                        value="{{ old('url_youtube', Auth::user()->url_youtube) }}"
                                                     >
                                                 </div>
                                             </div>
                                         </div>
                                 </div>
-                                
-                                
                             </div>
                             <div class="col-md-12" >
                                 <div class="text-right mt-3 mb-3">

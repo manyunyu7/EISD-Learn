@@ -16,7 +16,12 @@ class ProfileController extends Controller
 
     public function index()
     {
-        return view('profile.profile');
+        $fullName = Auth::user()->name;
+        $nameParts = explode(' ', $fullName);
+        $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
+        $end_ofName = implode(' ', array_slice($nameParts, 2));
+        // return $fullName;
+        return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
     }
 
 
@@ -60,16 +65,13 @@ class ProfileController extends Controller
         return password_verify($plainPassword, $hashedPassword);
     }
 
-    // Contoh di dalam controller
-    public function showFullName()
-    {
-        $fullName = Auth::user()->name;
-        $nameParts = explode(' ', $fullName);
-        $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
-        $end_ofName = implode(' ', array_slice($nameParts, 2));
+    // // Contoh di dalam controller
+    // public function showFullName()
+    // {
+        
 
-        return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
-    }
+    //     return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
+    // }
 
 
 
@@ -142,20 +144,49 @@ class ProfileController extends Controller
     }
 
 
-    // public function profilPict()
-    // {
-    //     $userID = Auth::id();
-    //     $profilURL = DB::select("SELECT
-    //                 profile_url
-    //                 FROM
-    //                     users
-    //                 WHERE
-    //                     id = $userID
-    //                 ");
-    //     return $profilURL;
-    //     return view('profile')->with(compact('profilURL'));
-    // }
 
-    
+
+    public function updateSocMed(Request $request)
+    {
+        // return $request->all();
+        MyHelper::addAnalyticEvent(
+            "Update Foto Profile","Profile"
+        );
+
+
+        $user = User::findOrFail(Auth::user()->id);
+        $website = $request->input("website");
+        
+
+        $fb = $request->input("facebook");
+        $ig = $request->input("instagram");
+        $li = $request->input("linkedin");
+        $twt = $request->input("twitter");
+        $wa = $request->input("whatsapp");
+        $yt = $request->input("youtube");
+
+        // URL SOCMED
+        
+
+        $user->update([
+            'url_personal_website' => $website,
+            'url_facebook' => $fb,
+            'url_instagram' => $ig,
+            'url_linkedin' => $li,
+            'url_twitter' => $twt,
+            'url_whatsapp' => $wa,
+            'url_youtube' => $yt,
+        ]);
+        
+        if ($user) {
+            //redirect dengan pesan sukses
+            return redirect('profile')->with(['success' => 'Data Berhasil Diupdate!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
+        }
+
+       
+    }
 
 }

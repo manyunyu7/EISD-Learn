@@ -25,9 +25,8 @@
     Route::view('forgotpass', 'auth.forgotpass');
 
     Route::get('/profile', 'ProfileController@index')->middleware('auth');
-    Route::get('/profile', 'ProfileController@showFullName')->middleware('auth');
-    Route::post('/profile', 'ProfileController@update')->name('profile.update')->middleware('auth');
-    // Route::post('/profile', 'ProfileController@updateProfile')->name('profile.updateProfile')->middleware('auth');
+    Route::post('/profile/update', 'ProfileController@update')->name('profile.update')->middleware('auth');
+    Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('profile.updateSocMed')->middleware('auth');
 
 
     Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
