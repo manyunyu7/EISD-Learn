@@ -202,8 +202,10 @@
                                         </li>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
-                                            <img style="width: 6%; height: auto; margin-top: 12px" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
-                                            <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> {{ $data->num_students_registered }} </b> students</p>
+                                            <a href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                                <img style="width: 6%; height: auto; margin-top: 12px" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
+                                                <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> {{ $data->num_students_registered }} </b> students</p>
+                                            </a>
                                         </div>
                                     </div> 
                                 </div>

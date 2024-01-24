@@ -54,6 +54,7 @@
 
         Route::post('/dfef', 'ProfileController@updatePasswordz');
         Route::get('/class/class-list/view-class/{id}', 'DetailClassController@viewClass');
+        Route::get('/class/class-list/students/{id}', 'DetailClassController@viewStudents');
         Route::get('/class-list', 'ClassListController@classList');
         Route::get('/my-class', 'MyClassController@myClass');
         // Route::get('/class/class-list/', 'CountingController@countStudents');

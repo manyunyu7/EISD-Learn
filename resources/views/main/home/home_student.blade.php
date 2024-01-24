@@ -135,25 +135,25 @@
                         <div class="ml-auto mt-5"> {{-- Align to the right with ml-auto --}}
                             <div class="portfolio-container">
                                 <img src="{{ url('/HomeIcons/Portfolio.svg') }}" alt="Portfolio Icon">
-                                <p>https://www.kevinvalerian.com</p>
+                                <p>{{ Auth::user()->url_personal_website }}</p>
                             </div>
                             <div class="social-icon">
-                                <a href="https://facebook.com/#" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                <a href="https://facebook.com/.{{ Auth::user()->url_facebook }}" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/HomeIcons/Facebook.svg') }}"  alt="Facebook Icon">
                                 </a>
-                                <a href="https://www.linkedin.com/#" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                <a href="https://www.linkedin.com/in/{{ Auth::user()->url_linkedin }}" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/HomeIcons/LinkedIn.svg') }}"  alt="Instagram Icon">
                                 </a>
                                 <a href="https://instagram.com/#" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/HomeIcons/Twitter.svg') }}"  alt="Instagram Icon">
                                 </a>
-                                <a href="https://instagram.com/#" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                <a href="https://instagram.com/{{ Auth::user()->url_instagram }}" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/HomeIcons/Instagram.svg') }}"  alt="Instagram Icon">
                                 </a>
-                                <a href="https://youtube.com/#" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                <a href="https://youtube.com/{{ Auth::user()->url_youtube }}" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/HomeIcons/Youtube.svg') }}"  alt="Instagram Icon">
                                 </a>
-                                <a href="https://instagram.com/modernlandrealty/" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                <a href="https://wa.me/{{ Auth::user()->url_whatsapp }}" target="_blank" rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/HomeIcons/Whatsapp.svg') }}" alt="Instagram Icon"> 
                                 </a>
                             </div>
