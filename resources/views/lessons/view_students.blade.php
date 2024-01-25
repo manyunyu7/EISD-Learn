@@ -63,14 +63,11 @@
       </nav>
     </div>
 
-    
-    
-
-    <div class="row mt--2 border-primary col-md-12">
+    <div class="col-md-12" >
         <div class="row mt--2 border-primary col-md-10">
             {{-- DROPDOWN FILTER --}}
             <div class="row page-inner col-md-8">
-                <div class="col-sm-3 col-md-5 col-lg-2 mb-3" style="background-color: red">
+                <div class="col-sm-3 col-md-5 col-lg-2 mb-3" >
                     <p>Sort by:</p>
                     <div class="btn-group">
                         <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px" id="sortBtn"><span>Latest</span></button>
@@ -96,9 +93,13 @@
                 </div>
             </div>
         </div>
+      </div>
+    
+
+    <div class="row mt--2 border-primary col-md-12">
       <!-- Yellow Container -->
-      <div class="col-md-10 " >
-          <div class="col-md-12" style="background-color: yellow">
+      <div class="col-md-12 " >
+          <div class="col-md-12" >
                 <div class="col-md-12 mt-3 mb-5">
                   <div class="mb-3"  style="display: flex; align-items: center;">
                     <h2 style="margin: 0; margin-right: 10px;">
@@ -106,22 +107,22 @@
                     </h2>
                 </div>
                   
-                  {{-- margin-left: 858px; --}}
-                  @forelse ($dayta as $data)
-                  <div style="border-collapse: collapse; width: 100%;">
-                    <div style="border: 1px solid #ccc; padding: 10px; display: flex; align-items: center;">
-                      <p style="margin: 0; margin-right: 10px; font-size: 16px">
-                        {{ $data->section_title }}
-                      </p>
-                      <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;" src="{{ url('/Icons/Clock.svg') }}" alt="Clock Icon">
-                      <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:1px">30m</p>
-                    </div>
-                  </div>
-                  @empty
-                    <div class="alert alert-danger">
-                        Kelas Ini Belum Memiliki Materi
-                    </div>
-                  @endforelse
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" >No</th>
+                        <th scope="col" >Students Name</th>
+                        <th scope="col">Department</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>@mdo</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
             </div>
 

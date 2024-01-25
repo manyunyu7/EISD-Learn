@@ -144,7 +144,7 @@
         margin: -15px;
     }
     .btn-custom {
-        width: 20%; 
+        width: auto; 
         margin: 10px;
         padding: 0px 10px;
         background-color: #208DBB;
@@ -156,7 +156,7 @@
         font-weight: bold;
         font-size: 16px;
         text-align: justify;
-        margin-left: -10px;
+        /* margin-left: -10px; */
 
     }
     #progressCourse {
