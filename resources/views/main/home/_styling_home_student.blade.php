@@ -209,4 +209,20 @@
         border-radius: 0px !important;
     }
 
+    .avatar-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .avatar-img {
+        /* Sesuaikan ukuran gambar sesuai kebutuhan Anda */
+        width: auto; 
+        height: auto; 
+        /* Sesuaikan margin antara gambar dan nama */
+        margin-right: 10px; 
+        margin-left: -10px;
+        border-radius: 50%;
+    }
+
 </style>

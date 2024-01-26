@@ -106,24 +106,42 @@
                         <b>Students</b>
                     </h2>
                 </div>
-                  
-                <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col" >No</th>
-                        <th scope="col" >Students Name</th>
-                        <th scope="col">Department</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>@mdo</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                
+                <div class="table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-responsive-xxl">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="min-width: 50px; max-width: 50px;">No</th>
+                                <th scope="col" ></th>
+                                <th scope="col" >Students Name</th>
+                                <th scope="col" style="width:100%">Department</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($studentsInLesson as $student)
+                            <tr>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <th scope="row" >
+                                    <div class="avatar-sm">
+                                        <img 
+                                            src="{{ Storage::url('public/profile/') . $student->profile_url }}" 
+                                            alt="..." 
+                                            class="avatar-img rounded-circle" 
+                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
+                                        >
+                                    </div>
+                                </th>
+                                <td class="avatar-container" style="width: 400px">
+                                    {{ $student->name }}
+                                </td>
+                                <td>{{ $student->department }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
+                
+                
             </div>
 
               <!-- JavaScript for dynamic badge colors -->
