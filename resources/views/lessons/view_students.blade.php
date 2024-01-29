@@ -9,9 +9,6 @@
 
 @section('script')
     {{-- @include('main.home.script_student') --}}
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
         const DISPLAY = true;
         const BORDER = true;
@@ -48,7 +45,10 @@
           }
         });
       </script>
-       
+       {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-U9zBET2NSPdld3JMGN9s3Qa/s6zrmMzNMI7d7bPKL6KA6aSX4N2p1Nex/aD1xOfq" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 @endsection
 
 @section('main')
@@ -58,263 +58,190 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
           <li class="breadcrumb-item"><a href={{ url('/class-list') }}>Class List</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Detail Class</li>
+          <li class="breadcrumb-item active" aria-current="page">Students</li>
         </ol>
       </nav>
     </div>
 
-    <div class="col-md-12" >
-        <div class="row mt--2 border-primary col-md-10">
-            {{-- DROPDOWN FILTER --}}
-            <div class="row page-inner col-md-8">
-                <div class="col-sm-3 col-md-5 col-lg-2 mb-3" >
-                    <p>Sort by:</p>
-                    <div class="btn-group">
-                        <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px" id="sortBtn"><span>Latest</span></button>
-                        <button type="button" class="btn btnSort-custom dropdown-toggle dropdown-toggle-split" id="sortDropdownToggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
-                            <span class="visually-hidden"></span>
+    <div class="row mt--2 border-primary col-md-12">
+        {{-- DROPDOWN FILTER --}}
+        <div class="row page-inner col-md-12">
+            <div class="col-sm-4 col-md-5 col-lg-5 mb-3" >
+                <p>Sort by:</p>
+                <div class="btn-group" style="min-width: 100%">
+                    <form method="POST" action="{{ url('/class/class-list/students/{lessonId}') }}" enctype="multipart/form-data">
+                        @csrf
+                        <select name="sortBy" class="form-select form-control" id="sortSelect">
+                            <option value="asc" >A to Z</option>
+                            <option value="desc">Z to A</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">
+                            Search
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="sortDropdownToggle" style="width: 100%;" id="sortDropdown">
-                            <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Latest')">Latest</a></li>
-                            <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Recommend')">Recommend</a></li>
-                            <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Most Student')">Most Student</a></li>
-                        </ul>
-                    </div>
-                
-                    <script>
-                        function changeSortText(selectedTextSort) {
-                            document.getElementById('sortBtn').innerHTML = '<span>' + selectedTextSort + '</span>';
-                        }
-                    </script>
-                </div>
-
-                <div class="col-sm-6 col-md-5 col-lg-8" >
+                    </form>
                     
                 </div>
+            
+                <script>
+                    function changeSortText(selectedTextSort) {
+                        document.getElementById('sortBtn').innerHTML = '<span>' + selectedTextSort + '</span>';
+                    }
+                </script>
             </div>
         </div>
-      </div>
+    </div>  
+
     
 
     <div class="row mt--2 border-primary col-md-12">
       <!-- Yellow Container -->
       <div class="col-md-12 " >
-          <div class="col-md-12" >
-                <div class="col-md-12 mt-3 mb-5">
-                  <div class="mb-3"  style="display: flex; align-items: center;">
-                    <h2 style="margin: 0; margin-right: 10px;">
-                        <b>Students</b>
-                    </h2>
-                </div>
-                
-                <div class="table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-responsive-xxl">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="min-width: 50px; max-width: 50px;">No</th>
-                                <th scope="col" ></th>
-                                <th scope="col" >Students Name</th>
-                                <th scope="col" style="width:100%">Department</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($studentsInLesson as $student)
-                            <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
-                                <th scope="row" >
-                                    <div class="avatar-sm">
-                                        <img 
-                                            src="{{ Storage::url('public/profile/') . $student->profile_url }}" 
-                                            alt="..." 
-                                            class="avatar-img rounded-circle" 
-                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
-                                        >
-                                    </div>
-                                </th>
-                                <td class="avatar-container" style="width: 400px">
-                                    {{ $student->name }}
-                                </td>
-                                <td>{{ $student->department }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
+        <div class="col-md-12" >
+            <div class="col-md-12 mt-3 mb-5">
+                <div class="mb-3"  style="display: flex; align-items: center;">
+                <h2 style="margin: 0; margin-right: 10px;">
+                    <b>Students</b>
+                </h2>
+                <h4>Test Sorting: {{ $sortBy }}</h4>
+            </div>
+            
+            <div class="table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-responsive-xxl">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="min-width: 50px; max-width: 50px;">No</th>
+                            <th scope="col" ></th>
+                            <th scope="col" >Students Name</th>
+                            <th scope="col" style="width: 50%">Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($studentsInLesson as $key => $student)
+                        <tr>
+                            <th scope="row">{{ $studentsInLesson->firstItem()+ $key }}</th>
+                            <th scope="row" >
+                                <div class="avatar-sm">
+                                    <img 
+                                        src="{{ Storage::url('public/profile/') . $student->profile_url }}" 
+                                        alt="..." 
+                                        class="avatar-img rounded-circle" 
+                                        onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
+                                    >
+                                </div>
+                            </th>
+                            <td style="width: 500px">
+                                {{ $student->name }}
+                            </td>
+                            <td>
+                                {{ $student->department }}
+                            </td>
+                        </tr>
+                    @empty
+                        <div class="alert alert-danger">
+                            Kelas Ini Belum Memiliki Peserta
+                        </div>
+                      @endforelse
+                    </tbody>
+                </table>
                 
                 
             </div>
+            <div>
+                <p class="pull-end">
+                    {{ $studentsInLesson->links() }}
+                </p>
+                <p class="pull-left">
+                    Showing
+                    {{ $studentsInLesson->firstItem() }}
+                    to
+                    {{ $studentsInLesson->lastItem() }}
+                    of
+                    {{ $studentsInLesson->total() }}
+                    entries
+                </p>
+            </div>
 
-              <!-- JavaScript for dynamic badge colors -->
-              <script>
-                var badges = document.querySelectorAll('.dynamic-badge');
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const studentsInLesson = @json($studentsInLesson);
             
-                badges.forEach(function (badge) {
-                    var selectedCategory = badge.textContent;
-                    var badgeColor, textColor;
+                    // Function to display data for a specific page
+                    function displayData(pageNumber, pageSize) {
+                        const startIndex = (pageNumber - 1) * pageSize;
+                        const endIndex = startIndex + pageSize;
             
-                    switch (selectedCategory) {
-                        case 'Management Trainee':
-                            badgeColor = '#f7c8ca';
-                            textColor = '#D02025';
-                            break;
-                        case 'General':
-                            badgeColor = 'blue';
-                            break;
-                        case 'Design':
-                            badgeColor = 'green';
-                            break;
-                        case 'Finance & Accounting':
-                            badgeColor = 'purple';
-                            break;
-                        case 'Human Resource and Development':
-                            badgeColor = 'orange';
-                            break;
-                        case '3D Modelling':
-                            badgeColor = 'pink';
-                            break;
-                        case 'Digital Management':
-                            badgeColor = '#EBEBFF';
-                            textColor = '#342F98';
-                            break;
-                        case 'Marketing and Business':
-                            badgeColor = 'yellow';
-                            break;
-                        case 'Food and Beverage':
-                            badgeColor = 'brown';
-                            break;
-                        case 'Management':
-                            badgeColor = 'teal';
-                            break;
-                        case 'Social and Politics':
-                            badgeColor = 'indigo';
-                            break;
-                        case 'Office':
-                            badgeColor = 'maroon';
-                            break;
-                        case 'Outdoor Activity':
-                            badgeColor = 'lime';
-                            break;
-                        case 'Junior High School':
-                            badgeColor = 'navy';
-                            break;
-                        case 'Senior High School':
-                            badgeColor = 'olive';
-                            break;
+                        // Add logic for sorting and filtering based on user input
+                        const sortedAndFilteredData = applySortingAndFiltering(studentsInLesson);
             
-                        default:
-                            badgeColor = 'gray';
+                        const currentPageData = sortedAndFilteredData.slice(startIndex, endIndex);
+            
+                        // Clear previous data
+                        document.getElementById('data-container').innerHTML = '';
+            
+                        // Display current page data
+                        currentPageData.forEach((student, index) => {
+                            const row = `<tr>
+                                            <th scope="row">${startIndex + index + 1}</th>
+                                            <th scope="row">
+                                                <div class="avatar-sm">
+                                                    <img 
+                                                        src="${student.profile_url}" 
+                                                        alt="..." 
+                                                        class="avatar-img rounded-circle" 
+                                                        onerror="this.onerror=null; this.src='${url('/default/default_profile.png')}'; this.alt='Alternative Image';"
+                                                    >
+                                                </div>
+                                            </th>
+                                            <td style="width: 500px">${student.name}</td>
+                                            <td>${student.department}</td>
+                                        </tr>`;
+                            document.getElementById('data-container').innerHTML += row;
+                        });
                     }
             
-                    badge.style.backgroundColor = badgeColor;
-                    badge.style.color = textColor; // Set text color to white
+                    // Function to apply sorting and filtering
+                    function applySortingAndFiltering(data) {
+                        // Get user-selected sorting criteria
+                        const sortCriteria = document.getElementById('sortBtn').textContent.trim();
+            
+                        // Get user-input for filtering
+                        const filterInput = document.getElementById('filterInput').value.toLowerCase();
+            
+                        // Add logic for sorting
+                        // Example: A to Z
+                        if (sortCriteria === 'A to Z') {
+                            data.sort((a, b) => a.name.localeCompare(b.name));
+                        } else if (sortCriteria === 'Z to A') {
+                            data.sort((a, b) => b.name.localeCompare(a.name));
+                        }
+            
+                        // Add logic for filtering
+                        // Example: Filter by name
+                        const filteredData = data.filter(student => student.name.toLowerCase().includes(filterInput));
+            
+                        return filteredData;
+                    }
+            
+                    // ... (kode JavaScript pagination dan sort sebelumnya) ...
+            
+                    // Initial display (default pageSize is 10)
+                    displayData(1, 10);
+                    generatePaginationLinks(10);
                 });
-              </script>
+            </script>
+            
 
-              @if (session()->has('success'))
-                  <script>
-                      toastr.success('{{ session('success') }}', '{{ Session::get('success') }}');
-                  </script>
-              @elseif(session()->has('error'))
-                  <script>
-                      toastr.error('{{ session('error') }}', '{{ Session::get('error') }}');
-                  </script>
-              @endif
-          </div>
-      </div>
-  </div>
-    
 
+            @if (session()->has('success'))
+                <script>
+                    toastr.success('{{ session('success') }}', '{{ Session::get('success') }}');
+                </script>
+            @elseif(session()->has('error'))
+                <script>
+                    toastr.error('{{ session('error') }}', '{{ Session::get('error') }}');
+                </script>
+            @endif
+        </div>
+    </div>
 @endsection
-
-
-{{-- <div class="page-inner mt--4" >
-  <div class="row mt--2 border-primary col-md-11" style="background-color: yellow">
-      <div class="col-md-12">
-        <h1><b>{{ $data->course_title }}</b></h1>
-        <p>
-          <span class="badge dynamic-badge" style=" border-radius: 0; font-size: 16px; font-weight: bold">{{ $data->course_category }}</span>
-        </p>
-
-        <img style="width: 12%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
-        <p>Modernland Training</p>
-      </div>
-      <script>
-        var badges = document.querySelectorAll('.dynamic-badge');
-    
-        badges.forEach(function (badge) {
-            var selectedCategory = badge.textContent;
-            var badgeColor, textColor;
-    
-            switch (selectedCategory) {
-                case 'Management Trainee':
-                    badgeColor = '#f7c8ca';
-                    textColor = '#D02025';
-                    break;
-                case 'General':
-                    badgeColor = 'blue';
-                    break;
-                case 'Design':
-                    badgeColor = 'green';
-                    break;
-                case 'Finance & Accounting':
-                    badgeColor = 'purple';
-                    break;
-                case 'Human Resource and Development':
-                    badgeColor = 'orange';
-                    break;
-                case '3D Modelling':
-                    badgeColor = 'pink';
-                    break;
-                case 'Digital Management':
-                    badgeColor = '#EBEBFF';
-                    textColor = '#342F98';
-                    break;
-                case 'Marketing and Business':
-                    badgeColor = 'yellow';
-                    break;
-                case 'Food and Beverage':
-                    badgeColor = 'brown';
-                    break;
-                case 'Management':
-                    badgeColor = 'teal';
-                    break;
-                case 'Social and Politics':
-                    badgeColor = 'indigo';
-                    break;
-                case 'Office':
-                    badgeColor = 'maroon';
-                    break;
-                case 'Outdoor Activity':
-                    badgeColor = 'lime';
-                    break;
-                case 'Junior High School':
-                    badgeColor = 'navy';
-                    break;
-                case 'Senior High School':
-                    badgeColor = 'olive';
-                    break;
-    
-                default:
-                    badgeColor = 'gray';
-            }
-    
-            badge.style.backgroundColor = badgeColor;
-            badge.style.color = textColor; // Set text color to white
-        });
-      </script>
-      @if (session()->has('success'))
-          <script>
-              toastr.success('{{ session('
-                  success ') }}',
-                  ' {{ Session::get('success') }}');
-
-          </script>
-      @elseif(session()-> has('error'))
-          <script>
-              toastr.error('{{ session('
-                  error ') }}', ' {{ Session::get('error') }}');
-          </script>
-
-      @endif
-  </div>
-</div> --}}

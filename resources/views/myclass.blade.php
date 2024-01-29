@@ -157,7 +157,10 @@
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
                                             <img style="width: 6%; height: auto; margin-top: 12px" src="{{ url('/DashboardIcons/User.svg') }}" alt="Portfolio Icon">
-                                            <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> {{ $data->num_students_registered }} </b> students</p>
+                                            {{-- <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> {{ $data->num_students_registered }} </b> students</p> --}}
+                                            <a style="text-decoration: none;color: BLACK;" href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                                <p style="font-size: 17px; margin-left: 10px; margin-top:28px;"><b> {{ $data->num_students_registered }} </b ><span style="color: #8C94A3;">students</span></p>
+                                            </a>
                                         </div>
                                     </div> 
                                 </div>

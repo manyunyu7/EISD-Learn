@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Pagination\Paginator;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -40,16 +40,19 @@ class DetailClassController extends Controller
     }
     
 
-    public function viewStudents($lessonId){
-         // Mengambil data siswa yang memiliki student_id dan lesson_id yang sesuai
-         $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
-         ->where('student_lesson.lesson_id', $lessonId)
-         ->select('users.name') // Pilih kolom yang ingin Anda ambil dari tabel users
-         ->get();
-
-        // Mengirim data ke tampilan (view)
-        // return $studentsInLesson;
-        return view("lessons.view_students")->with(compact("studentsInLesson"));
+    public function viewStudents(Request $request, $lessonId){
+        Paginator::useBootstrap();
+        $sortBy = $request->sortBy ?? 'asc';
+        // $sortBy = $request->sortBy;
+        // Mengambil data siswa yang memiliki student_id dan lesson_id yang sesuai
+        $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
+        ->where('student_lesson.lesson_id', $lessonId)
+        ->select('users.name', 'users.department') // Pilih kolom yang ingin Anda ambil dari tabel users
+        ->orderBy('users.name', 'asc')
+        ->paginate(10);
+        
+        // return $sortBy;
+        return view("lessons.view_students")->with(compact("studentsInLesson", "sortBy"));
     }
     
 }

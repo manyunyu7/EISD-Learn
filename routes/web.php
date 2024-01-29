@@ -27,7 +27,9 @@
     Route::get('/profile', 'ProfileController@index')->middleware('auth');
     Route::post('/profile/update', 'ProfileController@update')->name('profile.update')->middleware('auth');
     Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('profile.updateSocMed')->middleware('auth');
-
+    
+    // Route::post('/class/class-list/check/{lessonId}', 'DetailClassController@viewStudents')->name('view_students.viewStudents')->middleware('auth');
+    // Route::post('/class/class-list/students/{lessonId}')->name('view_students.viewStudents')->middleware('auth');
 
     Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
     Route::any('/your-api-endpoint', 'ExamTakerController@submitQuiz');
@@ -59,6 +61,7 @@
         Route::get('/my-class', 'MyClassController@myClass');
         // Route::get('/class/class-list/', 'CountingController@countStudents');
         Route::post('/input-pin', 'ClassListController@validatePIN');
+        Route::post('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
 
         // ROUTING KHUSUS MENTOR
         Route::group(['middleware' => ['mentor']], function () {
