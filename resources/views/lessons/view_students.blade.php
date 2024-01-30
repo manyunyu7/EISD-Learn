@@ -64,31 +64,30 @@
     </div>
 
     <div class="row mt--2 border-primary col-md-12">
-        {{-- DROPDOWN FILTER --}}
-        <div class="row page-inner col-md-12">
-            <div class="col-sm-4 col-md-5 col-lg-5 mb-3" >
-                <p>Sort by:</p>
-                <div class="btn-group" style="min-width: 100%">
-                    <form method="POST" action="{{ url('/class/class-list/students/{lessonId}') }}" enctype="multipart/form-data">
+      {{-- DROPDOWN FILTER --}}
+      <div class="col-md-12 " >
+        <div class="col-md-12" >
+            <div class="col-md-4 mt-3 mb-5">
+                <div class="col-md-12 mt-3 mb-5" >
+                    <p>Sort by:</p>
+                    <form method="POST" action='{{ url("class/class-list/students/$lessonId") }}' enctype="multipart/form-data">
                         @csrf
-                        <select name="sortBy" class="form-select form-control" id="sortSelect">
-                            <option value="asc" >A to Z</option>
-                            <option value="desc">Z to A</option>
+                        <input name="lessonId" hidden type="text" value="{{ $lessonId }}">
+                        <select name="sortBy" class="form-select form-control "  id="sortSelect">
+                            <option 
+                                @if ($sortBy == 'asc') selected @endif
+                            value="asc" {{ old('sortBy') == 'asc' ? 'selected' : '' }}>A to Z</option>
+                            <option @if ($sortBy == 'desc') selected @endif
+                            value="desc" {{ old('sortBy') == 'desc' ? 'selected' : '' }}>Z to A</option>
                         </select>
-                        <button type="submit" class="btn btn-primary">
+                        <button  type="submit" class="btn btn-primary mt-3 pull-right">
                             Search
                         </button>
                     </form>
-                    
                 </div>
-            
-                <script>
-                    function changeSortText(selectedTextSort) {
-                        document.getElementById('sortBtn').innerHTML = '<span>' + selectedTextSort + '</span>';
-                    }
-                </script>
             </div>
         </div>
+      </div>
     </div>  
 
     
@@ -102,7 +101,6 @@
                 <h2 style="margin: 0; margin-right: 10px;">
                     <b>Students</b>
                 </h2>
-                <h4>Test Sorting: {{ $sortBy }}</h4>
             </div>
             
             <div class="table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl table-responsive-xxl">
