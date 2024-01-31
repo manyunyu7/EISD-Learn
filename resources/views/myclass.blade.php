@@ -151,7 +151,10 @@
                                         </div>
                                         <hr>
                                         <div class="toga-container col-12">
-                                            <button type="button" class="btn btn-custom col-3"><span>Check</span></button>
+                                            <a class="btn btn-custom col-3" href="{{ url('/my-class/open/'. $data->id) }}" >
+                                                <span style="text-decoration: none; color: white; text-align: justify;">Check</span>
+                                            </a>
+                                             
                                             <p id="progressCourse" class="col-8">100% Completed</p>
                                         </div>
                                         <hr>

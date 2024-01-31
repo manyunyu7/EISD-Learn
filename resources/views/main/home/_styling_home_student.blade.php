@@ -156,7 +156,6 @@
         font-weight: bold;
         font-size: 16px;
         text-align: justify;
-        /* margin-left: -10px; */
 
     }
     #progressCourse {
