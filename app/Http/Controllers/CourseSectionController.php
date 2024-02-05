@@ -478,11 +478,11 @@ class CourseSectionController extends Controller
         ini_set('memory_limit', '1024000M');
         $rules = [
             'title' => 'required',
-//            'video' => 'required',
-//            'content' => 'required',
+            //            'video' => 'required',
+            //            'content' => 'required',
             'section_order' => 'required|unique:course_section',
             'course_id' => 'required',
-//            'course_name' => 'required',
+            //            'course_name' => 'required',
         ];
         $customMessages = [
             'required' => 'Mohon Isi Kolom :attribute terlebih dahulu'

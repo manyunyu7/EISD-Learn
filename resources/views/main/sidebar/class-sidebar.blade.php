@@ -34,66 +34,15 @@
                 <td>{{ $totalSections }} sections</td>
                 <td>% Finish</td>
             </tr>
-            @forelse ($silabusClass as $index => $dataSilabus)
-                <tr>
-                    <td colspan="3">
-                        <input type="checkbox" id="checkbox{{ $index }}" 
-                               onclick="myFunction({{ $index }})"
-                               {{ $dataSilabus->is_completed ? 'checked disabled' : '' }}>
-                        {{ $dataSilabus->section_title }}
-                    </td>
-                </tr>
-            @empty
-                {{-- Handle case where $silabusClass is empty --}}
-            @endforelse
+            @foreach ($silabusClass as $item)
+            <tr>
+              <td colspan="3">
+                <input type="checkbox" {{ $item->section_title == $sectionTable->section_title ? 'checked' : '' }}>
+                {{ $item->section_title }}
+              </td>
+            </tr>
+            @endforeach
         </table>
-    </div>
-    
-    <script>
-        // Inisialisasi array untuk menyimpan status centang checkbox
-        var checkboxStatus = [];
-    
-        // Inisialisasi status checkbox dari server
-        @foreach ($silabusClass as $index => $dataSilabus)
-            checkboxStatus[{{ $index }}] = {{ $dataSilabus->is_completed ? 'true' : 'false' }};
-        @endforeach
-    
-        function myFunction(index) {
-            // Mendapatkan checkbox berdasarkan index
-            var checkbox = document.getElementById('checkbox' + index);
-    
-            // Memeriksa status checkbox
-            if (!checkboxStatus[index]) {
-                // Jika checkbox belum pernah dicentang, centang dan simpan status
-                checkbox.checked = true;
-                checkboxStatus[index] = true;
-    
-                // Mendapatkan checkbox berikutnya
-                var nextCheckbox = document.getElementById('checkbox' + (index + 1));
-    
-                // Jika checkbox saat ini dicentang dan ada checkbox berikutnya, aktifkan dan dicentangkan
-                if (nextCheckbox) {
-                    nextCheckbox.disabled = false;
-                    nextCheckbox.checked = true;
-                }
-            }
-        }
-    </script>
-    
-    
-
-    <div class="w3-container">
-      {{-- TABEL 3 --}}
-      <table>
-        <tr>
-          <td colspan="3"><h4><b>Five top Achivers In This Class</b></h4></td>
-        </tr>
-        <tr>
-          <td>Foto</td>
-          <td >Nama Student</td>
-          <td>Grade</td>
-        </tr>
-      </table>
     </div>
     </div>
   </div>
@@ -119,9 +68,9 @@
     <div class="w3-container">
       <tr>
         <td>
-            <h2>[SUB JUDUL]</h2>
+          <h2>{{ $sectionTable->section_title }}</h2>
         </td>
-    </tr>
+      </tr>
 
       <table>
         <tr>
@@ -130,7 +79,10 @@
           <td>Last Updated Info</td>
         </tr>
       </table>
-
+    </div>
+    <div class="w3-container">
+        <br>
+        <button type="button" class="btn success">Next</button>
     </div>
 </div>
 @empty

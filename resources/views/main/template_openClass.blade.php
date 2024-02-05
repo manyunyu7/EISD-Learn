@@ -50,6 +50,16 @@
         }
 
 
+        .btn {
+          border: none; /* Remove borders */
+          border-radius: 12px;
+          color: white; /* Add a text color */
+          padding: 14px 28px; /* Add some padding */
+          cursor: pointer; /* Add a pointer cursor on mouse-over */
+        }
+
+        .success {background-color: #04AA6D;} /* Green */
+        .success:hover {background-color: #46a049;}
 
 
       </style>

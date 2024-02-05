@@ -151,7 +151,7 @@
                                         </div>
                                         <hr>
                                         <div class="toga-container col-12">
-                                            <a class="btn btn-custom col-3" href="{{ url('/my-class/open/'. $data->id) }}" >
+                                            <a class="btn btn-custom col-3" href="{{ url('/my-class/open/'. $data->id.'/section'.'/'. $data->first_section) }}" >
                                                 <span style="text-decoration: none; color: white; text-align: justify;">Check</span>
                                             </a>
                                              
