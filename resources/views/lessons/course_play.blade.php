@@ -85,12 +85,12 @@
                 <div class="container-fluid">
                     @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
 
-{{--                        <div class='embed-responsive' style='padding-bottom:150%'>--}}
-{{--                            <object--}}
-{{--                                data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}'--}}
-{{--                                type='application/pdf' width='100%' height='100%'></object>--}}
-{{--                        </div>--}}
-{{--                    --}}
+                        {{--                        <div class='embed-responsive' style='padding-bottom:150%'>--}}
+                        {{--                            <object--}}
+                        {{--                                data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}'--}}
+                        {{--                                type='application/pdf' width='100%' height='100%'></object>--}}
+                        {{--                        </div>--}}
+                        {{--                    --}}
                         <iframe id="pdfIframe" onload="" src="{{url("/")."/library/viewerjs/src/#"}}{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
                                 width="100%" height="550" allowfullscreen="" webkitallowfullscreen=""></iframe>
 

@@ -59,7 +59,7 @@
         Route::get('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
         Route::get('/class-list', 'ClassListController@classList');
         Route::get('/my-class', 'MyClassController@myClass');
-        Route::get('/my-class/open/{lessonId}/section/{sectionId}', 'OpenClassController@openClass');
+        Route::get('/my-class/open/{lessonId}/section/{sectionId}', 'OpenClassController@openClass')->name('course.openClass');
 
         // Route::get('/class/class-list/', 'CountingController@countStudents');
         Route::post('/input-pin', 'ClassListController@validatePIN');

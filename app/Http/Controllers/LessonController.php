@@ -50,11 +50,11 @@ class LessonController extends Controller
         $sections = DB::select("SELECT * FROM course_section WHERE course_id = $lessonId");
 
         $student_sections = DB::select("
-        SELECT ss.*, cs.course_id
-        FROM student_section ss
-        INNER JOIN course_section cs ON ss.section_id = cs.id
-        WHERE cs.course_id = $lessonId
-    ");
+                                SELECT ss.*, cs.course_id
+                                FROM student_section ss
+                                INNER JOIN course_section cs ON ss.section_id = cs.id
+                                WHERE cs.course_id = $lessonId
+                            ");
 
         // Organize the sections data into an associative array for easier access
         $sectionsData = [];

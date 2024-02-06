@@ -11,6 +11,8 @@ use App\Models\Blog;
 use App\Models\Lesson;
 use App\Models\User;
 use App\Models\CourseSection;
+use App\Models\StudentSection;
+
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,10 +21,11 @@ use Illuminate\Pagination\Paginator;
 use DB;
 use File;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class OpenClassController extends Controller
 {
-    public function openClass($lessonId, CourseSection $section, Lesson $lesson, Request $request)
+    public function openClass($lessonId, $sectionId, Lesson $lesson, Request $request)
     {
         $userID     = Auth::id();
         $classInfo  = DB::select("SELECT
@@ -79,53 +82,78 @@ class OpenClassController extends Controller
                 $isRegistered = true;
             }
         }
+        
+        // $sectionTable = CourseSection::join('lessons', 'course_section.course_id', '=', 'lessons.id')
+        //                 ->where('lessons.id', '=', $lessonId)
+        //                 ->select('course_section.id', 'course_section.section_title')
+        //                 ->distinct()
+        //                 // ->skip(1) // Melewatkan satu baris (baris pertama)
+        //                 ->first();
+        $section_spec = DB::select("select * from view_course_section where section_id = '$sectionId' ");
+        
+
+        // HANDLING CHECKBOX
+        $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
+        $section = $sections;
+        $firstSectionId = null;
+        if(!empty($section)){
+            $firstSectionId = $section[1]->section_id;
+        }
+        // Your logic to mark the section as opened by the user
+        $user =  auth()->user();
+        $user = StudentSection::updateOrCreate(
+            ['section_id' => $sectionId],
+            ['is_finished' => true]
+        );
+        
+        // HANDLING PREV AND NEXT ID
+        // Find the next and previous sections
+        $nextSectionId = null;
+        $prevSectionId = null;
+        $currentSectionId = $sectionId;
+        $currentSection = CourseSection::findOrFail($currentSectionId);
 
         // Get the preceding sections
         $precedingSections = DB::select("
-            SELECT * FROM course_section WHERE course_id = :course_id ORDER BY section_order ASC", [
-                'course_id' => $lessonId,
-            ]);
+         SELECT * FROM course_section WHERE course_id = :course_id ORDER BY section_order ASC", [
+            'course_id' => $lessonId,
+        ]);
         $precedingSectionIds = array_map(function ($section) {
             return $section->id;
         }, $precedingSections);
-
-
-        $studentTakenSections = DB::select("
-                                    SELECT
-                                        ss.student_id,
-                                        users.name,
-                                        lessons.course_title,
-                                        lessons.id AS lessons_id,
-                                        ss.section_id,
-                                        ss.`student-section`
-                                    FROM
-                                        student_section AS ss
-                                    LEFT JOIN users ON users.id = ss.student_id
-                                    LEFT JOIN course_section ON ss.section_id = course_section.id
-                                    LEFT JOIN lessons ON course_section.course_id = lessons.id
-                                    WHERE users.id = :user_id AND lessons.id = :lessons_id
-                                ", [
-                                        'user_id' => Auth::id(),
-                                        'lessons_id' => $lessonId,
-                                    ]
-                                );
-        $studentTakenSectionIds = array_map(function ($section) {
-            return $section->section_id;
-        }, $studentTakenSections);
-
-        // $sectionId = $section->course_id;
-        // $section_spec = DB::select("select * from view_course_section where section_id = '$sectionId' ");
         
         
-        $sectionTable = CourseSection::join('lessons', 'course_section.course_id', '=', 'lessons.id')
-                        ->where('lessons.id', '=', $lessonId)
-                        ->select('course_section.id', 'course_section.section_title')
-                        ->distinct()
-                        ->skip(1) // Melewatkan satu baris (baris pertama)
-                        ->first();
+        $currentSectionIndex = array_search($sectionId, $precedingSectionIds);
+        if ($currentSectionIndex !== false) {
+            if ($currentSectionIndex < count($precedingSectionIds) - 1) {
+                $nextSectionId = $precedingSectionIds[$currentSectionIndex + 1];
+            }
+
+            if ($currentSectionIndex > 0) {
+                $prevSectionId = $precedingSectionIds[$currentSectionIndex - 1];
+            }
+        }
+        // Check if the student has taken all the preceding sections
+        $isPrecedingTaken = StudentSection::whereIn('section_id', $precedingSectionIds)
+            ->where('student_id', $user_id)
+            ->exists();
+        
+
+
+        
         // RETURN VALUE
+        // return $silabusClass;
         // return $sectionTable;
-        return view('lessons.open_class')->with(compact('classInfo', 'silabusClass', 'totalSections', 'sectionTable'));
+        // return $sectionId;
+        // return $existingRecord;
+        // return $nextUrl;
+        // return $section_spec;
+        // return $section;
+        // return $currentSectionId;
+        // return $currentSection;
+        // dd($prevSectionId, $nextSectionId);
+        $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 'section_spec', 'section', 'nextSectionId', 'prevSectionId');
+        return view('lessons.open_class', $compact);
     }
 
 

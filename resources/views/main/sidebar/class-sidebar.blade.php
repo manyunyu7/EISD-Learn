@@ -34,14 +34,49 @@
                 <td>{{ $totalSections }} sections</td>
                 <td>% Finish</td>
             </tr>
-            @foreach ($silabusClass as $item)
+            {{-- @foreach ($silabusClass as $item)
             <tr>
               <td colspan="3">
-                <input type="checkbox" {{ $item->section_title == $sectionTable->section_title ? 'checked' : '' }}>
+                <input type="checkbox">
                 {{ $item->section_title }}
               </td>
             </tr>
-            @endforeach
+            @endforeach --}}
+            @forelse ($section as $item)
+                <tr>
+                  <td colspan="3">
+                    {{-- <a href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
+                      <span class="badge badge-default">{{ $item->section_order }}</span><br>
+                    </a> --}}
+                    
+                    <a style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}" id="{{ $item->section_order }}" >
+                      <input type="checkbox"> {{ $item->section_title }}
+                    </a>
+                    
+                    <div class="mt-1 mb-1">
+                      @if (isset($item) && isset($item->isTaken))
+                          @php
+                              $isCurrent = $item->isCurrent ?? false;
+                          @endphp
+                          @if ($item->isTaken && !$isCurrent)
+                              <span class="badge badge-success text-small">Sudah Dipelajari</span>
+                          @elseif ($isCurrent)
+                              <span class="badge badge-primary text-small">Sedang Dipelajari</span>
+                          @else
+                              <span class="badge badge-secondary text-small">Belum Diambil</span>
+                          @endif
+                      @endif
+                  </div>
+                  </td>
+                </tr>
+            @empty
+                <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
+                    {{-- <a href="{{ route('course.see_section', [$item->lesson_id, $item->section_id]) }}">
+                <span class="badge badge-success ">{{ $item->section_order }}</span><br>
+                </a> --}}
+                    <p style="margin-bottom: 0px !important"> Belum Ada Materi di Kelas Ini</p>
+                </li>
+            @endforelse
         </table>
     </div>
     </div>
@@ -49,42 +84,61 @@
 </div>
 
 
-{{-- SEGMENT MATERI/EXAM --}}
-<div id="main">
-  <div class="w3-teal">
-    <div class="row">
-      <div class="col">
-        <button id="openNav" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
-      </div>
-      <div class="col">
-        <div class="w3-container">
-          <h1 id="judulKelas">{{ $data->course_title }}</h1>
+  {{-- SEGMENT MATERI/EXAM --}}
+  @forelse ($section_spec as $index => $sectionSpec)
+    <div id="main">
+      <div class="w3-teal">
+        <div class="row">
+          <div class="col">
+            <button id="openNav" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+          </div>
+          <div class="col">
+            <div class="w3-container">
+              <h1 id="judulKelas">{{ $sectionSpec->lessons_title }}</h1>
+            </div>
+          </div>
         </div>
-      </div>
     </div>
-</div>
 
-<div class="w3-container">
     <div class="w3-container">
-      <tr>
-        <td>
-          <h2>{{ $sectionTable->section_title }}</h2>
-        </td>
-      </tr>
+        <div class="w3-container">
+          <tr>
+            <td>
+                @if(isset($section_spec) && is_array($section_spec) && count($section_spec) > 0 && property_exists($section_spec[0], 'section_title'))
+                    <h2>{{ $section_spec[0]->section_title }}</h2>
+                @else
+                    <p>Section title not available</p>
+                @endif
+            </td>
+          </tr>
+        
+        
 
-      <table>
-        <tr>
-          <td colspan="3"><h4>IMAGES</h4></td>
-          <td>Numbers of Student Watching</td>
-          <td>Last Updated Info</td>
-        </tr>
-      </table>
+          <table>
+            <tr>
+              <td colspan="3"><h4>IMAGES</h4></td>
+              <td>Numbers of Student Watching</td>
+              <td>Last Updated Info</td>
+            </tr>
+          </table>
+        </div>
+        <div class="w3-container">
+            <br>
+            @if ($firstSectionId!=null)
+              @if ($prevSectionId)
+                  <a style="text-decoration: none" href="{{ route('course.openClass', [$sectionSpec->lesson_id, $prevSectionId]) }}" class="btn success">Prev</a>
+              @endif
+              
+              @if ($nextSectionId !== null)
+                  <a style="text-decoration: none" href="{{ route('course.openClass', [$sectionSpec->lesson_id, $nextSectionId]) }}" class="btn success">Next</a>
+              @endif
+        
+            @endif
+            
+        </div>
     </div>
-    <div class="w3-container">
-        <br>
-        <button type="button" class="btn success">Next</button>
-    </div>
-</div>
+  @empty
+  @endforelse
 @empty
         {{-- Handle case where $myClasses is empty --}}
 @endforelse
