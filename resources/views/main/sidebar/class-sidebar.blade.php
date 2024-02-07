@@ -44,36 +44,14 @@
             @endforeach --}}
             @forelse ($section as $item)
                 <tr>
-                  <td colspan="3">
-                    {{-- <a href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
-                      <span class="badge badge-default">{{ $item->section_order }}</span><br>
-                    </a> --}}
-                    
-                    <a style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}" id="{{ $item->section_order }}" >
-                      <input type="checkbox"> {{ $item->section_title }}
-                    </a>
-                    
-                    <div class="mt-1 mb-1">
-                      @if (isset($item) && isset($item->isTaken))
-                          @php
-                              $isCurrent = $item->isCurrent ?? false;
-                          @endphp
-                          @if ($item->isTaken && !$isCurrent)
-                              <span class="badge badge-success text-small">Sudah Dipelajari</span>
-                          @elseif ($isCurrent)
-                              <span class="badge badge-primary text-small">Sedang Dipelajari</span>
-                          @else
-                              <span class="badge badge-secondary text-small">Belum Diambil</span>
-                          @endif
-                      @endif
-                  </div>
-                  </td>
+                    <td colspan="3">
+                        <a style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}" id="{{ $item->section_order }}" >
+                          <input type="checkbox" {{ $checking_record ? 'checked' : '' }}> {{ $item->section_title }}
+                        </a>
+                    </td>
                 </tr>
             @empty
                 <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
-                    {{-- <a href="{{ route('course.see_section', [$item->lesson_id, $item->section_id]) }}">
-                <span class="badge badge-success ">{{ $item->section_order }}</span><br>
-                </a> --}}
                     <p style="margin-bottom: 0px !important"> Belum Ada Materi di Kelas Ini</p>
                 </li>
             @endforelse

@@ -99,13 +99,28 @@ class OpenClassController extends Controller
         if(!empty($section)){
             $firstSectionId = $section[1]->section_id;
         }
-        // Your logic to mark the section as opened by the user
-        $user =  auth()->user();
-        $user = StudentSection::updateOrCreate(
-            ['section_id' => $sectionId],
-            ['is_finished' => true]
-        );
-        
+
+        $student = Auth::id();
+        $studentSectionValue = "$student" . "-" . "$sectionId";
+
+        // Check if the student-section already exists
+        $existingRecord = StudentSection::where('student-section', $studentSectionValue)->first();
+
+        if ($existingRecord) {
+            // return $existingRecord;
+            $checking_record = $existingRecord ? true : false;
+        } else {
+            // Create a new instance of StudentSection
+            $data = new StudentSection();
+            $data->student_id = $student;
+            $data->section_id = $sectionId;
+            $data->setAttribute('student-section', $studentSectionValue);
+            // Save the data
+            $data->save();
+            $checking_record = $existingRecord ? true : false;
+        }
+
+
         // HANDLING PREV AND NEXT ID
         // Find the next and previous sections
         $nextSectionId = null;
@@ -152,7 +167,8 @@ class OpenClassController extends Controller
         // return $currentSectionId;
         // return $currentSection;
         // dd($prevSectionId, $nextSectionId);
-        $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 'section_spec', 'section', 'nextSectionId', 'prevSectionId');
+        // return $checking_record;
+        $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 'section_spec', 'section', 'nextSectionId', 'prevSectionId', 'checking_record');
         return view('lessons.open_class', $compact);
     }
 
