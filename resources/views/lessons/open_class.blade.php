@@ -1,4 +1,4 @@
-@extends('main.template_openClass')
+@extends('lessons.template_openCourse')
 
 
 @section('main')

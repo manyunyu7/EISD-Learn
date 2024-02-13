@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\DB as FacadesDB;
 
 class OpenClassController extends Controller
 {
-    public function openClass($lessonId, $sectionId, Lesson $lesson, Request $request)
+    public function openClass($lessonId, $sectionId, Lesson $lesson, Request $request, CourseSection $section)
     {
         $userID     = Auth::id();
         $classInfo  = DB::select("SELECT
@@ -93,8 +93,29 @@ class OpenClassController extends Controller
         
 
         // HANDLING CHECKBOX
-        $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
+        $student_sections = DB::select("select * from student_section ");
+        $sections = DB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
+        $section_spec = DB::select("select * from view_course_section where section_id = '$sectionId' ");
+        // Iterate over the sections and check if each one is already added to the student-section
+        foreach ($sections as $key => $section) {
+            // Check if the section is already added to the student-section
+            $isTaken = StudentSection::where('section_id', $section->section_id)
+                ->where('student_id', Auth::id())
+                ->exists();
+
+            // Add the 'isTaken' attribute to the section object
+            $section->isTaken = $isTaken;
+            $section->isCurrent = $sectionId;
+
+            if ($section->section_id == $sectionId) {
+                $section->isCurrent = true;
+            } else {
+                $section->isCurrent = false;
+            }
+        }
+
         $section = $sections;
+       
         $firstSectionId = null;
         if(!empty($section)){
             $firstSectionId = $section[1]->section_id;
@@ -103,22 +124,6 @@ class OpenClassController extends Controller
         $student = Auth::id();
         $studentSectionValue = "$student" . "-" . "$sectionId";
 
-        // Check if the student-section already exists
-        $existingRecord = StudentSection::where('student-section', $studentSectionValue)->first();
-
-        if ($existingRecord) {
-            // return $existingRecord;
-            $checking_record = $existingRecord ? true : false;
-        } else {
-            // Create a new instance of StudentSection
-            $data = new StudentSection();
-            $data->student_id = $student;
-            $data->section_id = $sectionId;
-            $data->setAttribute('student-section', $studentSectionValue);
-            // Save the data
-            $data->save();
-            $checking_record = $existingRecord ? true : false;
-        }
 
 
         // HANDLING PREV AND NEXT ID
@@ -157,18 +162,8 @@ class OpenClassController extends Controller
 
         
         // RETURN VALUE
-        // return $silabusClass;
-        // return $sectionTable;
-        // return $sectionId;
-        // return $existingRecord;
-        // return $nextUrl;
-        // return $section_spec;
         // return $section;
-        // return $currentSectionId;
-        // return $currentSection;
-        // dd($prevSectionId, $nextSectionId);
-        // return $checking_record;
-        $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 'section_spec', 'section', 'nextSectionId', 'prevSectionId', 'checking_record');
+        $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 'section_spec', 'section', 'nextSectionId', 'prevSectionId');
         return view('lessons.open_class', $compact);
     }
 

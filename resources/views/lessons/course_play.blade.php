@@ -221,7 +221,7 @@
 
                         </div>
 
-                        <h4 class="card-title">{{ $lesson->course_title }}</h4>
+                        <h4 class="card-title">{{ $lesson->course_title }}</h4> 
 
                         <p class="card-text">Materi Ke : {{ $sectionSpec->section_order }}</p>
                         {!! $sectionSpec->section_content !!}

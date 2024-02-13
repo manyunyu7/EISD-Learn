@@ -22,6 +22,7 @@
           top: 10px; /* Adjust top position as needed */
           left: 0px; /* Adjust left position as needed */
         }
+        
     
         /* Adjust styles as needed */
         .w3-teal {
@@ -32,23 +33,56 @@
             margin-left: 40px;;
         }
 
-
-        table {
+        /* Style untuk TABEL 1 */
+        .table1 {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px; /* Adjust margin as needed */
         }
 
-        th, td {
+        .table1 th, td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
         }
 
-        th {
+        .table1 th {
         background-color: cyan;
         }
 
+        /* Style untuk TABEL 2 */
+        .table2 {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px; /* Sesuaikan margin sesuai kebutuhan */
+        }
+        
+        .table2 th, .table2 td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .table2 th {
+            background-color: cyan;
+        }
+
+        /* Menerapkan flexbox pada setiap baris table */
+        .table2 tr {
+            display: flex;
+            width: 100%;
+        }
+        
+        /* Mengatur lebar kolom checkbox */
+        .table2 td:first-child {
+            flex-basis: auto; /* Menyesuaikan lebar berdasarkan isi */
+            flex-shrink: 0; /* Tetapkan agar tidak mengecil */
+        }
+        
+        /* Mengatur lebar kolom elemen p */
+        .table2 td:last-child {
+            flex: 1; /* Memanfaatkan ruang yang tersedia */
+        }
 
         .btn {
           border: none; /* Remove borders */
@@ -61,6 +95,7 @@
         .success {background-color: #04AA6D;} /* Green */
         .success:hover {background-color: #46a049;}
 
+        
 
       </style>
       
@@ -70,19 +105,9 @@
     <div class="wrapper">
         
         @if(!isset($showCompact))
-            {{-- <div class="main-header">
-                <!-- Navbar Header -->
-                @auth
-                    @include('main.nav_bar')
-                @endauth
-
-                <!-- End Navbar -->
-            </div> --}}
-
-            <!-- Sidebar -->
-            @include('main.sidebar.class-sidebar')
-            <!-- End Sidebar -->
-
+            <!-- Container Body -->
+            @include('lessons.openCourse')
+            <!-- End Container Body -->
         @endif
 
         @if(!isset($showCompact))

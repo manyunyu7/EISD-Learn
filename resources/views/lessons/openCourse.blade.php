@@ -6,7 +6,7 @@
     <div class="card-body">
       <div class="w3-container">
         {{-- TABEL 1 --}}
-        <table>
+        <table class="table1">
           <tr>
             <td>
               <p>
@@ -28,33 +28,49 @@
       
       <div class="w3-container">
         {{-- TABEL 2 --}}
-        <table>
+        <table class="table2">
             <tr>
                 <td style="color: red"><h5><b>Getting Started</b></h5></td>
-                <td>{{ $totalSections }} sections</td>
+                <td>TOTAL sections</td>
                 <td>% Finish</td>
             </tr>
-            {{-- @foreach ($silabusClass as $item)
-            <tr>
-              <td colspan="3">
-                <input type="checkbox">
-                {{ $item->section_title }}
-              </td>
-            </tr>
-            @endforeach --}}
             @forelse ($section as $item)
                 <tr>
+                    <td>
+                        @if (isset($item) && isset($item->isTaken))
+                          @php
+                              $isCurrent = $item->isCurrent ?? false;
+                          @endphp
+                            @if ($item->isTaken && !$isCurrent)
+                                <input type="checkbox" checked>
+                            @elseif ($isCurrent)
+                                <input type="checkbox" checked>
+                            @else
+                                <input type="checkbox" disabled>
+                            @endif
+                        @endif
+                    </td>
                     <td colspan="3">
-                        <a style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}" id="{{ $item->section_order }}" >
-                          <input type="checkbox" {{ $checking_record ? 'checked' : '' }}> {{ $item->section_title }}
-                        </a>
+                        @if (isset($item) && isset($item->isTaken))
+                            @php
+                                $isCurrent = $item->isCurrent ?? false;
+                            @endphp
+                            <div class="row">
+                                <div class="col">
+                                    <a href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
+                                        <p class="text-dark mb-0">{{ $item->section_title }}</p>
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                     </td>
                 </tr>
             @empty
                 <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
-                    <p style="margin-bottom: 0px !important"> Belum Ada Materi di Kelas Ini</p>
+                    <p style="margin-bottom: 0px !important">Belum Ada Materi di Kelas Ini</p>
                 </li>
             @endforelse
+
         </table>
     </div>
     </div>

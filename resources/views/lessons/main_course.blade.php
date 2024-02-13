@@ -37,12 +37,6 @@
 @section('main')
     <div class="container-fluid">
         <div class="main-content-container container-fluid px-4 mt-5">
-            {{-- @include('blog.breadcumb') --}}
-
-            {{-- @php
-            print_r($lessonz)
-            @endphp --}}
-
             <!-- Page Header -->
             <div class="page-header row no-gutters mb-4">
                 <div class="col-12 col-sm-12 text-center text-sm-left mb-0">
@@ -51,10 +45,8 @@
                 </div>
             </div>
 
-
             <!-- End Page Header -->
             <div class="row">
-
                 <div class="col-lg-12 col-md-12">
                     <!-- Add New Post Form -->
                     <div class="row">
