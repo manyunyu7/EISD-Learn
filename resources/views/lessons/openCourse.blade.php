@@ -10,18 +10,92 @@
           <tr>
             <td>
               <p>
-                  <span class="badge dynamic-badge" style=" border-radius: 0; font-size: 13px; font-weight: bold">{{ $data->course_category }}</span>
+                <span class="w3-badge dynamic-badge" style="border-radius: 0; font-weight: bold">{{ $data->course_category }}</span>
               </p>
             </td>
-            <td><h5>{{ $data->mentor_name }}</h5></td>
-            
+            <script>
+              var badges = document.querySelectorAll('.dynamic-badge');
+          
+              badges.forEach(function (badge) {
+                  var selectedCategory = badge.textContent;
+                  var badgeColor, textColor;
+          
+                  switch (selectedCategory) {
+                      case 'Management Trainee':
+                          badgeColor = '#f7c8ca';
+                          textColor = '#D02025';
+                          break;
+                      case 'General':
+                          badgeColor = 'blue';
+                          break;
+                      case 'Design':
+                          badgeColor = 'green';
+                          break;
+                      case 'Finance & Accounting':
+                          badgeColor = 'purple';
+                          break;
+                      case 'Human Resource and Development':
+                          badgeColor = 'orange';
+                          break;
+                      case '3D Modelling':
+                          badgeColor = 'pink';
+                          break;
+                      case 'Digital Management':
+                          badgeColor = '#EBEBFF';
+                          textColor = '#342F98';
+                          break;
+                      case 'Marketing and Business':
+                          badgeColor = 'yellow';
+                          break;
+                      case 'Food and Beverage':
+                          badgeColor = 'brown';
+                          break;
+                      case 'Management':
+                          badgeColor = 'teal';
+                          break;
+                      case 'Social and Politics':
+                          badgeColor = 'indigo';
+                          break;
+                      case 'Office':
+                          badgeColor = 'maroon';
+                          break;
+                      case 'Outdoor Activity':
+                          badgeColor = 'lime';
+                          break;
+                      case 'Junior High School':
+                          badgeColor = 'navy';
+                          break;
+                      case 'Senior High School':
+                          badgeColor = 'olive';
+                          break;
+          
+                      default:
+                          badgeColor = 'gray';
+                  }
+          
+                  badge.style.backgroundColor = badgeColor;
+                  badge.style.color = textColor; // Set text color to white
+              });
+            </script>
+            <td>
+              <h5>
+                {{ $data->mentor_name }}
+              </h5>
+            </td>
           </tr>
           <tr>
             <td><h4><b>Learning Path</b></h4></td>
             <td> [] % Completed</td>
           </tr>
           <tr >
-            <td colspan="2">BAR PROGRESS</td>
+            <td colspan="2">
+              <div style="width: 100%; background-color: #ddd;">
+                <div  style="width: {{ $progressPercentage }}% ;height: 30px; background-color: #04AA6D; text-align: center; line-height: 30px; color: white;">
+                  {{ $progressPercentage }}%
+                </div>
+              </div>
+
+            </td>
           </tr>
         </table>
       </div>
@@ -30,41 +104,71 @@
         {{-- TABEL 2 --}}
         <table class="table2">
             <tr>
-                <td style="color: red"><h5><b>Getting Started</b></h5></td>
-                <td>TOTAL sections</td>
-                <td>% Finish</td>
+                <td class="align-middle" style="color: red"><h5><b>Getting Started</b></h5></td>
+                <td class="align-middle" >{{ $totalSections }} sections</td>
+                <td class="align-middle">{{ $progressPercentage }}% Finish</td>
             </tr>
-            @forelse ($section as $item)
-                <tr>
-                    <td>
-                        @if (isset($item) && isset($item->isTaken))
-                          @php
-                              $isCurrent = $item->isCurrent ?? false;
-                          @endphp
-                            @if ($item->isTaken && !$isCurrent)
-                                <input type="checkbox" checked>
-                            @elseif ($isCurrent)
-                                <input type="checkbox" checked>
-                            @else
-                                <input type="checkbox" disabled>
-                            @endif
-                        @endif
-                    </td>
-                    <td colspan="3">
-                        @if (isset($item) && isset($item->isTaken))
+            @forelse ($sections as $item)
+                @if (isset($item) && isset($item->isTaken))
+                  @php
+                      $isCurrent = $item->isCurrent ?? false;
+                  @endphp
+                    @if($isCurrent)
+                      <tr style="background-color: #f7ada5">
+                          <td class="align-middle">
+                              @if (isset($item) && isset($item->isTaken))
+                                @php
+                                    $isCurrent = $item->isCurrent ?? false;
+                                @endphp
+                                  @if ($item->isTaken && !$isCurrent)
+                                      <input type="checkbox" checked>
+                                  @elseif ($isCurrent)
+                                      <input type="checkbox" checked>
+                                  @else
+                                      <input type="checkbox" disabled>
+                                  @endif
+                              @endif
+                          </td>
+                          <td class="align-middle" colspan="3">
+                              @if (isset($item) && isset($item->isTaken))
+                                  @php
+                                      $isCurrent = $item->isCurrent ?? false;
+                                  @endphp
+                                  <a style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
+                                    <p class="text-dark">{{ $item->section_title }}</p>
+                                  </a>
+                              @endif
+                          </td>
+                      </tr>
+                    @else
+                    <tr>
+                      <td class="align-middle">
+                          @if (isset($item) && isset($item->isTaken))
                             @php
                                 $isCurrent = $item->isCurrent ?? false;
                             @endphp
-                            <div class="row">
-                                <div class="col">
-                                    <a href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
-                                        <p class="text-dark mb-0">{{ $item->section_title }}</p>
-                                    </a>
-                                </div>
-                            </div>
-                        @endif
-                    </td>
-                </tr>
+                              @if ($item->isTaken && !$isCurrent)
+                                  <input type="checkbox" checked>
+                              @elseif ($isCurrent)
+                                  <input type="checkbox" checked>
+                              @else
+                                  <input type="checkbox" disabled>
+                              @endif
+                          @endif
+                      </td>
+                      <td class="align-middle" colspan="3">
+                          @if (isset($item) && isset($item->isTaken))
+                              @php
+                                  $isCurrent = $item->isCurrent ?? false;
+                              @endphp
+                              <a style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
+                                <p class="text-dark">{{ $item->section_title }}</p>
+                              </a>
+                          @endif
+                      </td>
+                  </tr>
+                    @endif
+                @endif
             @empty
                 <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
                     <p style="margin-bottom: 0px !important">Belum Ada Materi di Kelas Ini</p>

@@ -6,11 +6,15 @@
     <title>{{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 
     @yield('head-section')
 
     <!-- CSS Files -->
     <style>
+        /* p{
+            font-family: Georgia;
+        } */
         /* Custom CSS */
         #main {
           margin-left: 0; /* Initialize margin-left to 0 */
@@ -49,6 +53,7 @@
         .table1 th {
         background-color: cyan;
         }
+        
 
         /* Style untuk TABEL 2 */
         .table2 {
@@ -57,7 +62,12 @@
             margin-top: 10px; /* Sesuaikan margin sesuai kebutuhan */
         }
         
-        .table2 th, .table2 td {
+        .table2 th{
+            border: 0px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .table2 td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
@@ -83,6 +93,14 @@
         .table2 td:last-child {
             flex: 1; /* Memanfaatkan ruang yang tersedia */
         }
+        /* Mengatur tinggi masing-masing baris */
+        .table2 tr {
+            height: 50px; /* Atur tinggi sesuai kebutuhan */
+        }
+        .align-middle {
+            display: flex;
+            align-items: center;
+        }
 
         .btn {
           border: none; /* Remove borders */
@@ -101,6 +119,7 @@
       
 
 </head>
+
 <body>
     <div class="wrapper">
         
@@ -136,6 +155,7 @@
           document.getElementById("main").style.marginLeft = "0";
         }
       </script>
+      
 @yield('script')
 </body>
 </html>

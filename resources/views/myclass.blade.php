@@ -134,6 +134,33 @@
                         <div class="card-body">
                             <div class="row row-eq-height">
                                 @forelse ($myClasses as $data)
+                                    @php
+                                        $silabusClass = DB::select("SELECT
+                                                        a.*
+                                                        FROM
+                                                            course_section a
+                                                        WHERE
+                                                            a.course_id = $data->id
+                                                        ");
+                                        $hasTaken  = DB::select("SELECT
+                                                        a.*
+                                                        FROM
+                                                            student_section a
+                                                        LEFT JOIN
+                                                            course_section b  ON a.section_id = b.id
+                                                        WHERE
+                                                            a.student_id = $userID AND b.course_id = $data->id;
+                                                        "
+                                                        );
+                                        $totalSections = count($silabusClass);
+                                        $total_hasTaken = count($hasTaken);
+                                        if($totalSections != null and $total_hasTaken != null){
+                                            $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                                        }else{
+                                            $progressPercentage = 0;
+                                        }
+                                        
+                                    @endphp
                                 <div class="col-lg-3 col-sm-6 my-2">
                                     <div class="card recommendationCard" style="background-color: white !important">
                                         <a href="javascript:void();" data-switch="0">
@@ -151,11 +178,18 @@
                                         </div>
                                         <hr>
                                         <div class="toga-container col-12">
-                                            <a class="btn btn-custom col-3" href="{{ url('/my-class/open/'. $data->id.'/section'.'/'. $data->first_section) }}" >
+                                            {{-- <a class="btn btn-custom col-3" href="{{ url('/my-class/open/'. $data->id.'/section'.'/'. $data->first_section) }}" >
                                                 <span style="text-decoration: none; color: white; text-align: justify;">Check</span>
-                                            </a>
-                                             
-                                            <p id="progressCourse" class="col-8">100% Completed</p>
+                                            </a> --}}
+                                            <button type="button" class="btn btn-custom col-3" onclick="redirectToSection('{{ url('/my-class/open/'.$data->id.'/section/'.$data->first_section) }}')">
+                                                <span>Check</span>
+                                            </button>
+                                            <script>
+                                                function redirectToSection(url) {
+                                                    window.location.href = url;
+                                                }
+                                            </script>
+                                            <p id="progressCourse" class="col-8">{{ $progressPercentage }}% Completed</p>
                                         </div>
                                         <hr>
                                         <div style="display: flex; justify-content: center; align-items: center;">
