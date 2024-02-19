@@ -188,85 +188,9 @@
             border-radius: 10px !important;
         }
 
-        .container {
-        display: flex;
-        flex-direction: row;
-        }
-
-        .sidebar {
-        width: 200px;
-        background-color: #f0f0f0;
-        }
-
-        .main-content {
-        flex-grow: 1;
-        background-color: #e0e0e0;
-        }
-
-        .sidebar.hidden {
-        display: none;
-        }
-
-        /* Style untuk TABEL 1 */
-        .table1{
-            border-collapse: collapse; /* menggabungkan batas sel */
-        }
-        .table1 td{
-            border: none;
-            padding: 10px;
-        }
-        
-        .table2 {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px; /* Sesuaikan margin sesuai kebutuhan */
-        }
-
-        .table2 th, .table2 td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd; /* Menambahkan border bottom pada setiap sel */
-        }
-
-        /* Menerapkan flexbox pada setiap baris table */
-        .table2 tr {
-            display: flex;
-            width: 100%;
-        }
-
-        /* Mengatur lebar kolom checkbox */
-        .table2 td:first-child {
-            flex-basis: auto; /* Menyesuaikan lebar berdasarkan isi */
-            flex-shrink: 0; /* Tetapkan agar tidak mengecil */
-        }
-
-        /* Mengatur tinggi masing-masing baris */
-        .table2 tr {
-            height: auto; /* Atur tinggi sesuai kebutuhan */
-        }
-
-        .align-middle {
-            display: flex;
-            justify-content: center; /* Untuk mengatur teks secara horizontal di tengah */
-            align-items: center; /* Untuk mengatur teks secara vertikal di tengah */
-            height: 100%; /* Mengisi tinggi sel dengan konten tengah */
-        }
-        .btn {
-            width: 80px; 
-            height: 40px;
-            margin: 10px;
-            padding: 0px 10px;
-            background-color: #04AA6D;
-            color: white;
-            border-radius: 10px !important;
-        }
-        .btn-text {
-            margin: 0; /* Hapus margin default */
-        }
-        .success {background-color: #04AA6D;} /* Green */
-        /* .success:hover {background-color: #46a049;} */
 
         /* STYLE CSS FOR SOCMED SECTION AT PROFILE PAGES */
+       
     </style>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
@@ -318,27 +242,38 @@
     @if(!isset($showCompact))
         <div class="main-header">
             <!-- Logo Header -->
-            <div class="logo-header pull-right" style="background-color: #1D2026">
+            <div class="logo-header" style="background-color: #1D2026">
+                <a href="{{url('/home')}}" class="logo">
+                    <div style="text-align: center;">
+                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg" 
+                             style="width: 80%; 
+                                    height: auto;
+                                    display: flex;
+                                    margin-top: 5px;
+                             "
+                        >
+                    </div>
+                </a>
+                
                 <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
                 <div class="nav-toggle">
-                    <button class="btn btn-toggle" onclick="toggleContainers()">
+                    <button class="btn btn-toggle toggle-sidebar">
                         <i class="icon-menu"></i>
                     </button>
                 </div>
             </div>
-            
             <!-- End Logo Header -->
 
             <!-- Navbar Header -->
             @auth
-                @include('main.navBar_forCourse')
+                @include('main.nav_bar')
             @endauth
 
             <!-- End Navbar -->
         </div>
-        
+
         <!-- Sidebar -->
-        @include('lessons.open_content')
+        @include('main.side-bar')
         <!-- End Sidebar -->
 
     @endif
@@ -406,24 +341,7 @@
 
 
 </script>
-<script>
-    var containersVisible = true;
 
-    function toggleContainers() {
-    var con1 = document.querySelector('.con-1');
-    var con2 = document.querySelector('.con-2');
-
-    if (containersVisible) {
-        con2.style.display = "none";
-        con1.classList.add('col-12');
-    } else {
-        con2.style.display = "block"; // or "inline-block" depending on your layout
-        con1.classList.remove('col-12');
-    }
-
-    containersVisible = !containersVisible;
-    }
-</script>
 @yield('script')
 </body>
 </html>

@@ -125,6 +125,7 @@ class LessonController extends Controller
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
         Paginator::useBootstrap();
+        // return $dayta;
         return view('lessons.manage_lesson', compact('dayta'));
     }
 
