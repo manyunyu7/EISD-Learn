@@ -218,20 +218,42 @@
                                             </select>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label>Quiz/Ujian Jika Ada</label>
-                                            <select class="form-control" name="quiz_session_id">
-                                                <option value="">
-                                                    Tidak Ada Quiz
-                                                </option>
+                                        
+                                        
+                                        <div class="form-group" id="examCheck">
+                                            <label>Pilih Exam yang akan dimuat</label>
+                                            <select class="form-control" name="quiz_session_id" id="isExam">
+                                                <option value="-" selected>-</option>
                                                 @foreach($examSessions as $examSession)
-                                                    <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }}
-                                                       - {{$examSession->title}}
-                                                    </option>
+                                                    <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-
+                                        
+                                        <div class="form-group" id="durationTake" style="display: none;">
+                                            <label>Exam Content?</label>
+                                            <select class="form-control" name="durationTake">
+                                                <option value="15 Menit" selected>15 Menit</option>
+                                                <option value="20 Menit">20 Menit</option>
+                                                <option value="25 Menit">25 Menit</option>
+                                                <option value="30 Menit">30 Menit</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <script>
+                                            document.getElementById('isExam').addEventListener('change', function() {
+                                                var selectedValue = this.value;
+                                                var durationTake = document.getElementById('durationTake');
+                                        
+                                                if (selectedValue === '-') {
+                                                    durationTake.style.display = 'none';
+                                                } else {
+                                                    durationTake.style.display = 'block';
+                                                }
+                                            });
+                                        </script>
+                                        
+                                        
                                         <div class="form-group">
                                             <label class="font-weight-bold">Materi Ke- :</label>
                                             <div class="container row">

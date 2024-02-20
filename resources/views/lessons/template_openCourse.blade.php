@@ -267,6 +267,29 @@
         /* .success:hover {background-color: #46a049;} */
 
         /* STYLE CSS FOR SOCMED SECTION AT PROFILE PAGES */
+
+        
+
+        .landscape video {
+            height: auto;
+            width: 100%;
+        }
+
+        .portrait video {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 70vh; /* Tinggi maksimum video potret */
+        }
+
+        #videoContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; /* Menjamin tinggi container mengikuti tinggi video */
+        }
+
+
     </style>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
@@ -336,6 +359,7 @@
 
             <!-- End Navbar -->
         </div>
+        
         
         <!-- Sidebar -->
         @include('lessons.open_content')

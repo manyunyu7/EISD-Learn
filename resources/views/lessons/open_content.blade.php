@@ -1,12 +1,10 @@
 @forelse ($classInfo as $data)
 <br><br><br><br>
-  <div class="container-fluid" style="background-color: white">
+  <div class="inner-page" style="background-color: cyan">
     <div class="container-fluid">
       <div class="row">
         @forelse ($section_spec as $index => $sectionSpec)
-        <div class="col-8 con-1" style="background-color: white">
-            <h1>KEVIN VALERIAN NINIA</h1>
-
+        <div class="col-8 con-1" style="background-color: white; height:100vh">
             {{-- Segment View Modul --}}
             <div class="container-fluid">
                 @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
@@ -75,48 +73,75 @@
                     @endphp
 
                     @if (in_array($fileExtension, $videoFormats))
-                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
-                               class="video-mask" disablePictureInPicture controlsList="nodownload">
-                            <source
-                                src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
-                        </video>
+                        <div class="container-fluid" id="videoContainer" style="max-height: auto; background-color:black">
+                            <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%" class="video-mask" disablePictureInPicture controlsList="nodownload">
+                                <source src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
+                            </video>
+                        </div>
+                        
+                        <script>
+                            var video = document.getElementById('myVideo');
+                            video.addEventListener('loadedmetadata', function() {
+                                var width = this.videoWidth;
+                                var height = this.videoHeight;
+                                if (width > height) {
+                                    // Landscape
+                                    document.getElementById('videoContainer').classList.add('landscape');
+                                } else {
+                                    // Portrait
+                                    document.getElementById('videoContainer').classList.add('portrait');
+                                }
+                            });
+                        </script>
+                    
                     @elseif (in_array($fileExtension, $imageFormats))
-                        <img
+                        <div class="container-fluid" style="background-color: black">
+                            <img
+                            class="fluid"
+                            style="height: auto; width: 100%;"
                             src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
                             alt="Image">
+                        </div>
                     @else
 
                     @endif
                 @endif
-            </div>
 
-            {{-- Segment Button Navigation --}}
-            @if ($firstSectionId!=null)
-                @if ($prevSectionId)
-                    <button type="button" class="btn btn-success" onclick="prevFunction('{{ route('course.openClass', [$sectionSpec->lesson_id, $prevSectionId]) }}')">
-                        Prev
-                    </button>
-                    <script>
-                        function prevFunction(url) {
-                            window.location.href = url;
-                        }
-                    </script>
+                {{-- Segment Judl Modul --}}
+                <h1>Segment Judul</h1>
+
+                {{-- Segment Deskripsi --}}
+                <h3><b>Deskripsi</b></h3>
+                <p>Isi Deskripsi</p>
+
+                {{-- Segment Button Navigation --}}
+                @if ($firstSectionId!=null)
+                    @if ($prevSectionId)
+                        <button type="button" class="btn btn-success" onclick="prevFunction('{{ route('course.openClass', [$sectionSpec->lesson_id, $prevSectionId]) }}')">
+                            Prev
+                        </button>
+                        <script>
+                            function prevFunction(url) {
+                                window.location.href = url;
+                            }
+                        </script>
+                    @endif
+                    
+                    @if ($nextSectionId !== null)
+                        <button type="button" class="btn btn-success" onclick="nextFunction('{{ route('course.openClass', [$sectionSpec->lesson_id, $nextSectionId]) }}')">
+                            Next
+                        </button>
+                        <script>
+                            function nextFunction(url) {
+                                window.location.href = url;
+                            }
+                        </script>
+                    @endif
                 @endif
-                
-                @if ($nextSectionId !== null)
-                    <button type="button" class="btn btn-success" onclick="nextFunction('{{ route('course.openClass', [$sectionSpec->lesson_id, $nextSectionId]) }}')">
-                        Next
-                    </button>
-                    <script>
-                        function nextFunction(url) {
-                            window.location.href = url;
-                        }
-                    </script>
-                @endif
-            @endif
-            @empty
-            {{-- Handle case where $myClasses is empty --}}
-            @endforelse
+                @empty
+                {{-- Handle case where $myClasses is empty --}}
+                @endforelse
+            </div>
         </div>
         
 

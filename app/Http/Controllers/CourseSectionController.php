@@ -27,13 +27,14 @@ class CourseSectionController extends Controller
 {
     public function manage_section(Request $request, Lesson $lesson)
     {
+        
         $user_id = Auth::id();
         $lesson_id = $lesson->id;
         $examSessions = ExamSession::where(function ($query) {
             $query->whereNull('is_deleted')
                 ->orWhere('is_deleted', '<>', 'y');
         })->get();
-
+        // return dd($examSessions->all());
         if ($user_id != $lesson->mentor_id) {
             abort(401, 'Unauthorized');
         }
@@ -59,10 +60,11 @@ class CourseSectionController extends Controller
             ->orderBy('c.section_order', 'ASC')
             ->get();
         $compact = compact('dayta', 'examSessions', 'lesson');
-
+        // return dd($examSessions);
         if ($request->dump == true) {
             return $compact;
         }
+        
         return view('lessons.section.manage_section', $compact);
     }
 
@@ -499,6 +501,7 @@ class CourseSectionController extends Controller
      */
     public function store(Request $request)
     {
+        // return dd($request->all());
         ini_set('memory_limit', '1024000M');
         $rules = [
             'title' => 'required',
@@ -542,7 +545,7 @@ class CourseSectionController extends Controller
         $inputDeyta->section_content = $request->content ?? '';
         $inputDeyta->section_order = $section_order ?? '';
         $inputDeyta->can_be_accessed = $request->access ?? '';
-        $inputDeyta->quiz_session_id = $request->quiz_session_id ?? '';
+        $inputDeyta->isExam = $request->isExam ?? '';
         $inputDeyta->section_title = $request->title ?? '';
         $inputDeyta->section_video = " ";
 
