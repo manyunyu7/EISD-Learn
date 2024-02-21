@@ -46,6 +46,7 @@ class CourseSectionController extends Controller
                 'b.name as mentor_name',
                 'c.id as section_id',
                 'c.quiz_session_id',
+                'c.duration_take',
                 'c.section_order',
                 'c.section_title',
                 'c.section_content',
@@ -60,11 +61,12 @@ class CourseSectionController extends Controller
             ->orderBy('c.section_order', 'ASC')
             ->get();
         $compact = compact('dayta', 'examSessions', 'lesson');
+        // dd($compact) ;
         // return dd($examSessions);
         if ($request->dump == true) {
             return $compact;
         }
-        
+        // return dd($dayta);
         return view('lessons.section.manage_section', $compact);
     }
 
@@ -545,7 +547,8 @@ class CourseSectionController extends Controller
         $inputDeyta->section_content = $request->content ?? '';
         $inputDeyta->section_order = $section_order ?? '';
         $inputDeyta->can_be_accessed = $request->access ?? '';
-        $inputDeyta->isExam = $request->isExam ?? '';
+        $inputDeyta->quiz_session_id = $request->quiz_session_id ?? '';
+        $inputDeyta->duration_take = $request->durationTake ?? '';
         $inputDeyta->section_title = $request->title ?? '';
         $inputDeyta->section_video = " ";
 
@@ -608,21 +611,12 @@ class CourseSectionController extends Controller
      */
     public function update(Request $request, CourseSection $section)
     {
-        // try {
-        //     //code causing exception to be thrown
-
-
-        // $this->validate($request, [
-        //     'section_u_title'     => 'required',
-        //     'section_u_order'     => 'required|unique:course_section',
-        // ]);
-
-
+        //dd($request->all());
+        // dd($request->all());
         CourseSection::findOrFail($section->id);
 
 
         $lesson_id = $section->course_id;
-        // abort(401,"Lesson_id : ".$lesson_id);
         $section_order = $lesson_id . "-" . $request->section_u_order;
         if ($request->file('section_u_video') == "") {
             $section->update([
@@ -631,6 +625,7 @@ class CourseSectionController extends Controller
                 'course_id' => $lesson_id,
                 'can_be_accessed' => $request->access,
                 'quiz_session_id' => $request->quiz_session_id,
+                'duration_take' => $request->durationTake,
                 'section_title' => $request->section_u_title ?? "",
             ]);
         } else if ($request->file('section_u_video') != "") {
@@ -647,6 +642,7 @@ class CourseSectionController extends Controller
                 'course_id' => $lesson_id,
                 'can_be_accessed' => $request->access,
                 'quiz_session_id' => $request->quiz_session_id,
+                'duration_take' => $request->durationTake,
                 'section_title' => $request->section_u_title,
             ]);
         }
@@ -657,8 +653,5 @@ class CourseSectionController extends Controller
             //redirect dengan pesan error
             return redirect("lesson/$lesson_id/section")->with(['error' => 'Kelas Gagal Diupdate!']);
         }
-        // } catch (Exception $e) {
-        //     return redirect("lesson/$lesson_id/section")->with(['error' => 'Ada Error Masbro!']);
-        // }
     }
 }

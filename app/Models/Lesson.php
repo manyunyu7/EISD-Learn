@@ -17,7 +17,7 @@ class Lesson extends Model
 * `updated_at` FROM `course`
 * @var array
 */
-protected $appends = ['first_section_id'];
+// protected $appends = ['first_section_id'];
 
 
 protected $fillable = [
