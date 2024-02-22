@@ -625,7 +625,7 @@ class CourseSectionController extends Controller
                 'course_id' => $lesson_id,
                 'can_be_accessed' => $request->access,
                 'quiz_session_id' => $request->quiz_session_id,
-                'duration_take' => $request->durationTake,
+                'duration_take' => $request->duration_u_Take,
                 'section_title' => $request->section_u_title ?? "",
             ]);
         } else if ($request->file('section_u_video') != "") {
@@ -642,7 +642,7 @@ class CourseSectionController extends Controller
                 'course_id' => $lesson_id,
                 'can_be_accessed' => $request->access,
                 'quiz_session_id' => $request->quiz_session_id,
-                'duration_take' => $request->durationTake,
+                'duration_take' => $request->duration_u_Take,
                 'section_title' => $request->section_u_title,
             ]);
         }
