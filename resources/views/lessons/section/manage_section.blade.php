@@ -419,60 +419,50 @@
                                                                     </div>
 
                                                                     {{-- Start of Field Update Quiz Validation --}}
-                                                                        <div class="form-group" id="examCheck">
-                                                                            <label>Pilih Exam yang akan dimuat</label>
-                                                                            <select class="form-control" name="quiz_session_id" id="isExam_update" data-selected-value="{{ $data->quiz_session_id }}">
-                                                                                <option value="-" {{ $data->quiz_session_id === '-' ? 'selected' : '' }}>-</option>
-                                                                                @foreach($examSessions as $examSession)
-                                                                                    @if ($data->quiz_session_id == $examSession->id)
-                                                                                        <option value="{{ $examSession->id }}" selected>{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
-                                                                                    @else
-                                                                                        <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
-                                                                                    @endif
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
+                                                                    <div class="form-group" id="examCheck">
+                                                                        <label>Pilih Exam yang akan dimuat</label>
+                                                                        <select class="form-control" name="quiz_session_id" id="isExam_update" data-selected-value="{{ $data->quiz_session_id }}">
+                                                                            <option value="-" {{ $data->quiz_session_id === '-' ? 'selected' : '' }}>-</option>
+                                                                            @foreach($examSessions as $examSession)
+                                                                                @if ($data->quiz_session_id == $examSession->id)
+                                                                                    <option value="{{ $examSession->id }}" selected>{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
+                                                                                @else
+                                                                                    <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
 
-                                                                        <div class="form-group" id="duration_u_Take" style="display: {{ $data->quiz_session_id === '-' ? 'none' : 'block' }}">
-                                                                            @if( $this->getSelectedValue() === '-')
-                                                                                {{-- <label hidden>Durasi Pengerjaan</label>
-                                                                                <select class="form-control" name="duration_u_Take" id="duration_u_Take" hidden>
-                                                                                    <option value="NULLL" selected></option>
-                                                                                </select> --}}
-                                                                            @else
-                                                                                <label>Durasi Pengerjaan</label>
-                                                                                <select class="form-control" name="duration_u_Take" id="duration_u_Take" style="display: block">
-                                                                                    <option value="15" {{ $data->duration_take == 15 ? 'selected' : '' }}>15 Menit</option>
-                                                                                    <option value="20" {{ $data->duration_take == 20 ? 'selected' : '' }}>20 Menit</option>
-                                                                                    <option value="25" {{ $data->duration_take == 25 ? 'selected' : '' }}>25 Menit</option>
-                                                                                    <option value="30" {{ $data->duration_take == 30 ? 'selected' : '' }}>30 Menit</option>
-                                                                                </select>
-                                                                            @endif
-                                                                        </div>
+                                                                    <div class="form-group" id="duration_u_Take_div" style="{{ $data->quiz_session_id === '-' ? 'display:none;' : 'display:block;' }}">
+                                                                        <label>Durasi Pengerjaan</label>
+                                                                        <select class="form-control" name="duration_u_Take" id="duration_u_Take">
+                                                                            <option value="15" {{ $data->duration_take == 15 ? 'selected' : '' }}>15 Menit</option>
+                                                                            <option value="20" {{ $data->duration_take == 20 ? 'selected' : '' }}>20 Menit</option>
+                                                                            <option value="25" {{ $data->duration_take == 25 ? 'selected' : '' }}>25 Menit</option>
+                                                                            <option value="30" {{ $data->duration_take == 30 ? 'selected' : '' }}>30 Menit</option>
+                                                                        </select>
+                                                                    </div>
 
-                                                                        <script>
-                                                                            document.getElementById('isExam_update').addEventListener('change', function() {
-                                                                                var selectedValue = this.value;
-                                                                                var duration_u_Take = document.getElementById('duration_u_Take');
-
-                                                                                if (selectedValue != '-') {
-                                                                                    duration_u_Take.style.display = 'block';
-                                                                                } else {
-                                                                                    duration_u_Take.style.display = 'none';
-                                                                                    // document.getElementById('duration_u_Take').addEventListener('change', function(){
-                                                                                    //     duration_u_Take.value = null;
-                                                                                    // })
-                                                                                }
-                                                                            });
-
-                                                                            // Mendapatkan nilai yang dipilih dari elemen select
-                                                                            var selectedValue = document.getElementById('isExam_update').getAttribute('data-selected-value');
-
-                                                                            // Fungsi untuk digunakan di luar skrip
-                                                                            function getSelectedValue() {
-                                                                                return selectedValue;
+                                                                    <script>
+                                                                        document.getElementById('isExam_update').addEventListener('change', function() {
+                                                                            var selectedValue = this.value;
+                                                                            var duration_u_Take_div = document.getElementById('duration_u_Take_div');
+                                                                    
+                                                                            if (selectedValue === '-') {
+                                                                                document.getElementById('duration_u_Take').value = null;
+                                                                                duration_u_Take_div.style.display = 'none';
+                                                                            } else {
+                                                                                duration_u_Take_div.style.display = 'block';
                                                                             }
-                                                                        </script>
+                                                                        });
+                                                                    
+                                                                        // Set selected duration if it's available in data
+                                                                        var initialDuration = "{{ $data->duration_take }}";
+                                                                        if (initialDuration !== '-') {
+                                                                            document.getElementById('duration_u_Take').value = selectedValue;
+                                                                            document.getElementById('duration_u_Take_div').style.display = 'block';
+                                                                        }
+                                                                    </script>
                                                                     {{-- End of Field Update Quiz Validation --}}
 
 
