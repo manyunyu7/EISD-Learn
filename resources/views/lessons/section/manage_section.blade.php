@@ -422,24 +422,25 @@
                                                                     <div class="form-group" id="examCheck">
                                                                         <label>Pilih Exam yang akan dimuat</label>
                                                                         <select class="form-control" name="quiz_session_id" id="isExam_update" data-selected-value="{{ $data->quiz_session_id }}">
-                                                                            <option value="-" {{ $data->quiz_session_id === '-' ? 'selected' : '' }}>-</option>
+                                                                            <option value="-"  {{ $data->quiz_session_id === '-' ? 'selected' : '' }}>-</option>
                                                                             @foreach($examSessions as $examSession)
                                                                                 @if ($data->quiz_session_id == $examSession->id)
-                                                                                    <option value="{{ $examSession->id }}" selected>{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
+                                                                                    <option value="{{ $examSession->id }}"  selected>{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
                                                                                 @else
-                                                                                    <option value="{{ $examSession->id }}">{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
+                                                                                    <option value="{{ $examSession->id }}" >{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
                                                                                 @endif
                                                                             @endforeach
+                                                                            
                                                                         </select>
                                                                     </div>
 
                                                                     <div class="form-group" id="duration_u_Take_div" style="{{ $data->quiz_session_id === '-' ? 'display:none;' : 'display:block;' }}">
                                                                         <label>Durasi Pengerjaan</label>
                                                                         <select class="form-control" name="duration_u_Take" id="duration_u_Take">
-                                                                            <option value="15" {{ $data->duration_take == 15 ? 'selected' : '' }}>15 Menit</option>
-                                                                            <option value="20" {{ $data->duration_take == 20 ? 'selected' : '' }}>20 Menit</option>
-                                                                            <option value="25" {{ $data->duration_take == 25 ? 'selected' : '' }}>25 Menit</option>
-                                                                            <option value="30" {{ $data->duration_take == 30 ? 'selected' : '' }}>30 Menit</option>
+                                                                            <option value="15" {{ $data->duration_take === 15 ? 'selected' : '' }}>15 Menit</option>
+                                                                            <option value="20" {{ $data->duration_take === 20 ? 'selected' : '' }}>20 Menit</option>
+                                                                            <option value="25" {{ $data->duration_take === 25 ? 'selected' : '' }}>25 Menit</option>
+                                                                            <option value="30" {{ $data->duration_take === 30 ? 'selected' : '' }}>30 Menit</option>
                                                                         </select>
                                                                     </div>
 
@@ -452,6 +453,7 @@
                                                                                 document.getElementById('duration_u_Take').value = null;
                                                                                 duration_u_Take_div.style.display = 'none';
                                                                             } else {
+                                                                                document.getElementById('duration_u_Take').value = selectedValue;
                                                                                 duration_u_Take_div.style.display = 'block';
                                                                             }
                                                                         });

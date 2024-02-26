@@ -235,6 +235,33 @@ class MentorExamController extends Controller
         }
         return view("exam.manage_exam")->with($compact);
     }
+    public function viewManageExam_v2(Request $request)
+    {
+        $dayta = Exam::where("created_by", '=', Auth::id())
+            ->where("is_deleted", "<>", "y")
+            ->orWhereNull("is_deleted")
+            ->get();
+        $compact = compact('dayta');
+
+        if ($request->dump == true) {
+            return $compact;
+        }
+        return view("exam.manage_exam_versi_2")->with($compact);
+    }
+    
+    public function viewCreateExam_v2(Request $request)
+    {
+        $dayta = Exam::where("created_by", '=', Auth::id())
+            ->where("is_deleted", "<>", "y")
+            ->orWhereNull("is_deleted")
+            ->get();
+        $compact = compact('dayta');
+
+        if ($request->dump == true) {
+            return $compact;
+        }
+        return view("exam.create_exam_versi_2")->with($compact);
+    }
 
     public function updateExam(Request $request)
     {
