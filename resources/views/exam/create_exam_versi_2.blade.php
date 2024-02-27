@@ -2,8 +2,16 @@
 
 @section('head-section')
     <!-- Datatables -->
-
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#editor' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+    
 @endsection
 
 @section('script')
@@ -83,7 +91,6 @@
         });
     </script>
 
-
     <script>
         //message with toastr
         @if(session()-> has('success'))
@@ -111,64 +118,198 @@
 
     <div class="page-inner">
         {{-- SETUP QUIZ --}}
-        <div class="container container-soal" style="background-color: cyan">
+        <div class="container container-soal">
+            <div class="page-header">
+                <h1><b>STEP 1</b></h1><br>
+            </div>
             <div class="page-header">
                 <h2><b>SetUp Quiz/Pre-Test/Post-Test/Evaluation</b></h2>
             </div>
+            <form id="addSessionForm" method="post" action="{{ route('store.quiz') }}">
+                @csrf
+                @method('POST')
 
-            <div class="mb-3">
-                <label for="" class="mb-2">Judul Ujian</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="" class="mb-2">Jenis Ujian</label>
-                <div class="input-group mb-3">
-                    <select class="form-control form-select-lg" aria-label="Default select example">
-                        <option selected>Pilih Jenis Soal</option>
-                        <option value="1">Pre Test</option> 
-                        <option value="2">Post Test</option>
-                        <option value="3">Quiz</option> 
-                        <option value="4">Evaluation</option>
-                    </select>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="" class="mb-2">Batas Waktu (Menit)</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                </div>
-            </div>
-        </div>
-        {{-- SOAL UJIAN --}}
-        <div class="container container-soal" style="background-color: salmon">
-            <div class="page-header">
-                <h2><b>Soal Ujian</b></h2>
-            </div>
-    
-            <div class="mb-3">
-                <label for="" class="mb-2">Soal</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="" class="mb-2">Gambar Soal</label>
+                {{-- Input Judul Ujian --}}
                 <div class="mb-3">
-                    <input class="form-control" type="file" id="formFileMultiple" multiple>
+                    <label for="" class="mb-2">Judul Ujian</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" name="title">
+                    </div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="" class="mb-2">Jumlah Soal</label>
-                <div class="input-group mb-3">
-                    <select class="form-control form-select-lg" aria-label="Default select example">
-                        <option selected>Pilih Jenis Soal</option>
-                        <option value="1">Pilihan Ganda</option>
-                        <option value="2">Multiple Choice</option>
-                    </select>
+                {{-- Input Jenis Soal --}}
+                <div class="mb-3">
+                    <label for="" class="mb-2">Jenis Ujian</label>
+                    <div class="input-group mb-3">
+                        <select class="form-control form-select-lg" aria-label="Default select example">
+                            <option selected>Pilih Kategori</option>
+                            <option value="1">Pre Test</option> 
+                            <option value="2">Post Test</option>
+                            <option value="3">Quiz</option> 
+                            <option value="4">Evaluation</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
+                {{-- Input Batas Waktu --}}
+                <div class="mb-3">
+                    <label for="" class="mb-2">Batas Waktu (Menit)</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                {{-- Input Start and End Date --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="" class="mb-2">Start Date</label>
+                        <div class="input-group mb-3">
+                            <input type="datetime-local" class="form-control" id="start_date" name="start_date">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="" class="mb-2">End Date</label>
+                        <div class="input-group mb-3">
+                            <input type="datetime-local" class="form-control" id="end_date" name="end_date">
+                        </div>
+                    </div>
+                </div>
+                {{-- Input Instruksi Exam --}}
+                <div class="mb-3">
+                    <label for="" class="mb-2">Instruksi Exam</label>
+                    <input type="text-area" id="editor" class="form-control" name="instruction">
+                    <script>
+                        ClassicEditor
+                            .create( document.querySelector( '#editor' ) )
+                            .catch( error => {
+                                console.error( error );
+                            } );
+                    </script>
+                </div>
+    
+    
+                {{-- SETUP ACCESS --}}
+                {{-- <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="" class="mb-2">Public Access</label>
+                        <div class="input-group mb-3">
+                            <button name="public_access" id="public-access-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="" class="mb-2">Show Result</label>
+                        <div class="input-group mb-3">
+                            <button name="show_result_on_end" id="show-result-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="" class="mb-2">Allow Review</label>
+                        <div class="input-group mb-3">
+                            <button name="allow_review" id="allow-review-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="" class="mb-2">Allow Multiple</label>
+                        <div class="input-group mb-3">
+                            <button name="allow_multiple" id="allow-multiple-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                        </div>
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            var btn_public_access = document.getElementById('public-access-btn');
+                            var btn_show_result = document.getElementById('show-result-btn');
+                            var btn_allow_review = document.getElementById('allow-review-btn');
+                            var btn_allow_multiple = document.getElementById('allow-multiple-btn');
+    
+                            var isActive_PA = false;
+                            var isActive_SR = false;
+                            var isActive_AR = false;
+                            var isActive_AM = false;
+                    
+                            // Public Access Setup
+                            btn_public_access.addEventListener('click', function () {
+                                // Tidak Aktif
+                                if (isActive_PA) {
+                                    btn_public_access.classList.remove('btn-success');
+                                    btn_public_access.classList.add('btn-danger');
+                                    btn_public_access.textContent = 'Tidak Aktif';
+                                    isActive_PA = false;
+                                } 
+                                // Aktif
+                                else {
+                                    btn_public_access.classList.remove('btn-danger');
+                                    btn_public_access.classList.add('btn-success');
+                                    btn_public_access.textContent = 'Aktif';
+                                    isActive_PA = true;
+                                }
+                            });
+                            
+                            // Show Result Setup
+                            btn_show_result.addEventListener('click', function () {
+                                // Tidak Aktif
+                                if (isActive_SR) {
+                                    btn_show_result.classList.remove('btn-success');
+                                    btn_show_result.classList.add('btn-danger');
+                                    btn_show_result.textContent = 'Tidak Aktif';
+                                    isActive_SR = false;
+                                } 
+                                // Aktif
+                                else {
+                                    btn_show_result.classList.remove('btn-danger');
+                                    btn_show_result.classList.add('btn-success');
+                                    btn_show_result.textContent = 'Aktif';
+                                    isActive_SR = true;
+                                }
+                            });
+    
+                            // Allow Review Setup
+                            btn_allow_review.addEventListener('click', function () {
+                                // Tidak Aktif
+                                if (isActive_AR) {
+                                    btn_allow_review.classList.remove('btn-success');
+                                    btn_allow_review.classList.add('btn-danger');
+                                    btn_allow_review.textContent = 'Tidak Aktif';
+                                    isActive_AR = false;
+                                } 
+                                // Aktif
+                                else {
+                                    btn_allow_review.classList.remove('btn-danger');
+                                    btn_allow_review.classList.add('btn-success');
+                                    btn_allow_review.textContent = 'Aktif';
+                                    isActive_AR = true;
+                                }
+                            });
+    
+                            // Allow Multiple Setup
+                            btn_allow_multiple.addEventListener('click', function () {
+                                // Tidak Aktif
+                                if (isActive_AM) {
+                                    btn_allow_multiple.classList.remove('btn-success');
+                                    btn_allow_multiple.classList.add('btn-danger');
+                                    btn_allow_multiple.textContent = 'Tidak Aktif';
+                                    isActive_AM = false;
+                                } 
+                                // Aktif
+                                else {
+                                    btn_allow_multiple.classList.remove('btn-danger');
+                                    btn_allow_multiple.classList.add('btn-success');
+                                    btn_allow_multiple.textContent = 'Aktif';
+                                    isActive_AM = true;
+                                }
+                            });
+                        });
+                    </script>
+                </div> --}}
+    
+                <div class="mb-3" style="display: flex; justify-content: flex-end;">
+                    <div style="flex-grow: 1;"></div>
+                    <div style="width: 200px;">
+                        <div class="input-group mb-3">
+                            <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
+                            <button type="submit" id="saveEditBtn" class="btn btn-primary" style="width: 45%; margin-left: 5px;">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            
         </div>
     </div>
 

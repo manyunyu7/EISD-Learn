@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Exam;
 use App\Models\ExamQuestionAnswers;
+use App\Models\ExamSession;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -90,10 +91,10 @@ class MentorExamController extends Controller
     {
 
         $validatedData = $request->validate([
-//            'question' => 'required',
-//            'correct_answer' => 'required',
-//            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
-            // Add other validation rules as needed
+                            //            'question' => 'required',
+                            //            'correct_answer' => 'required',
+                            //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
+                                        // Add other validation rules as needed
         ]);
 
         // Create a new ExamQuestionAnswer instance and fill it with the validated data
@@ -138,10 +139,10 @@ class MentorExamController extends Controller
     {
 
         $validatedData = $request->validate([
-//            'question' => 'required',
-//            'correct_answer' => 'required',
-//            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
-            // Add other validation rules as needed
+                            //            'question' => 'required',
+                                //            'correct_answer' => 'required',
+                                //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
+                                            // Add other validation rules as needed
         ]);
 
         // Create a new ExamQuestionAnswer instance and fill it with the validated data
@@ -262,6 +263,19 @@ class MentorExamController extends Controller
         }
         return view("exam.create_exam_versi_2")->with($compact);
     }
+    public function viewLoadExam_v2(Request $request)
+    {
+        $dayta = Exam::where("created_by", '=', Auth::id())
+            ->where("is_deleted", "<>", "y")
+            ->orWhereNull("is_deleted")
+            ->get();
+        $compact = compact('dayta');
+
+        if ($request->dump == true) {
+            return $compact;
+        }
+        return view("exam.create_exam_v2_next_step")->with($compact);
+    }
 
     public function updateExam(Request $request)
     {
@@ -293,32 +307,94 @@ class MentorExamController extends Controller
         }
     }
 
+
     public function storeNewExam(Request $request)
     {
-        $exam = new Exam();
         $user_id = Auth::id();
+        
+        // Insert to Table Exam
+        $exam = new Exam();
         $exam->title = $request->title;
-        $exam->randomize = $request->randomize;
-        $exam->can_access = $request->can_access;
-        $exam->start_date = $request->startDate;
-        $exam->end_date = $request->endDate;
-        $exam->instruction = $request->instruction;
-        $exam->description = $request->description;
-        $exam->created_by = $user_id;
-
         if ($request->file('image') != "") {
             $image = $request->file('image');
             $name = $image->hashName();
             $image->storeAs('public/exam/cover/', $name);
             $exam->image = $name;
         }
+        $exam->start_date = $request->startDate;
+        $exam->end_date = $request->endDate;
+        $exam->instruction = $request->instruction;
+        $exam->description = $request->description;
+        $exam->randomize = $request->randomize;
+        $exam->can_access = $request->can_access;
+        $exam->created_by = $user_id;
+        
 
+        // SAVE INPUT
         if ($exam->save()) {
             //redirect dengan pesan sukses
-            return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+
+            // $examSession->exam_id = $exam->id;
+            $user_id = Auth::id();
+        
+            // Insert to Table Exam Session
+            $examSession = new ExamSession();
+            // $examSession->start_date = $request->start_date;
+            // $examSession->end_date = $request->end_date;
+            $examSession->instruction = $request->instruction;
+            $examSession->description = 'Test';
+            $examSession->can_access = 'Test';
+            $examSession->public_access = 'Test';
+            $examSession->show_result_on_end = 'Test';
+            $examSession->time_limit_minute = 'Test';
+            $examSession->allow_review = 'Test';
+            $examSession->show_score_on_review = 'Test';
+            $examSession->allow_multiple = 'Test';
+            $examSession->is_deleted = 'Test';
+            $examSession->exam_id = $exam->id;
+            $examSession->created_by = $user_id;
+            $examSession->questions_answers = null;
+            // $examSession->created_at = 'Test';
+            // $examSession->updated_at = 'Test';
+            $examSession->title = 'Test';
+            $examSession->save();
+
+            // return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+            return redirect(url('/exam/manage-exam-v2/load-exam'))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+
         } else {
             //redirect dengan pesan error
             return redirect('exam/new')->with(['error' => 'Gagal Menyimpan Exam']);
         }
     }
+
+    // BACKUP storeNewExam
+    // public function storeNewExam(Request $request)
+    // {
+    //     $exam = new Exam();
+    //     $user_id = Auth::id();
+    //     $exam->title = $request->title;
+    //     $exam->randomize = $request->randomize;
+    //     $exam->can_access = $request->can_access;
+    //     $exam->start_date = $request->startDate;
+    //     $exam->end_date = $request->endDate;
+    //     $exam->instruction = $request->instruction;
+    //     $exam->description = $request->description;
+    //     $exam->created_by = $user_id;
+
+    //     if ($request->file('image') != "") {
+    //         $image = $request->file('image');
+    //         $name = $image->hashName();
+    //         $image->storeAs('public/exam/cover/', $name);
+    //         $exam->image = $name;
+    //     }
+
+    //     if ($exam->save()) {
+    //         //redirect dengan pesan sukses
+    //         return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+    //     } else {
+    //         //redirect dengan pesan error
+    //         return redirect('exam/new')->with(['error' => 'Gagal Menyimpan Exam']);
+    //     }
+    // }
 }
