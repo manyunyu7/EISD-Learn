@@ -136,8 +136,13 @@
                             <button class="btn btn-primary"></button>
                             <button class="btn btn-secondary"></button>
                             <button class="btn btn-success"></button>
-                            <button class="btn btn-danger"></button>
+                            <button class="btn btn-danger" onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">EDIT</button>
                         </td>
+                        <script>
+                            function redirectToSection_edit(url) {
+                                window.location.href = url;
+                            }
+                        </script>
                     </tr>
                     @empty
                     @endforelse

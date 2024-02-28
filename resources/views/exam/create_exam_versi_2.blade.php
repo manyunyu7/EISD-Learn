@@ -140,12 +140,11 @@
                 <div class="mb-3">
                     <label for="" class="mb-2">Jenis Ujian</label>
                     <div class="input-group mb-3">
-                        <select class="form-control form-select-lg" aria-label="Default select example">
-                            <option selected>Pilih Kategori</option>
-                            <option value="1">Pre Test</option> 
-                            <option value="2">Post Test</option>
-                            <option value="3">Quiz</option> 
-                            <option value="4">Evaluation</option>
+                        <select name="exam_type" class="form-control form-select-lg" aria-label="Default select example">
+                            <option value="Pre Test">Pre Test</option> 
+                            <option value="Post Test">Post Test</option>
+                            <option value="Quiz">Quiz</option> 
+                            <option value="Evaluation">Evaluation</option>
                         </select>
                     </div>
                 </div>
@@ -153,7 +152,7 @@
                 <div class="mb-3">
                     <label for="" class="mb-2">Batas Waktu (Menit)</label>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input name="times_limit" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                     </div>
                 </div>
                 {{-- Input Start and End Date --}}
@@ -174,7 +173,7 @@
                 {{-- Input Instruksi Exam --}}
                 <div class="mb-3">
                     <label for="" class="mb-2">Instruksi Exam</label>
-                    <input type="text-area" id="editor" class="form-control" name="instruction">
+                    <textarea id="editor" class="form-control" name="instruction"></textarea>
                     <script>
                         ClassicEditor
                             .create( document.querySelector( '#editor' ) )
@@ -186,29 +185,29 @@
     
     
                 {{-- SETUP ACCESS --}}
-                {{-- <div class="row">
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Public Access</label>
                         <div class="input-group mb-3">
-                            <button name="public_access" id="public-access-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                            <input readonly type="text" value="Tidak Aktif" name="public_access" id="public-access-btn" class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Show Result</label>
                         <div class="input-group mb-3">
-                            <button name="show_result_on_end" id="show-result-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                            <input readonly type="text" value="Tidak Aktif" name="show_result_on_end" id="show-result-btn" class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Allow Review</label>
                         <div class="input-group mb-3">
-                            <button name="allow_review" id="allow-review-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                            <input readonly type="text" value="Tidak Aktif" name="allow_review" id="allow-review-btn" class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Allow Multiple</label>
                         <div class="input-group mb-3">
-                            <button name="allow_multiple" id="allow-multiple-btn" class="btn btn-danger" style="width: 100%">Tidak Aktif</button>
+                            <input readonly type="text" value="Tidak Aktif" name="allow_multiple" id="allow-multiple-btn" class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <script>
@@ -230,6 +229,7 @@
                                     btn_public_access.classList.remove('btn-success');
                                     btn_public_access.classList.add('btn-danger');
                                     btn_public_access.textContent = 'Tidak Aktif';
+                                    btn_public_access.value ='Tidak Aktif';
                                     isActive_PA = false;
                                 } 
                                 // Aktif
@@ -237,6 +237,7 @@
                                     btn_public_access.classList.remove('btn-danger');
                                     btn_public_access.classList.add('btn-success');
                                     btn_public_access.textContent = 'Aktif';
+                                    btn_public_access.value ='Aktif';
                                     isActive_PA = true;
                                 }
                             });
@@ -248,6 +249,7 @@
                                     btn_show_result.classList.remove('btn-success');
                                     btn_show_result.classList.add('btn-danger');
                                     btn_show_result.textContent = 'Tidak Aktif';
+                                    btn_show_result.value = 'Tidak Aktif';
                                     isActive_SR = false;
                                 } 
                                 // Aktif
@@ -255,6 +257,7 @@
                                     btn_show_result.classList.remove('btn-danger');
                                     btn_show_result.classList.add('btn-success');
                                     btn_show_result.textContent = 'Aktif';
+                                    btn_show_result.value = 'Aktif';
                                     isActive_SR = true;
                                 }
                             });
@@ -266,6 +269,7 @@
                                     btn_allow_review.classList.remove('btn-success');
                                     btn_allow_review.classList.add('btn-danger');
                                     btn_allow_review.textContent = 'Tidak Aktif';
+                                    btn_allow_review.value = 'Tidak Aktif';
                                     isActive_AR = false;
                                 } 
                                 // Aktif
@@ -273,6 +277,7 @@
                                     btn_allow_review.classList.remove('btn-danger');
                                     btn_allow_review.classList.add('btn-success');
                                     btn_allow_review.textContent = 'Aktif';
+                                    btn_allow_review.value = 'Aktif';
                                     isActive_AR = true;
                                 }
                             });
@@ -284,6 +289,7 @@
                                     btn_allow_multiple.classList.remove('btn-success');
                                     btn_allow_multiple.classList.add('btn-danger');
                                     btn_allow_multiple.textContent = 'Tidak Aktif';
+                                    btn_allow_multiple.value = 'Tidak Aktif';
                                     isActive_AM = false;
                                 } 
                                 // Aktif
@@ -291,12 +297,13 @@
                                     btn_allow_multiple.classList.remove('btn-danger');
                                     btn_allow_multiple.classList.add('btn-success');
                                     btn_allow_multiple.textContent = 'Aktif';
+                                    btn_allow_multiple.value = 'Aktif';
                                     isActive_AM = true;
                                 }
                             });
                         });
                     </script>
-                </div> --}}
+                </div>
     
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">
                     <div style="flex-grow: 1;"></div>

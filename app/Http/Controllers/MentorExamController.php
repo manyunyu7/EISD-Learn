@@ -135,6 +135,62 @@ class MentorExamController extends Controller
         return response()->json(['message' => 'Question stored successfully'], 200);
     }
 
+    public function storeQuestion_v2(Request $request)
+    {
+
+        $validatedData = $request->validate([
+                            //            'question' => 'required',
+                            //            'correct_answer' => 'required',
+                            //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
+                                        // Add other validation rules as needed
+        ]);
+
+
+        
+        // Create a new ExamQuestionAnswer instance and fill it with the validated data
+        $questionAnswer = new ExamQuestionAnswers();
+        $questionAnswer->question = $request->question;
+
+        if ($request->file('question_images') != "") {
+            $image = $request->file('question_images');
+            $name = $image->hashName();
+            $image->storeAs('public/exam/question/', $name);
+            $questionAnswer->image = $name;
+        }
+        $questionAnswer->question_type = $request->type_questions;
+        $questionAnswer->correct_answer = $request->exam_id;
+        $questionAnswer->order = $request->exam_id;
+
+
+        $choices = [];
+
+        // Iterasi melalui request untuk mengambil nilai pilihan jawaban dan skornya
+        for ($i = 1; $i <= 4; $i++) {
+            // Cek apakah input dengan nama "stm_$i" dan "scr_$i" ada dalam request
+            if ($request->has("stm_$i") && $request->has("scr_$i")) {
+                // Tambahkan data pilihan jawaban dan skor ke dalam array
+                $choices[] = [
+                    'text' => $request->input("stm_$i"),
+                    'score' => $request->input("scr_$i"),
+                ];
+            }
+        }
+
+        // Konversi array pilihan jawaban menjadi JSON
+        $questionAnswer->choices = json_encode($choices);
+        
+        $questionAnswer->exam_id = $request->exam_id;
+        
+        $questionAnswer->created_by = auth()->user()->id;
+
+
+        // Save the question
+        dd($questionAnswer);
+        // $questionAnswer->save();
+
+        // return response()->json(['message' => 'Question stored successfully'], 200);
+    }
+
     public function updateQuestion(Request $request)
     {
 
@@ -223,6 +279,7 @@ class MentorExamController extends Controller
     }
 
 
+    // MANAGE EXAM
     public function viewManageExam(Request $request)
     {
         $dayta = Exam::where("created_by", '=', Auth::id())
@@ -247,6 +304,7 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
+        // dd($dayta);
         return view("exam.manage_exam_versi_2")->with($compact);
     }
     
@@ -261,15 +319,16 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
+        dd($dayta);
         return view("exam.create_exam_versi_2")->with($compact);
     }
-    public function viewLoadExam_v2(Request $request)
+    public function viewLoadExam_v2(Request $request, $examId)
     {
         $dayta = Exam::where("created_by", '=', Auth::id())
             ->where("is_deleted", "<>", "y")
             ->orWhereNull("is_deleted")
             ->get();
-        $compact = compact('dayta');
+        $compact = compact('dayta', 'examId');
 
         if ($request->dump == true) {
             return $compact;
@@ -334,22 +393,24 @@ class MentorExamController extends Controller
         if ($exam->save()) {
             //redirect dengan pesan sukses
 
-            // $examSession->exam_id = $exam->id;
+            $examId = $exam->id;
             $user_id = Auth::id();
         
             // Insert to Table Exam Session
             $examSession = new ExamSession();
-            // $examSession->start_date = $request->start_date;
-            // $examSession->end_date = $request->end_date;
+            $examSession->start_date = $request->start_date;
+            $examSession->end_date = $request->end_date;
             $examSession->instruction = $request->instruction;
             $examSession->description = 'Test';
             $examSession->can_access = 'Test';
-            $examSession->public_access = 'Test';
-            $examSession->show_result_on_end = 'Test';
-            $examSession->time_limit_minute = 'Test';
-            $examSession->allow_review = 'Test';
-            $examSession->show_score_on_review = 'Test';
-            $examSession->allow_multiple = 'Test';
+            $examSession->time_limit_minute = $request->times_limit;
+            
+            $examSession->public_access = $request->public_access;
+            $examSession->allow_review = $request->allow_review;
+            $examSession->show_score_on_review = 'y/n';
+            $examSession->show_result_on_end = $request->show_result_on_end;
+            $examSession->allow_multiple = $request->allow_multiple;
+           
             $examSession->is_deleted = 'Test';
             $examSession->exam_id = $exam->id;
             $examSession->created_by = $user_id;
@@ -357,7 +418,13 @@ class MentorExamController extends Controller
             // $examSession->created_at = 'Test';
             // $examSession->updated_at = 'Test';
             $examSession->title = 'Test';
+            $examSession->exam_type = $request->exam_type;
+            
+
+            // Save to Table
+            // dd($examSession);
             $examSession->save();
+
 
             // return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
             return redirect(url('/exam/manage-exam-v2/load-exam'))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);

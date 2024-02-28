@@ -91,7 +91,7 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('manage', 'MentorExamController@viewManageExam');
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
-            Route::get('manage-exam-v2/load-exam', 'MentorExamController@viewLoadExam_v2');
+            Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
 
 
             Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
@@ -120,6 +120,8 @@ Route::group(['middleware’' => ['auth']], function () {
 
             Route::get('{id}/question-order', 'MentorExamController@viewManageQuestionOrder');
             Route::post('save-question', 'MentorExamController@storeQuestion');
+            Route::post('save-question-to-db', 'MentorExamController@storeQuestion_v2')->name('store.question');
+
             Route::any('mquestions', 'MentorExamController@fetchQuestions');
             Route::any('question/edit-questions', 'MentorExamController@fetchQuestions')->name("edit_question");
             Route::any('update-question-order', 'MentorExamController@updateQuestionOrder')->name("update_question_order");

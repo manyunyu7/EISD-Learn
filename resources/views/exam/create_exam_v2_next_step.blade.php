@@ -118,34 +118,101 @@
 
     <div class="page-inner">
         {{-- SOAL UJIAN --}}
-        <div class="container container-soal" style="background-color: salmon">
+        <div class="container load-soal" style="background-color: white">
             <div class="page-header">
-                <h2><b>Soal Ujian</b></h2>
+                <h2><b>Soal Ujian ExamID: {{ $examId }}</b></h2>
             </div>
-    
-            <div class="mb-3">
-                <label for="" class="mb-2">Soal</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="" class="mb-2">Gambar Soal</label>
+            <form id="addSessionForm" method="post" action="{{ route('store.question') }}">
+                @csrf
+                @method('POST')
+
+                <input hidden name="exam_id" type="text" value="{{ $examId }}">
                 <div class="mb-3">
-                    <input class="form-control" type="file" id="formFileMultiple" multiple>
+                    <label for="" class="mb-2">Soal</label>
+                    <div class="input-group mb-3">
+                        <input name="question" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    </div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="" class="mb-2">Jumlah Soal</label>
-                <div class="input-group mb-3">
-                    <select class="form-control form-select-lg" aria-label="Default select example">
-                        <option selected>Pilih Jenis Soal</option>
-                        <option value="1">Pilihan Ganda</option>
-                        <option value="2">Multiple Choice</option>
-                    </select>
+                <div class="mb-3">
+                    <label for="" class="mb-2">Gambar Soal</label>
+                    <div class="mb-3">
+                        <input name="question_images" class="form-control" type="file" id="formFileMultiple" multiple>
+                    </div>
                 </div>
+                <div class="mb-3">
+                    <label for="" class="mb-2">Jenis Soal</label>
+                    <div class="input-group mb-3">
+                        <select name="type_questions" class="form-control form-select-lg" aria-label="Default select example">
+                            <option value="Multiple Choice">Multiple Choice</option>
+                            <option value="Single Multiple Choice">Single Multiple Choice</option>
+                        </select>
+                    </div>
+                </div>
+
+                {{-- INPUT PILIHAN JAWABAN --}}
+                <div class="card" style="border-block: 1px">
+                    <div class="card-header" style="background-color:rgb(44, 84, 108); color: white">
+                        <h3>Input Pilihan Jawaban</h3>
+                    </div>
+                    <div class="card-body" style="background-color:rgb(186, 215, 233)">
+                        <div class="row " id="segment_multipleChoices">
+                            <div class="input-group mb-3" style="background-color:antiquewhite">
+                                <input readonly style="text-align: center" width="50%" type="text" value="Statements" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input readonly style="text-align: center" width="50%" type="text" value="Scores" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            </div>
+                        </div>
+                        <div class="row " id="segment_multipleChoices">
+                            <div class="input-group mb-1">
+                                <input name="stm_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input name="scr_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            </div>
+                            <div class="input-group mb-1">
+                                <input name="stm_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input name="scr_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            </div>
+                            <div class="input-group mb-1">
+                                <input name="stm_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input name="scr_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            </div>
+                            <div class="input-group mb-1">
+                                <input name="stm_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input name="scr_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                {{-- BUTTONS --}}
+                <div class="mb-3" style="display: flex; justify-content: flex-end;">
+                    <div style="flex-grow: 1;"></div>
+                    <div style="width: 200px;">
+                        <div class="input-group mb-3">
+                            <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
+                            <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+
+        <div class="container list-soal-temp">
+            <div class="card">
+                <div class="card-header" style="background-color: rgb(225, 225, 219)">
+                    <b>Soal :</b><p>Apa fenfiwnruigh ?</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">An item</li>
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">A fourth item</li>
+                </ul>
             </div>
         </div>
+
     </div>
 
 @endsection
