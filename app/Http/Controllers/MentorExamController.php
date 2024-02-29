@@ -9,6 +9,7 @@ use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class MentorExamController extends Controller
 {
@@ -158,8 +159,24 @@ class MentorExamController extends Controller
             $questionAnswer->image = $name;
         }
         $questionAnswer->question_type = $request->type_questions;
-        $questionAnswer->correct_answer = $request->exam_id;
-        $questionAnswer->order = $request->exam_id;
+        $questionAnswer->correct_answer = null;
+
+        // Mendapatkan urutan terakhir berdasarkan exam_id
+        // $lastOrder = ExamQuestionAnswers::where('exam_id', $request->exam_id)->max('order');
+
+        // // Jika belum ada entri untuk exam_id tertentu, atur urutan menjadi 1
+        // if ($lastOrder === null) {
+        //     $questionAnswer->order = 1;
+        // } else {
+        //     // Menetapkan nilai order dengan urutan terakhir ditambah 1
+        //     $questionAnswer->order = $lastOrder + 1;
+        // }
+
+        // Cari entri terakhir untuk exam_id yang diberikan
+        $lastOrder = ExamQuestionAnswers::where('exam_id', $request->exam_id)
+        ->orderBy('order', 'desc')
+        ->value('order');
+        $questionAnswer->order = $lastOrder === null ? 1 : $lastOrder + 1;
 
 
         $choices = [];
@@ -183,11 +200,18 @@ class MentorExamController extends Controller
         
         $questionAnswer->created_by = auth()->user()->id;
 
+        $formattedDate = Carbon::now()->format('Y-m-d H:i:s');
+        $questionAnswer->created_at = $formattedDate;
+        $questionAnswer->updated_at = $formattedDate;
 
+        // dd($lastOrder);
         // Save the question
-        dd($questionAnswer);
-        // $questionAnswer->save();
+        // dd($questionAnswer);
+        $questionAnswer->save();
+        $examId = $request->exam_id;
+        $compact = compact('examId');
 
+        return view("exam.create_exam_v2_next_step")->with($compact);
         // return response()->json(['message' => 'Question stored successfully'], 200);
     }
 

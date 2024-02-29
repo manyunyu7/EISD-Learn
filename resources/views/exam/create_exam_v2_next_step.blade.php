@@ -122,15 +122,16 @@
             <div class="page-header">
                 <h2><b>Soal Ujian ExamID: {{ $examId }}</b></h2>
             </div>
-            <form id="addSessionForm" method="post" action="{{ route('store.question') }}">
+            <form id="addSessionForm" method="post" action="{{ route('store.question') }}" enctype="multipart/form-data">
                 @csrf
                 @method('POST')
 
                 <input hidden name="exam_id" type="text" value="{{ $examId }}">
+                
                 <div class="mb-3">
-                    <label for="" class="mb-2">Soal</label>
+                    <label for="" class="mb-2">Soal<span style="color: red">*</span></label>
                     <div class="input-group mb-3">
-                        <input name="question" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input required name="question" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -140,9 +141,10 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="" class="mb-2">Jenis Soal</label>
+                    <label for="" class="mb-2">Jenis Soal<span style="color: red">*</span></label>
                     <div class="input-group mb-3">
-                        <select name="type_questions" class="form-control form-select-lg" aria-label="Default select example">
+                        <select required name="type_questions" class="form-control form-select-lg" aria-label="Default select example">
+                            <option value="" disabled selected>Pilih jenis soal</option>
                             <option value="Multiple Choice">Multiple Choice</option>
                             <option value="Single Multiple Choice">Single Multiple Choice</option>
                         </select>
@@ -200,17 +202,32 @@
 
 
         <div class="container list-soal-temp">
-            <div class="card">
-                <div class="card-header" style="background-color: rgb(225, 225, 219)">
-                    <b>Soal :</b><p>Apa fenfiwnruigh ?</p>
+            {{-- MENAMPILKAN SOAL --}}
+            {{-- @forelse ($questionAnswer as $data)
+                <div class="card">
+                    <div class="card-header" style="background-color: rgb(225, 225, 219)">
+                        <b>Soal :</b><p>{{ $data->exam_id }}</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">An item</li>
+                        <li class="list-group-item">A second item</li>
+                        <li class="list-group-item">A third item</li>
+                        <li class="list-group-item">A fourth item</li>
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">An item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                </ul>
-            </div>
+            @empty
+            @endforelse --}}
+            <div class="card">
+                    <div class="card-header" style="background-color: rgb(225, 225, 219)">
+                        <b>Soal :</b><p></p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">An item</li>
+                        <li class="list-group-item">A second item</li>
+                        <li class="list-group-item">A third item</li>
+                        <li class="list-group-item">A fourth item</li>
+                    </ul>
+                </div>
         </div>
 
     </div>
