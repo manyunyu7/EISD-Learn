@@ -121,7 +121,10 @@ class OpenClassController extends Controller
 
         $firstSectionId = null;
         if(!empty($sections)){
-            $firstSectionId = $sections[1]->section_id;
+            //Lenght = 1 Skip
+            if (!count($sections) == 1){
+                $firstSectionId = $sections[1]->section_id;
+            }
         }
 
         $student = Auth::id();

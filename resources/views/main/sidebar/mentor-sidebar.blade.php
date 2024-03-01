@@ -43,13 +43,15 @@
                     <span class="sub-item">Manage Exam</span>
                 </a>
             </li>
-{{--            <li class="{{ Request::is('/exam/session') ? 'active' : '' }}">--}}
-{{--                <a href="{{ url('/exam/session') }}">--}}
-{{--                    <span class="sub-item">Session</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
         </ul>
     </div>
+</li>
+
+<li class="nav-item" class="{{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="background-color: salmon;">
+    <a href="{{ url('exam/manage-exam-v2') }}">
+        <i class="fas fa-pen-square"></i>
+        <p style="color:white">Exam Development Progress</p>
+    </a>
 </li>
 
 <li class="nav-item">

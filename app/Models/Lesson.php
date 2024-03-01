@@ -17,10 +17,12 @@ class Lesson extends Model
 * `updated_at` FROM `course`
 * @var array
 */
+// protected $appends = ['first_section_id'];
+
 
 protected $fillable = [
     'id', 'course_title', 'course_cover_image','course_trailer','mentor_id','course_category',
-    'course_description','created_at','updated_at','start_time','end_time','can_be_accessed','category_id'
+    'course_description','created_at','updated_at','start_time','end_time','can_be_accessed', 'text_descriptions'
 ];
 
 }

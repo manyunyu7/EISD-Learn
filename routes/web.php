@@ -91,9 +91,15 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::prefix("exam")->group(function (){
             Route::get('new', 'MentorExamController@viewCreateNew');
             Route::post('store', 'MentorExamController@storeNewExam');
+            Route::post('store/quiz', 'MentorExamController@storeNewExam')->name('store.quiz');
             Route::post('update', 'MentorExamController@updateExam');
             Route::post('update-question', 'MentorExamController@updateQuestion');
             Route::get('manage', 'MentorExamController@viewManageExam');
+            Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
+            Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
+            Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
+
+
             Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
             Route::get('{id}/edit', 'MentorExamController@viewEditExam')->name("exam.edit");
 
@@ -120,6 +126,8 @@ Route::group(['middleware’' => ['auth']], function () {
 
             Route::get('{id}/question-order', 'MentorExamController@viewManageQuestionOrder');
             Route::post('save-question', 'MentorExamController@storeQuestion');
+            Route::post('save-question-to-db', 'MentorExamController@storeQuestion_v2')->name('store.question');
+
             Route::any('mquestions', 'MentorExamController@fetchQuestions');
             Route::any('question/edit-questions', 'MentorExamController@fetchQuestions')->name("edit_question");
             Route::any('update-question-order', 'MentorExamController@updateQuestionOrder')->name("update_question_order");

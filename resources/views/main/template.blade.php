@@ -62,6 +62,8 @@
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
     <!---Select2 To MultiSelect -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-B1ib/Ck6tv2zH6Vdww+4M1lbq3VMH/w+42F8A4yqdLZOd5YCvn/3VgkArJznP6px5X6vN+Mf1VjwHeSi5sSRuw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>

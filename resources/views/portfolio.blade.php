@@ -67,8 +67,6 @@
                 <li class="breadcrumb-item active" aria-current="page">Class List</li>
             </ol>
         </nav>
-
-        
     </div>
     
     <div class="row mt--2 border-primary col-md-12">
