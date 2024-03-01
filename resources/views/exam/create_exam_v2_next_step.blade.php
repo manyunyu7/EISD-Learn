@@ -165,20 +165,20 @@
                         </div>
                         <div class="row " id="segment_multipleChoices">
                             <div class="input-group mb-1">
-                                <input name="stm_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input name="scr_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="stm_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="scr_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                             <div class="input-group mb-1">
-                                <input name="stm_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input name="scr_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="stm_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="scr_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                             <div class="input-group mb-1">
-                                <input name="stm_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input name="scr_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="stm_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="scr_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                             <div class="input-group mb-1">
-                                <input name="stm_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input name="scr_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="stm_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="scr_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
                     </div>
@@ -203,31 +203,48 @@
 
         <div class="container list-soal-temp">
             {{-- MENAMPILKAN SOAL --}}
-            {{-- @forelse ($questionAnswer as $data)
-                <div class="card">
-                    <div class="card-header" style="background-color: rgb(225, 225, 219)">
-                        <b>Soal :</b><p>{{ $data->exam_id }}</p>
+            @forelse ($questionAnswer as $data)
+                @if($data->exam_id == $examId)
+                    <div class="card">
+                        <div class="card-header" style="background-color: rgb(184, 199, 216)">
+                            <b>Soal :</p>
+                            <p>{{ $data->question }}</p>
+
+                            @if ($data->image !== null)
+                                <div class="text-center">
+                                    <img src="{{ Storage::url('public/exam/question/' . $data->image) }}" 
+                                        style="width: auto; height:350px"
+                                        class="rounded" 
+                                        alt="...">
+                                </div>
+                            @endif
+                        </div>
+                       
+                        <ul class="list-group list-group-flush">
+                            @php
+                                $jsonData = $data->choices;
+                                $examQuestionAnswers = json_decode($jsonData, true);
+                            @endphp
+                            @foreach ($examQuestionAnswers as $answer)
+                                <li class="list-group-item">{{ $answer['text'] }}  (Score: {{ $answer['score'] }})</li>
+                            @endforeach
+                            <li class="list-group-item">
+                                <div class="mb-3" style="display: flex; justify-content: flex-end;">
+                                    <div style="flex-grow: 1;"></div>
+                                    <div style="width: 200px;">
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-warning" style="width: 45%; margin-right: 5px;">Edit</button>
+                                            <button type="submit" id="saveEditBtn" class="btn btn-danger" style="width: 45%; margin-left: 5px;">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                        <li class="list-group-item">A fourth item</li>
-                    </ul>
-                </div>
+                @else
+                @endif
             @empty
-            @endforelse --}}
-            <div class="card">
-                    <div class="card-header" style="background-color: rgb(225, 225, 219)">
-                        <b>Soal :</b><p></p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">An item</li>
-                        <li class="list-group-item">A second item</li>
-                        <li class="list-group-item">A third item</li>
-                        <li class="list-group-item">A fourth item</li>
-                    </ul>
-                </div>
+            @endforelse
         </div>
 
     </div>
