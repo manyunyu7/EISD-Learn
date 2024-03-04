@@ -150,8 +150,8 @@ class MentorExamController extends Controller
         
         // Create a new ExamQuestionAnswer instance and fill it with the validated data
         $questionAnswer = new ExamQuestionAnswers();
-        $questionAnswer->question = $request->question;
 
+        $questionAnswer->question = $request->question;
         if ($request->file('question_images') != "") {
             $image = $request->file('question_images');
             $name = $image->hashName();
@@ -161,26 +161,13 @@ class MentorExamController extends Controller
         $questionAnswer->question_type = $request->type_questions;
         $questionAnswer->correct_answer = null;
 
-        // Mendapatkan urutan terakhir berdasarkan exam_id
-        // $lastOrder = ExamQuestionAnswers::where('exam_id', $request->exam_id)->max('order');
-
-        // // Jika belum ada entri untuk exam_id tertentu, atur urutan menjadi 1
-        // if ($lastOrder === null) {
-        //     $questionAnswer->order = 1;
-        // } else {
-        //     // Menetapkan nilai order dengan urutan terakhir ditambah 1
-        //     $questionAnswer->order = $lastOrder + 1;
-        // }
-
         // Cari entri terakhir untuk exam_id yang diberikan
         $lastOrder = ExamQuestionAnswers::where('exam_id', $request->exam_id)
         ->orderBy('order', 'desc')
         ->value('order');
         $questionAnswer->order = $lastOrder === null ? 1 : $lastOrder + 1;
 
-
         $choices = [];
-
         // Iterasi melalui request untuk mengambil nilai pilihan jawaban dan skornya
         for ($i = 1; $i <= 4; $i++) {
             // Cek apakah input dengan nama "stm_$i" dan "scr_$i" ada dalam request
@@ -194,25 +181,25 @@ class MentorExamController extends Controller
         }
 
         // Konversi array pilihan jawaban menjadi JSON
-        $questionAnswer->choices = json_encode($choices);
-        
-        $questionAnswer->exam_id = $request->exam_id;
-        
+        $questionAnswer->choices    = json_encode($choices);
+        $questionAnswer->exam_id    = $request->exam_id;
         $questionAnswer->created_by = auth()->user()->id;
 
         $formattedDate = Carbon::now()->format('Y-m-d H:i:s');
         $questionAnswer->created_at = $formattedDate;
         $questionAnswer->updated_at = $formattedDate;
 
-        // dd($lastOrder);
+        $compact = compact('questionAnswer');
         // Save the question
-        // dd($questionAnswer);
-        $questionAnswer->save();
-        $examId = $request->exam_id;
-        $compact = compact('examId');
+        if ($questionAnswer->save()){
+            return back()->with($compact)->with('success', 'Berhasil Menambah Soal!');
+        }
+        else{
+            return back()>with($compact)->with(['error' => 'Gagal Menambah Soal !']);
 
-        return view("exam.create_exam_v2_next_step")->with($compact);
-        // return response()->json(['message' => 'Question stored successfully'], 200);
+        }
+        // $examId = $request->exam_id;
+        // $compact = compact('examId');
     }
 
     public function updateQuestion(Request $request)
@@ -352,7 +339,8 @@ class MentorExamController extends Controller
             ->where("is_deleted", "<>", "y")
             ->orWhereNull("is_deleted")
             ->get();
-        $compact = compact('dayta', 'examId');
+        $questionAnswer = ExamQuestionAnswers::all();
+        $compact = compact('dayta', 'examId', 'questionAnswer');
 
         if ($request->dump == true) {
             return $compact;
