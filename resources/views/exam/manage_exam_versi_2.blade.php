@@ -133,10 +133,10 @@
                             {{ $data->title }}
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn btn-primary"></button>
-                            <button class="btn btn-secondary"></button>
-                            <button class="btn btn-success"></button>
-                            <button class="btn btn-danger" onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">EDIT</button>
+                            <button class="btn btn-primary"><img src="{{ url('/Icons/Download.svg') }}"></button>
+                            <button class="btn btn-secondary"><img src="{{ url('/Icons/Link.svg') }}"></button>
+                            <button class="btn btn-success" onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')"><img src="{{ url('/Icons/Edit.svg') }}"></button>
+                            <button class="btn btn-danger"><img src="{{ url('/Icons/Delete.svg') }}"></button>
                         </td>
                         <script>
                             function redirectToSection_edit(url) {

@@ -277,15 +277,12 @@ class MentorExamController extends Controller
     {
         try {
             $question = ExamQuestionAnswers::findOrFail($id);
-
-            // Perform any additional logic for deleting the question
-            // For example, you can perform validation or checks here
-
-            $question->delete(); // Delete the question
-
-            return response()->json(['message' => 'Question deleted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete question'], 500);
+            // Delete the question
+            $question->delete(); 
+            return back()->with('success', 'Berhasil Menghapus Soal!');
+        } 
+        catch (\Exception $e) {
+            return back()->with('error', 'Gagal Menghapus Soal !');
         }
     }
 
@@ -330,7 +327,7 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
-        dd($dayta);
+        // dd($dayta);
         return view("exam.create_exam_versi_2")->with($compact);
     }
     public function viewLoadExam_v2(Request $request, $examId)

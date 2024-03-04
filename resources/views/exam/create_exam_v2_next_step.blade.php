@@ -151,38 +151,68 @@
                     </div>
                 </div>
 
-                {{-- INPUT PILIHAN JAWABAN --}}
-                <div class="card" style="border-block: 1px">
-                    <div class="card-header" style="background-color:rgb(44, 84, 108); color: white">
-                        <h3>Input Pilihan Jawaban</h3>
+                <div class="mb-5">
+                    <div>
+                        <button type="button" id="addOptionAnswers" class="btn btn-outline-primary " style="width: 12%; margin-left: 5px;">+ Add</button>
                     </div>
-                    <div class="card-body" style="background-color:rgb(186, 215, 233)">
-                        <div class="row " id="segment_multipleChoices">
-                            <div class="input-group mb-3" style="background-color:antiquewhite">
-                                <input readonly style="text-align: center" width="50%" type="text" value="Statements" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input readonly style="text-align: center" width="50%" type="text" value="Scores" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
+                    <div class="card-body row " id="segment_multipleChoices">
+                        <div class="input-group mb-3">
+                            <input required name="stm_1" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <input required name="scr_1" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>
                         </div>
-                        <div class="row " id="segment_multipleChoices">
-                            <div class="input-group mb-1">
-                                <input required name="stm_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group mb-1">
-                                <input required name="stm_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group mb-1">
-                                <input required name="stm_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group mb-1">
-                                <input required name="stm_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
+                        <div class="input-group mb-3">
+                            <input required name="stm_2" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <input required name="scr_2" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>
                         </div>
                     </div>
                 </div>
+                <script>
+                    document.getElementById("addOptionAnswers").addEventListener("click", function() {
+                        var deleteIconURL = "{{ url('/Icons/Delete.svg') }}";
+                        var segmentMultipleChoices = document.getElementById("segment_multipleChoices");
+                        var divInputGroupCount = segmentMultipleChoices.querySelectorAll(".input-group.mb-3").length;
+                
+                        if (divInputGroupCount < 4) {
+                            var divInputGroup = document.createElement("div");
+                            divInputGroup.classList.add("input-group", "mb-3");
+                
+                            var inputOption = document.createElement("input");
+                            inputOption.required = true;
+                            inputOption.name = "stm_" + (divInputGroupCount + 1);
+                            inputOption.placeholder = "Masukkan Opsi Jawaban";
+                            inputOption.type = "text";
+                            inputOption.classList.add("form-control");
+                            inputOption.setAttribute("aria-label", "Recipient's username");
+                            inputOption.setAttribute("aria-describedby", "basic-addon2");
+                
+                            var inputScore = document.createElement("input");
+                            inputScore.required = true;
+                            inputScore.name = "scr_" + (divInputGroupCount + 1);
+                            inputScore.placeholder = "Masukkan Poin";
+                            inputScore.type = "text";
+                            inputScore.classList.add("form-control");
+                            inputScore.setAttribute("aria-label", "Recipient's username");
+                            inputScore.setAttribute("aria-describedby", "basic-addon2");
+                
+                            var deleteButton = document.createElement("button");
+                            deleteButton.classList.add("btn", "btn-danger", "ml-2", "deleteOption");
+                            deleteButton.innerHTML = '<img src="' + deleteIconURL + '" alt="Delete Icon">';
+                            deleteButton.type = "button";
+                            deleteButton.addEventListener("click", function() {
+                                divInputGroup.remove();
+                            });
+                
+                            divInputGroup.appendChild(inputOption);
+                            divInputGroup.appendChild(inputScore);
+                            divInputGroup.appendChild(deleteButton);
+                            segmentMultipleChoices.appendChild(divInputGroup);
+                        } else {
+                            alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                        }
+                    });
+                </script>
                 
 
                 {{-- BUTTONS --}}
@@ -198,15 +228,131 @@
             </form>
         </div>
 
-
-
-
         <div class="container list-soal-temp">
             {{-- MENAMPILKAN SOAL --}}
             @forelse ($questionAnswer as $data)
+                {{-- MODALS --}}
+                {{-- START OF MODAL UPDATE FORM --}}
+                <div class="modal fade " id="edit-modal{{$loop->iteration}}">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>{{ $data->id }}</p>
+                                <form id="addSessionForm" method="post" action="{{ route('store.question') }}" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('POST')
+                    
+                                    <input hidden name="exam_id" type="text" value="{{ $examId }}">
+                                    
+                                    <div class="mb-3">
+                                        <label for="" class="mb-2">Soal<span style="color: red">*</span></label>
+                                        <div class="input-group mb-3">
+                                            <input required value="{{ $data->question }}" name="question" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="" class="mb-2">Gambar Soal</label>
+                                        <div class="mb-3">
+                                            <input name="question_images" value="{{ $data->image }}" class="form-control" type="file" id="formFileMultiple" multiple>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="" class="mb-2">Jenis Soal<span style="color: red">*</span></label>
+                                        <div class="input-group mb-3">
+                                            <select required name="type_questions" class="form-control form-select-lg" aria-label="Default select example">
+                                                <option value="" disabled selected>Pilih jenis soal</option>
+                                                <option value="Multiple Choice" {{ $data->question_type == 'Multiple Choice' ? 'selected' : '' }}>Multiple Choice</option>
+                                                <option value="Single Multiple Choice" {{ $data->question_type == 'Single Multiple Choice' ? 'selected' : '' }}>Single Multiple Choice</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                    
+                                    {{-- <div class="mb-5">
+                                        <div>
+                                            <button type="button" id="addOptionAnswers_edit" class="btn btn-outline-primary" style="width: 12%; margin-left: 5px;">+ Add</button>
+                                        </div>
+                                        <div class="card-body row" id="segment_multipleChoices_edit">
+                                            @php
+                                                $choices = json_decode($data->choices);
+                                            @endphp
+                                            @forelse ($choices as $index => $choice)
+                                                <div class="input-group mb-3">
+                                                    <input required name="stm_{{ $index }}" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" value="{{ $choice->text ?? '' }}">
+                                                    <input required name="scr_{{ $index }}" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" value="{{ $choice->score ?? '' }}">
+                                                    <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}" alt="Delete Icon"></button>
+                                                </div>
+                                            @empty
+                                                <!-- Default input fields if there are no data from the database -->
+                                                <div class="input-group mb-3">
+                                                    <input required name="stm_1" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                                    <input required name="scr_1" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                                    <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}" alt="Delete Icon"></button>
+                                                </div>
+                                            @endforelse
+                                        </div>
+                                    </div> --}}
+                                    <div class="mb-5">
+                                        <div id="choices" style="
+                                            @if($data->question_type!="Multiple Choice" && $data->question_type!="Single Multiple Choice")
+                                            display: none;"
+                                            @endif>
+                                            <div class="form-group">
+                                                @if(is_array($data->choices))
+                                                    @forelse($data->choices as $choice)
+                                                        <div class="form-group">
+                                                            <label class="font-weight-bold">Pilihan</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" name="choice[]"
+                                                                    placeholder="Pilihan" value="{{ $choice['text'] }}">
+                                                                <input type="number" class="form-control" name="score[]"
+                                                                    placeholder="Skor" value="{{ $choice['score'] }}">
+                                                                <div class="input-group-append">
+                                                                    <button type="button" class="btn btn-danger remove-choice">
+                                                                        Hapus
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @empty
+                                                        <p>No choices available.</p>
+                                                    @endforelse
+                                                @else
+                                                    <p>Choices is not an array.</p>
+                                                @endif
+                                            </div>
+                                            <button type="button" class="btn btn-primary btn-border add-choice">Tambah
+                                                Pilihan
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+                                    {{-- BUTTONS --}}
+                                    <div class="mb-3" style="display: flex; justify-content: flex-end;">
+                                        <div style="flex-grow: 1;"></div>
+                                        <div style="width: 200px;">
+                                            <div class="input-group mb-3">
+                                                <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
+                                                <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- END OF MODAL UPDATE FORM --}}
                 @if($data->exam_id == $examId)
                     <div class="card">
-                        <div class="card-header" style="background-color: rgb(184, 199, 216)">
+                        <div class="card-header" style="background-color: #eaeaea; color: black">
                             <b>Soal :</p>
                             <p>{{ $data->question }}</p>
 
@@ -229,12 +375,28 @@
                                 <li class="list-group-item">{{ $answer['text'] }}  (Score: {{ $answer['score'] }})</li>
                             @endforeach
                             <li class="list-group-item">
-                                <div class="mb-3" style="display: flex; justify-content: flex-end;">
-                                    <div style="flex-grow: 1;"></div>
+                                <div class="mb-3" style="">
+                                    <div ></div>
                                     <div style="width: 200px;">
-                                        <div class="input-group">
-                                            <button type="button" class="btn btn-warning" style="width: 45%; margin-right: 5px;">Edit</button>
-                                            <button type="submit" id="saveEditBtn" class="btn btn-danger" style="width: 45%; margin-left: 5px;">Delete</button>
+                                        <div class="input-group ">
+                                            {{-- BUTTON MODALS FOR EDIT --}}
+                                            <button type="button" 
+                                                    class="btn btn-primary" 
+                                                    data-toggle="modal"
+                                                    data-target="#edit-modal{{$loop->iteration}}">
+                                                <img src="{{ url('/Icons/Edit.svg') }}" alt="Edit Icon">
+                                            </button>
+                                            <form id="delete-post-form" action="{{ url('exam/delete-question-from-db/'. $data->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" 
+                                                        id="saveEditBtn" 
+                                                        data-question-id="{{ $data->id }}" 
+                                                        class="btn btn-danger pull-left" 
+                                                        style="width: auto; margin-left: 5px;"
+                                                        onclick="return confirm('Are you sure?')">
+                                                        <img src="{{ url('/Icons/Delete.svg') }}">
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

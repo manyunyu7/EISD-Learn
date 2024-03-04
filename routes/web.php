@@ -121,6 +121,7 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('{id}/question-order', 'MentorExamController@viewManageQuestionOrder');
             Route::post('save-question', 'MentorExamController@storeQuestion');
             Route::post('save-question-to-db', 'MentorExamController@storeQuestion_v2')->name('store.question');
+            Route::post('delete-question-from-db/{id}', 'MentorExamController@deleteQuestion')->name('delete.question');
 
             Route::any('mquestions', 'MentorExamController@fetchQuestions');
             Route::any('question/edit-questions', 'MentorExamController@fetchQuestions')->name("edit_question");
