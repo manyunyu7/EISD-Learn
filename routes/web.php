@@ -87,7 +87,8 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::post('store', 'MentorExamController@storeNewExam');
             Route::post('store/quiz', 'MentorExamController@storeNewExam')->name('store.quiz');
             Route::post('update', 'MentorExamController@updateExam');
-            Route::post('update-question', 'MentorExamController@updateQuestion');
+            // Route::post('update-question', 'MentorExamController@updateQuestion');
+            Route::post('update-question', 'MentorExamController@updateQuestion_v2')->name('exam.update-question');
             Route::get('manage', 'MentorExamController@viewManageExam');
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
@@ -115,7 +116,8 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('refresh-session-table', 'MentorExamSessionController@getExamSession');
             Route::post('delete-exam-session', 'MentorExamSessionController@destroyExamSession');
 
-            Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion');
+            // Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion');
+            Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion_v2');
             Route::post('question/{id}/delete', 'MentorExamController@deleteQuestion');
 
             Route::get('{id}/question-order', 'MentorExamController@viewManageQuestionOrder');
