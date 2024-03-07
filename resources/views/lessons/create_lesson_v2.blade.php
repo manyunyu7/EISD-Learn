@@ -126,13 +126,12 @@
         </div>
         {{-- SOAL UJIAN --}}
         <div class="container load-soal" style="background-color: none">
-            <form id="addSessionForm" action="{{ route('lesson.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('POST')
-
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                 <div class="row">
                     <div class="col-md-8">
+                        {{-- Password Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Password Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
@@ -140,27 +139,33 @@
                             </div>
                         </div>
         
+                        {{-- Judul Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Judul Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input required name="title_class" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="title" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
                         
+                        {{-- Kategori --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Kategori<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select required name="type_questions" class="form-control form-select-lg" aria-label="Default select example">
-                                    <option value="" disabled selected>Pilih jenis soal</option>
-                                    <option value="Multiple Choice">Multiple Choice</option>
-                                    <option value="Single Multiple Choice">Single Multiple Choice</option>
+                                <select class="form-control" name="category_id" id="">
+                                    @forelse($categories as $item)
+                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                    @empty
+
+                                    @endforelse
                                 </select>
                             </div>
                         </div>
+
+                        {{-- Posisi --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Position<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select required name="type_questions" class="form-control form-select-lg" aria-label="Default select example">
+                                <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
                                     <option value="" disabled selected>Pilih jenis soal</option>
                                     <option value="Unit Head">Unit Head</option>
                                     <option value="Section Head">Section Head</option>
@@ -169,26 +174,29 @@
                             </div>
                         </div>
         
+                        {{-- Target Employee --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Member -  Non Member<span style="color: red">*</span></label>
                             <div class="input-group">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="">
+                                        <input name="member" class="form-check-input" type="checkbox" value="Member">
                                         <span class="form-check-sign">Member</span>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="">
+                                        <input name="non_member" target_employee class="form-check-input" type="checkbox" value="Non Member">
                                         <span class="form-check-sign">Non Member</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
+
+                        {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Deskripsi Kelas</label>
-                            <textarea id="editor" class="form-control" name="instruction"></textarea>
+                            <textarea id="editor" class="form-control" name="content"></textarea>
                             <script>
                                 ClassicEditor
                                     .create( document.querySelector( '#editor' ) )
@@ -197,6 +205,8 @@
                                     } );
                             </script>
                         </div>
+
+                        {{-- New Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">New Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
@@ -212,6 +222,7 @@
                     </div>
     
                     <div class="col-md-4">
+                        {{-- Cover Class --}}
                         <div class="card mt-5">
                             <div class="card-body">
                                 <div class="text-center">
@@ -223,7 +234,7 @@
                                              alt="...">
                                     </div>
                                     <div class="input-group mb-3">
-                                        <input type="file" name="profile_image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        <input type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                     </div>
                                     {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
                                     <small width="100%">Image size should be under 1 MB and image ratio needs to be 1:1</small>

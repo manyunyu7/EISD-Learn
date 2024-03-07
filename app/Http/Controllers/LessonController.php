@@ -36,9 +36,15 @@ class LessonController extends Controller
         }
         return view('lessons.create_lesson')->with($compact);
     }
-    public function create_v2()
+    public function create_v2(Request $request)
     {
-        return view('lessons.create_lesson_v2');
+        $categories = LessonCategory::all();
+        $compact = compact('categories');
+
+        if($request->dump==true){
+            return $compact;
+        }
+        return view('lessons.create_lesson_v2')->with($compact);
     }
 
 
@@ -386,6 +392,75 @@ class LessonController extends Controller
             'mentor_id' => $user_id,
             'course_description' => $request->content,
             'text_descriptions' => $request->content
+            // 'pin' => $request->pass_class,
+            // 'position'=> $request->position,
+            // 'target_employee'=> $request->target_employee,
+            // 'new_class' => $request->new_class
+        ]);
+
+        if ($inputDeyta) {
+            //redirect dengan pesan sukses
+            return redirect('lesson/manage')->with(['success' => 'Kelas Berhasil Disimpan!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect('lesson/manage')->with(['error' => 'Kelas Gagal Disimpan!']);
+        }
+    }
+    public function store_v2(Request $request)
+    {
+        // return $request->all();
+        ini_set('upload_max_filesize', '500M');
+        ini_set('post_max_size', '500M');
+        // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
+        $this->validate($request, [
+            'image' => 'required',
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+
+        //upload image
+        $image = $request->file('image');
+        $video = $request->file('video');
+        $cat = $request->input('category');
+        $image->storeAs('public/class/cover', $image->hashName());
+        // $video->storeAs('public/class/trailer', $video->hashName());
+        $user_id = Auth::id();
+
+        $cat = LessonCategory::findOrFail($request->category_id);
+        if($cat!=null){
+            $cat = $cat->name;
+        }
+
+        $member     = $request->has('member') ? true : false;
+        $nonMember  = $request->has('non_member') ? true : false;
+
+        // Buat array asosiatif
+        $value_targetEmployee = [
+            'member' => $member,
+            'non_member' => $nonMember,
+        ];
+
+        // Ubah array menjadi JSON
+        $jsonData_targetEmployee = json_encode($value_targetEmployee);
+
+
+        $inputDeyta = Lesson::create([
+            'course_cover_image' => $image->hashName(),
+            'course_title' => $request->title,
+            'course_trailer' => 'Value',
+            'course_category' => $cat,
+            'category_id' => $request->category_id,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'can_be_accessed' => $request->access,
+            'mentor_id' => $user_id,
+            'course_description' => $request->content,
+            'text_descriptions' => $request->content,
+
+            'pin' => $request->pass_class,
+            'position'=> $request->position,
+            'target_employee'=> $jsonData_targetEmployee,
+            'new_class' => $request->new_class
         ]);
 
         if ($inputDeyta) {

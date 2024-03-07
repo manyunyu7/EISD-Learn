@@ -21,8 +21,23 @@ class Lesson extends Model
 
 
 protected $fillable = [
-    'id', 'course_title', 'course_cover_image','course_trailer','mentor_id','course_category',
-    'course_description','created_at','updated_at','start_time','end_time','can_be_accessed', 'text_descriptions'
+    'id', 
+    'course_title', 
+    'course_cover_image',
+    'course_trailer',
+    'mentor_id',
+    'course_category',
+    'course_description',
+    'created_at',
+    'updated_at',
+    'start_time',
+    'end_time',
+    'can_be_accessed', 
+    'text_descriptions',
+    'pin',
+    'position',
+    'target_employee',
+    'new_class'
 ];
 
 }
