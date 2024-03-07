@@ -1,3 +1,22 @@
+{{-- IMPROVED MENU --}}
+{{-- CLASS --}}
+<li class="nav-item" class="{{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="background-color: salmon;">
+    <a href="{{ url('/lesson/manage_v2') }}">
+        <i class="fas fa-pen-square"></i>
+        <p style="color:white">Class [IMPROVED]</p>
+    </a>
+</li>
+{{-- EXAM --}}
+<li class="nav-item" class="{{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="background-color: salmon;">
+    <a href="{{ url('exam/manage-exam-v2') }}">
+        <i class="fas fa-pen-square"></i>
+        <p style="color:white">Exam [IMPROVED]</p>
+    </a>
+</li>
+
+
+{{-- MENU LAMA --}}
+{{-- CLASS --}}
 <li class="nav-item">
     <a data-toggle="collapse" href="#lesson">
         <i class="fas fas fa-book"></i>
@@ -25,6 +44,7 @@
     </div>
 </li>
 
+{{-- EXAM --}}
 <li class="nav-item">
     <a data-toggle="collapse" href="#exam">
         <i class="fas fa-pen-square"></i>
@@ -47,13 +67,7 @@
     </div>
 </li>
 
-<li class="nav-item" class="{{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="background-color: salmon;">
-    <a href="{{ url('exam/manage-exam-v2') }}">
-        <i class="fas fa-pen-square"></i>
-        <p style="color:white">Exam Development Progress</p>
-    </a>
-</li>
-
+{{-- BLOGS --}}
 <li class="nav-item">
     <a data-toggle="collapse" href="#base">
         <i class="fas fa-pen-alt"></i>
@@ -80,6 +94,8 @@
         </ul>
     </div>
 </li>
+
+{{-- TUGAS AKHIR SISWA --}}
 <li class="nav-item {{ Request::is('lesson/correct') ? 'active' : '' }}">
     <a href="{{ url('/lesson/correct') }}">
         <i class="fas fa-tasks"></i>

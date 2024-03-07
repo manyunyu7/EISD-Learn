@@ -36,6 +36,10 @@ class LessonController extends Controller
         }
         return view('lessons.create_lesson')->with($compact);
     }
+    public function create_v2()
+    {
+        return view('lessons.create_lesson_v2');
+    }
 
 
     //use above function, this function seems not used.
@@ -136,6 +140,14 @@ class LessonController extends Controller
         Paginator::useBootstrap();
         // return $dayta;
         return view('lessons.manage_lesson', compact('dayta'));
+    }
+    public function manage_v2()
+    {
+        $user_id = Auth::id();
+        $dayta = DB::select("select * from view_course where mentor_id = $user_id");
+        Paginator::useBootstrap();
+        // return $dayta;
+        return view('lessons.manage_lesson_v2', compact('dayta'));
     }
 
     public function destroy($id)

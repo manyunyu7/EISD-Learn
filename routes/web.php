@@ -74,6 +74,9 @@ Route::group(['middleware’' => ['auth']], function () {
         });
 
         Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
+        Route::get('/lesson/manage_v2', ['uses' => 'LessonController@manage_v2']);
+        Route::get('/lesson/create_v2', ['uses' => 'LessonController@create_v2']);
+
         Route::get('/lesson/store', 'LessonController@add');
         Route::get('/lesson/{lesson}/students/', 'LessonController@seeStudent');
         Route::get('/lesson/correct', 'FinalProjectController@correction');
