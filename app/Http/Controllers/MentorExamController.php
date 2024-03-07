@@ -65,6 +65,19 @@ class MentorExamController extends Controller
         }
         return view("exam.edit_question")->with($compact);
     }
+    public function viewEditQuestion_v2(Request $request, $id)
+    {
+        $question = ExamQuestionAnswers::findOrFail($id);
+        $exam = Exam::findOrFail($question->exam_id);
+        $choices = json_decode($question->choices, true);
+        $showCompact = true;
+        $compact = compact('question', 'exam', 'showCompact', 'choices', 'id');
+        if ($request->dump == true) {
+            return $compact;
+        }
+        return view("exam.edit_question_v2")->with($compact);
+    }
+
 
     public function viewManageQuestionOrder(Request $request, $id)
     {
@@ -258,6 +271,52 @@ class MentorExamController extends Controller
 
         return response()->json(['message' => 'Question stored successfully'], 200);
     }
+    public function updateQuestion_v2(Request $request)
+    {
+        // Create a new ExamQuestionAnswer instance and fill it with the validated data
+        $questionAnswer = ExamQuestionAnswers::findOrFail($request->question_id);
+        $questionAnswer->exam_id = $request->exam_id;
+        $questionAnswer->question_type = $request->type_questions;
+        $questionAnswer->question = $request->question;
+        $questionAnswer->created_by = auth()->user()->id;
+
+        if ($request->file('question_images') != "") {
+            $image = $request->file('question_images');
+            $name = $image->hashName();
+            $image->storeAs('public/exam/question/', $name);
+            $questionAnswer->image = $name;
+        }
+
+        $choices = [];
+        // Iterasi melalui request untuk mengambil nilai pilihan jawaban dan skornya
+        for ($i = 1; $i <= 4; $i++) {
+            // Cek apakah input dengan nama "stm_$i" dan "scr_$i" ada dalam request
+            if ($request->has("stm_$i") && $request->has("scr_$i")) {
+                // Tambahkan data pilihan jawaban dan skor ke dalam array
+                $choices[] = [
+                    'text' => $request->input("stm_$i"),
+                    'score' => $request->input("scr_$i"),
+                ];
+            }
+        }
+
+        // Konversi array pilihan jawaban menjadi JSON
+        $questionAnswer->choices    = json_encode($choices);
+        $questionAnswer->correct_answer = null;
+
+
+        // Save the question
+        $questionAnswer->save();
+        // return response()->json(['message' => 'Question stored successfully'], 200);
+        
+        $compact = compact('questionAnswer');
+        // Save the question
+        if ($questionAnswer->save()) {
+            return redirect()->back()->with('success', 'Berhasil Update Soal!');
+        } else {
+            return redirect()->back()->with('error', 'Gagal Update Soal!');
+        }
+    }
 
 
     public function updateQuestionOrder(Request $request)
@@ -277,15 +336,12 @@ class MentorExamController extends Controller
     {
         try {
             $question = ExamQuestionAnswers::findOrFail($id);
-
-            // Perform any additional logic for deleting the question
-            // For example, you can perform validation or checks here
-
-            $question->delete(); // Delete the question
-
-            return response()->json(['message' => 'Question deleted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete question'], 500);
+            // Delete the question
+            $question->delete(); 
+            return back()->with('success', 'Berhasil Menghapus Soal!');
+        } 
+        catch (\Exception $e) {
+            return back()->with('error', 'Gagal Menghapus Soal !');
         }
     }
 
@@ -330,7 +386,7 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
-        dd($dayta);
+        // dd($dayta);
         return view("exam.create_exam_versi_2")->with($compact);
     }
     public function viewLoadExam_v2(Request $request, $examId)

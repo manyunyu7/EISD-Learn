@@ -384,10 +384,7 @@
                                                         hideLoaderOverlay();
                                                     });
                                             }
-
-
                                         </script>
-
                                     </div>
                                 </div>
                             </div>

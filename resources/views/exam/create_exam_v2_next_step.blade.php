@@ -120,7 +120,7 @@
         {{-- SOAL UJIAN --}}
         <div class="container load-soal" style="background-color: white">
             <div class="page-header">
-                <h2><b>Soal Ujian ExamID: {{ $examId }}</b></h2>
+                <h2><b>Soal Ujian</b></h2>
             </div>
             <form id="addSessionForm" method="post" action="{{ route('store.question') }}" enctype="multipart/form-data">
                 @csrf
@@ -151,38 +151,68 @@
                     </div>
                 </div>
 
-                {{-- INPUT PILIHAN JAWABAN --}}
-                <div class="card" style="border-block: 1px">
-                    <div class="card-header" style="background-color:rgb(44, 84, 108); color: white">
-                        <h3>Input Pilihan Jawaban</h3>
+                <div class="mb-5">
+                    <div>
+                        <button type="button" id="addOptionAnswers" class="btn btn-outline-primary " style="width: 12%; margin-left: 5px;">+ Add</button>
                     </div>
-                    <div class="card-body" style="background-color:rgb(186, 215, 233)">
-                        <div class="row " id="segment_multipleChoices">
-                            <div class="input-group mb-3" style="background-color:antiquewhite">
-                                <input readonly style="text-align: center" width="50%" type="text" value="Statements" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input readonly style="text-align: center" width="50%" type="text" value="Scores" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
+                    <div class="card-body row " id="segment_multipleChoices">
+                        <div class="input-group mb-3">
+                            <input required name="stm_1" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <input required name="scr_1" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>
                         </div>
-                        <div class="row " id="segment_multipleChoices">
-                            <div class="input-group mb-1">
-                                <input required name="stm_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_1" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group mb-1">
-                                <input required name="stm_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_2" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group mb-1">
-                                <input required name="stm_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_3" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group mb-1">
-                                <input required name="stm_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <input required name="scr_4" width="50%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            </div>
+                        <div class="input-group mb-3">
+                            <input required name="stm_2" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <input required name="scr_2" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>
                         </div>
                     </div>
                 </div>
+                <script>
+                    document.getElementById("addOptionAnswers").addEventListener("click", function() {
+                        var deleteIconURL = "{{ url('/Icons/Delete.svg') }}";
+                        var segmentMultipleChoices = document.getElementById("segment_multipleChoices");
+                        var divInputGroupCount = segmentMultipleChoices.querySelectorAll(".input-group.mb-3").length;
+                
+                        if (divInputGroupCount < 4) {
+                            var divInputGroup = document.createElement("div");
+                            divInputGroup.classList.add("input-group", "mb-3");
+                
+                            var inputOption = document.createElement("input");
+                            inputOption.required = true;
+                            inputOption.name = "stm_" + (divInputGroupCount + 1);
+                            inputOption.placeholder = "Masukkan Opsi Jawaban";
+                            inputOption.type = "text";
+                            inputOption.classList.add("form-control");
+                            inputOption.setAttribute("aria-label", "Recipient's username");
+                            inputOption.setAttribute("aria-describedby", "basic-addon2");
+                
+                            var inputScore = document.createElement("input");
+                            inputScore.required = true;
+                            inputScore.name = "scr_" + (divInputGroupCount + 1);
+                            inputScore.placeholder = "Masukkan Poin";
+                            inputScore.type = "text";
+                            inputScore.classList.add("form-control");
+                            inputScore.setAttribute("aria-label", "Recipient's username");
+                            inputScore.setAttribute("aria-describedby", "basic-addon2");
+                
+                            var deleteButton = document.createElement("button");
+                            deleteButton.classList.add("btn", "btn-danger", "ml-2", "deleteOption");
+                            deleteButton.innerHTML = '<img src="' + deleteIconURL + '" alt="Delete Icon">';
+                            deleteButton.type = "button";
+                            deleteButton.addEventListener("click", function() {
+                                divInputGroup.remove();
+                            });
+                
+                            divInputGroup.appendChild(inputOption);
+                            divInputGroup.appendChild(inputScore);
+                            divInputGroup.appendChild(deleteButton);
+                            segmentMultipleChoices.appendChild(divInputGroup);
+                        } else {
+                            alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                        }
+                    });
+                </script>
                 
 
                 {{-- BUTTONS --}}
@@ -198,15 +228,12 @@
             </form>
         </div>
 
-
-
-
         <div class="container list-soal-temp">
             {{-- MENAMPILKAN SOAL --}}
             @forelse ($questionAnswer as $data)
                 @if($data->exam_id == $examId)
                     <div class="card">
-                        <div class="card-header" style="background-color: rgb(184, 199, 216)">
+                        <div class="card-header" style="background-color: #eaeaea; color: black">
                             <b>Soal :</p>
                             <p>{{ $data->question }}</p>
 
@@ -229,12 +256,33 @@
                                 <li class="list-group-item">{{ $answer['text'] }}  (Score: {{ $answer['score'] }})</li>
                             @endforeach
                             <li class="list-group-item">
-                                <div class="mb-3" style="display: flex; justify-content: flex-end;">
-                                    <div style="flex-grow: 1;"></div>
+                                <div class="mb-3" style="">
+                                    <div ></div>
                                     <div style="width: 200px;">
-                                        <div class="input-group">
-                                            <button type="button" class="btn btn-warning" style="width: 45%; margin-right: 5px;">Edit</button>
-                                            <button type="submit" id="saveEditBtn" class="btn btn-danger" style="width: 45%; margin-left: 5px;">Delete</button>
+                                        <div class="input-group ">
+                                            {{-- BUTTON MODALS FOR EDIT --}}
+                                            <button type="button" 
+                                                    class="btn btn-primary"
+                                                    onclick="openEditWindow('{{ url('exam/question/'.$data->id.'/edit') }}')">
+                                                <img src="{{ url('/Icons/Edit.svg') }}" alt="Edit Icon">
+                                            </button>
+                                            <script>
+                                                function openEditWindow(url) {
+                                                    // Open a new window with the provided URL
+                                                    window.open(url, '_blank', 'width=600,height=800,resizable=no');
+                                                }
+                                            </script>
+                                            <form id="delete-post-form" action="{{ url('exam/delete-question-from-db/'. $data->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" 
+                                                        id="saveEditBtn" 
+                                                        data-question-id="{{ $data->id }}" 
+                                                        class="btn btn-danger pull-left" 
+                                                        style="width: auto; margin-left: 5px;"
+                                                        onclick="return confirm('Are you sure?')">
+                                                        <img src="{{ url('/Icons/Delete.svg') }}">
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

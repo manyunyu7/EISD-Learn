@@ -259,12 +259,6 @@ class OpenClassController extends Controller
 
                 }
             }
-            
-
-            
-
-
-        
         // RETURN VALUE
             $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 
                                 'section_spec', 'sections', 'section', 'nextSectionId', 'prevSectionId', 'total_hasTaken', 'progressPercentage',

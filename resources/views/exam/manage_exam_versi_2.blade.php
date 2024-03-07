@@ -108,7 +108,7 @@
         </nav>
     </div>
 
-    <div class="page-inner">
+    <div class="container page-inner">
         <div class="page-header">
             <button type="button" class="btn btn-custom md-col-3" style="width:10%" onclick="redirectToSection('{{ url('/exam/manage-exam-v2/create-exam') }}')">
                 <span>Add</span>
@@ -121,22 +121,29 @@
         </div>
 
         <div class="page-inner">
+            <h1 class="mb-3"><b>Quiz/Pre Test/Post Test/Evaluation</b></h1>
             <table class="table">
-                <thead class="table-dark" style="text-align: center;">
-                  <th>Judul</th>
-                  <th>Manage</th>
+                <thead style="background-color: #ebebeb" style="text-align: center;">
+                  <th style="text-align: center"><h3><b>Judul</b></h3></th>
+                  <th style="text-align: center"><h3><b>Manage</b></h3></th>
                 </thead>
                 <tbody>
                     @forelse ($dayta as $data)
                     <tr>
                         <td>
-                            {{ $data->title }}
+                            {{ $data->title }} + {{  $data->id }}
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn btn-primary"></button>
-                            <button class="btn btn-secondary"></button>
-                            <button class="btn btn-success"></button>
-                            <button class="btn btn-danger" onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">EDIT</button>
+                            <div class="row justify-content-center" >
+                                <button class="btn mr-2" style="background-color: #4BC9FF; border-radius: 20px;"><img src="{{ url('/Icons/Download.svg') }}"></button>
+                                <button class="btn mr-2" style="background-color: #6DCBA8; border-radius: 20px;"><img src="{{ url('/Icons/Link.svg') }}"></button>
+                                <button class="btn mr-2" style="background-color: #208DBB; border-radius: 20px;" onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')"><img src="{{ url('/Icons/Edit.svg') }}"></button>
+                                <form action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button onclick="return confirm('Are you sure?')" class="btn" style="background-color: #FC1E01; border-radius: 20px;"><img src="{{ url('/Icons/Delete.svg') }}"></button>
+                                </form>
+                            </div>
                         </td>
                         <script>
                             function redirectToSection_edit(url) {

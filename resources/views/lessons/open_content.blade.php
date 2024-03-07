@@ -245,7 +245,7 @@
           <div class="container">
             {{-- TABEL 2 --}}
             <table class="table table2 table-striped">
-                <thead class="table-dark align-middle" >
+                <thead class="align-middle" style="background-color: #e9e9e9">
                     <td class="align-middle" style="color: red"><h5><b>Getting Started</b></h5></td>
                     <td class="align-middle">{{ $totalSections }} sections</td>
                     <td class="align-middle pull-right">{{ $progressPercentage }}% Finish ({{ $total_hasTaken }}/{{ $totalSections }})</td>
@@ -284,6 +284,9 @@
                                             @endif
                                         </div>
                                     </td>
+                                    <td>
+                                        {{ isset($item->quiz_session_id) ? $item->quiz_session_id : '' }} dengan durasi: {{ isset($item->duration_take) ? $item->duration_take : '' }}
+                                    </td>
                                 </tr>
                             @else
                                 <tr>
@@ -312,6 +315,9 @@
                                                 </a>
                                             @endif
                                         </div>
+                                    </td>
+                                    <td>
+                                        {{ isset($item->quiz_session_id) ? $item->quiz_session_id : '' }} dengan durasi: {{ isset($item->duration_take) ? $item->duration_take : '' }}
                                     </td>
                                 </tr>
                             @endif
