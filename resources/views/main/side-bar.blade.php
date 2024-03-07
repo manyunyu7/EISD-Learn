@@ -7,35 +7,39 @@
                 @else
                     @include('main.sidebar.mentor-sidebar')
                 @endif
-                <li class="nav-item {{ Request::is('profile') ? 'active' : '' }}">
-                    <a href="{{ url('/profile') }}">
-                        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/myProfile.svg" 
-                        style="width: 14%; 
-                            height: auto;
-                            display: flex;
-                            margin-top: 5px;
-                            "
-                        >
-                        <p style="padding-left: 12px; margin-top: 13px; font-size: 15px;">My Profile</p>
-                    </a>
-                </li>
-                <hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>
-                <li class="nav-item">
-                    <a href="{{ route('logout') }}" onclick="event.preventDefault();
-                                  document.getElementById('logout-form').submit();">
-                        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/SignOut.svg" 
-                        style="width: 14%; 
-                            height: auto;
-                            display: flex;
-                            margin-top: 5px;
-                            "
-                        >
-                        <p style="padding-left: 12px; margin-top: 13px; font-size: 15px;">Sign-out</p>
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
-                </li>
+
+                    <li class="nav-item {{ Request::is('profile') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+                        <a href="{{ url('/profile') }}" style="display: flex; align-items: center;">
+                            <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/myProfile.svg"
+                                 style="width: 14%;
+                                height: auto;
+                                margin-top: 5px;
+                                "
+                            >
+                            <p class="{{ Request::is('profile') ? 'text-white' : ''}}"
+                               style="margin-left: 10px; {{ (Request::is('profile')) ? 'color: white !important;' : '' }}">My Profile</p>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item {{ Request::is('home/*') ? 'active' : '' }}" style="display: flex; justify-content: center; margin-top: 300px">
+                        <a href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                           style="display: flex; align-items: center;">
+                            <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/SignOut.svg"
+                                 style="width: 14%;
+                                height: auto;
+                                margin-top: 5px;
+                                "
+                            >
+                            <p class="{{ Request::is('home/*') ? 'text-white' : ''}}"
+                               style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Logout</p>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </a>
+                    </li>
+
             </ul>
         </div>
     </div>

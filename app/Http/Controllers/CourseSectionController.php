@@ -27,7 +27,7 @@ class CourseSectionController extends Controller
 {
     public function manage_section(Request $request, Lesson $lesson)
     {
-        
+
         $user_id = Auth::id();
         $lesson_id = $lesson->id;
         $examSessions = ExamSession::where(function ($query) {
@@ -121,7 +121,7 @@ class CourseSectionController extends Controller
             ->join('users', 'exam_takers.user_id', '=', 'users.id')
             ->where('exam_takers.course_section_flag', $sectionId)
             ->groupBy('exam_takers.user_id', 'users.name')
-            ->get(); 
+            ->get();
 
 
 
@@ -301,7 +301,7 @@ class CourseSectionController extends Controller
         $student_sections = DB::select("select * from student_section ");
         $sections = DB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
         $section_spec = DB::select("select * from view_course_section where section_id = '$sectionId' ");
-
+        $sectionDetail = CourseSection::findOrFail($sectionId);
         // Iterate over the sections and check if each one is already added to the student-section
         foreach ($sections as $key => $section) {
             // Check if the section is already added to the student-section
@@ -410,7 +410,7 @@ class CourseSectionController extends Controller
         }
 
         $classInfo  = DB::select("SELECT
-                        a.*, 
+                        a.*,
                         b.name AS mentor_name,
                         b.profile_url,
                         COUNT(c.student_id) AS num_students_registered,
@@ -426,7 +426,7 @@ class CourseSectionController extends Controller
                                 SELECT 1
                                 FROM student_lesson sl
                                 WHERE a.id = $lessonId
-                                
+
                             )
                         GROUP BY
                             a.id, b.name, b.profile_url;
@@ -436,6 +436,7 @@ class CourseSectionController extends Controller
 
         $compact = compact('isEligibleStudent', 'hasTakenAnyExam', 'examResults', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
             'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
+            'sectionDetail',
             'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
             'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered', 'classInfo');
 
@@ -451,7 +452,7 @@ class CourseSectionController extends Controller
         if ($isExam) {
             return view('exam.student.take_exam_on_session', $compact);
         } else {
-            return view('lessons.course_play', $compact);
+            return view('lessons.course_play_new', $compact);
         }
     }
 

@@ -44,14 +44,14 @@
         font-size: 45px;
         }
         .imagesHeader{
-            max-width: 100%; 
-            height: auto; 
-            display: block; 
+            max-width: 100%;
+            height: auto;
+            display: block;
             margin-top: 55px;
         }
         .imgHeader_2{
-            max-width: 100%; 
-            height: auto; 
+            max-width: 100%;
+            height: auto;
             margin-left: 15px;
         }
         .tblContent{
@@ -61,7 +61,7 @@
             text-align: left;
         }
         .imgPembelajaran{
-            width: 20vw; 
+            width: 20vw;
             height:auto;
             margin-left: -50px
         }
@@ -71,19 +71,19 @@
         .deskripsiPembelajaran{
             font-size: 13px;
         }
-        
+
         .BtnModulTitle{
-            width: 185px; 
-            height: 50px; 
+            width: 185px;
+            height: 50px;
             pointer-events: none;
             margin-left: -50px
         }
         .modulTitle{
-            font-size:20px; 
+            font-size:20px;
         }
         .BtnModulTitle_FAQ{
-            width: 114px; 
-            height:50px; 
+            width: 114px;
+            height:50px;
             pointer-events: none;
             margin-left: 15px
         }
@@ -94,7 +94,7 @@
             font-size: 13px;
             text-align: left;
         }
-    
+
     }
 
     /* Penyesuaian untuk tampilan sedang */
@@ -109,7 +109,7 @@
         }
 
         /* Adjust badge and text sizes for medium-sized screens */
-        
+
         .badge {
             font-size: 60px;
         }
@@ -124,15 +124,15 @@
             font-size: 52px;
         }
         .imagesHeader{
-            max-width: 138%; 
-            height: auto; 
-            display: block; 
+            max-width: 138%;
+            height: auto;
+            display: block;
             margin-top: 450px;
             margin-left: -550px;
         }
         .imgHeader_2{
-            max-width: 70%; 
-            height: auto; 
+            max-width: 70%;
+            height: auto;
         }
         .tblContent{
             margin-left: -130px;
@@ -140,37 +140,37 @@
             width: 80%;
         }
         .BtnModulTitle{
-            width: 185px; 
-            height: auto; 
+            width: 185px;
+            height: auto;
             pointer-events: none;
             margin-left: -220px;
             margin-bottom: 30px;
         }
         .imgPembelajaran{
-            width: 10vw; 
+            width: 10vw;
             height:auto;
             margin-left: -50px
         }
-        
+
         .titlePembelajaran{
             font-size: 18px;
         }
         .deskripsiPembelajaran{
             font-size: 13px;
         }
-        
+
         .BtnModulTitle{
-            width: 185px; 
-            height: 50px; 
+            width: 185px;
+            height: 50px;
             pointer-events: none;
             margin-left: -220px
         }
         .modulTitle{
-            font-size:20px; 
+            font-size:20px;
         }
         .BtnModulTitle_FAQ{
-            width: 114px; 
-            height:50px; 
+            width: 114px;
+            height:50px;
             pointer-events: none;
             margin-left: 15px
         }
@@ -194,7 +194,7 @@
         }
 
         /* Adjust badge and text sizes for medium-sized screens */
-        
+
         .badge {
             font-size: 60px;
         }
@@ -209,15 +209,15 @@
             font-size: 52px;
         }
         .imagesHeader{
-            max-width: 120%; 
-            height: auto; 
-            display: block; 
+            max-width: 120%;
+            height: auto;
+            display: block;
             margin-top: 200px;
             margin-left: -150px;
         }
         .imgHeader_2{
-            max-width: 100%; 
-            height: auto; 
+            max-width: 100%;
+            height: auto;
         }
         .tblContent{
             margin-left: 50px;
@@ -225,32 +225,32 @@
             width: 100%;
         }
         .imgPembelajaran{
-            width: 8vw; 
+            width: 8vw;
             height:auto;
             margin-left: -50px
         }
-        
+
         .titlePembelajaran{
             font-size: 20px;
         }
         .deskripsiPembelajaran{
             font-size: 15px;
         }
-        
+
         .BtnModulTitle{
-            width: 195px; 
-            height: 50px; 
+            width: 195px;
+            height: 50px;
             pointer-events: none;
             margin-left: -40px;
             margin-bottom: 25px;
-            
+
         }
         .modulTitle{
-            font-size:25px; 
+            font-size:25px;
         }
         .BtnModulTitle_FAQ{
-            width: 114px; 
-            height:50px; 
+            width: 114px;
+            height:50px;
             pointer-events: none;
             margin-left: 15px
         }
@@ -285,18 +285,18 @@
             font-size: 35px;
         }
         .btn{
-            width: 150px; 
+            width: 150px;
             height:70px;
             font-size: 150px;
         }
         .imagesHeader{
-            max-width: 100%; 
-            height: auto; 
-            display: block; 
+            max-width: 100%;
+            height: auto;
+            display: block;
             margin-top: 325px;
         }
         .imgPembelajaran{
-            width: 8vw; 
+            width: 8vw;
             height:auto;
             margin-left: -15px
         }
@@ -312,23 +312,23 @@
             margin-left: 20px
         }
         .BtnModulTitle{
-            width: 585px; 
-            height: 100px; 
+            width: 585px;
+            height: 100px;
             pointer-events: none;
         }
         .modulTitle{
-            font-size:60px; 
+            font-size:60px;
         }
         .BtnModulTitle_FAQ{
-            width: 320px; 
-            height: 110px; 
+            width: 320px;
+            height: 110px;
             pointer-events: none;
         }
         .modulTitle_FAQ{
-            font-size:70px; 
+            font-size:70px;
         }
         .fa_Text{
-            font-size: 20px; 
+            font-size: 20px;
         }
         .accordion-body p{
             font-size: 24px;
@@ -337,7 +337,7 @@
     }
 </style>
 @endpush
-    
+
 
     <div class="container w-100" data-aos="flip-right" >
     </div>
@@ -352,12 +352,12 @@
                 <span class="badge bg-danger md-2 lg-10" style="color: white; "><b> Learning</b></span></h1>
                 <h1 class="mdln-"><b><span class="badge bg-danger md-2 lg-10" style="color: white; ">Management System</span></b></h1>
                 <span >
-                    Metode pendidikan yang menggunakan teknnologi digital untuk memberikan 
-                    akses fleksibel dan mandiri kepada karyawan untuk melakukan pelatihan atau 
+                    Metode pendidikan yang menggunakan teknnologi digital untuk memberikan
+                    akses fleksibel dan mandiri kepada karyawan untuk melakukan pelatihan atau
                     pembelajaran melalui platform online
                 </span>
                 <br><br><br>
-                <button type="button" class="btn btn-danger" 
+                <button type="button" class="btn btn-danger"
                     href="{{ url('login') }}">
                     <b>Get Started</b>
                 </button>
@@ -381,7 +381,7 @@
                     <div class="col-2">
                         <button class="btn btn-dark BtnModulTitle">
                             <span class="modulTitle"><b>Pembelajaran</b></span>
-                        </button>            
+                        </button>
                         <br><br>
                     </div>
                 </div>
@@ -400,7 +400,7 @@
                                 <p class="deskripsiPembelajaran">Materi pelatihan disajikan dalam bentuk yang menarik dengan elemen interaktif.</p>
                             </div>
                         </td>
-                        
+
                     </tr>
 
                     <tr>
@@ -412,10 +412,12 @@
                         <td>
                             <div class="col-10">
                                 <h4 class="titlePembelajaran"><b>Ujian dan Evaluasi</b></h4>
-                                <p class="deskripsiPembelajaran">Dapat mengukur pemahaman karyawan melalui ujian dan evaluasi secara online.</p>
+                                <p class="deskripsiPembelajaran">
+                                    Dapat mengukur pemahaman karyawan melalui ujian dan evaluasi secara online.
+                                </p>
                             </div>
                         </td>
-                        
+
                     </tr>
 
                     <tr>
@@ -430,7 +432,7 @@
                                 <p class="deskripsiPembelajaran">Menghadirkan elemen kompetisi dan motivasi tambahan dalam proses pembelajaran online.</p>
                             </div>
                         </td>
-                        
+
                     </tr>
 
                     <tr>

@@ -1,57 +1,52 @@
-
-<li class="nav-item {{ (Request::is('blog/*')) ? 'active' : ''}}">
-    <a href={{url('/home')}}>
-        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/ic_home.svg" 
-             style="width: 14%; 
+<li class="nav-item {{ Request::is('home/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+        <a href="{{ url('/home') }}" style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/ic_home.svg"
+             style="width: 14%;
                 height: auto;
-                display: flex;
                 margin-top: 5px;
                 "
         >
-        <p style="padding-left: 12px; margin-top: 13px; font-size: 15px;">Home</p>
-        
+        <p class="{{ Request::is('home/*') ? 'text-white' : ''}}"
+           style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Home</p>
     </a>
 </li>
 
-<li class="nav-item  {{ (Request::is('portfolio/*')) ? 'active' : ''}}">
-    <a data-toggle="collapse" href="#arts">
-        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/Group.svg" 
-             style="width: 14%; 
+
+<li class="nav-item {{ (Request::is('class/*')) ? 'active' : ''}}">
+    <a data-toggle="collapse" href="#base" style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/class.svg"
+             style="width: 14%;
                 height: auto;
-                display: flex;
                 margin-top: 5px;
                 "
         >
-        <p style="padding-left: 12px; margin-top: 13px; font-size: 15px;">Class</p>
+        <p style="margin-left: 10px; {{ (Request::is('class/*')) ? 'color: white !important;' : '' }}"
+           class="{{ (Request::is('class/*')) ? 'text-white active' : '' }}">Class</p>
         <span class="caret"></span>
     </a>
-    <div class="collapse  {{ (Request::is('portfolio/*')) ? 'show' : ''}}" id="arts">
+    <div class="collapse  {{ (Request::is('class/*')) ? 'show' : ''}}" id="base">
         <ul class="nav nav-collapse">
             <li>
-                <a href="{{url('/class-list')}}">
-                    <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/classList.svg" 
-                        style="width: 14%; 
+                <a href="{{ url('/class/class-list') }}" style="display: flex; align-items: center;">
+                    <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/classList.svg"
+                         style="width: 14%;
                             height: auto;
-                            display: flex;
-                            margin-top: 5px;
-                            "
-                    >
-                    <span style="padding-left: 12px; margin-top: 13px; font-size: 15px;">Class List</span>
+                            margin-top: 5px;">
+                    <p class="{{ Request::is('class/class-list') ? 'text-white' : ''}}" style="margin-left: 10px;">
+                        Class List</p>
                 </a>
             </li>
-            <li class="{{ (Request::is('/my-class')) ? 'active' : ''}}">
-                <a href="{{url('/my-class')}}">
-                    <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/myClass.svg" 
-                        style="width: 14%; 
+            <li>
+                <a href="{{ url('/class/my-class') }}" style="display: flex; align-items: center;">
+                    <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/myClass.svg"
+                         style="width: 14%;
                             height: auto;
-                            display: flex;
-                            margin-top: 5px;
-                            "
-                    >
-                    <span style="padding-left: 12px; margin-top: 13px; font-size: 15px;">My Class</span>
+                            margin-top: 5px;">
+                    <p class="{{ Request::is('class/my-class') ? 'text-white' : ''}}" style="margin-left: 10px;">
+                        My Class</p>
                 </a>
             </li>
         </ul>
     </div>
 </li>
-    
+

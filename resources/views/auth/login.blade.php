@@ -82,10 +82,9 @@
             </div>
             <br>
             <div class="col-md-12 centere" style="display: flex; justify-content: center;">
-                <img
+                <img height="50"
                     src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"
                     style=" width:35%;
-                                height: auto;
                                 display: flex;
                                 align-items: center;
                                 "

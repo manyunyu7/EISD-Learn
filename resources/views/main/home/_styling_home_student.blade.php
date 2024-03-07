@@ -1,5 +1,15 @@
 <style>
 
+    .class-badge {
+        display: inline-block;
+        padding: .25em .4em;
+        font-size: 16px; /* You can adjust the font size as needed */
+        font-weight: bold;
+        border-radius: 4px;
+        color: #ffffff; /* Default text color */
+        background-color: #007bff; /* Default background color */
+    }
+
     .album-poster-parent {
         padding: 10px;
         background-color: #e6e6e6 !important;
@@ -56,7 +66,7 @@
         margin: 0 2px;  /* Adjust as needed */
         position: relative; /* Tambahkan ini */
 
-    
+
 
         /* Tambahkan aturan untuk ikon pada hover */
         &:hover {
@@ -144,14 +154,14 @@
         margin: -15px;
     }
     .btn-custom {
-        width: auto; 
+        width: auto;
         margin: 10px;
         padding: 0px 10px;
         background-color: #208DBB;
         color: white;
         border-radius: 10px !important;
     }
-    
+
     .btn-custom span{
         font-weight: bold;
         font-size: 16px;
@@ -216,10 +226,10 @@
 
     .avatar-img {
         /* Sesuaikan ukuran gambar sesuai kebutuhan Anda */
-        width: auto; 
-        height: auto; 
+        width: auto;
+        height: auto;
         /* Sesuaikan margin antara gambar dan nama */
-        margin-right: 10px; 
+        margin-right: 10px;
         margin-left: -10px;
         border-radius: 50%;
     }

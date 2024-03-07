@@ -25,11 +25,11 @@ class MyClassController extends Controller
     public function myClass()
     {
         $userID = Auth::id();
-        
+
         $myClasses = DB::select("SELECT * FROM (SELECT
                         RANK() OVER (PARTITION BY a.id ORDER BY cs.id ASC) AS ranking,
                         cs.id as first_section,
-                        a.*, 
+                        a.*,
                         b.name AS mentor_name,
                         b.profile_url,
                         COUNT(c.student_id) AS num_students_registered,
@@ -40,7 +40,7 @@ class MyClassController extends Controller
                         users b ON a.mentor_id = b.id
                     LEFT JOIN
                         student_lesson c ON a.id = c.lesson_id
-                    LEFT JOIN course_section cs on a.id = cs.course_id 
+                    LEFT JOIN course_section cs on a.id = cs.course_id
                     WHERE     EXISTS (
                             SELECT 1
                             FROM student_lesson sl
@@ -51,6 +51,6 @@ class MyClassController extends Controller
                         a.id, b.name, b.profile_url, cs.id) as main_table
                         where main_table.ranking = 1;");
         // return $myClasses;
-        return view('myclass')->with(compact('myClasses', 'userID'));
+        return view('student.myclass')->with(compact('myClasses', 'userID'));
     }
 }

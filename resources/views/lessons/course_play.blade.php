@@ -12,11 +12,6 @@
             overflow: hidden;
         }
 
-        /* Custom CSS for animation */
-        .rightist {
-            transition: margin-left 0.5s;
-        }
-
         .course_section_name {
             white-space: nowrap;
             overflow: hidden;
@@ -36,43 +31,6 @@
                 /* Add any additional styles for small screens */
             }
         }
-
-        /* Custom CSS for animation */
-        .rightist {
-            transition: margin-right 0.5s;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 1000;
-            background-color: #fff;
-            overflow-x: hidden;
-        }
-        .rightist.hidden {
-            margin-right: -33.33333333%; /* Hide by moving out of view */
-        }
-        .rightist.show {
-            margin-right: 0; /* Show by resetting margin */
-        }
-        .full-width{
-            width: 100%;
-        }
-        @media (max-width: 767px) {
-            .rightist {
-                position: static;
-                margin-right: 0;
-                display: none;
-            }
-        }
-        .leftist {
-            transition: width 0.5s;
-            width: 66.66666667%; /* Initial width */
-            float: left;
-        }
-        .leftist.full-width {
-            width: 100%; /* Occupy the entire width */
-        }
-
     </style>
     <link rel="stylesheet" href="{{ URL::to('/') }}/library/feylabs-video-css.css"/>
     <script src="https://cdn.plyr.io/3.6.3/demo.js" crossorigin="anonymous"></script>
@@ -83,70 +41,31 @@
     @push('custom-scripts')
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
         <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
-{{--        <script>--}}
-{{--            // Check if the current URL contains "xyz"--}}
-{{--            var currentUrl = window.location.href;--}}
-{{--            if (currentUrl.indexOf("xyz") === -1) {--}}
-{{--                // Initialize Video.js--}}
-{{--                document.addEventListener("DOMContentLoaded", function () {--}}
-{{--                    var videoPlayer = document.getElementById("myVideo");--}}
-{{--                    let previousTime = 0;--}}
-
-{{--                    videoPlayer.ontimeupdate = function () {--}}
-{{--                        setTimeout(() => {--}}
-{{--                            console.log("hello world " + videoPlayer.currentTime);--}}
-{{--                            previousTime = videoPlayer.currentTime;--}}
-{{--                        }, 1);--}}
-{{--                    };--}}
-
-{{--                    videoPlayer.onseeking = function () {--}}
-{{--                        if (videoPlayer.currentTime > previousTime) {--}}
-{{--                            videoPlayer.currentTime = previousTime;--}}
-{{--                        }--}}
-{{--                    };--}}
-{{--                });--}}
-{{--            }--}}
-{{--        </script>--}}
-
         <script>
-            function toggleRight() {
-                var rightist = document.getElementById('rightist');
-                var leftist = document.getElementById('leftist');
+            // Check if the current URL contains "xyz"
+            var currentUrl = window.location.href;
+            if (currentUrl.indexOf("xyz") === -1) {
+                // Initialize Video.js
+                document.addEventListener("DOMContentLoaded", function () {
+                    var videoPlayer = document.getElementById("myVideo");
+                    let previousTime = 0;
 
-                rightist.classList.toggle('hidden');
-                rightist.classList.toggle('show');
+                    videoPlayer.ontimeupdate = function () {
+                        setTimeout(() => {
+                            console.log("hello world " + videoPlayer.currentTime);
+                            previousTime = videoPlayer.currentTime;
+                        }, 1);
+                    };
 
-                if (rightist.classList.contains('hidden')) {
-                    leftist.classList.add('full-width');
-                } else {
-                    leftist.classList.remove('full-width');
-                }
+                    videoPlayer.onseeking = function () {
+                        if (videoPlayer.currentTime > previousTime) {
+                            videoPlayer.currentTime = previousTime;
+                        }
+                    };
+                });
             }
         </script>
     @endpush
-
-
-    <div class="container">
-        <button class="btn btn-primary" onclick="toggleRight()">Toggle Right</button>
-    </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class=" leftist bg-warning" id="leftist">
-                <!-- Left Content -->
-                <h1>Leftist Content</h1>
-                <p>This content occupies 2/3 of the screen on larger screens and fills the entire screen on smaller screens.</p>
-            </div>
-            <div class=" rightist show position-absolute" id="rightist">
-                <!-- Right Content -->
-                <h1>Rightist Content</h1>
-                <p>This content occupies 1/3 of the screen on larger screens and fills the entire screen on smaller screens.</p>
-            </div>
-        </div>
-    </div>
-
-
-
-
 
     <div class="container-fluid">
         <div class="main-content-container container-fluid px-4 mt-5">
@@ -164,70 +83,9 @@
 
                 <div class="container-fluid">
                     @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
-
-                        {{--                        <div class='embed-responsive' style='padding-bottom:150%'>--}}
-                        {{--                            <object--}}
-                        {{--                                data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}'--}}
-                        {{--                                type='application/pdf' width='100%' height='100%'></object>--}}
-                        {{--                        </div>--}}
-                        {{--                    --}}
-                        <iframe id="pdfIframe" onload="" src="{{url("/")."/library/viewerjs/src/#"}}{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
-                                width="100%" height="550" allowfullscreen="" webkitallowfullscreen=""></iframe>
-
-                        <!-- Add this single <script> tag to the body of your HTML document -->
-
-
-                        <script>
-                            // Listen for a message from the iframe
-                            window.addEventListener('message', function(event) {
-                                if (event.data === 'iframeLoaded') {
-                                    startTracking();
-                                }
-                            });
-
-                            function startTracking() {
-                                console.log('Tracking started.');
-
-                                function getCurrentPage() {
-                                    var iframe = document.getElementById('pdfIframe');
-                                    var currentPage = iframe.contentWindow.document.querySelector('.toolbarField.pageNumber').value;
-                                    return parseInt(currentPage, 10);
-                                }
-
-                                function getTotalPages() {
-                                    var iframe = document.getElementById('pdfIframe');
-                                    var totalPages = iframe.contentWindow.document.querySelector('.toolbarLabel').textContent;
-                                    var match = totalPages.match(/of (\d+)/);
-                                    if (match && match[1]) {
-                                        return parseInt(match[1], 10);
-                                    }
-                                    return 0;
-                                }
-
-                                function calculatePercentageCompletion() {
-                                    var currentPage = getCurrentPage();
-                                    var totalPages = getTotalPages();
-
-                                    if (totalPages === 0) {
-                                        return 0;
-                                    }
-
-                                    return (currentPage / totalPages) * 100;
-                                }
-
-                                function updatePageInfo() {
-                                    var currentPage = getCurrentPage();
-                                    var totalPages = getTotalPages();
-                                    var percentageCompletion = calculatePercentageCompletion();
-
-                                    console.log('Current Page:', currentPage);
-                                    console.log('Total Pages:', totalPages);
-                                    console.log('Percentage Completion:', percentageCompletion + '%');
-                                }
-
-                                setInterval(updatePageInfo, 1000);
-                            }
-                        </script>
+                        <div class='embed-responsive' style='padding-bottom:150%'>
+                            <object data='{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}' type='application/pdf' width='100%' height='100%'></object>
+                        </div>
                     @else
                         @php
                             $videoFormats = ['mp4', 'webm', 'ogg']; // Add more video formats as needed
@@ -238,15 +96,12 @@
                         @if (in_array($fileExtension, $videoFormats))
                             <video crossorigin controls playsinline id="myVideo" autoplay="autoplay" width="100%"
                                    class="video-mask" disablePictureInPicture controlsList="nodownload">
-                                <source
-                                    src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
+                                <source src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
                             </video>
                         @elseif (in_array($fileExtension, $imageFormats))
-                            <img
-                                src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
-                                alt="Image">
+                            <img src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}" alt="Image">
                         @else
-
+                            <p>Unsupported file format</p>
                         @endif
                     @endif
                 </div>

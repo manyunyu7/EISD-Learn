@@ -31,7 +31,7 @@ class LandingController extends Controller
         // }
         // $dayta = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         // $dayta = DB::select("select * from view_course_section  where mentor_id = $user_id");
-        return view('landing');
+        return view('landing168');
     }
 
     public function classes()
@@ -46,7 +46,7 @@ class LandingController extends Controller
     public function portfolios()
     {
         $classes = DB::select("SELECT
-                        a.*, 
+                        a.*,
                         b.name AS mentor_name,
                         b.profile_url,
                         COUNT(c.student_id) AS num_students_registered
@@ -75,6 +75,6 @@ class LandingController extends Controller
         return view('blogs')->with('dayta',$dayta);
     }
 
-    
+
 
 }

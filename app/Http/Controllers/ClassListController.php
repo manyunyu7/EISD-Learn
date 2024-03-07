@@ -53,7 +53,7 @@ class ClassListController extends Controller
 
         $userID = Auth::id();
         $classes = DB::select("SELECT
-                    a.*, 
+                    a.*,
                     b.name AS mentor_name,
                     b.profile_url,
                     COUNT(c.student_id) AS num_students_registered,
@@ -73,11 +73,11 @@ class ClassListController extends Controller
                     )
                 GROUP BY
                     a.id, b.name, b.profile_url");
-        
+
         $view_course = DB::select("select * from view_course");
 
         // return $classes;
-        return view('portfolio')->with(compact('classes', 'view_course'));
+        return view('student.all_class')->with(compact('classes', 'view_course'));
     }
 
     public function blogs()
@@ -92,7 +92,7 @@ class ClassListController extends Controller
         $idClass = $request->input('idClass');
         $userID = Auth::id();
         $classes = DB::select("SELECT
-                    a.*, 
+                    a.*,
                     b.name AS mentor_name,
                     b.profile_url,
                     COUNT(c.student_id) AS num_students_registered,
@@ -119,32 +119,32 @@ class ClassListController extends Controller
         ->first();
 
         // return $course;
-        
+
         // Jika kelas yang sesuai ditemukan, mengaitkan pengguna dengan kelas tersebut
         if ($course) {
             // Jika kelas ditemukan, Anda dapat menambahkan data ke tabel lain
             $dataToInsert = [
                 'student_id' => $userID,
                 'lesson_id' => $idClass,
-                'student-lesson' => "$userID-$idClass",   
+                'student-lesson' => "$userID-$idClass",
                 'learn_status' => 0,
                 'certificate_file' => "",
                 'created_at' => now()->format('Y-m-d H:i:s'),
                 'updated_at' => now()->format('Y-m-d H:i:s'),
                 // ...
             ];
-            
+
 
             // Melakukan penambahan data ke tabel lain (contoh: lessons)
             DB::table('student_lesson')->insert($dataToInsert);
 
-            return redirect('/my-class')->with('success', 'Berhasil bergabung dalam kelas!');
+            return redirect('/class/my-class')->with('success', 'Berhasil bergabung dalam kelas!');
         } else {
             // Jika PIN atau ID Kelas tidak valid, memberikan respons dengan status 422 (Unprocessable Entity)
             // return response()->json(['message' => 'PIN atau ID Kelas tidak valid'], 422);
-            return redirect('/class-list')->with('error', 'PIN kelas tidak valid');
+            return redirect('/class/class-list')->with('error', 'PIN kelas tidak valid');
         }
-        
+
     }
 
 }
