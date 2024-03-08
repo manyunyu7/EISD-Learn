@@ -151,9 +151,17 @@ class LessonController extends Controller
     {
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
+        $myClasses = DB::select("
+                        SELECT 
+                            a.*, 
+                            u.name AS mentor_name 
+                        FROM 
+                            lessons a
+                        LEFT JOIN 
+                            users u ON a.mentor_id = u.id AND u.role = 'mentor'");
         Paginator::useBootstrap();
-        // return $dayta;
-        return view('lessons.manage_lesson_v2', compact('dayta'));
+        dd($myClasses) ;
+        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
     }
 
     public function destroy($id)

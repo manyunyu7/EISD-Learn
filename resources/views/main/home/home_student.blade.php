@@ -197,7 +197,7 @@
 
             {{-- DASHBOARD --}}
             <div class="col-md-12">
-                <h2><b>Dashboard</b></h2>
+                <h1><strong>Dashboard</strong></h1>
             </div>
 
             <div class="col-sm-6 col-md-4">

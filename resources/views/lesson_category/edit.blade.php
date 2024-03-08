@@ -96,6 +96,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card card-small mb-3">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Pilih Warna</label>
+                                    <input type="color" name="color_ofCategory" class="form-control @error('title') is-invalid @enderror" placeholder="Masukan Kode Hewxacolor">
+
+                                    <!-- error message untuk title -->
+                                    @error('title')
+                                        <div class="alert alert-danger mt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
                         <!-- / Add New Post Form -->
                         <div class="row">
                             <div class="col-md-12">

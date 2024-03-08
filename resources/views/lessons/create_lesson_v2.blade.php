@@ -210,15 +210,36 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">New Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input required 
-                                name="title_class" 
-                                type="button" 
-                                value="Tidak Aktif"
-                                class="form-control btn btn-danger" 
-                                aria-label="Recipient's username" 
-                                aria-describedby="basic-addon2">
+                                <input readonly type="text" value="Tidak Aktif" name="new_class" id="public-access-btn" class="btn btn-danger" style="width: 100%">
                             </div>
                         </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var btn_new_class   = document.getElementById('public-access-btn');
+                                var isActive_NC     = false;
+                        
+                                // New Class Setup
+                                btn_new_class.addEventListener('click', function () {
+                                    // Tidak Aktif
+                                    if (isActive_NC) {
+                                        btn_new_class.classList.remove('btn-success');
+                                        btn_new_class.classList.add('btn-danger');
+                                        btn_new_class.textContent = 'Tidak Aktif';
+                                        btn_new_class.value ='Tidak Aktif';
+                                        isActive_NC = false;
+                                    } 
+                                    // Aktif
+                                    else {
+                                        btn_new_class.classList.remove('btn-danger');
+                                        btn_new_class.classList.add('btn-success');
+                                        btn_new_class.textContent = 'Aktif';
+                                        btn_new_class.value ='Aktif';
+                                        isActive_NC = true;
+                                    }
+                                });
+                            });
+                        </script>
                     </div>
     
                     <div class="col-md-4">
@@ -234,7 +255,7 @@
                                              alt="...">
                                     </div>
                                     <div class="input-group mb-3">
-                                        <input type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        <input required type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                     </div>
                                     {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
                                     <small width="100%">Image size should be under 1 MB and image ratio needs to be 1:1</small>

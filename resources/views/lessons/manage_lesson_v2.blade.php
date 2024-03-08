@@ -109,9 +109,9 @@
     </div>
 
     <div class="container page-inner">
-        <div class="page-header" style="background-color: salmon">
-            <button type="button" class="btn btn-custom md-col-3" style="width:10%" onclick="redirectToSection('{{ url('lesson/create_v2') }}')">
-                <span>Add NEW CLASS</span>
+        <div class="page-header">
+            <button type="button" class="btn btn-custom md-col-3" style="width:8%" onclick="redirectToSection('{{ url('lesson/create_v2') }}')">
+                <span>Add</span>
             </button>
             <script>
                 function redirectToSection(url) {
@@ -120,8 +120,121 @@
             </script>
         </div>
 
-        <div class="page-inner" style="background-color: cyan">
-            <h1 class="mb-3"><b>All Class</b></h1>
+        <div class="col-md-12">
+            <h1><strong>All Class</strong></h1>
+        </div>
+        <div class="container-fluid mt-3 row">
+            @php
+                // Ambil semua kategori pelajaran sekali
+                $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+            @endphp
+            @forelse ($myClasses as $data)
+                @php
+                // Ambil warna kategori jika kategori ada dalam $lessonCategories
+                $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                @endphp
+        
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="card shadow ">
+                        <!-- Image -->
+                        <img class="card-img-top"
+                             style="max-height: 200px"
+                             onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
+                             src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                             alt="La Noyee">
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <!-- Badge and favorite -->
+                            <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: .5rem;">
+                                <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
+                                    <strong>{{ $data->course_category }}</strong>
+                                </div>
+                                <div class="class-badge" style="color: white; margin-bottom: 5px; margin-left: 5px; margin-right: 5px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
+                                    NEW
+                                </div>
+                                <div class="class-badge" style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: 5px;">
+                                    <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
+                                    <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Title -->
+                            <h6 class="card-title"><a href="#">{{$data->course_title}}</a></h6>
+                            <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
+                                settling.</p>
+
+
+                            <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
+
+                            
+                            {{-- <div class="d-flex justify-content-between">
+                                <div>
+                                    <img style="width: 35%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                    <p>{{ $data->mentor_name }}</p>
+                                </div>
+                            </div> --}}
+                            <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
+                                <img style="width: 15%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                <p style="font-size: 15px; margin-bottom: 3px;">{{ $data->mentor_name }}</p>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
+                                </a>
+                                <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                    <div class="dropdown-user-scroll scrollbar-outer">
+                                        <li>
+                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $data->id }}" data-bs-whatever="@mdo">Join Class</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
+                                                <span class="link-collapse">View Class</span>
+                                            </a>
+                                        </li>
+                                    </div>
+                                </ul>
+                            </li>
+                            <!-- Rating star -->
+                            <ul class="list-inline mb-0 d-none">
+                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                </li>
+                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                </li>
+                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                </li>
+                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                </li>
+                                <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i>
+                                </li>
+                                <li class="list-inline-item ms-2 h6 fw-light mb-0">4.0/5.0</li>
+                            </ul>
+                        </div>
+                        <!-- Card footer -->
+                        <div class="card-footer pt-0 pb-3">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <img  style="width: 10%; height: auto; margin-top: 12px;"
+                                     src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="Portfolio Icon">
+                                <a style="text-decoration: none;color: BLACK;"
+                                   href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                    <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
+                                        <b> 100 </b><span style="color: #8C94A3;">students</span>
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            @empty
+                <div class="w-100 d-flex justify-content-center">
+                    <script
+                        src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js">
+                    </script>
+                    <lottie-player
+                        src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json"
+                        background="transparent" speed="1"
+                        style="width: 300px; height: 300px;"
+                        loop autoplay></lottie-player>
+                </div>
+                <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas Manapun</strong>
+            @endforelse
         </div>
     </div>
 @endsection
