@@ -160,7 +160,7 @@ class LessonController extends Controller
                         LEFT JOIN 
                             users u ON a.mentor_id = u.id AND u.role = 'mentor'");
         Paginator::useBootstrap();
-        dd($myClasses) ;
+        // dd($myClasses) ;
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
     }
 

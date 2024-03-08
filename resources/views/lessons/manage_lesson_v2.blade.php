@@ -127,11 +127,17 @@
             @php
                 // Ambil semua kategori pelajaran sekali
                 $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+                
             @endphp
             @forelse ($myClasses as $data)
                 @php
                 // Ambil warna kategori jika kategori ada dalam $lessonCategories
                 $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                $numStudents = DB::select(
+                                "SELECT * 
+                                    FROM
+                                        student_lesson a
+                                    WHERE a.lesson_id = $data->id");
                 @endphp
         
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
@@ -214,7 +220,7 @@
                                 <a style="text-decoration: none;color: BLACK;"
                                    href="{{ url('/class/class-list/students/' . $data->id) }}">
                                     <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
-                                        <b> 100 </b><span style="color: #8C94A3;">students</span>
+                                        <b> {{ $numStudents }} </b><span style="color: #8C94A3;">students</span>
                                     </p>
                                 </a>
                             </div>
