@@ -39,7 +39,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    
+
 
     <!-- Fonts and icons -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/webfont/webfont.min.js"></script>
@@ -184,7 +184,7 @@
 
 
         .btn-custom {
-            width: auto; 
+            width: auto;
             height: 45px;
             margin: 10px;
             padding: 0px 10px;
@@ -195,12 +195,12 @@
 
 
         /* STYLE CSS FOR SOCMED SECTION AT PROFILE PAGES */
-       
+
     </style>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/demo.css"> --}}
-    
+
 </head>
 <body>
 
@@ -243,15 +243,15 @@
 </script>
 
 <div class="wrapper">
-    
+
     @if(!isset($showCompact))
         <div class="main-header">
             <!-- Logo Header -->
             <div class="logo-header" style="background-color: #1D2026">
                 <a href="{{url('/home')}}" class="logo">
                     <div style="text-align: center;">
-                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg" 
-                             style="width: 80%; 
+                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"
+                             style="width: 80%;
                                     height: auto;
                                     display: flex;
                                     margin-top: 5px;
@@ -259,7 +259,7 @@
                         >
                     </div>
                 </a>
-                
+
                 <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
                 <div class="nav-toggle">
                     <button class="btn btn-toggle toggle-sidebar">
@@ -326,11 +326,6 @@
 {{-- <script src="{{asset('atlantis/examples')}}/assets/js/setting-demo.js"></script>--}}
 {{-- <script src="{{asset('atlantis/examples')}}/assets/js/demo.js"></script>  --}}
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-
-<!-- Bootstrap JavaScript and dependencies (jQuery) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
 
 <script>
