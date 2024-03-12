@@ -138,6 +138,7 @@
                                     FROM
                                         student_lesson a
                                     WHERE a.lesson_id = $data->id");
+                $numStudentsCount = count($numStudents);
                 @endphp
         
                 <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
@@ -188,7 +189,11 @@
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                                     <div class="dropdown-user-scroll scrollbar-outer">
                                         <li>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $data->id }}" data-bs-whatever="@mdo">Join Class</a>
+                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $data->id }}" data-bs-whatever="@mdo">Manage Materials</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
+                                                <span class="link-collapse">Manage Students</span>
+                                            </a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
                                                 <span class="link-collapse">View Class</span>
@@ -215,17 +220,30 @@
                         <!-- Card footer -->
                         <div class="card-footer pt-0 pb-3">
                             <div style="display: flex; justify-content: center; align-items: center;">
-                                <img  style="width: 10%; height: auto; margin-top: 12px;"
+                                <!-- Icon for students -->
+                                <img style="width: 10%; height: auto; margin-top: 12px;"
                                      src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="Portfolio Icon">
-                                <a style="text-decoration: none;color: BLACK;"
+                                
+                                <!-- Link to view students -->
+                                <a style="text-decoration: none; color: black;"
                                    href="{{ url('/class/class-list/students/' . $data->id) }}">
-                                    <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
-                                        <b> {{ $numStudents }} </b><span style="color: #8C94A3;">students</span>
+                                    <p style="font-size: 17px; margin-left: 10px; margin-top: 28px;">
+                                        <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3;"> students</span>
                                     </p>
                                 </a>
+                        
+                                <!-- Edit button icon -->
+                                <img style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px;"
+                                     src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
+                                
+                                <!-- Delete button icon -->
+                                <img style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px;"
+                                     src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                                
+                                <!-- Toggle switch -->
                             </div>
                         </div>
-
+                        
                     </div>
                 </div>
             @empty
