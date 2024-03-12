@@ -189,7 +189,9 @@
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                                     <div class="dropdown-user-scroll scrollbar-outer">
                                         <li>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $data->id }}" data-bs-whatever="@mdo">Manage Materials</a>
+                                            <a class="dropdown-item" href="{{ url('/lesson/manage-materials/' . $data->id) }}">
+                                                Manage Materials
+                                            </a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
                                                 <span class="link-collapse">Manage Students</span>

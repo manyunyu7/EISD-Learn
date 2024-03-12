@@ -84,6 +84,8 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::resource('lesson', LessonController::class);
         Route::resource('section', CourseSectionController::class);
         Route::get('/lesson/{lesson}/section/', 'CourseSectionController@manage_section');
+        Route::get('/lesson/manage-materials/{lesson}/', 'CourseSectionController@manage_section_v2');
+
         Route::get('/lesson/{lessonId}/section/{sectionId}/input-score', 'CourseSectionController@viewInputScore');
         // Route::post('/lesson/{lesson}/store/','CourseSectionController@store')->name('section.store');
         // Route::delete('/lesson/{lesson}/section/s','CourseSectionController@destroy')->name('section.delete');

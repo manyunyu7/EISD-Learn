@@ -70,6 +70,10 @@ class CourseSectionController extends Controller
         return view('lessons.section.manage_section', $compact);
     }
 
+    public function manage_section_v2(Request $request, Lesson $lesson){
+        return view('lessons.manage_materials');
+    }
+
     public function updateScores(Request $request)
     {
         $scoresData = $request->input('scores');
