@@ -495,7 +495,7 @@ class MentorExamController extends Controller
 
 
             // return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
-            return redirect(url('/exam/manage-exam-v2/load-exam'))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+            return redirect(url("/exam/manage-exam-v2/$examId/load-exam"))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
 
         } else {
             //redirect dengan pesan error
