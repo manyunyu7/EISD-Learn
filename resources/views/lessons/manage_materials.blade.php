@@ -113,7 +113,7 @@
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
-                <li class="breadcrumb-item"><a href={{url('/home')}}>Class</a></li>
+                <li class="breadcrumb-item"><a href={{url('/lesson/manage_v2')}}>Class</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Add Materials</li>
             </ol>
         </nav>
@@ -123,14 +123,17 @@
         <div class="page-header">
             <h1><strong>Tambah Materi Baru</strong></h1>
         </div>
-
+        {{-- FORM TAMBAH MATERI --}}
         <div class="col-md-12">
             <div class="container load-soal" style="background-color: none">
-                <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST" enctype="multipart/form-data">
+                <form id="addSessionForm" action="{{ url('/lesson/create_materials/'.$lesson_id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                     <div class="row">
                         <div class="col-md-12">
+                            
+                            <input hidden name="lessonId" type="text" value="{{ $lesson_id }}">
+
                             {{-- Judul Kelas --}}
                             <div class="mb-3">
                                 <label for="" class="mb-2">Judul Materi<span style="color: red">*</span></label>
@@ -153,7 +156,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-6 mb-3">
-                                    <label for="" class="mb-2">Akses Konten<span style="color: red">*</span></label>
+                                    <label for="" class="mb-2">Exam<span style="color: red">*</span></label>
                                     <div class="input-group mb-3">
                                         <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
                                             <option value="" disabled selected>Pilih jenis soal</option>
@@ -166,55 +169,27 @@
                             </div>
                             
                             {{-- Deskripsi Kelas --}}
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {{-- Deskripsi Kelas --}}
-                                    <div class="mb-3">
-                                        <label for="" class="mb-2">Deskripsi Kelas</label>
-                                        <textarea id="editor" class="form-control" name="content"></textarea>
-                                        <script>
-                                            ClassicEditor
-                                                .create( document.querySelector( '#editor' ) )
-                                                .catch( error => {
-                                                    console.error( error );
-                                                } );
-                                        </script>
-                                    </div>
+                            <div class="mb-3">
+                                <label for="" class="mb-2">Upload File<span style="color: red">*</span></label>
+                                <div class="mb-3">
+                                    <input name="question_images" class="form-control" type="file" id="formFileMultiple" multiple>
                                 </div>
-                                <div class="col-md-6">
-                                    {{-- Upload File --}}
-                                    <div class="mb-3">
-                                        <div class="card-body">
-                                            <form action="upload.php" class="dropzone dz-clickable" id="my-dropzone">
-                                                <div class="dz-message" data-dz-message="">
-                                                    <div class="icon">
-                                                        <i class="flaticon-file"></i>
-                                                    </div>
-                                                    <h4 class="message">Upload File</h4>
-                                                    <div class="note">File size should be under 5 GB. Supported format: .mp4m .docs, .pdf, .pptx, .xls, .csv</div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Skrip untuk inisialisasi Dropzone -->
+                            </div>
+
+                            {{-- Deskripsi Kelas --}}
+                            <div class="mb-3">
+                                <label for="" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
+                                <textarea id="editor" class="form-control" name="content"></textarea>
                                 <script>
-                                    $(document).ready(function() {
-                                        // Inisialisasi Dropzone
-                                        Dropzone.autoDiscover = false;
-                                        $("#my-dropzone").dropzone({
-                                            // Konfigurasi Dropzone di sini
-                                        });
-                                    });
+                                    ClassicEditor
+                                        .create( document.querySelector( '#editor' ) )
+                                        .catch( error => {
+                                            console.error( error );
+                                        } );
                                 </script>
                             </div>
                         </div>
                     </div>
-                    
-                    
-    
-                    
     
                     {{-- BUTTONS --}}
                     <div class="mb-3" style="display: flex; justify-content: flex-end;">
@@ -222,13 +197,75 @@
                         <div style="width: 200px;">
                             <div class="input-group mb-3">
                                 <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
-                                <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
+                                <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Save</button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+
+        {{-- BUTTON REARRANGE --}}
+        <div class="page-header">
+            <div class="mb-3" style="display: flex; justify-content: flex-end;">
+                <div style="flex-grow: 1;"></div>
+                <div style="width: 200px;">
+                    <div class="input-group mb-3">
+                        <button type="submit" id="saveEditBtn"  
+                                onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
+                                class="btn btn-primary" style="width: auto; margin-left: 5px;">
+                            Rearrange
+                        </button>
+                        <script>
+                            function redirectToSection(url) {
+                                window.location.href = url;
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-header">
+            <h1 class="mt--4"><strong>Urutan Materi</strong></h1><br>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead style="background-color: #ebebeb;">
+                    <tr class="text-center">
+                        <th><h3><b>Urutan</b></h3></th>
+                        <th><h3><b>Materi</b></h3></th>
+                        <th><h3><b>Manage</b></h3></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($dayta as $item)
+                    <tr>
+                        <td class="text-center">{{  $loop->iteration }}</td>
+                        <td>{{ $item->section_title }}</td>
+                        <td>
+                            <div class="row justify-content-center" >
+                                <button class="btn mr-2" style="auto: auto;background-color: #208DBB; border-radius: 20px;" ><img src="{{ url('/Icons/Edit.svg') }}"></button>
+                                <button onclick="return confirm('Are you sure?')" class="btn" style="background-color: #FC1E01; border-radius: 20px;"><img src="{{ url('/Icons/Delete.svg') }}"></button>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                        <div class="alert alert-danger">
+                            Kelas Ini Belum Memiliki Materi
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </div>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        {{-- <div class="page-inner">
+            <h1 class="mb-3"><b>Quiz/Pre Test/Post Test/Evaluation</b></h1>
+            
+        </div> --}}
     </div>
 @endsection
 

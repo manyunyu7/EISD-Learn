@@ -71,7 +71,85 @@ class CourseSectionController extends Controller
     }
 
     public function manage_section_v2(Request $request, Lesson $lesson){
-        return view('lessons.manage_materials');
+        $lesson_id = $lesson->id;
+        $dayta = DB::table('course_section as c')
+            ->select(
+                'a.id as lesson_id',
+                'a.course_title as lessons_title',
+                'a.mentor_id',
+                'b.name as mentor_name',
+                'c.id as section_id',
+                'c.quiz_session_id',
+                'c.duration_take',
+                'c.section_order',
+                'c.section_title',
+                'c.section_content',
+                'c.section_video',
+                'c.created_at',
+                'c.updated_at',
+                'c.can_be_accessed'
+            )
+            ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
+            ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
+            ->where('a.id', $lesson_id)
+            ->orderBy('c.section_order', 'ASC')
+            ->get();
+        
+        $compact = compact('dayta', 'lesson_id');
+        // dd($dayta) ;
+        return view('lessons.manage_materials', $compact);
+    }
+
+    public function store_materials(Request $request, Lesson $lesson){
+        // $lesson_id = $lesson->id;
+
+        $insert_to_CourseSection = new CourseSection();
+
+        $insert_to_CourseSection->section_title = $request->title;
+        $insert_to_CourseSection->section_order = time();
+        $insert_to_CourseSection->section_video = '';
+        $insert_to_CourseSection->section_content = '';
+        $insert_to_CourseSection->course_id = $request->lessonId;
+        $insert_to_CourseSection->save();
+
+
+        if ($insert_to_CourseSection) {
+            //redirect dengan pesan sukses
+            return redirect("/lesson/manage-materials/$request->lessonId")->with(['success' => 'Materi Berhasil Ditambahkan!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect("/lesson/manage-materials/$request->lessonId")->with(['error' => 'Materi Gagal Ditambahkan!']);
+        }
+    }
+
+    public function rearrange_materials(Request $request, Lesson $lesson, $lesson_id){
+        $dayta = DB::table('course_section as c')
+            ->select(
+                'a.id as lesson_id',
+                'a.course_title as lessons_title',
+                'a.mentor_id',
+                'b.name as mentor_name',
+                'c.id as section_id',
+                'c.quiz_session_id',
+                'c.duration_take',
+                'c.section_order',
+                'c.section_title',
+                'c.section_content',
+                'c.section_video',
+                'c.created_at',
+                'c.updated_at',
+                'c.can_be_accessed'
+            )
+            ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
+            ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
+            ->where('a.id', $lesson_id)
+            ->orderBy('c.section_order', 'DESC')
+            ->get();
+        
+        // dd($dayta);
+        $compact = compact('dayta', 'lesson_id');
+        return view('lessons.manage_materials_order', $compact);
+
     }
 
     public function updateScores(Request $request)
@@ -659,4 +737,25 @@ class CourseSectionController extends Controller
             return redirect("lesson/$lesson_id/section")->with(['error' => 'Kelas Gagal Diupdate!']);
         }
     }
+
+    public function updateOrder(Request $request)
+    {
+        $data = $request->all();
+        $orders = $data['orders']; // Retrieve the array of orders
+        $lesson_id = $data['lesson']; // Retrieve the lesson ID
+    
+        // Loop through each order and update the corresponding row
+        foreach ($orders as $order) {
+            $newPosition = $order['newPosition'];
+            $code = $lesson_id . '-' . $newPosition;
+            $itemID = $order['id'];
+            
+            // Update the row with the new section order
+            CourseSection::where('id', $itemID)->update(['section_order' =>  $code]);
+        }
+    
+        // Kirim respons kembali ke klien
+        return response()->json(['message' => 'Urutan berhasil diperbarui'], 200);
+    }
+    
 }

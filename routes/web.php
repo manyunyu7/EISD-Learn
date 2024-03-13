@@ -1,6 +1,8 @@
 <?php
-use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\CourseSectionController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DropzoneController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -85,6 +87,9 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::resource('section', CourseSectionController::class);
         Route::get('/lesson/{lesson}/section/', 'CourseSectionController@manage_section');
         Route::get('/lesson/manage-materials/{lesson}/', 'CourseSectionController@manage_section_v2');
+        Route::post('/lesson/create_materials/{lesson}', 'CourseSectionController@store_materials');
+        Route::get('lesson/rearrange/{lesson_id}','CourseSectionController@rearrange_materials');
+        Route::post('/update-order', 'CourseSectionController@updateOrder')->name('update-order');
 
         Route::get('/lesson/{lessonId}/section/{sectionId}/input-score', 'CourseSectionController@viewInputScore');
         // Route::post('/lesson/{lesson}/store/','CourseSectionController@store')->name('section.store');
@@ -105,7 +110,6 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
             Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
-
 
             Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
             Route::get('{id}/edit', 'MentorExamController@viewEditExam')->name("exam.edit");
