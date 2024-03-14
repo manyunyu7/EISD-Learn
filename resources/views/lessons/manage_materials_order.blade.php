@@ -125,6 +125,10 @@
             <h1><strong>REARRANGE</strong></h1>
         </div>
 
+        <button id="save-order-button" type="button" class="btn btn-primary btn-border btn-round">
+            Simpan Urutan
+        </button>
+
         <table class="table" id="sortable-table">
             <thead style="background-color: #ebebeb;">
                 <tr class="text-center">
@@ -148,23 +152,34 @@
     <script>
         var table = document.getElementById('sortable-table');
         var orders = []; // Array to store order information
-    
+
         new Sortable(table.getElementsByTagName('tbody')[0], {
             animation: 150,
             onUpdate: function (evt) {
-                var item = evt.item;
-                var id = item.getAttribute('data-id');
-                var newPosition = Array.from(item.parentNode.children).indexOf(item) + 1;
-    
-                // Store the order information in the orders array
-                var order = { id: id, newPosition: newPosition };
-                orders.push(order);
-    
+                var tbody = evt.from;
+                var items = tbody.children;
+                var newOrder = Array.from(items).map(function(item) {
+                    return item.getAttribute('data-id');
+                });
+
+                // Clear the orders array before updating
+                orders = [];
+
+                // Loop through the items to collect order information
+                Array.from(items).forEach(function(item, index) {
+                    var id = item.getAttribute('data-id');
+                    var newPosition = index + 1;
+
+                    // Store the order information in the orders array
+                    var order = { id: id, newPosition: newPosition };
+                    orders.push(order);
+                });
+
                 // Kirim data urutan baru ke server menggunakan AJAX
                 // Pastikan Anda mengirimkan data id dan newPosition ke server
                 // Contoh menggunakan fetch API:
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    
+
                 fetch('/update-order', {
                     method: 'POST',
                     headers: {
@@ -173,22 +188,22 @@
                     },
                     body: JSON.stringify({
                         orders: orders,
+                        newOrder: newOrder, // Include newOrder array in the request
                         lesson: {{ $lesson_id }}
                     })
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Gagal memperbarui urutan');
-                    }
-                    // Handle respons dari server jika diperlukan
-                })
-                .catch(error => {
-                    console.error('Terjadi kesalahan:', error);
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Gagal memperbarui urutan');
+                        }
+                        // Handle respons dari server jika diperlukan
+                    })
+                    .catch(error => {
+                        console.error('Terjadi kesalahan:', error);
+                    });
             }
-        });
-    </script>
-    
+        });    </script>
+
 @endsection
 
 

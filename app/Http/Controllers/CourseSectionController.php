@@ -94,7 +94,7 @@ class CourseSectionController extends Controller
             ->where('a.id', $lesson_id)
             ->orderBy('c.section_order', 'ASC')
             ->get();
-        
+
         $compact = compact('dayta', 'lesson_id');
         // dd($dayta) ;
         return view('lessons.manage_materials', $compact);
@@ -132,7 +132,7 @@ class CourseSectionController extends Controller
                 'c.id as section_id',
                 'c.quiz_session_id',
                 'c.duration_take',
-                'c.section_order',
+                DB::raw('CAST(c.section_order AS UNSIGNED) AS section_order'), // Cast section_order as integer
                 'c.section_title',
                 'c.section_content',
                 'c.section_video',
@@ -143,9 +143,9 @@ class CourseSectionController extends Controller
             ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
             ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
             ->where('a.id', $lesson_id)
-            ->orderBy('c.section_order', 'DESC')
+            ->orderBy(DB::raw('CAST(c.section_order AS UNSIGNED)'), 'ASC') // Order by the casted integer value
             ->get();
-        
+
         // dd($dayta);
         $compact = compact('dayta', 'lesson_id');
         return view('lessons.manage_materials_order', $compact);
@@ -743,19 +743,20 @@ class CourseSectionController extends Controller
         $data = $request->all();
         $orders = $data['orders']; // Retrieve the array of orders
         $lesson_id = $data['lesson']; // Retrieve the lesson ID
-    
+
         // Loop through each order and update the corresponding row
         foreach ($orders as $order) {
             $newPosition = $order['newPosition'];
             $code = $lesson_id . '-' . $newPosition;
+            $code = $newPosition;
             $itemID = $order['id'];
-            
+
             // Update the row with the new section order
             CourseSection::where('id', $itemID)->update(['section_order' =>  $code]);
         }
-    
+
         // Kirim respons kembali ke klien
         return response()->json(['message' => 'Urutan berhasil diperbarui'], 200);
     }
-    
+
 }

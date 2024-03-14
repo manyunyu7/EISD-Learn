@@ -134,7 +134,6 @@
                         }else{
                             $progressPercentage = 0;
                         }
-
                 @endphp
 
                 <div class="col-sm-6 col-xl-3">
