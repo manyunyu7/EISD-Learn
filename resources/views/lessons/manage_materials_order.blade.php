@@ -122,12 +122,9 @@
 
     <div class="container page-inner">
         <div class="page-header">
-            <h1><strong>REARRANGE</strong></h1>
+            <h1><strong>Urutan Materi</strong></h1>
         </div>
 
-        <button id="save-order-button" type="button" class="btn btn-primary btn-border btn-round">
-            Simpan Urutan
-        </button>
 
         <table class="table" id="sortable-table">
             <thead style="background-color: #ebebeb;">
@@ -139,8 +136,8 @@
             <tbody>
                 @forelse ($dayta as $item)
                 <tr data-id="{{ $item->section_id }}">
-                    <td class="text-center">{{ $loop->iteration }}</td>
-                    <td>{{ $item->section_title }}</td>
+                    <td class="text-center"><img src="{{ url('/Icons/Sort.svg') }}"></td>
+                    <td><h4>{{ $item->section_title }}</h4></td>
                 </tr>
                 @empty
                 @endforelse
@@ -176,7 +173,7 @@
                 });
 
                 // Kirim data urutan baru ke server menggunakan AJAX
-                // Pastikan Anda mengirimkan data id dan newPosition ke server
+                // Pastikan  mengirimkan data id dan newPosition ke server
                 // Contoh menggunakan fetch API:
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 

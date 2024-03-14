@@ -193,7 +193,7 @@
                                                 Manage Materials
                                             </a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
+                                            <a class="dropdown-item" href="{{ url('/class/students/' . $data->id) }}">
                                                 <span class="link-collapse">Manage Students</span>
                                             </a>
                                             <div class="dropdown-divider"></div>
@@ -224,7 +224,7 @@
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <!-- Icon for students -->
                                 <img style="width: 10%; height: auto; margin-top: 12px;"
-                                     src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="Portfolio Icon">
+                                     src="{{ url('/icons/UserStudent_mentor.svg') }}">
                                 
                                 <!-- Link to view students -->
                                 <a style="text-decoration: none; color: black;"
@@ -243,6 +243,7 @@
                                      src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
                                 
                                 <!-- Toggle switch -->
+                            
                             </div>
                         </div>
                         

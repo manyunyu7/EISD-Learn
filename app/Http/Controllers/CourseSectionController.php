@@ -759,4 +759,21 @@ class CourseSectionController extends Controller
         return response()->json(['message' => 'Urutan berhasil diperbarui'], 200);
     }
 
+    public function viewStudents(Request $request, $lessonId){
+        Paginator::useBootstrap();
+        $sortBy = $request->sortBy ?? 'asc';
+        $lessonId = $request->lessonId;
+        // $sortBy = $request->sortBy;
+        // Mengambil data siswa yang memiliki student_id dan lesson_id yang sesuai
+        $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
+        ->where('student_lesson.lesson_id', $lessonId)
+        ->select('users.name', 'users.department') // Pilih kolom yang ingin Anda ambil dari tabel users
+        ->orderBy('users.name', $sortBy)
+        ->paginate(10);
+        
+        // return $request->all();
+        // return $sortBy;
+        return view("lessons.view_students")->with(compact("studentsInLesson", "sortBy", "lessonId"));
+    }
+
 }

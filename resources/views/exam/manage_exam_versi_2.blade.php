@@ -97,7 +97,8 @@
 
 
 @section('main')
-<br><br>
+<div class="container">
+    <br><br>
     <div class="col-md-12" >
         {{-- BREADCRUMB --}}
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -110,9 +111,16 @@
 
     <div class="container page-inner">
         <div class="page-header">
-            <button type="button" class="btn btn-custom md-col-3" style="width:10%" onclick="redirectToSection('{{ url('/exam/manage-exam-v2/create-exam') }}')">
-                <span>Add</span>
-            </button>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3"> <!-- Atur ukuran kolom sesuai kebutuhan Anda -->
+                        <button type="button" class="btn btn-custom" style="width: 75%;" onclick="redirectToSection('{{ url('/exam/manage-exam-v2/create-exam') }}')">
+                            <span>Add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <script>
                 function redirectToSection(url) {
                     window.location.href = url;
@@ -122,39 +130,91 @@
 
         <div class="page-inner">
             <h1 class="mb-3"><b>Quiz/Pre Test/Post Test/Evaluation</b></h1>
-            <table class="table">
-                <thead style="background-color: #ebebeb" style="text-align: center;">
-                  <th style="text-align: center"><h3><b>Judul</b></h3></th>
-                  <th style="text-align: center"><h3><b>Manage</b></h3></th>
-                </thead>
-                <tbody>
-                    @forelse ($dayta as $data)
-                    <tr>
-                        <td>
-                            {{ $data->title }} + {{  $data->id }}
-                        </td>
-                        <td style="text-align: center;">
-                            <div class="row justify-content-center" >
-                                <button class="btn mr-2" style="background-color: #4BC9FF; border-radius: 20px;"><img src="{{ url('/Icons/Download.svg') }}"></button>
-                                <button class="btn mr-2" style="background-color: #6DCBA8; border-radius: 20px;"><img src="{{ url('/Icons/Link.svg') }}"></button>
-                                <button class="btn mr-2" style="background-color: #208DBB; border-radius: 20px;" onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')"><img src="{{ url('/Icons/Edit.svg') }}"></button>
-                                <form action="{{ route('exam.delete', $data->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button onclick="return confirm('Are you sure?')" class="btn" style="background-color: #FC1E01; border-radius: 20px;"><img src="{{ url('/Icons/Delete.svg') }}"></button>
-                                </form>
-                            </div>
-                        </td>
-                        <script>
-                            function redirectToSection_edit(url) {
-                                window.location.href = url;
-                            }
-                        </script>
-                    </tr>
-                    @empty
-                    @endforelse
-                </tbody>
-              </table>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead style="background-color: #ebebeb; text-align: center;">
+                        <th><h3><b>Judul</b></h3></th>
+                        <th><h3><b>Manage</b></h3></th>
+                    </thead>
+                    <tbody>
+                        @forelse ($dayta as $data)
+                        <tr>
+                            <td style="overflow: hidden; white-space: nowrap;">
+                                {{ $data->title }} + {{ $data->id }}
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <div class="d-flex justify-content-center">
+                                    <!-- Tombol-tombol di dalam baris yang responsif -->
+                                    <button class="btn mr-2" style="background-color: #4BC9FF; 
+                                                                    border-radius: 15px; 
+                                                                    width:50px; 
+                                                                    height: 40px; 
+                                                                    position: relative; 
+                                                                    padding: 0; 
+                                                                    display: flex; 
+                                                                    align-items: center; 
+                                                                    justify-content: center;">
+                                                                    <img src="{{ url('/Icons/Download.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                    </button>
+                                    <button class="btn mr-2" style="background-color: #6DCBA8; 
+                                                                    border-radius: 15px; 
+                                                                    width:50px; 
+                                                                    height: 40px; 
+                                                                    position: relative; 
+                                                                    padding: 0; 
+                                                                    display: flex; 
+                                                                    align-items: center; 
+                                                                    justify-content: center;">
+                                                                    <img src="{{ url('/Icons/Link.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                    </button>
+                                    <button class="btn mr-2" style="background-color: #208DBB; 
+                                                                    border-radius: 15px; 
+                                                                    width:50px; 
+                                                                    height: 40px; 
+                                                                    position: relative; 
+                                                                    padding: 0; 
+                                                                    display: flex; 
+                                                                    align-items: center; 
+                                                                    justify-content: center;" 
+                                                            onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">
+                                                            <img src="{{ url('/Icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                    </button>
+                                    <form action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button onclick="return confirm('Are you sure?')" 
+                                                class="btn" 
+                                                style="background-color: #FC1E01; 
+                                                        border-radius: 15px; 
+                                                        width:50px; 
+                                                        height: 40px; 
+                                                        position: relative; 
+                                                        padding: 0; 
+                                                        display: flex; 
+                                                        align-items: center; 
+                                                        justify-content: center;">
+                                                    <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="2" style="text-align: center;">No data available</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            <script>
+                function redirectToSection_edit(url) {
+                    window.location.href = url;
+                }
+            </script>
+            
         </div>
         {{-- <div class="row">
             <div class="col-md-12">
@@ -218,6 +278,7 @@
             </div>
         </div> --}}
     </div>
+</div>
 
 @endsection
 

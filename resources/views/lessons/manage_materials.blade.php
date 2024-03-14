@@ -207,14 +207,23 @@
 
         {{-- BUTTON REARRANGE --}}
         <div class="page-header">
-            <div class="mb-3" style="display: flex; justify-content: flex-end;">
-                <div style="flex-grow: 1;"></div>
-                <div style="width: 200px;">
-                    <div class="input-group mb-3">
-                        <button type="submit" id="saveEditBtn"  
+            <div class="container mb-3">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3"> <!-- Atur ukuran kolom sesuai kebutuhan Anda -->
+                        <button class="btn mr-2 ml--10" 
                                 onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
-                                class="btn btn-primary" style="width: auto; margin-left: 5px;">
-                            Rearrange
+                                type="submit"
+                                style=" background-color: #208DBB; 
+                                        border-radius: 12px; 
+                                        width:80px; 
+                                        height: 40px; 
+                                        position: relative; 
+                                        padding: 0; 
+                                        margin-left: -15px;
+                                        display: flex; 
+                                        align-items: center;    
+                                        justify-content: center;">
+                                <span style="color:white">Rearrange</span>
                         </button>
                         <script>
                             function redirectToSection(url) {
@@ -241,11 +250,37 @@
                     @forelse($dayta as $item)
                     <tr>
                         <td class="text-center">{{  $loop->iteration }}</td>
-                        <td>{{ $item->section_title }}</td>
+                        <td style="overflow: hidden; white-space: nowrap;">{{ $item->section_title }}</td>
                         <td>
-                            <div class="row justify-content-center" >
-                                <button class="btn mr-2" style="auto: auto;background-color: #208DBB; border-radius: 20px;" ><img src="{{ url('/Icons/Edit.svg') }}"></button>
-                                <button onclick="return confirm('Are you sure?')" class="btn" style="background-color: #FC1E01; border-radius: 20px;"><img src="{{ url('/Icons/Delete.svg') }}"></button>
+                            <div class="d-flex justify-content-center" >
+                                <button class="btn mr-2" style="background-color: #208DBB; 
+                                                                    border-radius: 15px; 
+                                                                    width:50px; 
+                                                                    height: 40px; 
+                                                                    position: relative; 
+                                                                    padding: 0; 
+                                                                    display: flex; 
+                                                                    align-items: center; 
+                                                                    justify-content: center;">
+                                                            <img src="{{ url('/Icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                </button>
+                                <form method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button onclick="return confirm('Are you sure?')" 
+                                            class="btn" 
+                                            style="background-color: #FC1E01; 
+                                                    border-radius: 15px; 
+                                                    width:50px; 
+                                                    height: 40px; 
+                                                    position: relative; 
+                                                    padding: 0; 
+                                                    display: flex; 
+                                                    align-items: center; 
+                                                    justify-content: center;">
+                                                <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -262,10 +297,6 @@
                 </tbody>
             </table>
         </div>
-        {{-- <div class="page-inner">
-            <h1 class="mb-3"><b>Quiz/Pre Test/Post Test/Evaluation</b></h1>
-            
-        </div> --}}
     </div>
 @endsection
 
