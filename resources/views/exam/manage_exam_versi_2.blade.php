@@ -148,7 +148,7 @@
                                     <!-- Tombol-tombol di dalam baris yang responsif -->
                                     <button class="btn mr-2" style="background-color: #4BC9FF; 
                                                                     border-radius: 15px; 
-                                                                    width:50px; 
+                                                                    width:45px; 
                                                                     height: 40px; 
                                                                     position: relative; 
                                                                     padding: 0; 
@@ -159,7 +159,7 @@
                                     </button>
                                     <button class="btn mr-2" style="background-color: #6DCBA8; 
                                                                     border-radius: 15px; 
-                                                                    width:50px; 
+                                                                    width:45px; 
                                                                     height: 40px; 
                                                                     position: relative; 
                                                                     padding: 0; 
@@ -170,7 +170,7 @@
                                     </button>
                                     <button class="btn mr-2" style="background-color: #208DBB; 
                                                                     border-radius: 15px; 
-                                                                    width:50px; 
+                                                                    width:45px; 
                                                                     height: 40px; 
                                                                     position: relative; 
                                                                     padding: 0; 
@@ -187,7 +187,7 @@
                                                 class="btn" 
                                                 style="background-color: #FC1E01; 
                                                         border-radius: 15px; 
-                                                        width:50px; 
+                                                        width:45px; 
                                                         height: 40px; 
                                                         position: relative; 
                                                         padding: 0; 

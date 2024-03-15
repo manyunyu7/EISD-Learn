@@ -55,6 +55,8 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/class/class-list/view-class/{id}', 'DetailClassController@viewClass');
     Route::get('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
     Route::get('/class/students/{lessonId}', 'CourseSectionController@viewStudents');
+    Route::post('/sortBy/{lessonId}', 'CourseSectionController@sortBy')->name('sortBy');
+
 
     Route::get('/class/class-list', 'ClassListController@classList');
     Route::get('/class/my-class', 'MyClassController@myClass');
@@ -62,6 +64,8 @@ Route::group(['middleware’' => ['auth']], function () {
 
     // Route::get('/class/class-list/', 'CountingController@countStudents');
     Route::post('/input-pin', 'ClassListController@validatePIN');
+    Route::post('/add-new-student/{lessonId}', 'CourseSectionController@add_Students');
+    Route::post('find-student-by-department', 'CourseSectionController@find_student_by_dept');
     Route::post('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
 
     // ROUTING KHUSUS MENTOR
@@ -115,6 +119,7 @@ Route::group(['middleware’' => ['auth']], function () {
 
             Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
             Route::get('{id}/edit', 'MentorExamController@viewEditExam')->name("exam.edit");
+            Route::delete('delete-student-in-class/{id}/{lessonId}', 'CourseSectionController@delete_Students')->name("student.delete");
 
             Route::get('session', 'MentorExamSessionController@viewManageSession');
 

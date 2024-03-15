@@ -114,7 +114,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
                 <li class="breadcrumb-item"><a href={{url('/lesson/manage_v2')}}>Class</a></li>
-                <li class="breadcrumb-item"><a href={{url('/lesson/manage-materials/'.$lesson_id)}}>Add Class</a></li>
+                <li class="breadcrumb-item"><a href={{url('/lesson/manage-materials/'.$lesson_id)}}>Add Materials</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Rearrange Materials</li>
             </ol>
         </nav>

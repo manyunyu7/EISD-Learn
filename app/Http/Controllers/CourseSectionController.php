@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
+use App\Http\Middleware\Student;
 use App\Models\Exam;
 use App\Models\ExamSession;
 use App\Models\ExamTaker;
@@ -22,6 +23,7 @@ use Illuminate\Pagination\Paginator;
 use File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\StudentLesson;
 
 class CourseSectionController extends Controller
 {
@@ -767,13 +769,70 @@ class CourseSectionController extends Controller
         // Mengambil data siswa yang memiliki student_id dan lesson_id yang sesuai
         $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
         ->where('student_lesson.lesson_id', $lessonId)
-        ->select('users.name', 'users.department') // Pilih kolom yang ingin Anda ambil dari tabel users
-        ->orderBy('users.name', $sortBy)
+        ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
+        ->orderBy('users.name', $this->sortBy())
         ->paginate(10);
         
-        // return $request->all();
-        // return $sortBy;
-        return view("lessons.view_students")->with(compact("studentsInLesson", "sortBy", "lessonId"));
+        $all_students = User::all();
+        // Lakukan pengelompokan data berdasarkan departemen dan simpan dalam daftar unik
+        $uniqueDepartments = $all_students->filter(function($student) {
+            return !empty($student->department); // Filter data yang memiliki departemen yang tidak kosong
+        })->pluck('department')->unique();
+
+        return view("lessons.view_students")->with(compact("studentsInLesson", "sortBy", "lessonId", "uniqueDepartments"));
     }
+
+    public function sortBy(Request $request, $lessonId){
+        $sortBy = $request->sortBy;
+
+        // Fetch the sorted data based on the sorting parameter
+        $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
+            ->where('student_lesson.lesson_id', $lessonId)
+            ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id')
+            ->orderBy('users.name', $sortBy)
+            ->paginate(10);
+
+        // Return the sorted data
+        return $studentsInLesson;
+    }
+
+    public function delete_Students($id, $lessonId){
+        StudentLesson::where('student_id', $id)->where('lesson_id', $lessonId)->delete();
+        return back()->with(['success' => 'Students Deleted Successfully']);
+    }
+
+    public function add_Students(Request $request, $lessonId){
+        $department = $request->name_of_department;
+        $username_id = $request->student_id; 
+
+        // Lakukan Select Row User Based On department dan username_id
+
+        $user_to_insert = User::findOrFail($username_id);
+        // Melakukan INSERT ke dalam Tabel student_lesson
+        $insert_to_StuLess = new StudentLesson();
+        $insert_to_StuLess->student_id = $user_to_insert->id;
+        $insert_to_StuLess->lesson_id = $lessonId;
+        $insert_to_StuLess->{"student-lesson"} = $user_to_insert->id.'-'.$lessonId;
+        $insert_to_StuLess->learn_status = 0;
+        $insert_to_StuLess->certificate_file = '';
+        $insert_to_StuLess->save();
+
+
+        if ($insert_to_StuLess) {
+            //redirect dengan pesan sukses
+            return redirect("/class/students/$lessonId")->with(['success' => 'Peserta Baru Berhasil Ditambahkan!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect("/class/students/$lessonId")->with(['error' => 'Peserta Baru Gagal Ditambahkan!']);
+        }
+    }
+
+    public function find_student_by_dept(Request $request){
+        $department = $request->name_of_department;
+        
+        $student = User::where('department', $department)->get();
+        return $student;
+    }
+     
 
 }

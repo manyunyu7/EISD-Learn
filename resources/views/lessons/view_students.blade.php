@@ -49,6 +49,62 @@
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-U9zBET2NSPdld3JMGN9s3Qa/s6zrmMzNMI7d7bPKL6KA6aSX4N2p1Nex/aD1xOfq" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    {{-- FETCHING API AUTO SEARCH --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add event listener to department dropdown
+            var departmentDropdown = document.getElementById('department_id');
+            departmentDropdown.addEventListener('change', function () {
+                var departmentId = this.value;
+                // Make a Fetch request to fetch students based on department ID
+                fetch('/find-student-by-department', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ name_of_department: departmentId })
+                })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(function (students) {
+                    // Clear existing options
+                    var studentDropdown = document.getElementById('student_id');
+                    studentDropdown.innerHTML = '<option value="">Select a Student</option>';
+                    // Populate student dropdown with fetched students
+                    students.forEach(function (student) {
+                        var option = document.createElement('option');
+                        option.textContent = student.name;
+                        option.value = student.id;
+                        studentDropdown.appendChild(option);
+                    });
+                })
+                .catch(function (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // JavaScript to handle form submission and show loading indicator
+        $(document).ready(function () {
+            $('#student_id').select2({
+                placeholder: 'Select students',
+                allowClear: true,
+                maximumSelectionLength: 1,
+                width: 'resolve' // need to override the changed default
+            });
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
 
 @section('main')
@@ -69,32 +125,98 @@
     <div class="col-md-12 " >
         <div class="col-md-4 mt-3 mb-2">
             <div class="col-md-12 mt-2 mb-2" >
-                <button class="btn btn-primary">Add</button>
+                <button class="btn btn-primary" 
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        data-bs-whatever="@mdo">
+                    Add
+                </button>
             </div>
+            <!-- Modal -->
+            <form method="POST" action="{{ url('/add-new-student/'. $lessonId) }}">
+                {{-- cek Token CSRF --}}
+                @csrf
+                <div class="modal fade" id="exampleModal"
+                     tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="exampleModalLabel">
+                                    <b>Manage User</b>
+                                </h1>
+                                <button type="button" class="close"
+                                        data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body center" style="justify-content: center">
+                                <div class="mb-3">
+                                    <!-- Hidden Input -->
+                                    <input type="hidden" id="hiddenField" name="lessonID" value='{{ $lessonId }}'>
+                                    
+                                    <label for="" class="mb-2">Department<span style="color: red">*</span></label>
+                                    <div class="mb-3">
+                                        <div class="input-group mb-3">
+                                            <select required class="form-control" name="name_of_department" id="department_id">
+                                                <option value="">Select an Option</option> <!-- Opsional, jika Anda ingin memberikan opsi default -->
+                                                @foreach($uniqueDepartments as $item)
+                                                    <option value="{{ $item }}" {{ old('department_id') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                                                @endforeach  
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="mb-2">Student<span style="color: red">*</span></label>
+                                    <div class="input-group mb-3">
+                                        <select class="form-control" name="student_id" id="student_id" style="width: 100%;"  multiple required></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger"
+                                        data-bs-dismiss="modal">Cancel
+                                </button>
+                                <button type="submit" class="btn "
+                                        style="background-color: #208DBB">
+                                        <span style="color: white">Submit</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
       </div>
   {{-- DROPDOWN FILTER --}}
-  <div class="col-md-12 " >
-    <div class="col-md-4 mt-3 mb-5">
-        <div class="col-md-12 mt-3 mb-5" >
-            <p>Sort by:</p>
-            <form method="POST" action='{{ url("class/class-list/students/$lessonId") }}' enctype="multipart/form-data">
-                @csrf
-                <input name="lessonId" hidden type="text" value="{{ $lessonId }}">
-                <select name="sortBy" class="form-select form-control "  id="sortSelect">
-                    <option 
-                        @if ($sortBy == 'asc') selected @endif
-                    value="asc" {{ old('sortBy') == 'asc' ? 'selected' : '' }}>A to Z</option>
-                    <option @if ($sortBy == 'desc') selected @endif
-                    value="desc" {{ old('sortBy') == 'desc' ? 'selected' : '' }}>Z to A</option>
-                </select>
-                <button  type="submit" class="btn btn-primary mt-3 pull-right">
-                    Search
-                </button>
-            </form>
+  <div class="col-md-12">
+        <div class="col-md-4 mt-3 mb-5">
+            <div class="col-md-12 mt-3 mb-5">
+                <p>Sort by:</p>
+                <form id="sortForm" method="POST" action='{{ url("sortBy") }}' enctype="multipart/form-data">
+                    @csrf
+                    <input name="lessonId" hidden type="text" value="{{ $lessonId }}">
+                    <select name="sortBy" class="form-select form-control" id="sortSelect">
+                        <option value="asc" {{ $sortBy == 'asc' ? 'selected' : '' }}>A to Z</option>
+                        <option value="desc" {{ $sortBy == 'desc' ? 'selected' : '' }}>Z to A</option>
+                    </select>
+                </form>
+            </div>
         </div>
     </div>
-  </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortSelect = document.getElementById('sortSelect');
+            const sortForm = document.getElementById('sortForm');
+
+            sortSelect.addEventListener('change', function() {
+                sortForm.submit();
+            });
+        });
+    </script>
+
 </div>  
 
 
@@ -142,9 +264,24 @@
                             {{ $student->department }}
                         </td>
                         <td>
-                            <button onclick="return confirm('Are you sure?')" class="btn" style="background-color: #FC1E01; border-radius: 15px; width:100%; height: 40px; position: relative; padding: 0;">
-                                <img src="{{ url('/Icons/Delete.svg') }}" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 20px;">
-                            </button>
+                            <form  method="POST" action="{{ route('student.delete', ['id' => $student->id, 'lessonId' => $lessonId]) }}"> 
+                                @csrf
+                                @method('DELETE')
+
+                                <button onclick="return confirm('Are you sure?')" 
+                                        class="btn" 
+                                        style="background-color: #FC1E01; 
+                                                border-radius: 15px; 
+                                                width:45px; 
+                                                height: 40px; 
+                                                position: relative; 
+                                                padding: 0; 
+                                                display: flex; 
+                                                align-items: center; 
+                                                justify-content: center;">
+                                            <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 @empty
