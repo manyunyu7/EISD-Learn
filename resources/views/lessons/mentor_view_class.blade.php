@@ -237,7 +237,7 @@
             <span 
                 style="font-weight: bold;
                         font-size: 18px;">
-                Join Class
+                Preview Class
             </span>
         </button>
     </div>

@@ -1,10 +1,10 @@
 @forelse ($classInfo as $data)
 <br><br><br><br>
-  <div class="inner-page" style="background-color: cyan">
+  <div class="inner-page" style="background-color: none">
     <div class="container-fluid">
       <div class="row">
         @forelse ($section_spec as $index => $sectionSpec)
-        <div class="col-8 con-1" style="background-color: white; height:100vh">
+        <div class="col-8 con-1" style="background-color: none; height:100vh">
             {{-- Segment View Modul --}}
             <div class="container-fluid">
                 @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
@@ -148,7 +148,7 @@
 
 
         {{-- SIDEBAR COURSE --}}
-        <div class="col-4 con-2" style="background-color: white">
+        <div class="col-4 con-2" style="background-color: none">
           <div class="container">
             {{-- TABEL 1 --}}
             <table class="table table1">

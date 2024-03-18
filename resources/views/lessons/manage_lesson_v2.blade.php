@@ -99,7 +99,7 @@
 @section('main')
 <br><br>
     <div class="col-md-12" >
-        {{-- BREADCRUMB --}}
+        {{-- BREADCRUMB --}}View Class
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
@@ -197,7 +197,7 @@
                                                 <span class="link-collapse">Manage Students</span>
                                             </a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="{{ url('/class/class-list/view-class/' . $data->id) }}">
+                                            <a class="dropdown-item" href="{{ url('/class/class-list/mentor-view-class/' . $data->id) }}">
                                                 <span class="link-collapse">View Class</span>
                                             </a>
                                         </li>

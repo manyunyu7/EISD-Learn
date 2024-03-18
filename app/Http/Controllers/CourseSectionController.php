@@ -763,15 +763,11 @@ class CourseSectionController extends Controller
 
     public function viewStudents(Request $request, $lessonId){
         Paginator::useBootstrap();
-        $sortBy = $request->sortBy ?? 'asc';
+        // $sortBy = $request->sortBy ?? 'asc';
         $lessonId = $request->lessonId;
         // $sortBy = $request->sortBy;
         // Mengambil data siswa yang memiliki student_id dan lesson_id yang sesuai
-        $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
-        ->where('student_lesson.lesson_id', $lessonId)
-        ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
-        ->orderBy('users.name', $this->sortBy())
-        ->paginate(10);
+        
         
         $all_students = User::all();
         // Lakukan pengelompokan data berdasarkan departemen dan simpan dalam daftar unik
@@ -779,22 +775,20 @@ class CourseSectionController extends Controller
             return !empty($student->department); // Filter data yang memiliki departemen yang tidak kosong
         })->pluck('department')->unique();
 
-        return view("lessons.view_students")->with(compact("studentsInLesson", "sortBy", "lessonId", "uniqueDepartments"));
+        return view("lessons.view_students")->with(compact("lessonId", "uniqueDepartments"));
     }
 
     public function sortBy(Request $request, $lessonId){
-        $sortBy = $request->sortBy;
-
-        // Fetch the sorted data based on the sorting parameter
+        $sortBy = $request->sortBy ?? 'asc';
         $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
-            ->where('student_lesson.lesson_id', $lessonId)
-            ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id')
-            ->orderBy('users.name', $sortBy)
-            ->paginate(10);
-
-        // Return the sorted data
-        return $studentsInLesson;
+                                ->where('student_lesson.lesson_id', $lessonId)
+                                ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
+                                ->orderBy('users.name', $sortBy)
+                                ->paginate(10);
+        return response()->json($studentsInLesson);
     }
+    
+    
 
     public function delete_Students($id, $lessonId){
         StudentLesson::where('student_id', $id)->where('lesson_id', $lessonId)->delete();

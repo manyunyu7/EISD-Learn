@@ -38,6 +38,34 @@ class DetailClassController extends Controller
         $jumlahSection = $dayta->count();
         return view("lessons.view_class")->with(compact("data","dayta", "jumlahSection"));
     }
+
+    public function mentor_viewClass($id){
+        $data = Lesson::findOrFail($id);
+        $dayta = DB::table('course_section as c')
+        ->select(
+            'a.id as lesson_id',
+            'a.course_title as lessons_title',
+            'a.mentor_id',
+            'b.name as mentor_name',
+            'c.id as section_id',
+            'c.section_order',
+            'c.section_title',
+            'c.section_content',
+            'c.section_video',
+            'c.created_at',
+            'c.updated_at',
+            'c.can_be_accessed'
+        )
+        ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
+        ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
+        ->where('a.id', $id)
+        ->orderBy('c.section_order', 'ASC')
+        ->get();
+        $jumlahSection = $dayta->count();
+
+
+        return view("lessons.mentor_view_class")->with(compact("dayta", "data", "jumlahSection"));
+    }
     
 
     public function viewStudents(Request $request, $lessonId){

@@ -50,8 +50,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-U9zBET2NSPdld3JMGN9s3Qa/s6zrmMzNMI7d7bPKL6KA6aSX4N2p1Nex/aD1xOfq" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-    {{-- FETCHING API AUTO SEARCH --}}
     <script>
+        // FETCHING API AUTO SEARCH
         document.addEventListener('DOMContentLoaded', function () {
             // Add event listener to department dropdown
             var departmentDropdown = document.getElementById('department_id');
@@ -89,6 +89,43 @@
                 });
             });
         });
+
+        // FETCHING API TO SORTING
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add event listener to department dropdown
+            var sortByDropdown = document.getElementById('sortSelect');
+            sortByDropdown.addEventListener('change', function () {
+                var sortBy_value = this.value;
+                // Make a Fetch request to fetch students based on sorting preference
+                fetch('/sortBy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ sortBy: sortBy_value })
+                })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(function (sortBy) {
+                    // Menampilkan nilai yang didapat dari hasil fetching
+                    console.log('Nilai dari hasil fetching:', sortBy);
+                    // Anda dapat mengganti console.log dengan cara menampilkan nilainya di dalam elemen HTML
+                    var resultContainer = document.getElementById('resultContainer');
+                    resultContainer.innerHTML = 'Nilai dari hasil fetching: ' + sortBy;
+                    
+                })
+                .catch(function (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            });
+        });
+
+
     </script>
 
     <script>
@@ -189,12 +226,22 @@
             </form>
         </div>
       </div>
-  {{-- DROPDOWN FILTER --}}
-  <div class="col-md-12">
-        <div class="col-md-4 mt-3 mb-5">
+    {{-- DROPDOWN FILTER --}}
+    <div class="col-md-12">
+        @php
+            use App\Models\User;
+            
+            $sortBy = 'asc';
+            $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
+                                ->where('student_lesson.lesson_id', $lessonId)
+                                ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
+                                ->orderBy('users.name', $sortBy)
+                                ->paginate(10);
+        @endphp
+        <div class="col-md-4 mt-3 mb-5" style="background-color: cyan"> 
             <div class="col-md-12 mt-3 mb-5">
                 <p>Sort by:</p>
-                <form id="sortForm" method="POST" action='{{ url("sortBy") }}' enctype="multipart/form-data">
+                <form id="sortForm" method="POST" action='{{ route("sortBy", ["lessonId" => $lessonId]) }}' enctype="multipart/form-data">
                     @csrf
                     <input name="lessonId" hidden type="text" value="{{ $lessonId }}">
                     <select name="sortBy" class="form-select form-control" id="sortSelect">
@@ -236,17 +283,15 @@
             <table class="table">
                 <thead>
                     <tr>
-                        {{-- <th scope="col" style="min-width: 50px; max-width: 50px;">No</th> --}}
                         <th scope="col" ></th>
                         <th scope="col" >Name</th>
                         <th scope="col" class="text-center" style="width: 30%">Division</th>
-                        <th class="text-center">Button</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                 @forelse($studentsInLesson as $key => $student)
                     <tr>
-                        {{-- <th scope="row">{{ $studentsInLesson->firstItem()+ $key }}</th> --}}
                         <th scope="row" >
                             <div class="avatar-sm">
                                 <img 
