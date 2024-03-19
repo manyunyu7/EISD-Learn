@@ -1,18 +1,45 @@
 {{-- IMPROVED MENU --}}
 {{-- CLASS --}}
-<li class="nav-item" class="{{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="background-color: salmon;">
-    <a href="{{ url('/lesson/manage_v2') }}">
-        <i class="fas fa-pen-square"></i>
-        <p style="color:white">Class [IMPROVED]</p>
+<li class="nav-item {{ Request::is('home') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('/home') }}" style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/ic_home.svg"
+             style="width: 14%;
+                height: auto;
+                margin-top: 5px;
+                "
+        >
+        <p class="{{ Request::is('home/*') ? 'text-white' : ''}}"
+           style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Home</p>
     </a>
 </li>
-{{-- EXAM --}}
-<li class="nav-item" class="{{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="background-color: salmon;">
-    <a href="{{ url('exam/manage-exam-v2') }}">
-        <i class="fas fa-pen-square"></i>
-        <p style="color:white">Exam [IMPROVED]</p>
+
+<li class="nav-item {{ Request::is('lesson/manage_v2') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('lesson/manage_v2') }}" style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/icon_classes.png"
+             style="width: 14%;
+                height: auto;
+                margin-top: 5px;
+                "
+        >
+        <p class="{{ Request::is('/lesson/manage_v2') ? 'text-white' : ''}}"
+           style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Classes New</p>
     </a>
 </li>
+
+
+<li class="nav-item {{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('exam/manage-exam-v2') }}" style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/icon_menu_exam.png"
+             style="width: 14%;
+                height: auto;
+                margin-top: 5px;
+                "
+        >
+        <p class="{{ Request::is('exam/manage-exam-v2') ? 'text-white' : ''}}"
+           style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Exam New</p>
+    </a>
+</li>
+
 
 
 {{-- MENU LAMA --}}
