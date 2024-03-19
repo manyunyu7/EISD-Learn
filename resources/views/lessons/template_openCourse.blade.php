@@ -216,6 +216,7 @@
             padding: 10px;
         }
         
+        
         .table2 {
             width: 100%;
             border-collapse: collapse;
