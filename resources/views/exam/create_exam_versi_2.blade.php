@@ -11,7 +11,7 @@
                 console.error( error );
             } );
     </script>
-    
+
 @endsection
 
 @section('script')
@@ -104,21 +104,23 @@
 
 
 @section('main')
-<br><br>
-    <div class="col-md-12" >
-        {{-- BREADCRUMB --}}
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
-                <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
-            </ol>
-        </nav>
-    </div>
 
-    <div class="page-inner">
+    <div class="page-inner  bg-white">
+
+        <div class="col-md-12" >
+            {{-- BREADCRUMB --}}
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
+                    <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
+                </ol>
+            </nav>
+        </div>
+
+
         {{-- SETUP QUIZ --}}
-        <div class="container container-soal">
+        <div class="col-12">
             <div class="page-header">
                 <h1><b>STEP 1</b></h1><br>
             </div>
@@ -141,9 +143,9 @@
                     <label for="" class="mb-2">Jenis Ujian</label>
                     <div class="input-group mb-3">
                         <select name="exam_type" class="form-control form-select-lg" aria-label="Default select example">
-                            <option value="Pre Test">Pre Test</option> 
+                            <option value="Pre Test">Pre Test</option>
                             <option value="Post Test">Post Test</option>
-                            <option value="Quiz">Quiz</option> 
+                            <option value="Quiz">Quiz</option>
                             <option value="Evaluation">Evaluation</option>
                         </select>
                     </div>
@@ -182,8 +184,8 @@
                             } );
                     </script>
                 </div>
-    
-    
+
+
                 {{-- SETUP ACCESS --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -216,12 +218,12 @@
                             var btn_show_result = document.getElementById('show-result-btn');
                             var btn_allow_review = document.getElementById('allow-review-btn');
                             var btn_allow_multiple = document.getElementById('allow-multiple-btn');
-    
+
                             var isActive_PA = false;
                             var isActive_SR = false;
                             var isActive_AR = false;
                             var isActive_AM = false;
-                    
+
                             // Public Access Setup
                             btn_public_access.addEventListener('click', function () {
                                 // Tidak Aktif
@@ -231,7 +233,7 @@
                                     btn_public_access.textContent = 'Tidak Aktif';
                                     btn_public_access.value ='Tidak Aktif';
                                     isActive_PA = false;
-                                } 
+                                }
                                 // Aktif
                                 else {
                                     btn_public_access.classList.remove('btn-danger');
@@ -241,7 +243,7 @@
                                     isActive_PA = true;
                                 }
                             });
-                            
+
                             // Show Result Setup
                             btn_show_result.addEventListener('click', function () {
                                 // Tidak Aktif
@@ -251,7 +253,7 @@
                                     btn_show_result.textContent = 'Tidak Aktif';
                                     btn_show_result.value = 'Tidak Aktif';
                                     isActive_SR = false;
-                                } 
+                                }
                                 // Aktif
                                 else {
                                     btn_show_result.classList.remove('btn-danger');
@@ -261,7 +263,7 @@
                                     isActive_SR = true;
                                 }
                             });
-    
+
                             // Allow Review Setup
                             btn_allow_review.addEventListener('click', function () {
                                 // Tidak Aktif
@@ -271,7 +273,7 @@
                                     btn_allow_review.textContent = 'Tidak Aktif';
                                     btn_allow_review.value = 'Tidak Aktif';
                                     isActive_AR = false;
-                                } 
+                                }
                                 // Aktif
                                 else {
                                     btn_allow_review.classList.remove('btn-danger');
@@ -281,7 +283,7 @@
                                     isActive_AR = true;
                                 }
                             });
-    
+
                             // Allow Multiple Setup
                             btn_allow_multiple.addEventListener('click', function () {
                                 // Tidak Aktif
@@ -291,7 +293,7 @@
                                     btn_allow_multiple.textContent = 'Tidak Aktif';
                                     btn_allow_multiple.value = 'Tidak Aktif';
                                     isActive_AM = false;
-                                } 
+                                }
                                 // Aktif
                                 else {
                                     btn_allow_multiple.classList.remove('btn-danger');
@@ -304,7 +306,7 @@
                         });
                     </script>
                 </div>
-    
+
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">
                     <div style="flex-grow: 1;"></div>
                     <div style="width: 200px;">
@@ -315,8 +317,8 @@
                     </div>
                 </div>
             </form>
-            
-            
+
+
         </div>
     </div>
 
