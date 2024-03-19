@@ -488,7 +488,6 @@ class CourseSectionController extends Controller
             $exam = Exam::find($examSession->exam_id);
             $session = $examSession;
             $questions = json_decode($session->questions_answers);
-            return $questions;
             $totalScore = 0;
             $title = $exam->title;
             foreach ($questions as $question) {
