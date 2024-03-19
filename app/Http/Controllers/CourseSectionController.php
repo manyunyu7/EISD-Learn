@@ -545,7 +545,7 @@ class CourseSectionController extends Controller
 
         $compact = compact('isEligibleStudent', 'hasTakenAnyExam', 'examResults', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
             'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
-            'sectionDetail','sections',
+            'sectionDetail','sections', 'questions',
             'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
             'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered', 'classInfo');
 
@@ -558,12 +558,9 @@ class CourseSectionController extends Controller
             "Buka Section", "Course Section"
         );
 
-        if ($isExam) {
-            return view('lessons.course_play_new', $compact);
-            return view('exam.student.take_exam_on_session', $compact);
-        } else {
-            return view('lessons.course_play_new', $compact);
-        }
+
+        return view('lessons.play.course_play_new', $compact);
+
     }
 
 
@@ -655,7 +652,7 @@ class CourseSectionController extends Controller
 
         // Set common attributes
         $inputDeyta->course_id = $lesson_id ?? '';
-        $inputDeyta->section_content = $request->content ?? '';
+        $inputDeyta->section_content =$request->{'content'} ?? '';
         $inputDeyta->section_order = $section_order ?? '';
         $inputDeyta->can_be_accessed = $request->access ?? '';
         $inputDeyta->quiz_session_id = $request->quiz_session_id ?? '';
