@@ -326,7 +326,7 @@
 
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <a href="{{ url('/my-class/open/'.$data->id.'/section/'.$data->first_section) }}"
+                                        <a href="{{ url('course/'.$data->id.'/section/'.$data->first_section) }}"
                                            class="btn text-white btn-round "
                                            style="background-color: #208DBB">Check</a>
                                     </div>
