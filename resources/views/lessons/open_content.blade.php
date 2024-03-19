@@ -107,12 +107,35 @@
                     @endif
                 @endif
 
-                {{-- Segment Judl Modul --}}
-                <h1>Segment Judul</h1>
+                
 
-                {{-- Segment Deskripsi --}}
-                <h3><b>Deskripsi</b></h3>
-                <p>Isi Deskripsi</p>
+                
+                @forelse ($sections as $item)
+                    @if (isset($item) && isset($item->isTaken))
+                        @php
+                            $isCurrent = $item->isCurrent ?? false;
+                        @endphp
+                        @if($isCurrent)
+                            @if (isset($item) && isset($item->isTaken))
+                                @php
+                                    $isCurrent = $item->isCurrent ?? false;
+                                @endphp
+                                {{-- Segment Judl Modul --}}
+                                <h1>{{ $item->section_title }}</h1>
+                                {{-- Segment Deskripsi --}}
+                                <h3><b>Deskripsi</b></h3>
+                                <div>
+                                    {!! $item->section_content !!}
+                                </div>
+                            @endif
+                        @else
+                        @endif
+                    @endif
+                @empty
+                    <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
+                        <p style="margin-bottom: 0px !important">Belum Ada Materi di Kelas Ini</p>
+                    </li>
+                @endforelse
 
                 {{-- Segment Button Navigation --}}
                 @if ($firstSectionId!=null)
@@ -159,68 +182,68 @@
                         </p>
                     </td>
                     <script>
-                    var badges = document.querySelectorAll('.dynamic-badge');
+                        var badges = document.querySelectorAll('.dynamic-badge');
                 
-                    badges.forEach(function (badge) {
-                        var selectedCategory = badge.textContent;
-                        var badgeColor, textColor;
-                
-                        switch (selectedCategory) {
-                            case 'Management Trainee':
-                                badgeColor = '#f7c8ca';
-                                textColor = '#D02025';
-                                break;
-                            case 'General':
-                                badgeColor = 'blue';
-                                break;
-                            case 'Design':
-                                badgeColor = 'green';
-                                break;
-                            case 'Finance & Accounting':
-                                badgeColor = 'purple';
-                                break;
-                            case 'Human Resource and Development':
-                                badgeColor = 'orange';
-                                break;
-                            case '3D Modelling':
-                                badgeColor = 'pink';
-                                break;
-                            case 'Digital Management':
-                                badgeColor = '#EBEBFF';
-                                textColor = '#342F98';
-                                break;
-                            case 'Marketing and Business':
-                                badgeColor = 'yellow';
-                                break;
-                            case 'Food and Beverage':
-                                badgeColor = 'brown';
-                                break;
-                            case 'Management':
-                                badgeColor = 'teal';
-                                break;
-                            case 'Social and Politics':
-                                badgeColor = 'indigo';
-                                break;
-                            case 'Office':
-                                badgeColor = 'maroon';
-                                break;
-                            case 'Outdoor Activity':
-                                badgeColor = 'lime';
-                                break;
-                            case 'Junior High School':
-                                badgeColor = 'navy';
-                                break;
-                            case 'Senior High School':
-                                badgeColor = 'olive';
-                                break;
-                
-                            default:
-                                badgeColor = 'gray';
-                        }
-                
-                        badge.style.backgroundColor = badgeColor;
-                        badge.style.color = textColor; // Set text color to white
-                    });
+                        badges.forEach(function (badge) {
+                            var selectedCategory = badge.textContent;
+                            var badgeColor, textColor;
+                    
+                            switch (selectedCategory) {
+                                case 'Management Trainee':
+                                    badgeColor = '#f7c8ca';
+                                    textColor = '#D02025';
+                                    break;
+                                case 'General':
+                                    badgeColor = 'blue';
+                                    break;
+                                case 'Design':
+                                    badgeColor = 'green';
+                                    break;
+                                case 'Finance & Accounting':
+                                    badgeColor = 'purple';
+                                    break;
+                                case 'Human Resource and Development':
+                                    badgeColor = 'orange';
+                                    break;
+                                case '3D Modelling':
+                                    badgeColor = 'pink';
+                                    break;
+                                case 'Digital Management':
+                                    badgeColor = '#EBEBFF';
+                                    textColor = '#342F98';
+                                    break;
+                                case 'Marketing and Business':
+                                    badgeColor = 'yellow';
+                                    break;
+                                case 'Food and Beverage':
+                                    badgeColor = 'brown';
+                                    break;
+                                case 'Management':
+                                    badgeColor = 'teal';
+                                    break;
+                                case 'Social and Politics':
+                                    badgeColor = 'indigo';
+                                    break;
+                                case 'Office':
+                                    badgeColor = 'maroon';
+                                    break;
+                                case 'Outdoor Activity':
+                                    badgeColor = 'lime';
+                                    break;
+                                case 'Junior High School':
+                                    badgeColor = 'navy';
+                                    break;
+                                case 'Senior High School':
+                                    badgeColor = 'olive';
+                                    break;
+                    
+                                default:
+                                    badgeColor = 'gray';
+                            }
+                    
+                            badge.style.backgroundColor = badgeColor;
+                            badge.style.color = textColor; // Set text color to white
+                        });
                     </script>
                     <td>
                         <h5>
@@ -234,7 +257,7 @@
                 </tr>
                 <tr >
                     <td colspan="2">
-                      <div class="progress">
+                      <div class="progress progress-sm">
                         <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progressPercentage }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                     </td>
@@ -247,7 +270,7 @@
             <table class="table table2 table-striped">
                 <thead class="align-middle" style="background-color: #e9e9e9">
                     <td class="align-middle" style="color: red"><h5><b>Getting Started</b></h5></td>
-                    <td class="align-middle">{{ $totalSections }} sections</td>
+                    <td class="align-middle">{{ $totalSections }} Sections</td>
                     <td class="align-middle pull-right">{{ $progressPercentage }}% Finish ({{ $total_hasTaken }}/{{ $totalSections }})</td>
                 </thead>
                 <tbody>
@@ -264,11 +287,14 @@
                                                 $isCurrent = $item->isCurrent ?? false;
                                             @endphp
                                             @if ($item->isTaken && !$isCurrent)
-                                                <input type="checkbox" checked>
+                                                {{-- <input type="checkbox" checked> --}}
+                                                <img style="width: 100%; height:auto" src="{{ url('/icons/checkBox_Done.svg') }}">
                                             @elseif ($isCurrent)
-                                                <input type="checkbox" checked>
+                                                {{-- <input type="checkbox" checked> --}}
+                                                <img style="width: 100%; height:auto" src="{{ url('/icons/checkBox_Done.svg') }}">
                                             @else
-                                                <input type="checkbox" disabled>
+                                                {{-- <input type="checkbox" disabled> --}}
+                                                <img style="width: 100%; height:auto" src="{{ url('/icons/checkBox_Disable.svg') }}">
                                             @endif
                                         @endif
                                     </td>
@@ -283,9 +309,6 @@
                                                 </a>
                                             @endif
                                         </div>
-                                    </td>
-                                    <td>
-                                        {{ isset($item->quiz_session_id) ? $item->quiz_session_id : '' }} dengan durasi: {{ isset($item->duration_take) ? $item->duration_take : '' }}
                                     </td>
                                 </tr>
                             @else
@@ -296,11 +319,14 @@
                                                 $isCurrent = $item->isCurrent ?? false;
                                             @endphp
                                             @if ($item->isTaken && !$isCurrent)
-                                                <input type="checkbox" checked>
+                                                {{-- <input type="checkbox" checked> --}}
+                                                <img style="width: 100%; height:auto" src="{{ url('/icons/checkBox_Done.svg') }}">
                                             @elseif ($isCurrent)
-                                                <input type="checkbox" checked>
+                                                {{-- <input type="checkbox" checked> --}}
+                                                <img style="width: 100%; height:auto" src="{{ url('/icons/checkBox_Done.svg') }}">
                                             @else
-                                                <input type="checkbox" disabled>
+                                                {{-- <input type="checkbox" disabled> --}}
+                                                <img style="width: 100%; height:auto" src="{{ url('/icons/checkBox_Disable.svg') }}">
                                             @endif
                                         @endif
                                     </td>
@@ -316,9 +342,6 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td>
-                                        {{ isset($item->quiz_session_id) ? $item->quiz_session_id : '' }} dengan durasi: {{ isset($item->duration_take) ? $item->duration_take : '' }}
-                                    </td>
                                 </tr>
                             @endif
                         @endif
@@ -326,7 +349,7 @@
                         <li class="nav-item card p-1 bg-dark" style="margin-bottom: 6px !important">
                             <p style="margin-bottom: 0px !important">Belum Ada Materi di Kelas Ini</p>
                         </li>
-                @endforelse
+                    @endforelse
 
                 </tbody>
             </table>

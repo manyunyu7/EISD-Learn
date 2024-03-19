@@ -53,6 +53,7 @@ class OpenClassController extends Controller
                         ");
 
 
+
         $silabusClass = DB::select("SELECT
                         a.*
                         FROM
@@ -256,12 +257,21 @@ class OpenClassController extends Controller
                     $totalSections = count($silabusClass);
                     $total_hasTaken = count($hasTaken);
                     $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
-
                 }
             }
+        
+
+            $exam_courseSection = DB::table('course_section')
+            ->join('exam_sessions', 'course_section.quiz_session_id', '=', 'exam_sessions.id')
+            ->where('course_section.course_id', $lessonId)
+            ->select('course_section.*', 'exam_sessions.*')
+            ->get();
+        
+        // return $exam_courseSection;
         // RETURN VALUE
             $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 
-                                'section_spec', 'sections', 'section', 'nextSectionId', 'prevSectionId', 'total_hasTaken', 'progressPercentage',
+                                'section_spec', 'sections', 'section', 'nextSectionId', 'prevSectionId', 
+                                'total_hasTaken', 'progressPercentage', 'exam_courseSection',
                                 );
         return view('lessons.open_class', $compact);
     }
