@@ -160,7 +160,7 @@ class MentorExamController extends Controller
         ]);
 
 
-        
+
         // Create a new ExamQuestionAnswer instance and fill it with the validated data
         $questionAnswer = new ExamQuestionAnswers();
 
@@ -202,9 +202,24 @@ class MentorExamController extends Controller
         $questionAnswer->created_at = $formattedDate;
         $questionAnswer->updated_at = $formattedDate;
 
+
+
         $compact = compact('questionAnswer');
         // Save the question
         if ($questionAnswer->save()){
+            // Fetch sessions and question answers
+            $sessions = ExamSession::where("exam_id", "=", $request->exam_id)->get();
+            $questionsAnswers = ExamQuestionAnswers::where("exam_id", "=", $request->exam_id)->get();
+
+            // Loop through each session
+            foreach ($sessions as $session) {
+                // Filter question answers for this session
+                $sessionQuestionAnswers = $questionsAnswers->where('session_id', $session->id);
+
+                $session->questions_answers = $questionsAnswers;
+                $session->save();
+            }
+
             return back()->with($compact)->with('success', 'Berhasil Menambah Soal!');
         }
         else{
@@ -305,13 +320,23 @@ class MentorExamController extends Controller
         $questionAnswer->correct_answer = null;
 
 
-        // Save the question
-        $questionAnswer->save();
-        // return response()->json(['message' => 'Question stored successfully'], 200);
-        
         $compact = compact('questionAnswer');
         // Save the question
         if ($questionAnswer->save()) {
+
+            // Fetch sessions and question answers
+            $sessions = ExamSession::where("exam_id", "=", $request->exam_id)->get();
+            $questionsAnswers = ExamQuestionAnswers::where("exam_id", "=", $request->exam_id)->get();
+
+            // Loop through each session
+            foreach ($sessions as $session) {
+                // Filter question answers for this session
+                $sessionQuestionAnswers = $questionsAnswers->where('session_id', $session->id);
+
+                $session->questions_answers = $questionsAnswers;
+                $session->save();
+            }
+
             return redirect()->back()->with('success', 'Berhasil Update Soal!');
         } else {
             return redirect()->back()->with('error', 'Gagal Update Soal!');
@@ -337,9 +362,9 @@ class MentorExamController extends Controller
         try {
             $question = ExamQuestionAnswers::findOrFail($id);
             // Delete the question
-            $question->delete(); 
+            $question->delete();
             return back()->with('success', 'Berhasil Menghapus Soal!');
-        } 
+        }
         catch (\Exception $e) {
             return back()->with('error', 'Gagal Menghapus Soal !');
         }
@@ -374,7 +399,7 @@ class MentorExamController extends Controller
         // dd($dayta);
         return view("exam.manage_exam_versi_2")->with($compact);
     }
-    
+
     public function viewCreateExam_v2(Request $request)
     {
         $dayta = Exam::where("created_by", '=', Auth::id())
@@ -438,7 +463,7 @@ class MentorExamController extends Controller
     public function storeNewExam(Request $request)
     {
         $user_id = Auth::id();
-        
+
         // Insert to Table Exam
         $exam = new Exam();
         $exam->title = $request->title;
@@ -455,7 +480,7 @@ class MentorExamController extends Controller
         $exam->randomize = $request->randomize;
         $exam->can_access = $request->can_access;
         $exam->created_by = $user_id;
-        
+
 
         // SAVE INPUT
         if ($exam->save()) {
@@ -463,7 +488,7 @@ class MentorExamController extends Controller
 
             $examId = $exam->id;
             $user_id = Auth::id();
-        
+
             // Insert to Table Exam Session
             $examSession = new ExamSession();
             $examSession->start_date = $request->start_date;
@@ -472,13 +497,13 @@ class MentorExamController extends Controller
             $examSession->description = 'Test';
             $examSession->can_access = 'Test';
             $examSession->time_limit_minute = $request->times_limit;
-            
+
             $examSession->public_access = $request->public_access;
             $examSession->allow_review = $request->allow_review;
             $examSession->show_score_on_review = 'y/n';
             $examSession->show_result_on_end = $request->show_result_on_end;
             $examSession->allow_multiple = $request->allow_multiple;
-           
+
             $examSession->is_deleted = 'Test';
             $examSession->exam_id = $exam->id;
             $examSession->created_by = $user_id;
@@ -487,7 +512,7 @@ class MentorExamController extends Controller
             // $examSession->updated_at = 'Test';
             $examSession->title = 'Test';
             $examSession->exam_type = $request->exam_type;
-            
+
 
             // Save to Table
             // dd($examSession);
