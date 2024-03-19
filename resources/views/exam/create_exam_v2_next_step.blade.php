@@ -11,7 +11,7 @@
                 console.error( error );
             } );
     </script>
-    
+
 @endsection
 
 @section('script')
@@ -127,7 +127,7 @@
                 @method('POST')
 
                 <input hidden name="exam_id" type="text" value="{{ $examId }}">
-                
+
                 <div class="mb-3">
                     <label for="" class="mb-2">Soal<span style="color: red">*</span></label>
                     <div class="input-group mb-3">
@@ -156,16 +156,16 @@
                         <button type="button" id="addOptionAnswers" class="btn btn-outline-primary " style="width: 12%; margin-left: 5px;">+ Add</button>
                     </div>
                     <div class="card-body row " id="segment_multipleChoices">
-                        <div class="input-group mb-3">
-                            <input required name="stm_1" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <input required name="scr_1" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>
-                        </div>
-                        <div class="input-group mb-3">
-                            <input required name="stm_2" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <input required name="scr_2" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>
-                        </div>
+{{--                        <div class="input-group mb-3">--}}
+{{--                            <input required name="stm_1" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
+{{--                            <input required name="scr_1" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
+{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
+{{--                        </div>--}}
+{{--                        <div class="input-group mb-3">--}}
+{{--                            <input required name="stm_2" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
+{{--                            <input required name="scr_2" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
+{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
+{{--                        </div>--}}
                     </div>
                 </div>
                 <script>
@@ -173,11 +173,11 @@
                         var deleteIconURL = "{{ url('/Icons/Delete.svg') }}";
                         var segmentMultipleChoices = document.getElementById("segment_multipleChoices");
                         var divInputGroupCount = segmentMultipleChoices.querySelectorAll(".input-group.mb-3").length;
-                
+
                         if (divInputGroupCount < 4) {
                             var divInputGroup = document.createElement("div");
                             divInputGroup.classList.add("input-group", "mb-3");
-                
+
                             var inputOption = document.createElement("input");
                             inputOption.required = true;
                             inputOption.name = "stm_" + (divInputGroupCount + 1);
@@ -186,7 +186,7 @@
                             inputOption.classList.add("form-control");
                             inputOption.setAttribute("aria-label", "Recipient's username");
                             inputOption.setAttribute("aria-describedby", "basic-addon2");
-                
+
                             var inputScore = document.createElement("input");
                             inputScore.required = true;
                             inputScore.name = "scr_" + (divInputGroupCount + 1);
@@ -195,7 +195,7 @@
                             inputScore.classList.add("form-control");
                             inputScore.setAttribute("aria-label", "Recipient's username");
                             inputScore.setAttribute("aria-describedby", "basic-addon2");
-                
+
                             var deleteButton = document.createElement("button");
                             deleteButton.classList.add("btn", "btn-danger", "ml-2", "deleteOption");
                             deleteButton.innerHTML = '<img src="' + deleteIconURL + '" alt="Delete Icon">';
@@ -203,7 +203,7 @@
                             deleteButton.addEventListener("click", function() {
                                 divInputGroup.remove();
                             });
-                
+
                             divInputGroup.appendChild(inputOption);
                             divInputGroup.appendChild(inputScore);
                             divInputGroup.appendChild(deleteButton);
@@ -213,7 +213,7 @@
                         }
                     });
                 </script>
-                
+
 
                 {{-- BUTTONS --}}
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">
@@ -239,14 +239,14 @@
 
                             @if ($data->image !== null)
                                 <div class="text-center">
-                                    <img src="{{ Storage::url('public/exam/question/' . $data->image) }}" 
+                                    <img src="{{ Storage::url('public/exam/question/' . $data->image) }}"
                                         style="width: auto; height:350px"
-                                        class="rounded" 
+                                        class="rounded"
                                         alt="...">
                                 </div>
                             @endif
                         </div>
-                       
+
                         <ul class="list-group list-group-flush">
                             @php
                                 $jsonData = $data->choices;
@@ -261,7 +261,7 @@
                                     <div style="width: 200px;">
                                         <div class="input-group ">
                                             {{-- BUTTON MODALS FOR EDIT --}}
-                                            <button type="button" 
+                                            <button type="button"
                                                     class="btn btn-primary"
                                                     onclick="openEditWindow('{{ url('exam/question/'.$data->id.'/edit') }}')">
                                                 <img src="{{ url('/Icons/Edit.svg') }}" alt="Edit Icon">
@@ -274,10 +274,10 @@
                                             </script>
                                             <form id="delete-post-form" action="{{ url('exam/delete-question-from-db/'. $data->id) }}" method="POST">
                                                 @csrf
-                                                <button type="submit" 
-                                                        id="saveEditBtn" 
-                                                        data-question-id="{{ $data->id }}" 
-                                                        class="btn btn-danger pull-left" 
+                                                <button type="submit"
+                                                        id="saveEditBtn"
+                                                        data-question-id="{{ $data->id }}"
+                                                        class="btn btn-danger pull-left"
                                                         style="width: auto; margin-left: 5px;"
                                                         onclick="return confirm('Are you sure?')">
                                                         <img src="{{ url('/Icons/Delete.svg') }}">
