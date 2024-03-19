@@ -29,7 +29,6 @@ Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('p
 // Route::post('/class/class-list/students/{lessonId}')->name('view_students.viewStudents')->middleware('auth');
 
  Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
-Route::any('/your-api-endpoint', 'ExamTakerController@submitQuiz');
 
 
 Route::get('/datatable', function () {
@@ -50,6 +49,8 @@ Route::get('/loginz', function () {
 
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
+
+    Route::any('/exam/save-user-answer', 'ExamTakerController@submitQuiz');
 
     Route::post('/dfef', 'ProfileController@updatePasswordz');
     Route::get('/class/class-list/view-class/{id}', 'DetailClassController@viewClass');
