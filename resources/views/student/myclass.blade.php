@@ -40,71 +40,8 @@
             </nav>
         </div>
 
-        <div class="row mt--2 border-primary col-md-12">
-            {{-- DROPDOWN FILTER --}}
-            <div class="row page-inner col-md-12">
-                <div class="col-sm-3 col-md-5 col-lg-2 mb-3">
-                    <p>Sort by:</p>
-                    <div class="btn-group">
-                        <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px"
-                                id="sortBtn"><span>Latest</span></button>
-                        <button type="button" class="btn btnSort-custom dropdown-toggle dropdown-toggle-split"
-                                id="sortDropdownToggle" data-bs-toggle="dropdown" aria-expanded="false"
-                                data-bs-reference="parent">
-                            <span class="visually-hidden"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="sortDropdownToggle" style="width: 100%;"
-                            id="sortDropdown">
-                            <li><a class="dropdown-item text-left" href="#"
-                                   onclick="changeSortText('Latest')">Latest</a>
-                            </li>
-                            <li><a class="dropdown-item text-left" href="#"
-                                   onclick="changeSortText('Recommend')">Recommend</a></li>
-                            <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Most Student')">Most
-                                    Student</a></li>
-                        </ul>
-                    </div>
 
-                    <script>
-                        function changeSortText(selectedTextSort) {
-                            document.getElementById('sortBtn').innerHTML = '<span>' + selectedTextSort + '</span>';
-                        }
-                    </script>
-                </div>
-
-                <div class="col-sm-3 col-md-5 col-lg-2">
-                    <p>Category:</p>
-                    <div class="btn-group">
-                        <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px"
-                                id="categoryBtn"><span>All Category</span></button>
-                        <button type="button" class="btn btnSort-custom dropdown-toggle dropdown-toggle-split"
-                                id="categoryDropdownToggle" data-bs-toggle="dropdown" aria-expanded="false"
-                                data-bs-reference="parent">
-                            <span class="visually-hidden"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="categoryDropdownToggle" style="width: 100%;"
-                            id="categoryDropdown">
-                            <li><a class="dropdown-item text-left" href="#"
-                                   onclick="changeCategoryText('Management Trainee')">Management Trainee</a></li>
-                            <li><a class="dropdown-item text-left" href="#"
-                                   onclick="changeCategoryText('Digital Management')">Digital Management</a></li>
-                            <li><a class="dropdown-item text-left" href="#"
-                                   onclick="changeCategoryText('General')">General</a></li>
-                        </ul>
-                    </div>
-
-                    <script>
-                        function changeCategoryText(selectedTextCategory) {
-                            document.getElementById('categoryBtn').innerHTML = '<span>' + selectedTextCategory + '</span>';
-                        }
-                    </script>
-                </div>
-
-                <div class="col-sm-6 col-md-2 col-lg-8">
-
-                </div>
-            </div>
-        </div>
+        @include('student.myclass_filter')
 
         <div class="container-fluid mt-3 row">
             @forelse ($myClasses as $data)
@@ -165,7 +102,8 @@
 
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <a href="{{ url('/my-class/open/'.$data->id.'/section/'.$data->first_section) }}"
+{{--                                    <a href="{{ url('/my-class/open/'.$data->id.'/section/'.$data->first_section) }}"--}}
+                                    <a href="{{ url('course/'.$data->id.'/section/'.$data->first_section) }}"
                                        class="btn text-white btn-round "
                                        style="background-color: #208DBB">Check</a>
                                 </div>

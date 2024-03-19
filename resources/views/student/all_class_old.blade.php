@@ -140,7 +140,7 @@
         </div>
     </div>
 
-    <div class="page-inner mt--5 col-md-12">
+    <div class="page-inner col-md-12">
         <div class="row mt-3 border-primary col-md-12">
             {{-- RECOMMENDATION PAGES--}}
             <div class="col-md-12">
@@ -153,9 +153,11 @@
                     <div class="container-myClass">
                         <div class="card-body">
                             <div class="row row-eq-height">
+
                                 @forelse ($classes as $data)
-                                    <div class="col-lg-4 col-xl-3 col-sm-6 my-2">
-                                        <div class="card recommendationCard" style="background-color: white !important">
+                                    <div class="col-lg-4 col-xl-3 col-sm-6">
+                                        <div class="card recommendationCard" style="background-color: white !important;
+                                            @if(count($classes)==1) min-width:250px; @endif ">
                                             <a href="javascript:void();" data-switch="0">
                                                 <img style="max-height: 300px; min-height: 200px; object-fit: cover" class="card-img-top"
                                                      onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
@@ -172,15 +174,37 @@
                                                 <br>
                                             </div>
                                             <hr>
+                                            <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
+                                                <img style="width: 15%; height: auto; max-height: 20px" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                                <p style="font-size: 15px; margin-bottom: 3px;">{{ $data->mentor_name }}</p>
+                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                    <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                                    <div class="dropdown-user-scroll scrollbar-outer">
+                                                        <li>
+                                                            <a class="dropdown-item" href="{{ url('/lesson/manage-materials/' . $data->id) }}">
+                                                                Manage Materials
+                                                            </a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="{{ url('/class/students/' . $data->id) }}">
+                                                                <span class="link-collapse">Manage Students</span>
+                                                            </a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="{{ url('/class/class-list/mentor-view-class/' . $data->id) }}">
+                                                                <span class="link-collapse">View Class</span>
+                                                            </a>
+                                                        </li>
+                                                    </div>
+                                                </ul>
+                                            </li>
                                             <li class="toga-container dropdown hidden-caret"
                                                 style="display: flex; justify-content: space-between; align-items: center;">
                                                 <img style="width: 12%; height: auto;"
                                                      src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
                                                 <p>{{ $data->mentor_name }}</p>
-                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"
-                                                   aria-expanded="false">
-                                                    <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}"
-                                                         alt="">
+                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                    <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                                                     <div class="dropdown-user-scroll scrollbar-outer">
@@ -197,7 +221,7 @@
                                                     </div>
                                                 </ul>
                                                 <!-- Modal -->
-                                                <form method="POST" action="{{ url('/input-pin') }}">
+                                                      <form method="POST" action="{{ url('/input-pin') }}">
                                                     {{-- cek Token CSRF --}}
                                                     @csrf
                                                     <div class="modal fade" id="exampleModal{{ $data->id }}"

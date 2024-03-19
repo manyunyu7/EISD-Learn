@@ -77,7 +77,7 @@ class ClassListController extends Controller
         $view_course = DB::select("select * from view_course");
 
         // return $classes;
-        return view('student.all_class')->with(compact('classes', 'view_course'));
+        return view('student.all_class_new')->with(compact('classes', 'view_course'));
     }
 
     public function blogs()
