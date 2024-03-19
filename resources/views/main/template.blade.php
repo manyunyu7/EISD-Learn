@@ -83,6 +83,28 @@
             z-index: 9999; /* Make sure the loader is above everything else */
         }
 
+        /*.nav-item.active {*/
+        /*    !* Define styles for active elements with class nav-item *!*/
+        /*    background-color: salmon;*/
+        /*}*/
+
+        /* CSS for the breadcrumb navigation */
+        .breadcrumb {
+            background-color: white;
+            border: 1px solid #ECEEF4; /* Thin gray border */
+            border-radius: 15px; /* Rounded corners */
+            padding: 10px; /* Adjust padding as needed */
+        }
+
+        .breadcrumb li {
+            display: inline;
+            margin-right: 5px; /* Adjust spacing between breadcrumb items */
+        }
+
+        .breadcrumb li:last-child {
+            margin-right: 0; /* Remove margin from the last breadcrumb item */
+        }
+
         .hidden-actions {
             display: none;
             padding: 10px;
