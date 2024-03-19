@@ -104,21 +104,23 @@
 
 
 @section('main')
-<br><br>
-    <div class="col-md-12" >
-        {{-- BREADCRUMB --}}
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
-                <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
-            </ol>
-        </nav>
-    </div>
+
 
     <div class="page-inner">
+
+        <div class="col-md-12 mt-2">
+            {{-- BREADCRUMB --}}
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
+                    <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
+                </ol>
+            </nav>
+        </div>
+
         {{-- SOAL UJIAN --}}
-        <div class="container load-soal" style="background-color: white">
+        <div class="col-12 ">
             <div class="page-header">
                 <h2><b>Soal Ujian</b></h2>
             </div>
@@ -228,13 +230,13 @@
             </form>
         </div>
 
-        <div class="container list-soal-temp">
+        <div class="col-12">
             {{-- MENAMPILKAN SOAL --}}
             @forelse ($questionAnswer as $data)
                 @if($data->exam_id == $examId)
                     <div class="card">
                         <div class="card-header" style="background-color: #eaeaea; color: black">
-                            <b>Soal :</p>
+                            <p>Soal :</p>
                             <p>{{ $data->question }}</p>
 
                             @if ($data->image !== null)
