@@ -51,6 +51,7 @@ Route::get('/loginz', function () {
 Route::group(['middleware’' => ['auth']], function () {
 
     Route::any('/exam/save-user-answer', 'ExamTakerController@submitQuiz');
+    Route::any('/exam/fetch-result-on-section', 'ExamTakerController@fetchResultByStudentOnSection');
 
     Route::post('/dfef', 'ProfileController@updatePasswordz');
     Route::get('/class/class-list/view-class/{id}', 'DetailClassController@viewClass');

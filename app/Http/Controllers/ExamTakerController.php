@@ -79,6 +79,24 @@ class ExamTakerController extends Controller
         return response()->json(['exam' => $exam, 'questions' => $questions]);
     }
 
+    public function fetchResultByStudentOnSection(Request $request){
+        $courseId = $request->course_id;
+        $sectionId = $request->section_id;
+
+        $examResults = ExamTaker::where(
+            "course_flag", "=", $courseId
+        )->where(
+            "course_section_flag", "=", $sectionId
+        )->where(
+            "user_id", '=', Auth::id()
+        )->get();
+
+
+        if (count($examResults) > 0) {
+            $hasTakenAnyExam = true;
+        }
+    }
+
     public function submitQuiz(Request $request)
     {
         // Decode the JSON payload
@@ -99,7 +117,7 @@ class ExamTakerController extends Controller
         $originalQuestions = json_decode($session->questions_answers);
 
         // Loop through the user's answers
-        foreach ($answers as $answer) {
+        foreach ($answers as &$answer) { // Note the "&" to make $answer mutable
             // Find the corresponding question in the original questions array by ID
             $question = collect($originalQuestions)->firstWhere('id', $answer['id']);
 
@@ -107,6 +125,21 @@ class ExamTakerController extends Controller
             if ($question) {
                 // Decode the choices from the question
                 $choices = json_decode($question->choices, true);
+
+                // Variable to store the correct answer and its score
+                $correctAnswer = null;
+                $correctScore = 0;
+
+                // Loop through the choices to find the correct answer and its score
+                foreach ($choices as $choice) {
+                    if ($choice['score'] > $correctScore) {
+                        $correctAnswer = $choice['text'];
+                        $correctScore = $choice['score'];
+                    }
+                }
+
+                // Variable to store descriptive score
+                $descriptiveScore = ($correctAnswer === implode(", ", $answer['values'])) ? 'correct' : 'incorrect';
 
                 // Loop through the user's selected choices
                 foreach ($answer['values'] as $userChoice) {
@@ -127,8 +160,15 @@ class ExamTakerController extends Controller
                         }
                     }
                 }
+                // Add the correct answer and its score to the answer
+                $answer['correct_answer'] = $correctAnswer;
+                $answer['correct_score'] = $correctScore;
+                $answer['question_text'] = $question->question;
+                // Add descriptive score
+                $answer['isCorrect'] = $descriptiveScore;
             }
         }
+
 
         //check if the session allow multiple attempt
         $allowMultipleAttempt = false;

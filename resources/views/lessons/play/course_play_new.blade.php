@@ -44,7 +44,7 @@
 
         /* Style for the timer */
         #timer {
-            font-size: 24px;
+            font-size: 48px;
             font-weight: bold;
             color: black; /* You can adjust the text color as needed */
         }
@@ -282,7 +282,7 @@
     <!-- /#page-content-wrapper -->
 
     <!-- Sidebar -->
-    <div id="sidebar-wrapper">
+    <div id="sidebar-wrapper" style="background-color: whitesmoke">
         <ul class="sidebar-nav">
             <div class="container content-container">
                 <div class="" style="max-width: 560px">
@@ -403,6 +403,9 @@
 
 <!-- Menu Toggle Script -->
 <script>
+    $(document).ready(function() {
+        $("#wrapper").toggleClass("toggled");
+    });
     $("#menu-toggle").click(function (e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");

@@ -3,12 +3,8 @@
         <section id="exam-information">
             <div class="row">
                 <div class="col-md-12 ">
-                    <div class="card">
-                        <div class="card-body">
-                            <hr>
-
-                            <img class="card-img-top" src="{{ url('/') }}/home_assets/img/esd_3.png" alt=""
-                                 style="max-width: 300px; height: auto;">
+                    <div class="">
+                        <div class="pt-2">
                             <h1 class="card-title">Quiz : {{$exam->title}}</h1>
 
 
@@ -54,6 +50,8 @@
                                     data-toggle="modal" data-target="#confirmationModal">
                                 Mulai Ujian
                             </button>
+
+
 
 
                             <div class="alert alert-primary d-none" role="alert">
@@ -152,12 +150,191 @@
                 <p>No questions found.</p>
             @endif
         </section>
+
+        <div class="mt-4">
+            <hr>
+            <h4>Riwayat Hasil Ujian : </h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+{{--                        <th>ID</th>--}}
+{{--                        <th>User ID</th>--}}
+                        <th>Guest Name</th>
+                        <th>Current Score</th>
+                        <th>Finished At</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($examResults->reverse() as $result)
+                        <tr>
+{{--                            <td>{{ $result['id'] }}</td>--}}
+{{--                            <td>{{ $result['user_id'] }}</td>--}}
+                            <td>{{ $result['guest_name'] }}</td>
+                            <td>{{ $result['current_score'] }}</td>
+                            <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{ $result['id'] }}">
+                                    Show Answers
+                                </button>
+                            </td>
+
+                            <!-- Modal -->
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">User Answers</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            @foreach(json_decode($result['user_answers'], true) as $answer)
+                                                <div>
+                                                    <strong>Question:</strong> {{ $answer['question_text'] ?? '' }}
+                                                </div>
+                                                <div>
+                                                    <strong>Answer:</strong><br>
+                                                    @if(isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
+                                                        Multiple Choice: {{ $answer['values'][0] ?? '' }}
+                                                    @else
+                                                        Single Choice: {{ $answer['values'][0] ?? '' }}
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <strong>Jawaban Pengguna:</strong><br>{{ $answer['correct_answer'] ?? '' }}
+                                                </div>
+{{--                                                <div>--}}
+{{--                                                    <strong>Jawaban Benar:</strong><br>{{ $answer['correct_score'] ?? '' }}--}}
+{{--                                                </div>--}}
+{{--                                                <div>--}}
+{{--                                                    <strong>Descriptive Score:</strong> {{ $answer['descriptive_score'] ?? '' }}--}}
+{{--                                                </div>--}}
+{{--                                                <div>--}}
+{{--                                                    <strong>User Choice Score:</strong> {{ $answer['user_choice_score'] ?? '' }}--}}
+{{--                                                </div>--}}
+                                                <hr> <!-- Add a horizontal line between each answer -->
+                                            @endforeach
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5">No exam results found.</td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
     </div>
 
 </div>
 
 <!-- Add this script to the HTML file -->
 <script>
+
+    //function to fetch student result on current sections
+    const startExamButton = document.getElementById("startExam");
+    const confirmStartButton = document.getElementById("confirmStartButton");
+    const timer = document.getElementById("timer");
+    const sectionFocus = document.getElementById("sectionFocus");
+    const timeLimit = {{$session->time_limit_minute}} * 60; // Convert minutes to seconds
+    let remainingTime = timeLimit;
+    let timerInterval;
+
+    function startTimer() {
+
+        const payload = {
+            userAnswers: {
+                examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
+                sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
+                courseId: {{ $courseId }}, // Use Blade syntax to echo the
+                answers: []
+            },
+            examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
+            sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
+            sectionId: {{ $currentSectionId }}, // Use Blade syntax to echo the
+            courseId: {{ $courseId }},
+            isFinished: false,
+            fullName: "{{ Auth::user()->name }}" // Use Blade syntax to echo the variable
+        };
+
+
+        // Send the payload to your API endpoint using Fetch
+        fetch("/exam/save-user-answer", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}" // Include CSRF token
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json()) // Parse response as JSON
+            .then(data => {
+                var myerror = data.showError;
+                if (myerror === true) {
+                    Swal.fire({
+                        title: "Error",
+                        text: `${data.message}`, // Display the error message
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    // Stop the timer since there was an error
+                    clearInterval(timerInterval);
+                    return; // Don't execute the rest of the function
+                }
+                // Hide start exam button
+                confirmStartButton.style.display = "none";
+                // Show section focus
+                sectionFocus.style.display = "block";
+                // Start the timer
+                timerInterval = setInterval(updateTimer, 1000);
+            })
+            .catch(error => {
+                // Handle error if needed
+                console.error("Error starting timer:", error);
+            });
+    }
+
+    function updateTimer() {
+        remainingTime--;
+
+        if (remainingTime <= 0) {
+            clearInterval(timerInterval);
+            timer.textContent = "Time's up!";
+            timer.style.color = "red";
+            sendAllUserAnswers(true);
+
+        } else {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            const formattedTime = `${padNumber(minutes)}:${padNumber(seconds)}`;
+            timer.textContent = formattedTime;
+
+            // Blink and turn red when reaching 90% of time limit
+            const ninetyPercent = Math.floor(timeLimit * 0.9);
+            if (remainingTime <= ninetyPercent) {
+                timer.style.color = timer.style.color === "red" ? "black" : "red";
+            }
+        }
+    }
+
+    function padNumber(number) {
+        return number < 10 ? "0" + number : number;
+    }
+
+    startExamButton.addEventListener("click", startTimer);
+
     // Function to send all user-filled answers to the API endpoint
     function sendAllUserAnswers(isFinished) {
         // Construct the payload
@@ -286,94 +463,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const startExamButton = document.getElementById("startExam");
-        const confirmStartButton = document.getElementById("confirmStartButton");
-        const timer = document.getElementById("timer");
-        const sectionFocus = document.getElementById("sectionFocus");
-        const timeLimit = {{$session->time_limit_minute}} * 60; // Convert minutes to seconds
-        let remainingTime = timeLimit;
-        let timerInterval;
-
-        function startTimer() {
-
-            const payload = {
-                userAnswers: {
-                    examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
-                    sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
-                    courseId: {{ $courseId }}, // Use Blade syntax to echo the
-                    answers: []
-                },
-                examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
-                sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
-                sectionId: {{ $currentSectionId }}, // Use Blade syntax to echo the
-                courseId: {{ $courseId }},
-                isFinished: false,
-                fullName: "{{ Auth::user()->name }}" // Use Blade syntax to echo the variable
-            };
 
 
-            // Send the payload to your API endpoint using Fetch
-            fetch("/exam/save-user-answer", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}" // Include CSRF token
-                },
-                body: JSON.stringify(payload)
-            })
-                .then(response => response.json()) // Parse response as JSON
-                .then(data => {
-                    var myerror = data.showError;
-                    if (myerror === true) {
-                        Swal.fire({
-                            title: "Error",
-                            text: `${data.message}`, // Display the error message
-                            icon: "error",
-                            confirmButtonText: "OK",
-                        });
-                        // Stop the timer since there was an error
-                        clearInterval(timerInterval);
-                        return; // Don't execute the rest of the function
-                    }
-                    // Hide start exam button
-                    confirmStartButton.style.display = "none";
-                    // Show section focus
-                    sectionFocus.style.display = "block";
-                    // Start the timer
-                    timerInterval = setInterval(updateTimer, 1000);
-                })
-                .catch(error => {
-                    // Handle error if needed
-                    console.error("Error starting timer:", error);
-                });
-        }
 
-        function updateTimer() {
-            remainingTime--;
-
-            if (remainingTime <= 0) {
-                clearInterval(timerInterval);
-                timer.textContent = "Time's up!";
-                timer.style.color = "red";
-            } else {
-                const minutes = Math.floor(remainingTime / 60);
-                const seconds = remainingTime % 60;
-                const formattedTime = `${padNumber(minutes)}:${padNumber(seconds)}`;
-                timer.textContent = formattedTime;
-
-                // Blink and turn red when reaching 90% of time limit
-                const ninetyPercent = Math.floor(timeLimit * 0.9);
-                if (remainingTime <= ninetyPercent) {
-                    timer.style.color = timer.style.color === "red" ? "black" : "red";
-                }
-            }
-        }
-
-        function padNumber(number) {
-            return number < 10 ? "0" + number : number;
-        }
-
-        startExamButton.addEventListener("click", startTimer);
     });
 
 </script>
