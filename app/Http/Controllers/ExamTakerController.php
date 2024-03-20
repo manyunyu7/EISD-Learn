@@ -142,24 +142,24 @@ class ExamTakerController extends Controller
             return response()->json([
                 "scores" => 0,
                 "message" => "Quiz sudah tidak tersedia",
-                "error" => true
-            ], 409);
+                "showError" => true
+            ], 200);
         }
 
         if (Auth::user() == null)
             return response()->json([
                 "scores" => 0,
                 "message" => "Anda harus login untuk mengerjakan quiz ini",
-                "error" => true
-            ], 403);
+                "showError" => true
+            ], 200);
 
 
         if ($session->can_access == "n") {
             return response()->json([
                 "scores" => 0,
                 "message" => "Quiz sedang tidak tersedia, hubungi Dept Training untuk memulai quiz",
-                "error" => true
-            ], 409);
+                "showError" => true
+            ], 200);
         }
 
         //check if user already have finished attempt
@@ -187,8 +187,8 @@ class ExamTakerController extends Controller
                 return response()->json([
                     "scores" => 0,
                     "message" => "Anda sudah mengambil sesi quiz ini, quiz hanya bisa diambil satu kali",
-                    "error" => true
-                ], 409);
+                    "showError" => true
+                ], 200);
             }
         }
 
@@ -303,11 +303,12 @@ class ExamTakerController extends Controller
                 "answer" => $answers,
                 "session" => $session,
                 "message" => "Sukses",
-                "error" => false
+                "showError" => false
             ]);
         } else {
             return response()->json([
                 "d" => $dimanaYa,
+                "is_finished" => $request->isFinished,
                 "is_finished" => $request->isFinished,
                 "is_first_attempt" => $isFirstUnfinishedAttempt,
                 "scores" => 168,
@@ -315,7 +316,7 @@ class ExamTakerController extends Controller
                 "answer" => $answers,
                 "session" => $session,
                 "message" => "Sukses",
-                "error" => false
+                "showError" => false
             ]);
         }
 
