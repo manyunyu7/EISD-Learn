@@ -302,6 +302,7 @@ class CourseSectionController extends Controller
         $nextSectionId = null;
         $prevSectionId = null;
         $currentSectionId = $section->id;
+        $questions = [];
         $currentSection = CourseSection::findOrFail($currentSectionId);
         $isExam = false;
         $title = "";
@@ -564,9 +565,11 @@ class CourseSectionController extends Controller
             "user_id", '=', Auth::id()
         )->get();
 
+
         if (count($examResults) > 0) {
             $hasTakenAnyExam = true;
         }
+
 
         $classInfo  = DB::select("SELECT
                         a.*,
