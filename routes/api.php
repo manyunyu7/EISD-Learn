@@ -23,3 +23,6 @@ Route::post('/upload', 'MobileUploaderController@upload');
 Route::any('/check', 'MobileUploaderController@check');
 Route::any('/close-ticket', 'MobileUploaderController@closeTicket');
 
+Route::get("/class-list",'MobileHomeController@classList');
+Route::get("/class-categories",'MobileHomeController@classCategories');
+
