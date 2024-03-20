@@ -158,10 +158,28 @@ class LessonController extends Controller
                         FROM 
                             lessons a
                         LEFT JOIN 
-                            users u ON a.mentor_id = u.id AND u.role = 'mentor'");
+                            users u ON a.mentor_id = u.id AND u.role = 'mentor'
+                        ORDER BY 
+                            a.id DESC
+                    ");
+    
         Paginator::useBootstrap();
         // dd($myClasses) ;
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
+    }
+
+    public function edit_class_v2($lesson_id){
+        $categories = LessonCategory::all();
+        $myClass = DB::table('lessons')
+                    ->select('lessons.*', 'users.name AS mentor_name')
+                    ->leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
+                    ->where('users.role', 'mentor')
+                    ->where('lessons.id', $lesson_id)
+                    ->first(); // Ambil baris pertama dari hasil query
+                    
+        $compact = compact('categories', 'myClass');
+        // dd($myClass);
+        return view('lessons.edit_lesson_v2', $compact);
     }
 
     public function destroy($id)

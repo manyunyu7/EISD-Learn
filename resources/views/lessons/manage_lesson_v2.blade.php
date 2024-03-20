@@ -158,9 +158,11 @@
                         <div class="card-body">
                             <!-- Badge and favorite -->
                             <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
-                                <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
-                                    NEW
-                                </div>
+                                @if($data->new_class == 'Aktif')
+                                    <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
+                                        NEW
+                                    </div>
+                                @endif
                                 <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
                                     <strong>{{ $data->course_category }}</strong>
                                 </div>
@@ -240,9 +242,21 @@
                                 </a>
 
                                 <!-- Edit button icon -->
-                                <img style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px;"
-                                     src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
+                                <img id="editButton" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;"
+                                    src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
 
+                                <script>
+                                    // Mendapatkan elemen dengan ID editButton
+                                    const editButton = document.getElementById('editButton');
+
+                                    // Menambahkan event listener untuk event klik
+                                    editButton.addEventListener('click', function() {
+                                        // Mengalihkan halaman ke URL yang ditentukan saat gambar diklik
+                                        window.location.href = "{{ url('/lesson/edit_class') }}/{{ $data->id }}";
+                                    });
+                                </script>
+
+                                    
                                 <!-- Delete button icon -->
                                 <img style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px;"
                                      src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
