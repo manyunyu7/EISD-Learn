@@ -131,10 +131,8 @@
                             <div class="container-fluid">
                                 @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
 
-                                    <iframe id="pdfIframe" onload=""
-                                            src="{{url("/")."/library/viewerjs/src/#"}}{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
-                                            width="100%" height="550" allowfullscreen=""
-                                            webkitallowfullscreen=""></iframe>
+                                    <iframe id="pdfIframe" src="{{ url('/') }}/library/viewerjs/src/#{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}#page=1"
+                                           style="text-align:center;"  width="100%" height="550" allowfullscreen="" webkitallowfullscreen=""></iframe>
                                     <!-- Add this single <script> tag to the body of your HTML document -->
 
                                     <script>
