@@ -95,6 +95,10 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::resource('section', CourseSectionController::class);
         Route::get('/lesson/{lesson}/section/', 'CourseSectionController@manage_section');
         Route::get('/lesson/manage-materials/{lesson}/', 'CourseSectionController@manage_section_v2');
+        Route::get('/lesson/manage-materials/{lesson}/edit/{section_id}', 'CourseSectionController@edit_material_v2')->name('materials.edit');
+        Route::post('/update-material/{lesson}', 'CourseSectionController@update_materials')->name('update-material');
+        Route::delete('/delete-material/{lesson}/{sectionId}', 'CourseSectionController@delete_materials')->name('materials.delete');
+
         Route::post('/lesson/create_materials/{lesson}', 'CourseSectionController@store_materials');
         Route::get('lesson/rearrange/{lesson_id}','CourseSectionController@rearrange_materials');
         Route::post('/update-order', 'CourseSectionController@updateOrder')->name('update-order');

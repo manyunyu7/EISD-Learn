@@ -96,9 +96,14 @@ class CourseSectionController extends Controller
             ->where('a.id', $lesson_id)
             ->orderBy('c.section_order', 'ASC')
             ->get();
+        $examSessions = ExamSession::where(function ($query) {
+                                            $query->whereNull('is_deleted')
+                                                ->orWhere('is_deleted', '<>', 'y');
+                                        })
+                                    ->get();
 
-        $compact = compact('dayta', 'lesson_id');
-        // dd($dayta) ;
+        $compact = compact('dayta', 'lesson_id', 'examSessions');
+        // dd($examSessions);
         return view('lessons.manage_materials', $compact);
     }
 
@@ -110,8 +115,11 @@ class CourseSectionController extends Controller
         $insert_to_CourseSection->section_title = $request->title;
         $insert_to_CourseSection->section_order = time();
         $insert_to_CourseSection->section_video = '';
-        $insert_to_CourseSection->section_content = '';
+        $insert_to_CourseSection->section_content = $request->content;
         $insert_to_CourseSection->course_id = $request->lessonId;
+        $insert_to_CourseSection->can_be_accessed = $request->is_access;
+        $insert_to_CourseSection->quiz_session_id = $request->is_examId;
+        // dd($insert_to_CourseSection);
         $insert_to_CourseSection->save();
 
 
@@ -124,6 +132,48 @@ class CourseSectionController extends Controller
         }
     }
 
+    public function edit_material_v2($lesson_id, $section_id){
+        $examSessions = ExamSession::where(function ($query) {
+                                $query->whereNull('is_deleted')
+                                    ->orWhere('is_deleted', '<>', 'y');
+                            })
+                        ->get();
+        
+        $data_course_section_to_edit = CourseSection::findOrFail($section_id);   
+        $compact = compact('lesson_id', 'examSessions', 'section_id', 'data_course_section_to_edit');
+        return view('lessons.edit_materials', $compact);
+    }
+
+    public function update_materials(Request $request){
+        $section_id = $request->sectionId;
+        $lesson_id = $request->lessonId;
+        $update_to_CourseSection = CourseSection::findOrFail($section_id);
+
+        $update_to_CourseSection->section_title = $request->update_title;
+        $update_to_CourseSection->section_order = time();
+        $update_to_CourseSection->section_video = '';
+        $update_to_CourseSection->section_content = $request->update_content;
+        $update_to_CourseSection->course_id = $request->lessonId;
+        $update_to_CourseSection->can_be_accessed = $request->update_is_access;
+        $update_to_CourseSection->quiz_session_id = $request->update_is_examId;
+        // dd($update_to_CourseSection);
+        $update_to_CourseSection->save();
+
+
+        if ($update_to_CourseSection) {
+            //redirect dengan pesan sukses
+            return redirect("/lesson/manage-materials/$lesson_id")->with(['success' => 'Materi Berhasil DiPerbaharui!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect("/lesson/manage-materials/$lesson_id")->with(['error' => 'Materi Gagal DiPerbaharui!']);
+        }
+    }
+
+    public function delete_materials($lessonId, $sectionId){
+        CourseSection::where('id', $sectionId)->where('course_id', $lessonId)->delete();
+        return back()->with(['success' => 'Materials Deleted Successfully']);
+    }
+    
     public function rearrange_materials(Request $request, Lesson $lesson, $lesson_id){
         $dayta = DB::table('course_section as c')
             ->select(

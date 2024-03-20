@@ -430,7 +430,6 @@
                                                                                     <option value="{{ $examSession->id }}" >{{ $examSession->quiz_name }} - {{ $examSession->title }}</option>
                                                                                 @endif
                                                                             @endforeach
-                                                                            
                                                                         </select>
                                                                     </div>
 

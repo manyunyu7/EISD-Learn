@@ -504,13 +504,13 @@ class MentorExamController extends Controller
             $examSession->show_result_on_end = $request->show_result_on_end;
             $examSession->allow_multiple = $request->allow_multiple;
 
-            $examSession->is_deleted = 'Test';
+            $examSession->is_deleted = 'n';
             $examSession->exam_id = $exam->id;
             $examSession->created_by = $user_id;
             $examSession->questions_answers = null;
             // $examSession->created_at = 'Test';
             // $examSession->updated_at = 'Test';
-            $examSession->title = 'Test';
+            $examSession->title = $request->title;
             $examSession->exam_type = $request->exam_type;
 
 
