@@ -303,10 +303,16 @@
                                             @if (isset($item) && isset($item->isTaken))
                                                 @php
                                                     $isCurrent = $item->isCurrent ?? false;
+                                                    foreach ($silabusClass as $key => $data_sc) {
+                                                        $exam_id = $data_sc->quiz_session_id;
+                                                    }
                                                 @endphp
                                                 <a class="align-middle" style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
                                                     <p class="text-dark">{{ $item->section_title }}</p>
                                                 </a>
+                                                @if($item->section_id === $data_sc->id)
+                                                    <p>{{ $exam_id }}</p>
+                                                @endif
                                             @endif
                                         </div>
                                     </td>
@@ -335,10 +341,16 @@
                                             @if (isset($item) && isset($item->isTaken))
                                                 @php
                                                     $isCurrent = $item->isCurrent ?? false;
+                                                    foreach ($silabusClass as $key => $data_sc) {
+                                                        $exam_id = $data_sc->quiz_session_id;
+                                                    }
                                                 @endphp
                                                 <a class="align-middle" style="text-decoration: none" href="{{ route('course.openClass', [$item->lesson_id, $item->section_id]) }}">
                                                     <p class="text-dark">{{ $item->section_title }}</p>
                                                 </a>
+                                                @if($item->section_id === $data_sc->id)
+                                                    <p>{{ $exam_id }}</p>
+                                                @endif
                                             @endif
                                         </div>
                                     </td>

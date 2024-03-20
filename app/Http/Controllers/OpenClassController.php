@@ -267,7 +267,7 @@ class OpenClassController extends Controller
             ->select('course_section.*', 'exam_sessions.*')
             ->get();
         
-        // return $exam_courseSection;
+        // return $sections;
         // RETURN VALUE
             $compact = compact('classInfo', 'silabusClass', 'totalSections', 'firstSectionId', 
                                 'section_spec', 'sections', 'section', 'nextSectionId', 'prevSectionId', 

@@ -147,22 +147,21 @@
                                 <div class="col-sm-12 col-md-6 col-lg-6 mb-3">
                                     <label for="" class="mb-2">Akses Konten<span style="color: red">*</span></label>
                                     <div class="input-group mb-3">
-                                        <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
-                                            <option value="" disabled selected>Pilih jenis soal</option>
-                                            <option value="Unit Head">Unit Head</option>
-                                            <option value="Section Head">Section Head</option>
-                                            <option value="Department Head">Department Head</option>
+                                        <select required name="is_access" class="form-control form-select-lg" aria-label="Default select example">
+                                            <option value="" disabled selected> </option>
+                                            <option value="Y">Ya</option>
+                                            <option value="T">Tidak</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-6 mb-3">
                                     <label for="" class="mb-2">Exam<span style="color: red">*</span></label>
-                                    <div class="input-group mb-3">
-                                        <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
-                                            <option value="" disabled selected>Pilih jenis soal</option>
-                                            <option value="Unit Head">Unit Head</option>
-                                            <option value="Section Head">Section Head</option>
-                                            <option value="Department Head">Department Head</option>
+                                    <div class="input-group mb-3" name="quiz_session_id" id="isExam">
+                                        <select required name="is_examId" class="form-control form-select-lg" aria-label="Default select example">
+                                            <option value="-" selected>-</option>
+                                            @foreach($examSessions as $examSession)
+                                                <option value="{{ $examSession->id }}">{{ $examSession->title }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -179,7 +178,7 @@
                             {{-- Deskripsi Kelas --}}
                             <div class="mb-3">
                                 <label for="" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
-                                <textarea id="editor" class="form-control" name="content"></textarea>
+                                <textarea  id="editor" class="form-control" name="content"></textarea>
                                 <script>
                                     ClassicEditor
                                         .create( document.querySelector( '#editor' ) )
@@ -253,7 +252,8 @@
                         <td style="overflow: hidden; white-space: nowrap;">{{ $item->section_title }}</td>
                         <td>
                             <div class="d-flex justify-content-center" >
-                                <button class="btn mr-2" style="background-color: #208DBB; 
+                                <form action="{{ route('materials.edit', ['lesson' => $lesson_id, 'section_id' => $item->section_id]) }}" action="POST">
+                                    <button class="btn mr-2" style="background-color: #208DBB; 
                                                                     border-radius: 15px; 
                                                                     width:50px; 
                                                                     height: 40px; 
@@ -262,25 +262,42 @@
                                                                     display: flex; 
                                                                     align-items: center; 
                                                                     justify-content: center;">
-                                                            <img src="{{ url('/Icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
-                                </button>
-                                <form method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button onclick="return confirm('Are you sure?')" 
-                                            class="btn" 
-                                            style="background-color: #FC1E01; 
-                                                    border-radius: 15px; 
-                                                    width:50px; 
-                                                    height: 40px; 
-                                                    position: relative; 
-                                                    padding: 0; 
-                                                    display: flex; 
-                                                    align-items: center; 
-                                                    justify-content: center;">
-                                                <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                                <img src="{{ url('/Icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
                                 </form>
+                                <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn delete-btn" data-id="{{ $item->section_id }}" style="background-color: #FC1E01; border-radius: 15px; width:50px; height: 40px; position: relative; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                        <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                    </button>
+                                </form>
+                                
+                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                                <script>
+                                    // Setiap tombol hapus memiliki kelas .delete-btn
+                                    document.querySelectorAll('.delete-btn').forEach(item => {
+                                        item.addEventListener('click', function() {
+                                            const sectionId = this.getAttribute('data-id');
+                                
+                                            Swal.fire({
+                                                title: 'Are you sure?',
+                                                text: "You won't be able to revert this!",
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#3085d6',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Yes, delete it!'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    // Set action form dengan menggunakan sectionId
+                                                    document.getElementById('deleteForm_' + sectionId).action = "{{ url('/delete-material', ['lesson' => $lesson_id]) }}/" + sectionId;
+                                                    document.getElementById('deleteForm_' + sectionId).submit();
+                                                }
+                                            });
+                                        });
+                                    });
+                                </script>
                             </div>
                         </td>
                     </tr>
