@@ -240,22 +240,27 @@
                                         <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3;"> students</span>
                                     </p>
                                 </a>
-
                                 <!-- Edit button icon -->
-                                <img id="editButton" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;"
-                                    src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
+                                <img class="editButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;"
+                                        src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
 
-                                <script>
-                                    // Mendapatkan elemen dengan ID editButton
-                                    const editButton = document.getElementById('editButton');
-
-                                    // Menambahkan event listener untuk event klik
-                                    editButton.addEventListener('click', function() {
-                                        // Mengalihkan halaman ke URL yang ditentukan saat gambar diklik
-                                        window.location.href = "{{ url('/lesson/edit_class') }}/{{ $data->id }}";
-                                    });
-                                </script>
-
+                                        <script>
+                                            // Wait for the DOM to fully load
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                // Mendapatkan semua elemen dengan kelas editButton
+                                                const editButtons = document.querySelectorAll('.editButton');
+                                        
+                                                // Menambahkan event listener untuk setiap tombol edit
+                                                editButtons.forEach(button => {
+                                                    button.addEventListener('click', function() {
+                                                        // Mendapatkan id pelajaran dari id tombol edit yang diklik
+                                                        const lessonId = button.getAttribute('id');
+                                                        // Mengalihkan halaman ke URL yang ditentukan saat tombol edit diklik dengan id pelajaran yang sesuai
+                                                        window.location.href = "{{ url('/lesson/edit_class') }}/" + lessonId;
+                                                    });
+                                                });
+                                            });
+                                        </script>
                                     
                                 <!-- Delete button icon -->
                                 <img style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px;"

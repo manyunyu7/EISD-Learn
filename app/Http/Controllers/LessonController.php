@@ -164,12 +164,20 @@ class LessonController extends Controller
                     ");
     
         Paginator::useBootstrap();
-        // dd($myClasses) ;
+        // dd($dayta) ;
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
     }
 
     public function edit_class_v2($lesson_id){
         $categories = LessonCategory::all();
+        $category_selected = Lesson::findOrFail($lesson_id);
+        // Get Category ID selected
+        $categoryID_selected = DB::table('lesson_categories')
+                                ->select('lesson_categories.id')
+                                ->where('lesson_categories.name', $category_selected->course_category)
+                                ->get();
+
+
         $myClass = DB::table('lessons')
                     ->select('lessons.*', 'users.name AS mentor_name')
                     ->leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
@@ -177,9 +185,75 @@ class LessonController extends Controller
                     ->where('lessons.id', $lesson_id)
                     ->first(); // Ambil baris pertama dari hasil query
                     
-        $compact = compact('categories', 'myClass');
-        // dd($myClass);
+        $compact = compact('categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id');
+        // dd($categoryID_selected);
         return view('lessons.edit_lesson_v2', $compact);
+    }
+
+    public function update_class_v2(Request $request, $lesson_id){
+        // dd($request->all()) ;
+        ini_set('upload_max_filesize', '500M');
+        ini_set('post_max_size', '500M');
+        // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
+        $this->validate($request, [
+            'image' => 'required',
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+
+        //upload image
+        $image = $request->file('image');
+        $video = $request->file('video');
+        $cat = $request->input('category');
+        $image->storeAs('public/class/cover', $image->hashName());
+        // $video->storeAs('public/class/trailer', $video->hashName());
+        $user_id = Auth::id();
+
+        $cat = LessonCategory::findOrFail($request->category_id);
+        if($cat!=null){
+            $cat = $cat->name;
+        }
+
+        $member     = $request->has('member') ? true : false;
+        $nonMember  = $request->has('non_member') ? true : false;
+
+        // Buat array asosiatif
+        $value_targetEmployee = [
+            'member' => $member,
+            'non_member' => $nonMember,
+        ];
+
+        // Ubah array menjadi JSON
+        $jsonData_targetEmployee = json_encode($value_targetEmployee);
+
+
+        $inputDeyta = Lesson::create([
+            'course_cover_image' => $image->hashName(),
+            'course_title' => $request->title,
+            'course_trailer' => 'Value',
+            'course_category' => $cat,
+            'category_id' => $request->category_id,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'can_be_accessed' => $request->access,
+            'mentor_id' => $user_id,
+            'course_description' => $request->content,
+            'text_descriptions' => $request->content,
+
+            'pin' => $request->pass_class,
+            'position'=> $request->position,
+            'target_employee'=> $jsonData_targetEmployee,
+            'new_class' => $request->new_class
+        ]);
+
+        if ($inputDeyta) {
+            //redirect dengan pesan sukses
+            return redirect('lesson/manage')->with(['success' => 'Kelas Berhasil Disimpan!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect('lesson/manage')->with(['error' => 'Kelas Gagal Disimpan!']);
+        }
+        return back();
     }
 
     public function destroy($id)

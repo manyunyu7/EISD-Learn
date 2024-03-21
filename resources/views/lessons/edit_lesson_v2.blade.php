@@ -126,7 +126,7 @@
         </div>
         {{-- SOAL UJIAN --}}
         <div class="container load-soal" style="background-color: none">
-            <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST" enctype="multipart/form-data">
+            <form id="addSessionForm" action="{{ url('/update-lesson/'. $lesson_id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                 <div class="row">
@@ -153,7 +153,7 @@
                             <div class="input-group mb-3">
                                 <select class="form-control" name="category_id">
                                     @forelse($categories as $item)
-                                        <option value="{{ $item->id }}" {{ $item->id == $myClass->category_id ? 'selected' : '' }}>
+                                        <option value="{{ $item->id }}" {{ $item->name == $category_selected->course_category ? 'selected' : '' }}>
                                             {{ $item->name }}
                                         </option>
                                     @empty
