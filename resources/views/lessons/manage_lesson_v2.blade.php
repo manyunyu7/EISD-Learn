@@ -263,9 +263,26 @@
                                         </script>
                                     
                                 <!-- Delete button icon -->
-                                <img style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px;"
+                                <img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;"
                                      src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
 
+                                     <script>
+                                        // Wait for the DOM to fully load
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            // Mendapatkan semua elemen dengan kelas editButton
+                                            const deleteButtons = document.querySelectorAll('.deleteButton');
+                                    
+                                            // Menambahkan event listener untuk setiap tombol edit
+                                            deleteButtons.forEach(button => {
+                                                button.addEventListener('click', function() {
+                                                    // Mendapatkan id pelajaran dari id tombol edit yang diklik
+                                                    const lessonId = button.getAttribute('id');
+                                                    // Mengalihkan halaman ke URL yang ditentukan saat tombol edit diklik dengan id pelajaran yang sesuai
+                                                    window.location.href = "{{ url('/lesson/delete_class') }}/" + lessonId;
+                                                });
+                                            });
+                                        });
+                                    </script>
                                 <!-- Toggle switch -->
 
                             </div>

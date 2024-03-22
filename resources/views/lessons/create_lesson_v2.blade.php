@@ -255,7 +255,7 @@
                                              alt="...">
                                     </div>
                                     <div class="input-group mb-3">
-                                        <input required type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        <input  type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                     </div>
                                     {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
                                     <small width="100%">Image size should be under 1 MB and image ratio needs to be 1:1</small>

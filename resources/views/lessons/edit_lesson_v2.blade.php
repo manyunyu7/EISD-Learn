@@ -170,15 +170,15 @@
                             <div class="input-group mb-3">
                                 <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
                                     <option value="" disabled selected>Pilih jenis soal</option>
-                                    <option value="Unit Head">Unit Head</option>
-                                    <option value="Section Head">Section Head</option>
-                                    <option value="Department Head">Department Head</option>
+                                    <option value="Unit Head" {{ $myClass->position == 'Unit Head' ? 'selected' : '' }}>Unit Head</option>
+                                    <option value="Section Head" {{ $myClass->position == 'Section Head' ? 'selected' : '' }}>Section Head</option>
+                                    <option value="Department Head" {{ $myClass->position == 'Department Head' ? 'selected' : '' }}>Department Head</option>
                                 </select>
                             </div>
                         </div>
         
                         {{-- Target Employee --}}
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="" class="mb-2">Member -  Non Member<span style="color: red">*</span></label>
                             <div class="input-group">
                                 <div class="form-check">
@@ -194,12 +194,12 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Deskripsi Kelas</label>
-                            <textarea id="editor" class="form-control" name="content"></textarea>
+                            <textarea id="editor" class="form-control" name="content">{{ $myClass->course_description }}</textarea>
                             <script>
                                 ClassicEditor
                                     .create( document.querySelector( '#editor' ) )
@@ -213,7 +213,7 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">New Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input readonly type="text" value="Tidak Aktif" name="new_class" id="public-access-btn" class="btn btn-danger" style="width: 100%">
+                                <input readonly type="text" value="{{ $myClass->new_class }}" name="new_class" id="public-access-btn" class="btn {{ $myClass->new_class == 'Aktif' ? 'btn-success' : 'btn-danger' }}" style="width: 100%">
                             </div>
                         </div>
 
@@ -252,16 +252,16 @@
                                 <div class="text-center">
                                     <div class="card">
                                         <img id="profileImage" 
-                                             src="{{ Storage::url('public/profile/').Auth::user()->profile_url }}" 
+                                             src="{{ Storage::url('public/class/cover/').$myClass->course_cover_image }}" 
                                              onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
                                              class="rounded" 
                                              alt="...">
                                     </div>
                                     <div class="input-group mb-3">
-                                        <input required type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        <input hidden name="existing_file_name" type="text" value="{{ $myClass->course_cover_image }}">
+                                        <input  type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                     </div>
-                                    {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
-                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 1:1</small>
+                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>
                                 </div>
                             </div>
                         </div>
