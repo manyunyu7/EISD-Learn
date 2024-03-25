@@ -148,7 +148,7 @@
                             @forelse ($dayta as $data)
                                 <tr>
                                     <td style="overflow: hidden; white-space: nowrap;">
-                                        {{ $data->title }} + {{ $data->id }}
+                                        {{ $data->title }}
                                     </td>
 
                                     <td style="text-align: center;">
@@ -191,24 +191,53 @@
                                                 <img src="{{ url('/Icons/Edit.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
-                                            <form action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                            <form id="deleteForm_{{ $data->id }}" action="{{ route('exam.delete', $data->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button onclick="return confirm('Are you sure?')"
-                                                        class="btn"
+                                                <button class="btn delete-btn"
                                                         style="background-color: #FC1E01;
-                                                        border-radius: 15px;
-                                                        width:45px;
-                                                        height: 40px;
-                                                        position: relative;
-                                                        padding: 0;
-                                                        display: flex;
-                                                        align-items: center;
-                                                        justify-content: center;">
+                                                               border-radius: 15px;
+                                                               width:45px;
+                                                               height: 40px;
+                                                               position: relative;
+                                                               padding: 0;
+                                                               display: flex;
+                                                               align-items: center;
+                                                               justify-content: center;"
+                                                        data-id="{{ $data->id }}">
                                                     <img src="{{ url('/Icons/Delete.svg') }}"
                                                          style="max-width: 100%; max-height: 100%;">
                                                 </button>
                                             </form>
+                                            
+                                            <!-- SweetAlert Library -->
+                                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                                            <script>
+                                                // Setiap tombol hapus memiliki kelas .delete-btn
+                                                document.querySelectorAll('.delete-btn').forEach(item => {
+                                                    item.addEventListener('click', function(event) {
+                                                        event.preventDefault(); // Prevent the default form submission
+                                                        
+                                                        const sectionId = this.getAttribute('data-id');
+                                            
+                                                        Swal.fire({
+                                                            title: 'Are you sure?',
+                                                            text: "You won't be able to revert this!",
+                                                            icon: 'warning',
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: '#3085d6',
+                                                            cancelButtonColor: '#d33',
+                                                            confirmButtonText: 'Yes, delete it!'
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                // Submit the form programmatically
+                                                                document.getElementById('deleteForm_' + sectionId).submit();
+                                                            }
+                                                        });
+                                                    });
+                                                });
+                                            </script>
+                                            
                                         </div>
                                     </td>
                                 </tr>

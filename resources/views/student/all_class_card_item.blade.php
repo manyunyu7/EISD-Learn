@@ -22,10 +22,12 @@
             <!-- Badge and favorite -->
             <div
                 style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+                @if($data->new_class == 'Aktif')
                 <div class="class-badge"
                      style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
                     NEW
                 </div>
+                @endif
                 <div class="class-badge"
                      style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
                     <strong>{{ $data->course_category }}</strong>
@@ -179,9 +181,9 @@
                 <img style="width: 10%; height: auto; margin-top: 12px;"
                      src="{{ url('/icons/UserStudent_mentor.svg') }}">
 
-                <!-- Link to view students -->
-                <a style="text-decoration: none; color: black;"
-                   href="{{ url('/class/class-list/students/' . $data->id) }}">
+                <!-- Link to view students --> 
+                {{-- href="{{ url('/class/class-list/students/' . $data->id) }}" --}}
+                <a style="text-decoration: none; color: black;">
                     <p style="font-size: 17px; margin-left: 10px; margin-top: 28px;">
                         <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3;"> students</span>
                     </p>

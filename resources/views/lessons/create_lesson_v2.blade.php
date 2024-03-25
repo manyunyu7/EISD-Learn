@@ -175,7 +175,7 @@
                         </div>
         
                         {{-- Target Employee --}}
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="" class="mb-2">Member -  Non Member<span style="color: red">*</span></label>
                             <div class="input-group">
                                 <div class="form-check">
@@ -191,7 +191,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
@@ -247,18 +247,21 @@
                         <div class="card mt-5">
                             <div class="card-body">
                                 <div class="text-center">
-                                    <div class="card">
+                                    <div class="card" style="width: 100%; max-width: 3400px;"> <!-- Mengatur lebar card agar sesuai dengan gambar -->
                                         <img id="profileImage" 
                                              src="{{ Storage::url('public/profile/').Auth::user()->profile_url }}" 
                                              onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
                                              class="rounded" 
+                                             style="height: auto; max-height: 100%; width: 100%; object-fit: contain;" 
                                              alt="...">
                                     </div>
+                                    
+                                    
                                     <div class="input-group mb-3">
                                         <input  type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                     </div>
                                     {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
-                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 1:1</small>
+                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>
                                 </div>
                             </div>
                         </div>

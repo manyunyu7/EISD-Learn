@@ -234,8 +234,8 @@
                                      src="{{ url('/icons/UserStudent_mentor.svg') }}">
 
                                 <!-- Link to view students -->
-                                <a style="text-decoration: none; color: black;"
-                                   href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                {{-- href="{{ url('/class/class-list/students/' . $data->id) }}" --}}
+                                <a style="text-decoration: none; color: black;">
                                     <p style="font-size: 17px; margin-left: 10px; margin-top: 28px;">
                                         <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3;"> students</span>
                                     </p>
@@ -263,26 +263,42 @@
                                         </script>
                                     
                                 <!-- Delete button icon -->
-                                <img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;"
-                                     src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                                <!-- Delete button icon -->
+<img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
 
-                                     <script>
-                                        // Wait for the DOM to fully load
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            // Mendapatkan semua elemen dengan kelas editButton
-                                            const deleteButtons = document.querySelectorAll('.deleteButton');
-                                    
-                                            // Menambahkan event listener untuk setiap tombol edit
-                                            deleteButtons.forEach(button => {
-                                                button.addEventListener('click', function() {
-                                                    // Mendapatkan id pelajaran dari id tombol edit yang diklik
-                                                    const lessonId = button.getAttribute('id');
-                                                    // Mengalihkan halaman ke URL yang ditentukan saat tombol edit diklik dengan id pelajaran yang sesuai
-                                                    window.location.href = "{{ url('/lesson/delete_class') }}/" + lessonId;
-                                                });
-                                            });
-                                        });
-                                    </script>
+<!-- SweetAlert Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    // Wait for the DOM to fully load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mendapatkan semua elemen dengan kelas deleteButton
+        const deleteButtons = document.querySelectorAll('.deleteButton');
+
+        // Menambahkan event listener untuk setiap tombol delete
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const lessonId = button.getAttribute('id');
+
+                // Tampilkan SweetAlert
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect user when confirmed
+                        window.location.href = "{{ url('/lesson/delete_class') }}/" + lessonId;
+                    }
+                });
+            });
+        });
+    });
+</script>
+
                                 <!-- Toggle switch -->
 
                             </div>
