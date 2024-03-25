@@ -122,7 +122,7 @@
 
     <div class="container page-inner">
         <div class="page-header">
-            <h1><strong>Edit Materi {{ $section_id }}</strong></h1>
+            <h1><strong>Edit Materi</strong></h1>
         </div>
         {{-- FORM TAMBAH MATERI --}}
         <div class="col-md-12">
@@ -179,7 +179,8 @@
                             {{-- Deskripsi Kelas --}}
                             <div class="mb-3">
                                 <label for="" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
-                                <textarea id="editor" class="form-control" name="update_content"></textarea>
+                                <textarea id="editor" class="form-control" name="update_content">{!! $data_course_section_to_edit->section_content !!}
+                                </textarea>
                                 <script>
                                     ClassicEditor
                                         .create( document.querySelector( '#editor' ) )

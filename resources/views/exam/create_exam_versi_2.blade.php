@@ -122,7 +122,7 @@
         {{-- SETUP QUIZ --}}
         <div class="col-12">
             <div class="page-header">
-                <h1><b>STEP 1</b></h1><br>
+                {{-- <h1><b>STEP 1</b></h1><br> --}}
             </div>
             <div class="page-header">
                 <h2><b>SetUp Quiz/Pre-Test/Post-Test/Evaluation</b></h2>

@@ -27,6 +27,7 @@ protected $fillable = [
     'course_trailer',
     'mentor_id',
     'course_category',
+    'category_id',
     'course_description',
     'created_at',
     'updated_at',

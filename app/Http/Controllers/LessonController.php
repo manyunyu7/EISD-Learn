@@ -11,7 +11,7 @@ use App\Models\Blog;
 use App\Models\Lesson;
 use App\Models\User;
 use App\Models\StudentLesson;
-
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -158,10 +158,120 @@ class LessonController extends Controller
                         FROM 
                             lessons a
                         LEFT JOIN 
-                            users u ON a.mentor_id = u.id AND u.role = 'mentor'");
+                            users u ON a.mentor_id = u.id AND u.role = 'mentor'
+                        WHERE
+                            a.deleted_at IS NULL
+                        ORDER BY 
+                            a.id DESC
+                    ");
+    
         Paginator::useBootstrap();
-        // dd($myClasses) ;
+        // dd($dayta) ;
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
+    }
+
+    public function edit_class_v2($lesson_id){
+        $categories = LessonCategory::all();
+        $category_selected = Lesson::findOrFail($lesson_id);
+        // Get Category ID selected
+        $categoryID_selected = DB::table('lesson_categories')
+                                ->select('lesson_categories.id')
+                                ->where('lesson_categories.name', $category_selected->course_category)
+                                ->get();
+
+
+        $myClass = DB::table('lessons')
+                    ->select('lessons.*', 'users.name AS mentor_name')
+                    ->leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
+                    ->where('users.role', 'mentor')
+                    ->where('lessons.id', $lesson_id)
+                    ->first(); // Ambil baris pertama dari hasil query
+                    
+        $compact = compact('categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id');
+        // dd($myClass);
+        return view('lessons.edit_lesson_v2', $compact);
+    }
+
+    public function update_class_v2(Request $request, $lesson_id){
+        // dd($request->all()) ;
+        ini_set('upload_max_filesize', '500M');
+        ini_set('post_max_size', '500M');
+        // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
+        $this->validate($request, [
+            // 'image' => 'required',
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+
+        //upload image
+       
+        $cat = $request->input('category');
+        
+        // $video->storeAs('public/class/trailer', $video->hashName());
+        $user_id = Auth::id();
+
+        $cat = LessonCategory::findOrFail($request->category_id);
+        if($cat!=null){
+            $cat = $cat->name;
+        }
+
+
+        $update_data_lesson = Lesson::findOrFail($lesson_id);
+
+        $image = $request->file('image');
+        $old_image_name = $request->existing_file_name;
+        $new_image_name = null;
+
+        // Jika ada file gambar yang diunggah
+        if ($image) {
+            $new_image_name = $image->hashName();
+            $image->storeAs('public/class/cover', $new_image_name);
+        }
+
+        // Periksa jika file gambar baru diunggah atau input file tidak kosong
+        if ($new_image_name || $request->hasFile('image')) {
+            // Jika file gambar baru diunggah atau input file tidak kosong (artinya gambar dihapus)
+            $update_data_lesson->course_cover_image = $new_image_name;
+        } else {
+            // Jika tidak ada perubahan pada gambar, biarkan nilai kolom gambar tetap seperti yang ada sebelumnya
+            $update_data_lesson->course_cover_image = $old_image_name;
+        }
+
+        $update_data_lesson->course_title       = $request->title;
+        $update_data_lesson->course_trailer     = 'Value';
+        $update_data_lesson->course_category    = $cat;
+        $update_data_lesson->category_id        = $request->category_id;
+        $update_data_lesson->start_time         = $request->start_time;
+        $update_data_lesson->end_time           = $request->end_time;
+        $update_data_lesson->can_be_accessed    = $request->access;
+        $update_data_lesson->mentor_id          = $user_id;
+        $update_data_lesson->course_description = $request->content;
+        $update_data_lesson->text_descriptions  = $request->content;
+        $update_data_lesson->pin                = $request->pass_class;
+        $update_data_lesson->position           = $request->position;
+        $update_data_lesson->target_employee    = '';
+        $update_data_lesson->new_class          = $request->new_class;
+        
+        if ($update_data_lesson->save()) {
+            //redirect dengan pesan sukses
+            return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Diperbaharui!']);
+            return back();
+        } else {
+            //redirect dengan pesan error
+            return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Diperbaharui!']);
+            return back();
+        }
+        
+        
+    }
+
+    public function delete_class_v2($lessonId){
+        $current_timestamp                              = Carbon::now();
+        $update_data_lesson_for_deleted_at              = Lesson::findOrFail($lessonId);
+        $update_data_lesson_for_deleted_at->deleted_at  = $current_timestamp;
+        $update_data_lesson_for_deleted_at->save();
+        
+        return back()->with(['success' => 'Class Deleted Successfully']);
     }
 
     public function destroy($id)
