@@ -63,6 +63,21 @@ return [
             ]) : [],
         ],
 
+        'ithub' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('SEC_DB_HOST', '127.0.0.1'),
+            'port' => env('SEC_DB_PORT', '3306'),
+            'database' => env('SEC_DB_DATABASE', 'forge'),
+            'username' => env('SEC_DB_USERNAME', 'forge'),
+            'password' => env('SEC_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

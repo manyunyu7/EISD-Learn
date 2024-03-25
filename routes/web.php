@@ -14,6 +14,9 @@ use App\Http\Controllers\DropzoneController;
 |
 */
 
+Route::get('/iseng-iseng-aja', 'AitiHubController@checkAitiHub');
+
+
 Route::get('/', 'LandingController@landing');
 Route::get('/classes', 'LandingController@classes');
 Route::get('/blogs', 'LandingController@blogs');
@@ -189,9 +192,6 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::delete('/portfolio/{portfolio}/destroy', 'PortfolioController@destroy')->name('portfolio.destroy');
         Route::post('/portfolio/store', 'PortfolioController@store')->name('portfolio.store');
         Route::post('/portfolio/{portfolio}/update', 'PortfolioController@update')->name('portfolio.update');
-
-
-
 
         Route::post('/course/register', 'LessonController@studentRegister')->name('course.register');
         Route::post('/course/drop', 'LessonController@drop')->name('course.drop');
