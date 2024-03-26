@@ -161,6 +161,43 @@
                             </div>
                         </div>
 
+                        {{-- Kategori --}}
+                        <div class="mb-3">
+                            <label for="" class="mb-2">Tipe<span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <input type="radio" id="general" name="tipe" value="General" checked style="margin-right: 10px;" onclick="showGeneralInfo()">
+                                <label for="general" class="mr-3">General</label>
+                                
+                                <input type="radio" id="specific" name="tipe" value="Specific" style="margin-right: 10px;" onclick="hideGeneralInfo()">
+                                <label for="specific">Specific</label>
+                            </div>
+                            <small id="generalInfo"  style="color: red; display: inline;">Tipe General dapat diakses oleh semua department</small>
+                        </div>
+                        
+                        <script>
+                            function showGeneralInfo() {
+                                document.getElementById("generalInfo").style.display = "inline";
+                            }
+                        
+                            function hideGeneralInfo() {
+                                document.getElementById("generalInfo").style.display = "none";
+                            }
+                        </script>
+                        
+                        
+                        {{-- Departemen --}}
+                        <div class="mb-3">
+                            <label for="" class="mb-2">Departement<span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
+                                    <option value="" disabled selected>Pilih jenis soal</option>
+                                    <option value="Unit Head">Unit Head</option>
+                                    <option value="Section Head">Section Head</option>
+                                    <option value="Department Head">Department Head</option>
+                                </select>
+                            </div>
+                        </div>
+
                         {{-- Posisi --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Position<span style="color: red">*</span></label>

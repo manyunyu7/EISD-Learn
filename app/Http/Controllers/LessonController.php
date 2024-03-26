@@ -19,6 +19,7 @@ use Illuminate\Pagination\Paginator;
 use DB;
 use Alert;
 use App\Models\StudentSection;
+use App\Http\Controllers\ITHubController;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\DB as FacadesDB;
 
@@ -41,6 +42,15 @@ class LessonController extends Controller
         $categories = LessonCategory::all();
         $compact = compact('categories');
 
+        // $Users_ithub = DB::connection('ithub')->table('users')->get();
+        $Users_ithub = DB::connection('ithub')
+                        ->table('users')
+                        ->join('u_employees', 'users.id', '=', 'u_employees.user_id')
+                        ->get();
+
+        
+        return($Users_ithub);
+        
         if($request->dump==true){
             return $compact;
         }
