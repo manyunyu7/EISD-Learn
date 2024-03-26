@@ -72,6 +72,9 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::post('/input-pin', 'ClassListController@validatePIN');
     Route::post('/add-new-student/{lessonId}', 'CourseSectionController@add_Students');
     Route::post('find-student-by-department', 'CourseSectionController@find_student_by_dept');
+    Route::get('fetch-departments', 'LessonController@fetchDepartments');
+    Route::get('fetch-positions', 'LessonController@fetchPositions');
+    
     Route::post('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
 
     // ROUTING KHUSUS MENTOR

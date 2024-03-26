@@ -92,6 +92,101 @@
         });
     </script>
 
+    <script>
+        // Function to fetch positions based on selected type
+        function fetchPositions() {
+            fetch('/fetch-positions', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function (positions) {
+                var positionDropdown = document.getElementById('position_id');
+                // Clear existing options
+                positionDropdown.innerHTML = '<option value="" disabled>Pilih Posisi</option>';
+                // Populate dropdown with fetched positions
+                positions.forEach(function (position) {
+                    var option = document.createElement('option');
+                    option.textContent = position.name;
+                    option.value = position.id;
+                    positionDropdown.appendChild(option);
+                });
+                // Initialize Select2 if needed
+                $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
+            })
+            .catch(function (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+        // Add event listener to trigger fetchPositions() when the DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchPositions(); // Call fetchPositions() when the DOM content is loaded
+        });
+
+        // Function to show/hide department dropdown based on radio button selection
+        function toggleDepartmentDropdown() {
+            var departmentDropdown = document.getElementById('department_id');
+            var radioGeneral = document.getElementById('general');
+            var radioSpecific = document.getElementById('specific');
+
+            if (radioGeneral.checked) {
+                departmentDropdown.disabled = true;
+                departmentDropdown.innerHTML = ''; // Clear existing options
+            } else if (radioSpecific.checked) {
+                departmentDropdown.disabled = false;
+                // Fetch departments
+                fetchDepartments();
+            }
+        }
+
+        // Function to fetch departments based on selected type
+        function fetchDepartments() {
+            fetch('/fetch-departments', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function (departments) {
+                var departmentDropdown = document.getElementById('department_id');
+                // Clear existing options
+                departmentDropdown.innerHTML = '<option value="" disabled>Pilih Department</option>';
+                // Populate dropdown with fetched departments
+                departments.forEach(function (department) {
+                    var option = document.createElement('option');
+                    option.textContent = department.name;
+                    option.value = department.id;
+                    departmentDropdown.appendChild(option);
+                });
+                // Initialize Select2 if needed
+                $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
+            })
+            .catch(function (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
+        // Add event listener to radio buttons
+        document.querySelectorAll('input[name="tipe"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                toggleDepartmentDropdown();
+            });
+        });
+    </script>
+    
 
     <script>
         //message with toastr
@@ -102,8 +197,18 @@
         @endif
     </script>
 
-    
-
+    <script>
+        // JavaScript to handle form submission and show loading indicator
+        $(document).ready(function () {
+            $('#department_id').select2({
+                placeholder: 'Select students',
+                allowClear: true,
+                maximumSelectionLength: 3,
+                width: 'resolve' // need to override the changed default
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
 
 
@@ -187,27 +292,19 @@
                         
                         {{-- Departemen --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">Departement<span style="color: red">*</span></label>
+                            <label for="" class="mb-2">Departemen<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
-                                    <option value="" disabled selected>Pilih jenis soal</option>
-                                    <option value="Unit Head">Unit Head</option>
-                                    <option value="Section Head">Section Head</option>
-                                    <option value="Department Head">Department Head</option>
-                                </select>
+                                <select id="department_id" name="department_id[]"  class="form-control form-select-lg js-example-basic-multiple" multiple disabled></select>
                             </div>
                         </div>
+                        
+
 
                         {{-- Posisi --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">Position<span style="color: red">*</span></label>
+                            <label for="" class="mb-2">Posisi<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
-                                    <option value="" disabled selected>Pilih jenis soal</option>
-                                    <option value="Unit Head">Unit Head</option>
-                                    <option value="Section Head">Section Head</option>
-                                    <option value="Department Head">Department Head</option>
-                                </select>
+                                <select id="position_id" name="position_id[]" class="form-control form-select-lg js-example-basic-multiple" multiple></select>
                             </div>
                         </div>
         
@@ -247,13 +344,13 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">New Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input readonly type="text" value="Tidak Aktif" name="new_class" id="public-access-btn" class="btn btn-danger" style="width: 100%">
+                                <input readonly type="text" value="Tidak Aktif" name="new_class" id="btn-new-clas" class="btn btn-danger" style="width: 100%">
                             </div>
                         </div>
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
-                                var btn_new_class   = document.getElementById('public-access-btn');
+                                var btn_new_class   = document.getElementById('btn-new-clas');
                                 var isActive_NC     = false;
                         
                                 // New Class Setup
@@ -295,7 +392,7 @@
                                     
                                     
                                     <div class="input-group mb-3">
-                                        <input  type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        <input required  type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                     </div>
                                     {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
                                     <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>

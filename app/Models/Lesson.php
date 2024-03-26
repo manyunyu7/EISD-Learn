@@ -38,7 +38,10 @@ protected $fillable = [
     'pin',
     'position',
     'target_employee',
-    'new_class'
+    'new_class',
+    'department_id',
+    'position_id',
+    'tipe'
 ];
 
 }

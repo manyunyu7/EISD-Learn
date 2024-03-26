@@ -40,16 +40,18 @@ class LessonController extends Controller
     public function create_v2(Request $request)
     {
         $categories = LessonCategory::all();
-        $compact = compact('categories');
 
         // $Users_ithub = DB::connection('ithub')->table('users')->get();
         $Users_ithub = DB::connection('ithub')
                         ->table('users')
                         ->join('u_employees', 'users.id', '=', 'u_employees.user_id')
+                        ->where('users.name', '=', 'Kevin Valerian Ninia')
                         ->get();
 
-        
         return($Users_ithub);
+        
+        // return($m_departments_ithub);
+        $compact = compact('categories');
         
         if($request->dump==true){
             return $compact;
@@ -539,7 +541,6 @@ class LessonController extends Controller
         // return $request->all();
         ini_set('upload_max_filesize', '500M');
         ini_set('post_max_size', '500M');
-        // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
         $this->validate($request, [
             'image' => 'required',
             'title' => 'required',
@@ -548,56 +549,69 @@ class LessonController extends Controller
 
         //upload image
         $image = $request->file('image');
-        $video = $request->file('video');
-        $cat = $request->input('category');
         $image->storeAs('public/class/cover', $image->hashName());
-        // $video->storeAs('public/class/trailer', $video->hashName());
         $user_id = Auth::id();
 
+        // Setting Value Kategori
+        $cat = $request->input('category');
         $cat = LessonCategory::findOrFail($request->category_id);
         if($cat!=null){
             $cat = $cat->name;
         }
 
-        $member     = $request->has('member') ? true : false;
-        $nonMember  = $request->has('non_member') ? true : false;
+        // Setting Value Department
+        $department = $request->department_id;
+        $json_department = json_encode($department);
+        // return $json_department;
+        // Setting Value Position
+        $position = $request->position_id;
 
-        // Buat array asosiatif
-        $value_targetEmployee = [
-            'member' => $member,
-            'non_member' => $nonMember,
-        ];
+        $insert_to_Lesson = new Lesson();
+        $insert_to_Lesson->course_cover_image = $image->hashName();
+        $insert_to_Lesson->course_title = $request->title;
+        $insert_to_Lesson->course_trailer = 'Value';
+        $insert_to_Lesson->course_category = $cat;
+        $insert_to_Lesson->category_id = $request->category_id;
+        $insert_to_Lesson->start_time = $request->start_time;
+        $insert_to_Lesson->end_time = $request->end_time;
+        $insert_to_Lesson->can_be_accessed = 'n';
+        $insert_to_Lesson->mentor_id = $user_id;
+        $insert_to_Lesson->course_description = $request->content;
+        $insert_to_Lesson->text_descriptions = '';
+        $insert_to_Lesson->pin = $request->pass_class;
+        $insert_to_Lesson->position = $request->position;
+        $insert_to_Lesson->target_employee = '';
+        $insert_to_Lesson->new_class = $request->new_class;
+        $insert_to_Lesson->tipe = $request->tipe;
+        $insert_to_Lesson->department_id = json_encode($request->department_id);
+        $insert_to_Lesson->position_id = json_encode($request->position_id);
 
-        // Ubah array menjadi JSON
-        $jsonData_targetEmployee = json_encode($value_targetEmployee);
+        // return($insert_to_Lesson);
 
-
-        $inputDeyta = Lesson::create([
-            'course_cover_image' => $image->hashName(),
-            'course_title' => $request->title,
-            'course_trailer' => 'Value',
-            'course_category' => $cat,
-            'category_id' => $request->category_id,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'can_be_accessed' => $request->access,
-            'mentor_id' => $user_id,
-            'course_description' => $request->content,
-            'text_descriptions' => $request->content,
-
-            'pin' => $request->pass_class,
-            'position'=> $request->position,
-            'target_employee'=> $jsonData_targetEmployee,
-            'new_class' => $request->new_class
-        ]);
-
-        if ($inputDeyta) {
+        if ($insert_to_Lesson->save()) {
             //redirect dengan pesan sukses
             return redirect('lesson/manage')->with(['success' => 'Kelas Berhasil Disimpan!']);
         } else {
             //redirect dengan pesan error
             return redirect('lesson/manage')->with(['error' => 'Kelas Gagal Disimpan!']);
         }
+    }
+
+    public function fetchDepartments() {
+        $departments = DB::connection('ithub')
+                        ->table('m_departments')
+                        ->select('id', 'code', 'name')
+                        ->get();
+        // return response()->json($departments);
+        return $departments;
+    }
+    public function fetchPositions() {
+        $positions = DB::connection('ithub')
+                        ->table('m_group_employees')
+                        ->select('id', 'code', 'name')
+                        ->get();
+        // return response()->json($departments);
+        return $positions;
     }
 
     public function studentRegister(Request $request)
