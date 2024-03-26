@@ -48,7 +48,7 @@ class LessonController extends Controller
                         ->where('users.name', '=', 'Kevin Valerian Ninia')
                         ->get();
 
-        return($Users_ithub);
+        // return($Users_ithub);
         
         // return($m_departments_ithub);
         $compact = compact('categories');
