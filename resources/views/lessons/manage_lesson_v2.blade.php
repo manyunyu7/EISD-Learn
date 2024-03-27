@@ -97,8 +97,8 @@
 
 
 @section('main')
-
-
+<div class="container">
+    
     <div class="page-inner">
         <div class="page-header">
 
@@ -146,7 +146,7 @@
                 $numStudentsCount = count($numStudents);
                 @endphp
 
-                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
                     <div class="card shadow ">
                         <!-- Image -->
                         <img class="card-img-top"
@@ -266,40 +266,40 @@
                                     
                                 <!-- Delete button icon -->
                                 <!-- Delete button icon -->
-<img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                                <img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
 
-<!-- SweetAlert Library -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script>
-    // Wait for the DOM to fully load
-    document.addEventListener('DOMContentLoaded', function() {
-        // Mendapatkan semua elemen dengan kelas deleteButton
-        const deleteButtons = document.querySelectorAll('.deleteButton');
+                                <!-- SweetAlert Library -->
+                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                                <script>
+                                    // Wait for the DOM to fully load
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Mendapatkan semua elemen dengan kelas deleteButton
+                                        const deleteButtons = document.querySelectorAll('.deleteButton');
 
-        // Menambahkan event listener untuk setiap tombol delete
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const lessonId = button.getAttribute('id');
+                                        // Menambahkan event listener untuk setiap tombol delete
+                                        deleteButtons.forEach(button => {
+                                            button.addEventListener('click', function() {
+                                                const lessonId = button.getAttribute('id');
 
-                // Tampilkan SweetAlert
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Redirect user when confirmed
-                        window.location.href = "{{ url('/lesson/delete_class') }}/" + lessonId;
-                    }
-                });
-            });
-        });
-    });
-</script>
+                                                // Tampilkan SweetAlert
+                                                Swal.fire({
+                                                    title: 'Are you sure?',
+                                                    text: "You won't be able to revert this!",
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#3085d6',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: 'Yes, delete it!'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        // Redirect user when confirmed
+                                                        window.location.href = "{{ url('/lesson/delete_class') }}/" + lessonId;
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    });
+                                </script>
 
                                 <!-- Toggle switch -->
 
@@ -323,6 +323,8 @@
             @endforelse
         </div>
     </div>
+</div>
+
 @endsection
 
 
