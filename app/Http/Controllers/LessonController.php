@@ -198,8 +198,11 @@ class LessonController extends Controller
                     ->where('users.role', 'mentor')
                     ->where('lessons.id', $lesson_id)
                     ->first(); // Ambil baris pertama dari hasil query
-                    
-        $compact = compact('categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id');
+        
+        $deptId = $myClass->department_id;   
+        $postId = $myClass->position_id;   
+
+        $compact = compact('deptId', 'postId', 'categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id');
         // dd($myClass);
         return view('lessons.edit_lesson_v2', $compact);
     }
@@ -258,11 +261,15 @@ class LessonController extends Controller
         $update_data_lesson->can_be_accessed    = $request->access;
         $update_data_lesson->mentor_id          = $user_id;
         $update_data_lesson->course_description = $request->content;
-        $update_data_lesson->text_descriptions  = $request->content;
+        $update_data_lesson->text_descriptions  = '';
         $update_data_lesson->pin                = $request->pass_class;
         $update_data_lesson->position           = $request->position;
         $update_data_lesson->target_employee    = '';
         $update_data_lesson->new_class          = $request->new_class;
+        $update_data_lesson->tipe               = $request->tipe;
+        $update_data_lesson->department_id      = json_encode($request->department_id);
+        $update_data_lesson->position_id        = json_encode($request->position_id);
+
         
         if ($update_data_lesson->save()) {
             //redirect dengan pesan sukses
@@ -590,10 +597,10 @@ class LessonController extends Controller
 
         if ($insert_to_Lesson->save()) {
             //redirect dengan pesan sukses
-            return redirect('lesson/manage')->with(['success' => 'Kelas Berhasil Disimpan!']);
+            return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
         } else {
             //redirect dengan pesan error
-            return redirect('lesson/manage')->with(['error' => 'Kelas Gagal Disimpan!']);
+            return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
         }
     }
 
@@ -603,7 +610,7 @@ class LessonController extends Controller
                         ->select('id', 'code', 'name')
                         ->get();
         // return response()->json($departments);
-        return $departments;
+        return response()->json($departments);
     }
     public function fetchPositions() {
         $positions = DB::connection('ithub')

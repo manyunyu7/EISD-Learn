@@ -163,7 +163,7 @@
             .then(function (departments) {
                 var departmentDropdown = document.getElementById('department_id');
                 // Clear existing options
-                departmentDropdown.innerHTML = '<option value="" disabled>Pilih Department</option>';
+                departmentDropdown.innerHTML = '';
                 // Populate dropdown with fetched departments
                 departments.forEach(function (department) {
                     var option = document.createElement('option');
@@ -185,6 +185,36 @@
                 toggleDepartmentDropdown();
             });
         });
+    </script>
+
+    {{-- SETTING PREVIEW INPUT IMAGES --}}
+    <script>
+        window.onload = function () {
+            // jQuery and everything else is loaded
+            var el = document.getElementById('input-image');
+            el.onchange = function () {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(document.getElementById("input-image").files[0])
+                fileReader.onload = function (oFREvent) {
+                    document.getElementById("imgPreview").src = oFREvent.target.result;
+                };
+            }
+
+            $(document).ready(function () {
+                $.myfunction = function () {
+                    $("#previewName").text($("#inputTitle").val());
+                    var title = $.trim($("#inputTitle").val())
+                    if (title == "") {
+                        $("#previewName").text("Judul")
+                    }
+                };
+
+                $("#inputTitle").keyup(function () {
+                    $.myfunction();
+                });
+
+            });
+        }
     </script>
     
 
@@ -257,6 +287,7 @@
                             <label for="" class="mb-2">Kategori<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
                                 <select class="form-control" name="category_id" id="">
+                                    <option value="" disabled>Pilih Kategori</option>
                                     @forelse($categories as $item)
                                         <option value="{{$item->id}}">{{$item->name}}</option>
                                     @empty
@@ -266,7 +297,7 @@
                             </div>
                         </div>
 
-                        {{-- Kategori --}}
+                        {{-- Tipe --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Tipe<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
@@ -381,24 +412,48 @@
                         <div class="card mt-5">
                             <div class="card-body">
                                 <div class="text-center">
-                                    <div class="card" style="width: 100%; max-width: 3400px;"> <!-- Mengatur lebar card agar sesuai dengan gambar -->
-                                        <img id="profileImage" 
-                                             src="{{ Storage::url('public/profile/').Auth::user()->profile_url }}" 
-                                             onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
+                                    <div class="card" style="width: 100%; max-width: 1080px;">
+                                        <img id="imgPreview"
+                                             src="{{ Storage::url('public/class/cover/') }}" 
+                                             onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
                                              class="rounded" 
-                                             style="height: auto; max-height: 100%; width: 100%; object-fit: contain;" 
+                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;" 
                                              alt="...">
                                     </div>
                                     
-                                    
                                     <div class="input-group mb-3">
-                                        <input required  type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        <input required type="file" name="image" class="form-control" id="input-image" accept="image/*" onchange="validateImage(this)">
                                     </div>
-                                    {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
                                     <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>
                                 </div>
                             </div>
                         </div>
+                        
+                        <script>
+                            function validateImage(input) {
+                                if (input.files && input.files[0]) {
+                                    var reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        var img = new Image();
+                                        img.src = e.target.result;
+                                        img.onload = function () {
+                                            var width = this.width;
+                                            var height = this.height;
+                                            var ratio = width / height;
+                                            if (Math.abs(ratio - 16 / 9) > 0.01) { // Check if ratio is approximately 16:9
+                                                alert("Image ratio must be 16:9");
+                                                input.value = ""; // Clear the input file
+                                            } else {
+                                                // Display preview of the image
+                                                document.getElementById('imgPreview').src = e.target.result;
+                                            }
+                                        };
+                                    };
+                                    reader.readAsDataURL(input.files[0]);
+                                }
+                            }
+                        </script>
+                        
                     </div>
                 </div>
                 

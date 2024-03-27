@@ -92,6 +92,171 @@
         });
     </script>
 
+    {{-- SETTING FETCHING API --}}
+    <script>
+        // Function to fetch positions based on selected type
+        function fetchPositions(positionIDs) {
+            var positionIDsString = positionIDs;
+
+            // Replace &quot; with double quotes "
+            var positionIDsJson = positionIDsString.replace(/&quot;/g, '"');
+            // Parse as JSON
+            var positionIDs = JSON.parse(positionIDsJson);
+            console.log(positionIDs);
+
+            fetch('/fetch-positions', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function (positions) {
+                var positionDropdown = document.getElementById('position_id');
+                // Clear existing options
+                positionDropdown.innerHTML = '<option value="" disabled>Pilih Posisi</option>';
+                // Populate dropdown with fetched positions
+                positions.forEach(function (position) {
+                    var option = document.createElement('option');
+                    option.textContent = position.name;
+                    option.value = position.id;
+                    if (positionIDs.includes(position.id)) {
+                        option.selected = true; // Set the option as selected
+                    }
+                    positionDropdown.appendChild(option);
+                });
+                // Initialize Select2 if needed
+                $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
+            })
+            .catch(function (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+        // Add event listener to trigger fetchPositions() when the DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchPositions(); // Call fetchPositions() when the DOM content is loaded
+        });
+
+        // Function to show/hide department dropdown based on radio button selection
+        function toggleDepartmentDropdown() {
+            var departmentDropdown = document.getElementById('department_id');
+            var radioGeneral = document.getElementById('general');
+            var radioSpecific = document.getElementById('specific');
+
+            if (radioGeneral.checked) {
+                departmentDropdown.disabled = true;
+                departmentDropdown.innerHTML = ''; // Clear existing options
+            } else if (radioSpecific.checked) {
+                departmentDropdown.disabled = false;
+                // Fetch departments
+                fetchDepartments(departmentIDs);
+            }
+        }
+
+        // Function to fetch departments based on selected type
+        function fetchDepartments(departmentIDs) {
+            var departmentIDsString = departmentIDs;
+
+            // Replace &quot; with double quotes "
+            var departmentIDsJson = departmentIDsString.replace(/&quot;/g, '"');
+            // Parse as JSON
+            var departmentIDs = JSON.parse(departmentIDsJson);
+            console.log(departmentIDs);
+
+            fetch('/fetch-departments', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function (departments) {
+                console.log(departments)
+                var departmentDropdown = document.getElementById('department_id');
+                if (!departmentDropdown) {
+                    throw new Error('Dropdown element with id "department_id" not found');
+                }
+                // Clear existing options
+                departmentDropdown.innerHTML = '';
+                // Populate dropdown with fetched departments
+                departments.forEach(function (department) {
+                    var option = document.createElement('option');
+                    option.textContent = department.name;
+                    option.value = department.id;
+                    if (departmentIDs.includes(department.id)) {
+                        option.selected = true; // Set the option as selected
+                    }
+                    departmentDropdown.appendChild(option);
+                });
+                // Initialize Select2 if needed
+                $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
+            })
+            .catch(function (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
+        // Parse the JSON string
+        var departmentIDs = [];
+        var positionIDs = [];
+        try {
+            departmentIDs = ('{{ $deptId }}');
+            positionIDs   = ('{{ $postId }}');
+        } catch (error) {
+            console.error('Error parsing department IDs:', error);
+        }
+
+        // Call fetchDepartments function
+        fetchDepartments(departmentIDs);
+        fetchPositions(positionIDs)
+
+        // Add event listener to radio buttons
+        document.querySelectorAll('input[name="tipe"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                toggleDepartmentDropdown();
+            });
+        });
+    </script>
+
+    {{-- SETTING PREVIEW INPUT IMAGES --}}
+    <script>
+        window.onload = function () {
+            // jQuery and everything else is loaded
+            var el = document.getElementById('input-image');
+            el.onchange = function () {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(document.getElementById("input-image").files[0])
+                fileReader.onload = function (oFREvent) {
+                    document.getElementById("imgPreview").src = oFREvent.target.result;
+                };
+            }
+
+            $(document).ready(function () {
+                $.myfunction = function () {
+                    $("#previewName").text($("#inputTitle").val());
+                    var title = $.trim($("#inputTitle").val())
+                    if (title == "") {
+                        $("#previewName").text("Judul")
+                    }
+                };
+
+                $("#inputTitle").keyup(function () {
+                    $.myfunction();
+                });
+
+            });
+        }
+    </script>
 
     <script>
         //message with toastr
@@ -160,23 +325,53 @@
                                         <option value="" disabled>No categories available</option>
                                     @endforelse
                                 </select>
-                                
                             </div>
                         </div>
 
-                        {{-- Posisi --}}
+                        {{-- Tipe --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">Position<span style="color: red">*</span></label>
+                            <label for="" class="mb-2">Tipe<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select required name="position" class="form-control form-select-lg" aria-label="Default select example">
-                                    <option value="" disabled selected>Pilih jenis soal</option>
-                                    <option value="Unit Head" {{ $myClass->position == 'Unit Head' ? 'selected' : '' }}>Unit Head</option>
-                                    <option value="Section Head" {{ $myClass->position == 'Section Head' ? 'selected' : '' }}>Section Head</option>
-                                    <option value="Department Head" {{ $myClass->position == 'Department Head' ? 'selected' : '' }}>Department Head</option>
+                                <input type="radio" id="general" name="tipe" value="General" {{ $myClass->tipe == "General" ? "checked" : "" }} style="margin-right: 10px;" onclick="showGeneralInfo()">
+                                <label for="general" class="mr-3">General</label>
+                                
+                                <input type="radio" id="specific" name="tipe" value="Specific" {{ $myClass->tipe == "Specific" ? "checked" : "" }} style="margin-right: 10px;" onclick="hideGeneralInfo()">
+                                <label for="specific">Specific</label>
+                            </div>
+                            <small id="generalInfo"  style="color: red; {{ $myClass->tipe == "General" ? 'display: inline;' : 'display: none;' }}">Tipe General dapat diakses oleh semua department</small>
+                        </div>
+
+                        <script>
+                            function showGeneralInfo() {
+                                document.getElementById("generalInfo").style.display = "inline";
+                            }
+
+                            function hideGeneralInfo() {
+                                document.getElementById("generalInfo").style.display = "none";
+                            }
+                        </script>
+
+
+                        {{-- Departemen --}}
+                        <div class="mb-3">
+                            <label for="" class="mb-2">Departemen<span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <select id="department_id" name="department_id[]"  class="form-control form-select-lg js-example-basic-multiple" multiple>
+
                                 </select>
                             </div>
                         </div>
-        
+                        
+
+                        {{-- Posisi --}}
+                        <div class="mb-3">
+                            <label for="" class="mb-2">Posisi<span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <select id="position_id" name="position_id[]" class="form-control form-select-lg js-example-basic-multiple" multiple></select>
+                            </div>
+                        </div>
+
+
                         {{-- Target Employee --}}
                         {{-- <div class="mb-3">
                             <label for="" class="mb-2">Member -  Non Member<span style="color: red">*</span></label>
@@ -245,30 +440,57 @@
                         </script>
                     </div>
     
+
                     <div class="col-md-4">
                         {{-- Cover Class --}}
                         <div class="card mt-5">
                             <div class="card-body">
                                 <div class="text-center">
-                                    <div class="card">
-                                        <img id="profileImage" 
+                                    <div class="card" style="width: 100%; max-width: 1080px;">
+                                        <img id="imgPreview"
+                                             style="aspect-ratio: 16 / 9"
                                              src="{{ Storage::url('public/class/cover/').$myClass->course_cover_image }}" 
-                                             onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
+                                             onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
                                              class="rounded" 
+                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;" 
                                              alt="...">
                                     </div>
+                                    
                                     <div class="input-group mb-3">
-                                        <input hidden name="existing_file_name" type="text" value="{{ $myClass->course_cover_image }}">
-                                        <input  type="file" name="image" class="form-control" id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        <input hidden name="existing_file_name" value="{{ $myClass->course_cover_image }}" type="text">
+                                        <input  type="file" name="image" class="form-control" id="input-image" accept="image/*" onchange="validateImage(this)">
                                     </div>
                                     <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>
                                 </div>
                             </div>
                         </div>
+                        
+                        <script>
+                            function validateImage(input) {
+                                if (input.files && input.files[0]) {
+                                    var reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        var img = new Image();
+                                        img.src = e.target.result;
+                                        img.onload = function () {
+                                            var width = this.width;
+                                            var height = this.height;
+                                            var ratio = width / height;
+                                            if (Math.abs(ratio - (16 / 9)) > 0.01) { // Check if ratio is approximately 16:9
+                                                alert("Image ratio must be 16:9");
+                                                input.value = ""; // Clear the input file
+                                            } else {
+                                                // Display preview of the image
+                                                document.getElementById('imgPreview').src = e.target.result;
+                                            }
+                                        };
+                                    };
+                                    reader.readAsDataURL(input.files[0]);
+                                }
+                            }
+                        </script>
                     </div>
                 </div>
-                
-
                 
 
                 {{-- BUTTONS --}}
