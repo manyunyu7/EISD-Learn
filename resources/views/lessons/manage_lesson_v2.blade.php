@@ -306,7 +306,7 @@
                                 </a>
                             
                                 <!-- Edit button icon -->
-                                <img class="editButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: -7px; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
+                                <img class="editButton" id="{{ $data->id }}"  style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
                                 <script>
                                     // Wait for the DOM to fully load
                                     document.addEventListener('DOMContentLoaded', function() {
@@ -327,7 +327,7 @@
 
 
                                 <!-- Delete button icon -->
-                                <img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: -7px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                                <img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
                                 <!-- SweetAlert Library -->
                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                                 <script>
@@ -362,8 +362,8 @@
 
                                 {{-- Switch Button --}}
                                 <div style="display: flex; margin-left: 6px; margin-bottom: -15px">
-                                    <p style="margin-right: 5px; margin-bottom: 5px">Show</p>
-                                    <label class="switch" style="margin-right: 5px; margin-top: 3px">
+                                    <p style="background-color: cyan; margin-left: -25px; margin-bottom: 5px">Show</p>
+                                    <label class="switch" style="background-color: black;margin-left: 30px; margin-top: 3px">
                                         {{-- <input hidden type="text" id="lesson_id" value="{{ $data->id }}"> --}}
                                         <input type="checkbox" id="{{ $data->id }}" class="switchButton{{ $data->id }}" {{ $data->is_visible == 'y'? 'checked' : '' }}>
                                         <span class="slider round"></span>
@@ -415,8 +415,6 @@
                                     });
 
                                 </script>
-                                
-
                             </div>
                         </div>
                         
