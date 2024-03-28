@@ -15,6 +15,7 @@ use App\Http\Controllers\DropzoneController;
 */
 
 Route::get('/iseng-iseng-aja', 'AitiHubController@checkAitiHub');
+Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@see_section');
 
 
 Route::get('/', 'LandingController@landing');
@@ -75,7 +76,6 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('fetch-departments', 'LessonController@fetchDepartments');
     Route::get('fetch-positions', 'LessonController@fetchPositions');
     Route::post('fetch-show', 'LessonController@fetchShowCourse');
-    
     Route::post('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
 
     // ROUTING KHUSUS MENTOR

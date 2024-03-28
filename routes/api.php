@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\MobileUploaderController;
+use App\Http\Controllers\MobileHomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,10 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/upload', 'MobileUploaderController@upload');
-Route::any('/check', 'MobileUploaderController@check');
-Route::any('/close-ticket', 'MobileUploaderController@closeTicket');
+Route::post('/upload', [MobileUploaderController::class, 'upload']);
+Route::any('/check', [MobileUploaderController::class, 'check']);
+Route::any('/close-ticket', [MobileUploaderController::class, 'closeTicket']);
 
-Route::get("/class-list",'MobileHomeController@classList');
-Route::get("/class-categories",'MobileHomeController@classCategories');
-
+Route::get("/class-list", [MobileHomeController::class, 'classList']);
+Route::get("/class-categories", [MobileHomeController::class, 'classCategories']);
