@@ -350,7 +350,7 @@
             sectionId: {{ $currentSectionId }}, // Use Blade syntax to echo the
             courseId: {{ $courseId }},
             isFinished: isFinished,
-            fullName: "{{ Auth::user()->name }}" // Use Blade syntax to echo the variable
+            fullName: "Guest" // Use Blade syntax to echo the variable
         };
 
         // Retrieve all filled answers
