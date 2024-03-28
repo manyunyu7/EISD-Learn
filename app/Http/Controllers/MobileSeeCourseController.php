@@ -322,7 +322,7 @@ class MobileSeeCourseController extends Controller
         );
 
 
-        return view('lessons.play.course_play_new', $compact);
+        return view('lessons.play.course_play_mobile', $compact);
 
     }
 
