@@ -178,7 +178,7 @@ class LessonController extends Controller
                     ");
     
         Paginator::useBootstrap();
-        // dd($dayta) ;
+        // dd($myClasses) ;
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
     }
 
@@ -619,6 +619,24 @@ class LessonController extends Controller
                         ->get();
         // return response()->json($departments);
         return $positions;
+    }
+    public function fetchShowCourse(Request $request) {
+        // $isVisible = Lesson::findOrFail($lesson->id);
+        $lessonId = $request->input('lesson_id');
+        $switchStatus = $request->input('switch_status');
+
+        $isVisible = Lesson::findOrFail($lessonId);
+        $isVisible->is_visible = $switchStatus;
+        
+        if ($isVisible->save()) {
+            //redirect dengan pesan sukses
+            return redirect('lesson/manage_v2')->with(['success' => 'Kelas Telah Diaktifkan!']);
+            // return back();
+        } else {
+            //redirect dengan pesan error
+            return redirect('lesson/manage_v2')->with(['error' => 'Kelas di Nonaktifkan!']);
+            // return back();
+        }
     }
 
     public function studentRegister(Request $request)
