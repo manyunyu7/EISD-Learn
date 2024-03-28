@@ -1,5 +1,69 @@
 @extends('main.template')
+    <style>
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px; /* Lebar switch */
+            height: 18px; /* Tinggi switch */
+        }
 
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 12px; /* Bentuk kotak switch */
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px; /* Tinggi slider */
+            width: 14px; /* Lebar slider */
+            left: 2px; /* Jarak dari kiri */
+            bottom: 2px; /* Jarak dari bawah */
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%; /* Bentuk bulatan di dalam slider */
+        }
+
+        /* Warna latar belakang slider saat diaktifkan */
+        input:checked + .slider {
+            background-color: #FC1E01;
+        }
+
+        /* Bayangan saat slider difokuskan */
+        input:focus + .slider {
+            box-shadow: 0 0 1px #FC1E01;
+        }
+
+        /* Perpindahan slider saat diaktifkan */
+        input:checked + .slider:before {
+            transform: translateX(16px); /* Perpindahan slider saat diaktifkan */
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 18px; /* Bentuk bulat switch */
+        }
+
+        .slider.round:before {
+            border-radius: 50%; /* Bentuk bulat dalam slider */
+        }
+    </style>
 @section('head-section')
     <!-- Datatables -->
 
@@ -97,8 +161,8 @@
 
 
 @section('main')
-
-
+<div class="container">
+    
     <div class="page-inner">
         <div class="page-header">
 
@@ -150,10 +214,12 @@
                     <div class="card shadow ">
                         <!-- Image -->
                         <img class="card-img-top"
-                             style="max-height: 220px"
-                             onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-                             src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                             alt="La Noyee">
+                            style="aspect-ratio: 16 / 9"
+                            onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
+                            src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                            alt="La Noyee">
+
+
                         <!-- Card body -->
                         <div class="card-body">
                             <!-- Badge and favorite -->
@@ -228,81 +294,52 @@
                         </div>
                         <!-- Card footer -->
                         <div class="card-footer pt-0 pb-3">
-                            <div style="display: flex; justify-content: center; align-items: center;">
+                            <div style="display: flex; align-items: center; flex-wrap: wrap;">
                                 <!-- Icon for students -->
-                                <img style="width: 10%; height: auto; margin-top: 12px;"
-                                     src="{{ url('/icons/UserStudent_mentor.svg') }}">
-
+                                <img style="width: 10%; height: auto; margin-top: 12px; padding-right: 6px" src="{{ url('/icons/UserStudent_mentor.svg') }}">
+                            
                                 <!-- Link to view students -->
                                 {{-- href="{{ url('/class/class-list/students/' . $data->id) }}" --}}
-                                <a style="text-decoration: none; color: black;">
-                                    <p style="font-size: 17px; margin-left: 10px; margin-top: 28px;">
+                                <a style="text-decoration: none; color: black; margin-right: 15px;">
+                                    <p style="font-size: 17px; margin-top: 28px;">
                                         <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3;"> students</span>
                                     </p>
                                 </a>
+                            
                                 <!-- Edit button icon -->
-                                <img class="editButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;"
-                                        src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
-
-                                        <script>
-                                            // Wait for the DOM to fully load
-                                            document.addEventListener('DOMContentLoaded', function() {
-                                                // Mendapatkan semua elemen dengan kelas editButton
-                                                const editButtons = document.querySelectorAll('.editButton');
-                                        
-                                                // Menambahkan event listener untuk setiap tombol edit
-                                                editButtons.forEach(button => {
-                                                    button.addEventListener('click', function() {
-                                                        // Mendapatkan id pelajaran dari id tombol edit yang diklik
-                                                        const lessonId = button.getAttribute('id');
-                                                        // Mengalihkan halaman ke URL yang ditentukan saat tombol edit diklik dengan id pelajaran yang sesuai
-                                                        window.location.href = "{{ url('/lesson/edit_class') }}/" + lessonId;
-                                                    });
-                                                });
-                                            });
-                                        </script>
-                                    
+                                <img class="editButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: -7px; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
+                            
                                 <!-- Delete button icon -->
-                                <!-- Delete button icon -->
-<img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: 10px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
-
-<!-- SweetAlert Library -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script>
-    // Wait for the DOM to fully load
-    document.addEventListener('DOMContentLoaded', function() {
-        // Mendapatkan semua elemen dengan kelas deleteButton
-        const deleteButtons = document.querySelectorAll('.deleteButton');
-
-        // Menambahkan event listener untuk setiap tombol delete
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const lessonId = button.getAttribute('id');
-
-                // Tampilkan SweetAlert
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Redirect user when confirmed
-                        window.location.href = "{{ url('/lesson/delete_class') }}/" + lessonId;
-                    }
-                });
-            });
-        });
-    });
-</script>
-
+                                <img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: -7px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                            
                                 <!-- Toggle switch -->
-
+                                <div style="display: flex;margin-left: 6px; margin-bottom: -15px">
+                                    <p style="margin-right: 5px; margin-bottom: 5px">Show</p>
+                                    <label class="switch" style="margin-right: 5px; margin-top: 3px">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
+                        
+                        <style>
+                            @media only screen and (max-width: 600px) {
+                                .card-footer {
+                                    padding-top: 0;
+                                    padding-bottom: 3px;
+                                }
+                                .card-footer > div {
+                                    flex-direction: row;
+                                    align-items: flex-start;
+                                }
+                                .card-footer img, .card-footer a {
+                                    margin-right: 0;
+                                    margin-bottom: 5px;
+                                }
+                            }
+                        </style>
+                        
 
                     </div>
                 </div>
@@ -321,6 +358,8 @@
             @endforelse
         </div>
     </div>
+</div>
+
 @endsection
 
 
