@@ -28,9 +28,9 @@ class MobileSeeCourseController extends Controller
         $title = "";
         if (!Auth::check()) {
             MyHelper::addAnalyticEvent(
-                "Belum Login Buka Section", "Course Section"
+                "Mobile Buka Section", "Course Section"
             );
-            abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
+//            abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
 
         $user_id = Auth::user()->id;
