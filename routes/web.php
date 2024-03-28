@@ -32,6 +32,7 @@ Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('p
 // Route::post('/class/class-list/students/{lessonId}')->name('view_students.viewStudents')->middleware('auth');
 
  Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
+ Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@see_section')->name('course.see_section');
 
 
 Route::get('/datatable', function () {
@@ -74,7 +75,7 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::post('find-student-by-department', 'CourseSectionController@find_student_by_dept');
     Route::get('fetch-departments', 'LessonController@fetchDepartments');
     Route::get('fetch-positions', 'LessonController@fetchPositions');
-    
+
     Route::post('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
 
     // ROUTING KHUSUS MENTOR
