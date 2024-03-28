@@ -54,7 +54,8 @@ class MyHelper
             'message' => $message_id,
             'message_id' => $message_id,
             'message_en' => $message_en,
-            'res_data' => $res_data,
+            'success' => true,
+            'data' => $res_data,
         ];
 
         return response($response, $http_code);
