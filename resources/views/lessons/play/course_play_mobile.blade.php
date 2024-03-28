@@ -339,7 +339,8 @@
                                 @php
                                     $isCurrent = $item->isCurrent ?? false; // Check if $item->isCurrent is set, if not, set it to false
                                 @endphp
-                                <a href="{{ route('course.see_section', [$item->lesson_id, $item->section_id]) }}"
+
+                                <a href="{{ url('/') . "/mobile/course/$item->lesson_id/section/$item->section_id" }}"
                                    style="text-decoration: none; color: inherit;">
                                     {{-- Check if the item is marked as taken --}}
                                     @if ($item->isTaken)
@@ -404,7 +405,7 @@
 <!-- Menu Toggle Script -->
 <script>
     $(document).ready(function() {
-        $("#wrapper").toggleClass("toggled");
+        // $("#wrapper").toggleClass("toggled");
     });
     $("#menu-toggle").click(function (e) {
         e.preventDefault();
