@@ -147,7 +147,6 @@
         });
     </script>
 
-
     <script>
         //message with toastr
         @if(session()-> has('success'))
@@ -308,18 +307,116 @@
                             
                                 <!-- Edit button icon -->
                                 <img class="editButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: -7px; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
-                            
+                                <script>
+                                    // Wait for the DOM to fully load
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Mendapatkan semua elemen dengan kelas editButton
+                                        const editButtons = document.querySelectorAll('.editButton');
+                                
+                                        // Menambahkan event listener untuk setiap tombol edit
+                                        editButtons.forEach(button => {
+                                            button.addEventListener('click', function() {
+                                                // Mendapatkan id pelajaran dari id tombol edit yang diklik
+                                                const lessonId = button.getAttribute('id');
+                                                // Mengalihkan halaman ke URL yang ditentukan saat tombol edit diklik dengan id pelajaran yang sesuai
+                                                window.location.href = "{{ url('/lesson/edit_class') }}/" + lessonId;
+                                            });
+                                        });
+                                    });
+                                </script>
+
+
                                 <!-- Delete button icon -->
                                 <img class="deleteButton" id="{{ $data->id }}" style="width: 10%; height: auto; margin-top: 12px; margin-left: -7px; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
-                            
-                                <!-- Toggle switch -->
-                                <div style="display: flex;margin-left: 6px; margin-bottom: -15px">
+                                <!-- SweetAlert Library -->
+                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                                <script>
+                                    // Wait for the DOM to fully load
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Mendapatkan semua elemen dengan kelas deleteButton
+                                        const deleteButtons = document.querySelectorAll('.deleteButton');
+                                        // Menambahkan event listener untuk setiap tombol delete
+                                        deleteButtons.forEach(button => {
+                                            button.addEventListener('click', function() {
+                                                const lessonId = button.getAttribute('id');
+                                                // Tampilkan SweetAlert
+                                                Swal.fire({
+                                                    title: 'Are you sure?',
+                                                    text: "You won't be able to revert this!",
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#3085d6',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: 'Yes, delete it!'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        // Redirect user when confirmed
+                                                        window.location.href = "{{ url('/lesson/delete_class') }}/" + lessonId;
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    });
+                                </script>
+                                
+
+                                {{-- Switch Button --}}
+                                <div style="display: flex; margin-left: 6px; margin-bottom: -15px">
                                     <p style="margin-right: 5px; margin-bottom: 5px">Show</p>
                                     <label class="switch" style="margin-right: 5px; margin-top: 3px">
-                                        <input type="checkbox">
+                                        {{-- <input hidden type="text" id="lesson_id" value="{{ $data->id }}"> --}}
+                                        <input type="checkbox" id="{{ $data->id }}" class="switchButton{{ $data->id }}" {{ $data->is_visible == 'y'? 'checked' : '' }}>
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
+                                <script>
+                                    // Wait for the DOM to fully load
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Menambahkan event listener untuk setiap tombol switch
+                                        document.querySelectorAll('.switchButton{{ $data->id }}').forEach(switchBtn => {
+                                            switchBtn.addEventListener('change', function() {
+                                                // Mendapatkan id pelajaran dari id tombol switch yang diklik
+                                                const lessonId = this.getAttribute('id');
+                                                var switchStatus = this.checked ? 'y' : 't';
+                                                // console.log('Lesson ID : ',lessonId);
+                                                // console.log('Switch Status : ',switchStatus);
+
+                                                // Buat objek FormData
+                                                var formData = new FormData();
+                                                formData.append('lesson_id', lessonId);
+                                                formData.append('switch_status', switchStatus);
+
+
+                                                fetch('/fetch-show', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                                    },
+                                                    // Menggunakan URLSearchParams untuk mengkodekan data FormData
+                                                    body: new URLSearchParams(formData)
+                                                })
+                                                .then(response => {
+                                                    if (!response.ok) {
+                                                        throw new Error('Gagal memperbarui data');
+                                                    }
+                                                    else{
+                                                        Swal.fire({
+                                                            icon: 'success',
+                                                            title: 'Berhasil',
+                                                            text: 'Status Kelas berhasil diubah!'
+                                                        });
+                                                    }
+                                                })
+                                                .catch(function (error) {
+                                                    console.error('There was a problem with the fetch operation:', error);
+                                                });
+                                            });
+                                        });
+                                    });
+
+                                </script>
+                                
+
                             </div>
                         </div>
                         
