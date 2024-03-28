@@ -216,11 +216,11 @@
 
                         <script>
                             function nextCuy() {
-                                var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
                                 window.location.href = nextUrl;
                                 return;
                                 var videoPlayer = document.getElementById("myVideo");
-                                var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
                                 var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
                                 if (progress >= 90) {
@@ -254,7 +254,7 @@
 
                                 <div class="d-flex justify-content-between mt-2 mb-4">
                                     @if ($prev_section != null)
-                                        <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}"
+                                        <a href="{{ url('/') . "/mobile/course/$courseId/section/$prev_section" }}"
                                            class="btn btn-primary hidden">Previous Lesson</a>
                                     @endif
                                     @if ($next_section != null)
@@ -263,7 +263,7 @@
                                             Next Lesson
                                         </button>
 
-                                        <!--<a href="{{ url('/') . "/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
+                                        <!--<a href="{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
                                         <!--    class="btn btn-primary ">Next-->
                                         <!--    Lesson</a>-->
                                     @endif
