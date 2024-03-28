@@ -20,7 +20,7 @@ class MobileHomeController extends Controller
             ->orWhere('deleted_at', '') // Assuming empty string represents empty value
             ->get();
 
-       // $data =  DB::connection('ithub')->table('m_departments')->get();
+        $data =  DB::connection('ithub')->table('m_departments')->get();
         $newData = [];
 
         foreach ($data as $item) {
