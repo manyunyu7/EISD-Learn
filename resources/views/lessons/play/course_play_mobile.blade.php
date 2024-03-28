@@ -55,9 +55,11 @@
 
 <body>
 <!-- Timer -->
+@if($isExam)
 <div id="floating-timer" class="timer-container">
     <div id="timer" class="timer">00:00:00</div>
 </div>
+@endif
 
 <div id="wrapper">
 
