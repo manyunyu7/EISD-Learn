@@ -42,18 +42,19 @@
 </li>
 
 {{-- DASHBOARD --}}
-<li class="nav-item {{ Request::is('exam/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
-    <a href="{{ url('exam/manage-exam-v2') }}" style="display: flex; align-items: center;">
+<li class="nav-item {{ Request::is('dashboard/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('/dashboard/mentor') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/Dashboard.svg"
              style="width: 14%;
                 height: auto;
                 margin-top: 5px;
                 "
         >
-        <p class="{{ Request::is('exam/*') ? 'text-white' : ''}}"
-           style="margin-left: 10px; {{ (Request::is('exam/*')) ? 'color: white !important;' : '' }}">Dashboard</p>
+        <p class="{{ Request::is('dashboard/*') ? 'text-white' : ''}}"
+           style="{{ Request::is('dashboard/*') ? 'color: white !important;' : '' }} margin-left: 10px;">Dashboard</p>
     </a>
 </li>
+
 
 <hr>
 <p class="text-center">MENU LAMA</p>
