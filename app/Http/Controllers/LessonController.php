@@ -672,4 +672,26 @@ class LessonController extends Controller
             return redirect('/home')->with(['error' => 'Gagal Drop Kelas!']);
         }
     }
+
+    public function viewDashboard(){
+        $user_id = Auth::id();
+        $dayta = DB::select("select * from view_course where mentor_id = $user_id");
+        $myClasses = DB::select("
+                        SELECT 
+                            a.*, 
+                            u.name AS mentor_name 
+                        FROM 
+                            lessons a
+                        LEFT JOIN 
+                            users u ON a.mentor_id = u.id AND u.role = 'mentor'
+                        WHERE
+                            a.deleted_at IS NULL
+                        ORDER BY 
+                            a.id DESC
+                    ");
+    
+        Paginator::useBootstrap();
+        // dd($myClasses) ;
+        return view('main.mentorDashboard', compact('dayta', 'myClasses'));
+    }
 }

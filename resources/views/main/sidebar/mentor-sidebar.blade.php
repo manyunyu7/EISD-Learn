@@ -1,47 +1,63 @@
 {{-- IMPROVED MENU --}}
-{{-- CLASS --}}
-<li class="nav-item {{ Request::is('home') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+{{-- HOME --}}
+<li class="nav-item {{ Request::is('home*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('/home') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/ic_home.svg"
              style="width: 14%;
-                height: auto;
-                margin-top: 5px;
-                "
+                    height: auto;
+                    margin-top: 5px;
+                    "
         >
-        <p class="{{ Request::is('home/*') ? 'text-white' : ''}}"
-           style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Home</p>
+        <p class="{{ Request::is('home/*') ? 'text-white active' : ''}}"
+           style="margin-left: 10px; {{ (Request::is('home*')) ? 'color: white !important;' : '' }}">Home</p>
     </a>
 </li>
 
-<li class="nav-item {{ Request::is('lesson/manage_v2') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+{{-- CLASS --}}
+<li class="nav-item {{ Request::is('lesson/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('lesson/manage_v2') }}" style="display: flex; align-items: center;">
-        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/icon_classes.png"
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/class.svg"
              style="width: 14%;
-                height: auto;
-                margin-top: 5px;
-                "
+                    height: auto;
+                    margin-top: 5px;
+                    margin-right: 10px;"
         >
-        <p class="{{ Request::is('/lesson/manage_v2') ? 'text-white' : ''}}"
-           style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Classes New</p>
+        <p style="margin: 0; {{ (Request::is('lesson/*')) ? 'color: white !important;' : '' }}"
+           class="{{ (Request::is('lesson/*')) ? 'text-white active' : '' }}">Class</p>
     </a>
 </li>
 
-
-<li class="nav-item {{ Request::is('exam/manage-exam-v2') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+{{-- EXAM --}}
+<li class="nav-item {{ Request::is('exam/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('exam/manage-exam-v2') }}" style="display: flex; align-items: center;">
-        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/icon_menu_exam.png"
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/Exam.svg"
              style="width: 14%;
                 height: auto;
                 margin-top: 5px;
                 "
         >
-        <p class="{{ Request::is('exam/manage-exam-v2') ? 'text-white' : ''}}"
-           style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Exam New</p>
+        <p class="{{ Request::is('exam/*') ? 'text-white' : ''}}"
+           style="margin-left: 10px; {{ (Request::is('exam/*')) ? 'color: white !important;' : '' }}">Exam New</p>
+    </a>
+</li>
+
+{{-- DASHBOARD --}}
+<li class="nav-item {{ Request::is('dashboard/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('/dashboard/mentor') }}" style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/Dashboard.svg"
+             style="width: 14%;
+                height: auto;
+                margin-top: 5px;
+                "
+        >
+        <p class="{{ Request::is('dashboard/*') ? 'text-white' : ''}}"
+           style="{{ Request::is('dashboard/*') ? 'color: white !important;' : '' }} margin-left: 10px;">Dashboard</p>
     </a>
 </li>
 
 
-
+<hr>
+<p class="text-center">MENU LAMA</p>
 {{-- MENU LAMA --}}
 {{-- CLASS --}}
 <li class="nav-item">
@@ -95,13 +111,13 @@
 </li>
 
 {{-- BLOGS --}}
-<li class="nav-item">
+{{-- <li class="nav-item {{ Request::is('blog/*') ? 'active' : '' }}">
     <a data-toggle="collapse" href="#base">
         <i class="fas fa-pen-alt"></i>
         <p>Blogs</p>
         <span class="caret"></span>
     </a>
-    <div class="collapse  {{ Request::is('blog/*') ? 'show' : '' }}" id="base">
+    <div class="collapse {{ Request::is('blog/*') ? 'show' : '' }}" id="base">
         <ul class="nav nav-collapse">
             <li>
                 <a href="{{ url('/blogs') }}">
@@ -120,13 +136,12 @@
             </li>
         </ul>
     </div>
-</li>
+</li> --}}
 
 {{-- TUGAS AKHIR SISWA --}}
-<li class="nav-item {{ Request::is('lesson/correct') ? 'active' : '' }}">
+{{-- <li class="nav-item {{ Request::is('lesson/correct') ? 'active' : '' }}">
     <a href="{{ url('/lesson/correct') }}">
         <i class="fas fa-tasks"></i>
         <p>Tugas Akhir Siswa</p>
     </a>
-</li>
-
+</li> --}}
