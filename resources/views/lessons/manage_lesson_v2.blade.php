@@ -218,6 +218,7 @@
                             src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
                             alt="La Noyee">
 
+                        
 
                         <!-- Card body -->
                         <div class="card-body">
@@ -236,22 +237,12 @@
                                     <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
                                 </div>
                             </div>
-
                             <!-- Title -->
                             <h6 class="card-title"><a href="#">{{$data->course_title}}</a></h6>
                             <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
                                 settling.</p>
-
-
+                                
                             <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
-
-
-                            {{-- <div class="d-flex justify-content-between">
-                                <div>
-                                    <img style="width: 35%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
-                                    <p>{{ $data->mentor_name }}</p>
-                                </div>
-                            </div> --}}
                             <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
                                 <img style="width: 15%; height: auto; max-height: 20px" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
                                 <p style="font-size: 15px; margin-bottom: 3px;">{{ $data->mentor_name }}</p>
@@ -276,21 +267,8 @@
                                     </div>
                                 </ul>
                             </li>
-                            <!-- Rating star -->
-                            <ul class="list-inline mb-0 d-none">
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item ms-2 h6 fw-light mb-0">4.0/5.0</li>
-                            </ul>
                         </div>
+
                         <!-- Card footer -->
                         <div class="card-footer">
                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center;">
@@ -370,7 +348,6 @@
                                     });
                                 });
                             </script>
-                            
                             <script>
                                 // Wait for the DOM to fully load
                                 document.addEventListener('DOMContentLoaded', function() {
