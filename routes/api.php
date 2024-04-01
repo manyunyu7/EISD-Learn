@@ -25,5 +25,10 @@ Route::post('/upload', [MobileUploaderController::class, 'upload']);
 Route::any('/check', [MobileUploaderController::class, 'check']);
 Route::any('/close-ticket', [MobileUploaderController::class, 'closeTicket']);
 
+Route::get("/check-integration", [MobileHomeController::class, 'checkIfAccountConnected']);
+Route::get("/search-unclaimed-account", [MobileHomeController::class, 'searchUnclaimedAccount']);
+Route::any("/claim-account", [MobileHomeController::class, 'claimAccount']);
+
+
 Route::get("/class-list", [MobileHomeController::class, 'classList']);
 Route::get("/class-categories", [MobileHomeController::class, 'classCategories']);

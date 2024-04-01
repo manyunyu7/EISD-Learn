@@ -4,13 +4,153 @@ namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
 use App\Models\LessonCategory;
+use App\Models\User;
+use App\Models\UserMdln;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class MobileHomeController extends Controller
 {
+
+    public function claimAccount(Request $request){
+        // Validating the incoming request data
+//        $request->validate([
+//            'target_account_id' => 'required|exists:users,id',
+//            'mdln_user_id' => 'required',
+//            'password' => 'required',
+//        ]);
+
+
+
+        // Extracting data from the validated request
+        $accountId = $request->target_account_id;
+        $mdlnUserId = $request->mdln_user_id;
+        $password = $request->password;
+
+        $mdlnUser = UserMdln::find($mdlnUserId);
+        // Finding the user account by ID
+        $account = User::find($accountId);
+
+
+        if ($mdlnUser==null){
+            return MyHelper::responseErrorWithData(
+                404,
+                404,
+                0,
+                "Akun ITHUB Tidak Ditemukan",
+                "ITHUB account not found",
+                null
+            );
+        }
+
+        if ($account==null){
+            return MyHelper::responseErrorWithData(
+                404,
+                404,
+                0,
+                "Akun LMS Tidak Ditemukan",
+                "LMS account not found",
+                null
+            );
+        }
+
+        // Check if the password is correct
+        if($this->checkPassword($account, $password)) {
+            // Password is correct, proceed with claiming the account
+            $account->mdln_username = $mdlnUserId;
+            $account->save();
+
+            // Return success response
+            return MyHelper::responseSuccessWithData(
+                200,
+                200,
+                2,
+                "Akun Berhasil Terhubung",
+                "Account Successfully Connected",
+                $account
+            );
+        } else {
+            // Password is incorrect, return error response
+            return MyHelper::responseErrorWithData(
+                404,
+                404,
+                0,
+                "Password Yang Anda Input Tidak Sesuai",
+                "Inputted Password is incorrect",
+                null
+            );
+        }
+    }
+
+    private function checkPassword(User $user, $password) {
+        return Hash::check($password, $user->password);
+    }
+
+    public function searchUnclaimedAccount(Request $request)
+    {
+        $name = $request->input('name');
+
+        $query = User::whereNull("mdln_username")
+            ->orWhere("mdln_username", "")
+            ->where('role', '!=', "mentor") // Exclude users with role = 1
+            ->select('id', 'name','profile_url','email');
+
+        // If a name is provided, add a search condition
+        if ($name) {
+            $query->where('name', 'like', '%' . $name . '%');
+        }
+
+        $data = $query->get();
+
+        return MyHelper::responseSuccessWithData(
+            200,
+            200,
+            2,
+            "success",
+            "success",
+            $data
+        );
+    }
+
+    public function checkIfAccountConnected(Request $request)
+    {
+        $mdlnUserId = $request->mdln_user_id;
+
+        $mdlnUser = UserMdln::find($mdlnUserId);
+
+        if ($mdlnUser == null) {
+            return MyHelper::responseErrorWithData(
+                404,
+                404,
+                0,
+                "Pengguna Tidak Ditemukan",
+                "User Not Found on Ithub",
+                null);
+        }
+
+        $userLMS = User::where('mdln_username', $mdlnUserId)->first();
+
+        if ($userLMS == null) {
+            return MyHelper::responseErrorWithData(
+                200,
+                200,
+                0,
+                "Pengguna Tidak Ditemukan",
+                "User Not Found on Ithub",
+                null);
+        }
+
+        return MyHelper::responseSuccessWithData(
+            200,
+            200,
+            2,
+            "success",
+            "success",
+            $userLMS);
+    }
 
     public function classCategories(Request $request)
     {
@@ -20,7 +160,7 @@ class MobileHomeController extends Controller
             ->orWhere('deleted_at', '') // Assuming empty string represents empty value
             ->get();
 
-        $data =  DB::connection('ithub')->table('m_departments')->get();
+        $data = DB::connection('ithub')->table('m_departments')->get();
         $newData = [];
 
         foreach ($data as $item) {
@@ -80,7 +220,7 @@ class MobileHomeController extends Controller
             $numStudentsCount = $numStudents->count();
 
             $data->color = $color;
-            $data->full_img_path =   url("/").Storage::url('public/class/cover/') . $data->course_cover_image;
+            $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
             $data->num_students = $numStudentsCount;
         }
 
