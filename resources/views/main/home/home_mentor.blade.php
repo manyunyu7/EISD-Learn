@@ -71,7 +71,7 @@
             {
                 theme: "light2",
                 title:{
-                    text: "Gaming Consoles Sold in 2012"
+                    text: "Title of Pie Chart"
                 }, 
                 legend: {
                     horizontalAlign: "right", // Atur posisi horizontal legend ke kanan
@@ -86,12 +86,12 @@
                         yValueFormatString: "#,##0,,.## Million",
                         legendText: "{indexLabel}",
                         dataPoints: [
-                            { y: 4181563, indexLabel: "PlayStation 3", color: "#ff0000" }, // Merah
-                            { y: 2175498, indexLabel: "Wii", color: "#00ff00" }, // Hijau
-                            { y: 3125844, indexLabel: "Xbox 360", color: "#0000ff" }, // Biru
-                            { y: 1176121, indexLabel: "Nintendo DS", color: "#ffff00" }, // Kuning
-                            { y: 1727161, indexLabel: "PSP", color: "#ff00ff" }, // Magenta
-                            { y: 4303364, indexLabel: "Nintendo 3DS", color: "#00ffff" }, // Cyan
+                            { y: 4181563, indexLabel: "Human Resource", color: "#B63607" }, // Merah
+                            { y: 2175498, indexLabel: "Digital Management", color: "#E0460C" }, // Hijau
+                            { y: 3125844, indexLabel: "Finance & Accounting", color: "#FF7F00" }, // Biru
+                            { y: 1176121, indexLabel: "Digital Marketing", color: "#FFA500" }, // Kuning
+                            { y: 1727161, indexLabel: "Legal", color: "#FFD700" }, // Magenta
+                            { y: 4303364, indexLabel: "Project", color: "#E2D278" }, // Cyan
                         ]
                     }
                 ]

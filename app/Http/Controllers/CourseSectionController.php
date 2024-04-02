@@ -108,17 +108,25 @@ class CourseSectionController extends Controller
     }
 
     public function store_materials(Request $request, Lesson $lesson){
-        // $lesson_id = $lesson->id;
+        $lesson_id = $request->lessonId;
 
         $insert_to_CourseSection = new CourseSection();
 
+        $materials = $request->file('question_images');
+
+        if ($materials) {
+            // Upload new video
+            $materials->storeAs("public/class/$lesson_id/content/", $materials->hashName());
+        }
+        
         $insert_to_CourseSection->section_title = $request->title;
-        $insert_to_CourseSection->section_order = time();
-        $insert_to_CourseSection->section_video = '';
+        $insert_to_CourseSection->section_order = '';
+        $insert_to_CourseSection->section_video = $materials->hashName();
         $insert_to_CourseSection->section_content = $request->content;
         $insert_to_CourseSection->course_id = $request->lessonId;
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
         $insert_to_CourseSection->quiz_session_id = $request->is_examId;
+        $insert_to_CourseSection->embedded_file = $request->embeded_file;
         // dd($insert_to_CourseSection);
         $insert_to_CourseSection->save();
 
@@ -149,13 +157,21 @@ class CourseSectionController extends Controller
         $lesson_id = $request->lessonId;
         $update_to_CourseSection = CourseSection::findOrFail($section_id);
 
+        $materials = $request->file('question_images');
+
+        if ($materials) {
+            Storage::disk('local')->delete("public/class/$lesson_id/content/".$update_to_CourseSection->section_video);
+            // Upload new video
+            $materials->storeAs("public/class/$lesson_id/content/", $materials->hashName());
+            $update_to_CourseSection->section_video = $materials->hashName();
+        }
+
         $update_to_CourseSection->section_title = $request->update_title;
-        $update_to_CourseSection->section_order = time();
-        $update_to_CourseSection->section_video = '';
         $update_to_CourseSection->section_content = $request->update_content;
         $update_to_CourseSection->course_id = $request->lessonId;
         $update_to_CourseSection->can_be_accessed = $request->update_is_access;
         $update_to_CourseSection->quiz_session_id = $request->update_is_examId;
+        $update_to_CourseSection->embedded_file = $request->embeded_file;
         // dd($update_to_CourseSection);
         $update_to_CourseSection->save();
 

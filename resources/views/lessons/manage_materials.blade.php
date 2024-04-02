@@ -178,7 +178,7 @@
                             {{-- Deskripsi Kelas --}}
                             <div class="mb-3">
                                 <label for="" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
-                                <textarea  id="editor" class="form-control" name="content"></textarea>
+                                <textarea style="min-height: 500px"  id="editor" class="form-control" name="content"></textarea>
                                 <script>
                                     ClassicEditor
                                         .create( document.querySelector( '#editor' ) )
@@ -186,6 +186,12 @@
                                             console.error( error );
                                         } );
                                 </script>
+                            </div>
+
+                            {{-- Embedded File --}}
+                            <div class="mb-3">
+                                <label for="" class="mb-2">Embeded File<span style="color: red">*</span></label>
+                                <textarea  type='text'  class="form-control" name="embeded_file"></textarea>
                             </div>
                         </div>
                     </div>

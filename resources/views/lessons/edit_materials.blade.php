@@ -193,6 +193,11 @@
                                 </script>
                             </div>
                             
+                            {{-- Embedded File --}}
+                            <div class="mb-3">
+                                <label for="" class="mb-2">Embeded File<span style="color: red">*</span></label>
+                                <textarea  type='text'  class="form-control" name="embeded_file">{{ $data_course_section_to_edit->embedded_file }}</textarea>
+                            </div>
                         </div>
                     </div>
     
@@ -201,8 +206,8 @@
                         <div style="flex-grow: 1;"></div>
                         <div style="width: 200px;">
                             <div class="input-group mb-3">
-                                <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
-                                <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Save</button>
+                                {{-- <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button> --}}
+                                <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 45px;">Save</button>
                             </div>
                         </div>
                     </div>
