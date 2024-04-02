@@ -218,7 +218,13 @@
                                                 src="{{$sectionSpec->section_video}}">
                                         </video>
                                     @else
-                                        <h1>Unsupported file format</h1>
+                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                               width="100%"
+                                               class="video-mask" disablePictureInPicture
+                                               controlsList="nodownload">
+                                            <source
+                                                src="{{$sectionSpec->section_video}}">
+                                        </video>
                                     @endif
                                 @endif
                             </div>
