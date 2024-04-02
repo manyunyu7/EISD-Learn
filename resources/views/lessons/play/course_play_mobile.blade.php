@@ -56,9 +56,9 @@
 <body>
 <!-- Timer -->
 @if($isExam)
-<div id="floating-timer" class="timer-container">
-    <div id="timer" class="timer">00:00:00</div>
-</div>
+    <div id="floating-timer" class="timer-container">
+        <div id="timer" class="timer">00:00:00</div>
+    </div>
 @endif
 
 <div id="wrapper">
@@ -133,8 +133,10 @@
                             <div class="container-fluid">
                                 @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
 
-                                    <iframe id="pdfIframe" src="{{ url('/') }}/library/viewerjs/src/#{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}#page=1"
-                                           style="text-align:center;"  width="100%" height="550" allowfullscreen="" webkitallowfullscreen=""></iframe>
+                                    <iframe id="pdfIframe"
+                                            src="{{ url('/') }}/library/viewerjs/src/#{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}#page=1"
+                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                            webkitallowfullscreen=""></iframe>
                                     <!-- Add this single <script> tag to the body of your HTML document -->
 
                                     <script>
@@ -207,6 +209,14 @@
                                         <img
                                             src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
                                             alt="Image">
+                                    @elseif (Str::contains($sectionSpec->section_video, "https://streamable"))
+                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                               width="100%"
+                                               class="video-mask" disablePictureInPicture
+                                               controlsList="nodownload">
+                                            <source
+                                                src="{{$sectionSpec->section_video}}">
+                                        </video>
                                     @else
                                         <h1>Unsupported file format</h1>
                                     @endif
@@ -404,7 +414,7 @@
 
 <!-- Menu Toggle Script -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // $("#wrapper").toggleClass("toggled");
     });
     $("#menu-toggle").click(function (e) {

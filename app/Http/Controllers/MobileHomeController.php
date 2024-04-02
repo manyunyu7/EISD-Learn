@@ -213,21 +213,9 @@ class MobileHomeController extends Controller
                 $join->on('a.id', '=', 'cs.course_id')
                     ->whereRaw('cs.section_order = (select min(section_order) from course_section where course_id = a.id)');
             })
+            ->whereNull('a.deleted_at') // Filtering out deleted records
             ->groupBy('a.id', 'b.name', 'b.profile_url', 'cs.id')
             ->get();
-
-        foreach ($classes as $data) {
-            // Ambil warna kategori jika kategori ada dalam $lessonCategories
-            $color = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
-            $numStudents = DB::table('student_lesson')
-                ->where('lesson_id', $data->id)
-                ->get();
-            $numStudentsCount = $numStudents->count();
-
-            $data->color = $color;
-            $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
-            $data->num_students = $numStudentsCount;
-        }
 
         foreach ($classes as $data) {
             // Ambil warna kategori jika kategori ada dalam $lessonCategories
