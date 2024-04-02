@@ -122,8 +122,8 @@
 
 
                         @if($sectionDetail->embedded_file!="")
-                            <div class="container-fluid">
-                                <div style="width: 100%">
+                            <div class="container-fluid" style="margin-left: -20px; margin-right: -20px">
+                                <div style="width: 100%; min-height: 60vh !important; background-color: red">
                                     {!! $sectionDetail->embedded_file !!}
                                 </div>
                             </div>
@@ -218,13 +218,7 @@
                                                 src="{{$sectionSpec->section_video}}">
                                         </video>
                                     @else
-                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
-                                               width="100%"
-                                               class="video-mask" disablePictureInPicture
-                                               controlsList="nodownload">
-                                            <source
-                                                src="{{$sectionSpec->section_video}}">
-                                        </video>
+                                        <h1>Unsupported file format</h1>
                                     @endif
                                 @endif
                             </div>
