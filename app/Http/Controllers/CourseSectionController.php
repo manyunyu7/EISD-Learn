@@ -112,20 +112,22 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection = new CourseSection();
 
-        $materials = $request->file('question_images');
 
-        if ($materials) {
-            // Upload new video
-            $materials->storeAs("public/class/$lesson_id/content/", $materials->hashName());
-        }
+        $materials = $request->file('question_images');
 
         if($materials==null){
             return back()->with(['error' => 'Isi File Terlebih Dahulu']);
         }
 
+        if ($materials) {
+            // Upload new video
+            $materials->storeAs("public/class/content/$lesson_id/", $materials->hashName());
+
+            $insert_to_CourseSection->section_video = $materials->hashName();
+        }
+
         $insert_to_CourseSection->section_title = $request->title;
         $insert_to_CourseSection->section_order = '';
-        $insert_to_CourseSection->section_video = $materials->hashName();
         $insert_to_CourseSection->section_content = $request->content;
         $insert_to_CourseSection->course_id = $request->lessonId;
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
@@ -166,7 +168,7 @@ class CourseSectionController extends Controller
         if ($materials) {
             Storage::disk('local')->delete("public/class/$lesson_id/content/".$update_to_CourseSection->section_video);
             // Upload new video
-            $materials->storeAs("public/class/$lesson_id/content", $materials->hashName());
+            $materials->storeAs("public/class/content/$lesson_id/", $materials->hashName());
             $update_to_CourseSection->section_video = $materials->hashName();
         }
 
