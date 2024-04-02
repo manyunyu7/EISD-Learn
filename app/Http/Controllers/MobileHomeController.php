@@ -200,7 +200,8 @@ class MobileHomeController extends Controller
                 'b.profile_url',
                 DB::raw('COUNT(c.student_id) AS num_students_registered'),
                 DB::raw('COUNT(DISTINCT d.student_id) AS num_students'),
-                DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered')
+                DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered'),
+                DB::raw('CAST(cs.id AS CHAR) AS first_section')
             )
             ->leftJoin('users AS b', 'a.mentor_id', '=', 'b.id')
             ->leftJoin('student_lesson AS c', function ($join) use ($userID) {
@@ -208,7 +209,12 @@ class MobileHomeController extends Controller
                     ->where('c.student_id', '=', $userID);
             })
             ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id')
-            ->groupBy('a.id', 'b.name', 'b.profile_url')
+            ->join('course_section AS cs', function($join) {
+                $join->on('a.id', '=', 'cs.course_id')
+                    ->whereRaw('cs.section_order = (select min(section_order) from course_section where course_id = a.id)');
+            })
+            ->whereNull('a.deleted_at') // Filtering out deleted records
+            ->groupBy('a.id', 'b.name', 'b.profile_url', 'cs.id')
             ->get();
 
         foreach ($classes as $data) {

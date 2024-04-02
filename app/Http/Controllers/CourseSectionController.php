@@ -112,16 +112,25 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection = new CourseSection();
 
+
         $materials = $request->file('question_images');
+
+
 
         if ($materials) {
             // Upload new video
-            $materials->storeAs("public/class/$lesson_id/content/", $materials->hashName());
+            if($materials!=null){
+                $materials->storeAs("public/class/content/$lesson_id/", $materials->hashName());
+                $insert_to_CourseSection->section_video = $materials->hashName();
+            }else{
+                $insert_to_CourseSection->section_video = "";
+            }
+        }else{
+            $insert_to_CourseSection->section_video = "";
         }
-        
+
         $insert_to_CourseSection->section_title = $request->title;
         $insert_to_CourseSection->section_order = '';
-        $insert_to_CourseSection->section_video = $materials->hashName();
         $insert_to_CourseSection->section_content = $request->content;
         $insert_to_CourseSection->course_id = $request->lessonId;
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
@@ -146,8 +155,8 @@ class CourseSectionController extends Controller
                                     ->orWhere('is_deleted', '<>', 'y');
                             })
                         ->get();
-        
-        $data_course_section_to_edit = CourseSection::findOrFail($section_id);   
+
+        $data_course_section_to_edit = CourseSection::findOrFail($section_id);
         $compact = compact('lesson_id', 'examSessions', 'section_id', 'data_course_section_to_edit');
         return view('lessons.edit_materials', $compact);
     }
@@ -162,7 +171,7 @@ class CourseSectionController extends Controller
         if ($materials) {
             Storage::disk('local')->delete("public/class/$lesson_id/content/".$update_to_CourseSection->section_video);
             // Upload new video
-            $materials->storeAs("public/class/$lesson_id/content/", $materials->hashName());
+            $materials->storeAs("public/class/content/$lesson_id/", $materials->hashName());
             $update_to_CourseSection->section_video = $materials->hashName();
         }
 
@@ -189,7 +198,7 @@ class CourseSectionController extends Controller
         CourseSection::where('id', $sectionId)->where('course_id', $lessonId)->delete();
         return back()->with(['success' => 'Materials Deleted Successfully']);
     }
-    
+
     public function rearrange_materials(Request $request, Lesson $lesson, $lesson_id){
         $dayta = DB::table('course_section as c')
             ->select(
