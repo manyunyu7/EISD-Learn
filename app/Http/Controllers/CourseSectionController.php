@@ -118,7 +118,11 @@ class CourseSectionController extends Controller
             // Upload new video
             $materials->storeAs("public/class/$lesson_id/content/", $materials->hashName());
         }
-        
+
+        if($materials==null){
+            return back()->with(['error' => 'Isi File Terlebih Dahulu']);
+        }
+
         $insert_to_CourseSection->section_title = $request->title;
         $insert_to_CourseSection->section_order = '';
         $insert_to_CourseSection->section_video = $materials->hashName();
@@ -146,8 +150,8 @@ class CourseSectionController extends Controller
                                     ->orWhere('is_deleted', '<>', 'y');
                             })
                         ->get();
-        
-        $data_course_section_to_edit = CourseSection::findOrFail($section_id);   
+
+        $data_course_section_to_edit = CourseSection::findOrFail($section_id);
         $compact = compact('lesson_id', 'examSessions', 'section_id', 'data_course_section_to_edit');
         return view('lessons.edit_materials', $compact);
     }
@@ -189,7 +193,7 @@ class CourseSectionController extends Controller
         CourseSection::where('id', $sectionId)->where('course_id', $lessonId)->delete();
         return back()->with(['success' => 'Materials Deleted Successfully']);
     }
-    
+
     public function rearrange_materials(Request $request, Lesson $lesson, $lesson_id){
         $dayta = DB::table('course_section as c')
             ->select(
