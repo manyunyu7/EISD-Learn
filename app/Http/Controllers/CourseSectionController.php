@@ -166,7 +166,7 @@ class CourseSectionController extends Controller
         if ($materials) {
             Storage::disk('local')->delete("public/class/$lesson_id/content/".$update_to_CourseSection->section_video);
             // Upload new video
-            $materials->storeAs("public/class/$lesson_id/content/", $materials->hashName());
+            $materials->storeAs("public/class/$lesson_id/content", $materials->hashName());
             $update_to_CourseSection->section_video = $materials->hashName();
         }
 
