@@ -125,6 +125,8 @@ class CourseSectionController extends Controller
             }else{
                 $insert_to_CourseSection->section_video = "";
             }
+        }else{
+            $insert_to_CourseSection->section_video = "";
         }
 
         $insert_to_CourseSection->section_title = $request->title;
