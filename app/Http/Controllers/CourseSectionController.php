@@ -115,15 +115,16 @@ class CourseSectionController extends Controller
 
         $materials = $request->file('question_images');
 
-        if($materials==null){
-            return back()->with(['error' => 'Isi File Terlebih Dahulu']);
-        }
+
 
         if ($materials) {
             // Upload new video
-            $materials->storeAs("public/class/content/$lesson_id/", $materials->hashName());
-
-            $insert_to_CourseSection->section_video = $materials->hashName();
+            if($materials!=null){
+                $materials->storeAs("public/class/content/$lesson_id/", $materials->hashName());
+                $insert_to_CourseSection->section_video = $materials->hashName();
+            }else{
+                $insert_to_CourseSection->section_video = "";
+            }
         }
 
         $insert_to_CourseSection->section_title = $request->title;
