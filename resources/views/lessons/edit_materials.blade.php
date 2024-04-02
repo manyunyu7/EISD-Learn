@@ -130,9 +130,9 @@
                 <form id="addSessionForm" action="{{ url('/update-material/'. $lesson_id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
-                    <div class="row">  
+                    <div class="row">
                         <div class="col-md-12">
-                            
+
                             <input hidden name="lessonId" type="text" value="{{ $lesson_id }}">
                             <input hidden name="sectionId" type="text" value="{{ $section_id }}">
                             {{-- Judul Kelas --}}
@@ -142,7 +142,7 @@
                                     <input required name="update_title" value="{{ $data_course_section_to_edit->section_title }}" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                                 </div>
                             </div>
-                            
+
                             {{-- Akses Konten --}}
                             <div class="row">
                                 <div class="col-sm-12 col-md-6 col-lg-6 mb-3">
@@ -167,7 +167,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {{-- Upload File --}}
                             <div class="mb-3">
                                 <label for="" class="mb-2">Upload File<span style="color: red">*</span></label>
@@ -192,15 +192,25 @@
                                         } );
                                 </script>
                             </div>
-                            
+
                             {{-- Embedded File --}}
                             <div class="mb-3">
-                                <label for="" class="mb-2">Embeded File<span style="color: red">*</span></label>
-                                <textarea  type='text'  class="form-control" name="embeded_file">{{ $data_course_section_to_edit->embedded_file }}</textarea>
+                                <label for="" class="mb-2">Embeded File<span style="color: red"></span></label>
+                                <textarea style="min-height:100px;height:100%;width:100%;border:1px solid;" type='text'  class="form-control" name="embeded_file">{{ $data_course_section_to_edit->embedded_file }}</textarea>
                             </div>
+
+                            @if($data_course_section_to_edit->embedded_file!="")
+                                <div class="container-fluid">
+                                    <div style="width: 100%;">
+                                        {!! $data_course_section_to_edit->embedded_file !!}
+                                    </div>
+                                </div>
+                            @endif
+
+
                         </div>
                     </div>
-    
+
                     {{-- BUTTONS --}}
                     <div class="mb-3" style="display: flex; justify-content: flex-end;">
                         <div style="flex-grow: 1;"></div>
