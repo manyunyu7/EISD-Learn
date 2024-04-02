@@ -54,4 +54,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = [
+        'full_img_path',
+    ];
+
+    // Define an accessor method for full_img_path attribute
+    public function getFullImgPathAttribute()
+    {
+        // Assuming you have a column named 'img_filename' that stores the image filename
+        // You can modify this to generate the full image path as per your requirement
+        return asset('storage/profile/' . $this->profile_url);
+    }
 }
