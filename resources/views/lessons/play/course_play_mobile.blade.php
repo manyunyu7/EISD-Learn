@@ -123,7 +123,7 @@
 
                         @if($sectionDetail->embedded_file!="")
                             <div class="container-fluid" style="margin-left: -20px; margin-right: -20px">
-                                <div style="width: 100%; min-height: 60vh !important; background-color: red">
+                                <div style="width: 100%;>
                                     {!! $sectionDetail->embedded_file !!}
                                 </div>
                             </div>
