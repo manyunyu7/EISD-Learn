@@ -320,7 +320,7 @@
                     <h1><strong>Dashboard</strong></h1>
                 </div>
     
-                    {{-- Enrolled Course --}}
+                    {{-- Total Class--}}
                     <div class="col-sm-6 col-md-6">
                         <div class="card card-stats card-round" style="background-color: #FFEEE8">
                             <div class="card-body">
@@ -332,8 +332,8 @@
                                     </div>
                                     <div class="col col-stats ml-3 ml-sm-0">
                                         <div class="numbers">
-                                            <h4 class="card-title">$ 1,345</h4>
-                                            <p class="card-category">Enrolled Course</p>
+                                            <h4 class="card-title">{{ $classRegisteredCount }}</h4>
+                                            <p class="card-category">Total Class</p>
                                         </div>
                                     </div>
                                 </div>
@@ -341,7 +341,7 @@
                         </div>
                     </div>
     
-                    {{-- Active Course --}}
+                    {{-- Total Students --}}
                     <div class="col-sm-6 col-md-6">
                         <div class="card card-stats card-round" style="background-color: #EBEBFF">
                             <div class="card-body">
@@ -353,8 +353,8 @@
                                     </div>
                                     <div class="col col-stats ml-3 ml-sm-0">
                                         <div class="numbers">
-                                            <h4 class="card-title">$ 1,345</h4>
-                                            <p class="card-category">Active Course</p>
+                                            <h4 class="card-title">{{ $studentCount }}</h4>
+                                            <p class="card-category">Total Students</p>
                                         </div>
                                     </div>
                                 </div>
@@ -362,7 +362,7 @@
                         </div>
                     </div>
     
-                    {{-- Sum of Students --}}
+                    {{-- On Progress Course --}}
                     <div class="col-sm-6 col-md-6">
                         <div class="card card-stats card-round" style="background-color: #E1F7E3">
                             <div class="card-body">
@@ -375,7 +375,7 @@
                                     <div class="col col-stats ml-3 ml-sm-0">
                                         <div class="numbers">
                                             <h4 class="card-title">$ 1,345</h4>
-                                            <p class="card-category">Completed Course</p>
+                                            <p class="card-category">On Progress Course</p>
                                         </div>
                                     </div>
                                 </div>
