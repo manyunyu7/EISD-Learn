@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\CourseSection;
+use App\Models\Lesson;
+use StudentLesson;
 
 class HomeController extends Controller
 {
@@ -97,9 +100,31 @@ class HomeController extends Controller
                 ->where('mentor_name', $user_name)
                 ->count();
 
+            // Formula Progress Course---------------------------
+
+            // Total Course Yang Telah dikerjakan
+
+
+            
+            // Total Keseluruhan Course Dalam Masing-masing Kelas
+            $totalCourseCounts = CourseSection::select(
+                                    'course_section.course_id',
+                                    DB::raw('COUNT(DISTINCT student_lesson.student_id) AS total_students'),
+                                    DB::raw('COUNT(course_section.id) AS total_sections')
+                                )
+                                ->leftJoin('student_lesson', 'course_section.id', '=', 'student_lesson.lesson_id')
+                                ->groupBy('course_section.course_id')
+                                ->get();
+
+                        
             // $myStudent = DB::table('view_student_lesson')
             //   ->where('mentor_id', $user_id)
             //   ->get();
+            return $totalCourseCounts;
+
+
+
+
 
             $myStudent = DB::select("select * from view_student_lesson where mentor_name = '$user_name' ");
 
