@@ -49,6 +49,72 @@
             color: black; /* You can adjust the text color as needed */
         }
 
+
+        /* CSS Loader */
+        /* HTML: <div class="loader"></div> */
+        .loader {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            color: #FC3A51;
+            --c: #0000 calc(100% - 20px), currentColor calc(100% - 19px) 98%, #0000;
+            background: radial-gradient(farthest-side at left, var(--c)) right /50% 100%,
+            radial-gradient(farthest-side at top, var(--c)) bottom/100% 50%;
+            background-repeat: no-repeat;
+            animation: l18-0 2s infinite linear .25s;
+        }
+
+        .loader::before {
+            content: "";
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(farthest-side at bottom right, var(--c));
+            animation: l18-1 .5s infinite linear;
+        }
+
+        @keyframes l18-0 {
+            0%, 12.49% {
+                transform: rotate(0deg)
+            }
+            12.5%, 37.49% {
+                transform: rotate(90deg)
+            }
+            37.5%, 62.49% {
+                transform: rotate(180deg)
+            }
+            62.5%, 87.49% {
+                transform: rotate(270deg)
+            }
+            87.5%, 100% {
+                transform: rotate(360deg)
+            }
+        }
+
+        @keyframes l18-1 {
+            0% {
+                transform: perspective(150px) rotateY(0) rotate(0)
+            }
+            50% {
+                transform: perspective(150px) rotateY(180deg) rotate(0)
+            }
+            80%, 100% {
+                transform: perspective(150px) rotateY(180deg) rotate(90deg)
+            }
+        }
+
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white background */
+            z-index: 9999; /* ensure the loader is on top of other content */
+        }
+
     </style>
 
 </head>
@@ -62,7 +128,6 @@
 @endif
 
 <div id="wrapper">
-
     <div class="small-hamburger" style="margin-top:6px; margin-right: 30px; margin-left: 20px">
         <a href="#menu-toggle" id="menu-toggle-small">
             <img src="{{asset('lesson_template/img/')}}/hamburger_button.svg" alt="Toggle Menu"
@@ -96,10 +161,12 @@
         </div>
     </div>
 
+    <div class="loader-container" style="display: none">
+        <div class="loader"></div>
+    </div>
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
-
 
         @if($isExam)
             @include('lessons.play.student_exam_section_mobile')
@@ -139,6 +206,25 @@
                                             webkitallowfullscreen=""></iframe>
                                     <!-- Add this single <script> tag to the body of your HTML document -->
 
+
+                                    <script>
+                                        // Function to start the loading animation
+                                        function startLoading() {
+                                            document.querySelector('.loader-container').style.display = 'flex';
+                                        }
+
+                                        // Function to stop the loading animation
+                                        function stopLoading() {
+                                            document.querySelector('.loader-container').style.display = 'none';
+                                        }
+
+                                        // Simulating page loading
+                                        window.addEventListener('load', function () {
+                                            // When the window finishes loading, stop the loading animation
+                                            stopLoading();
+                                        });
+
+                                    </script>
                                     <script>
                                         // Listen for a message from the iframe
                                         window.addEventListener('message', function (event) {
@@ -226,6 +312,8 @@
 
                         <script>
                             function nextCuy() {
+                                var loaderContainer = document.querySelector('.loader-container');
+                                loaderContainer.style.display = 'flex'; // or 'flex' if it's a flex container
                                 var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
                                 window.location.href = nextUrl;
                                 return;
@@ -351,6 +439,7 @@
                                 @endphp
 
                                 <a href="{{ url('/') . "/mobile/course/$item->lesson_id/section/$item->section_id" }}"
+                                   class="loader-link"
                                    style="text-decoration: none; color: inherit;">
                                     {{-- Check if the item is marked as taken --}}
                                     @if ($item->isTaken)
@@ -374,6 +463,19 @@
                                 </a>
                             @endif
                         </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var loaderLinks = document.querySelectorAll('.loader-link');
+                                loaderLinks.forEach(function(link) {
+                                    link.addEventListener('click', function(event) {
+                                        event.preventDefault();
+                                        document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                        window.location.href = event.currentTarget.href;
+                                    });
+                                });
+                            });
+                        </script>
 
                         <!-- Third Section -->
                         <div style="flex-shrink: 1; margin-left: 20px">
