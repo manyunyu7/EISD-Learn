@@ -10,7 +10,7 @@ use DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\CourseSection;
 use App\Models\Lesson;
-use StudentLesson;
+use App\Models\StudentLesson;
 
 class HomeController extends Controller
 {
@@ -107,20 +107,61 @@ class HomeController extends Controller
 
             
             // Total Keseluruhan Course Dalam Masing-masing Kelas
-            $totalCourseCounts = CourseSection::select(
-                                    'course_section.course_id',
-                                    DB::raw('COUNT(DISTINCT student_lesson.student_id) AS total_students'),
-                                    DB::raw('COUNT(course_section.id) AS total_sections')
-                                )
-                                ->leftJoin('student_lesson', 'course_section.id', '=', 'student_lesson.lesson_id')
-                                ->groupBy('course_section.course_id')
-                                ->get();
+            // $totalCourseCounts = CourseSection::select(
+            //                         'course_section.course_id',
+            //                         DB::raw('COUNT(student_lesson.lesson_id) AS total_students'),
+            //                         DB::raw('COUNT(course_section.id) AS total_sections')
+            //                     )
+            //                     ->leftJoin('student_lesson', 'course_section.id', '=', 'student_lesson.lesson_id')
+            //                     ->groupBy('course_section.course_id')
+            //                     ->get();
 
-                        
-            // $myStudent = DB::table('view_student_lesson')
-            //   ->where('mentor_id', $user_id)
-            //   ->get();
-            return $totalCourseCounts;
+           // Query untuk mendapatkan jumlah siswa yang telah menyelesaikan pelajaran
+            $completedStudentsCount = DB::table('student_section as ss')
+            ->join(DB::raw('(
+                    SELECT
+                        ss.student_id,
+                        COUNT(DISTINCT cs.id) AS completed_sections,
+                        (
+                            SELECT COUNT(id)             
+                            FROM course_section
+                            WHERE course_id = cs.course_id
+                        ) AS total_sections
+                    FROM
+                        student_section ss
+                    JOIN
+                        course_section cs ON ss.section_id = cs.id
+                    GROUP BY
+                        ss.student_id, cs.course_id
+                ) as counts'), 'ss.student_id', '=', 'counts.student_id')
+            ->selectRaw('COUNT(DISTINCT counts.student_id) AS completed_students')
+            ->whereRaw('counts.completed_sections = counts.total_sections')
+            ->get();
+
+            // Query untuk mendapatkan jumlah siswa yang belum menyelesaikan pelajaran
+            $incompleteStudentsCount = DB::table('student_section as ss')
+            ->join(DB::raw('(
+                    SELECT
+                        ss.student_id,
+                        COUNT(DISTINCT cs.id) AS completed_sections,
+                        (
+                            SELECT COUNT(id)
+                            FROM course_section
+                            WHERE course_id = cs.course_id
+                        ) AS total_sections
+                    FROM
+                        student_section ss
+                    JOIN
+                        course_section cs ON ss.section_id = cs.id
+                    GROUP BY
+                        ss.student_id, cs.course_id
+                ) as counts'), 'ss.student_id', '=', 'counts.student_id')
+            ->selectRaw('COUNT(DISTINCT ss.student_id) AS incomplete_students')
+            ->whereRaw('counts.completed_sections < counts.total_sections')
+            ->first()->incomplete_students;   
+
+            // return $totalCourseCounts;
+            return $completedStudentsCount;
 
 
 
