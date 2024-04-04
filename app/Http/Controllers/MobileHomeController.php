@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
+use App\Models\CourseSection;
+use App\Models\Lesson;
 use App\Models\LessonCategory;
+use App\Models\StudentLesson;
+use App\Models\StudentSection;
 use App\Models\User;
 use App\Models\UserMdln;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,15 +20,71 @@ use Illuminate\Support\Facades\Storage;
 class MobileHomeController extends Controller
 {
 
-    public function claimAccount(Request $request){
+    public function registerClass(Request $request)
+    {
+        try {
+            $user_id = $request->lms_user_id;
+
+            $coursePassword = Lesson::findOrFail($request->course_id)->pin;
+
+            if ($request->password != $coursePassword) {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Password Kelas Salah",
+                    "Password Kelas Salah",
+                    null
+                );
+            }
+
+            $registerLesson = StudentLesson::create([
+                'student_id' => $user_id,
+                'lesson_id' => $request->course_id,
+                'learn_status' => 0,
+                'certificate_file' => "",
+                'student-lesson' => "$user_id-$request->course_id",
+            ]);
+
+            if ($registerLesson) {
+                return MyHelper::responseSuccessWithData(
+                    200,
+                    200,
+                    2,
+                    "Berhasil Mendaftar Kelas!",
+                    "Berhasil Mendaftar Kelas!",
+                    $registerLesson
+                );
+            } else {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Gagal Mendaftar Kelas",
+                    "Gagal Mendaftar Kelas",
+                    null
+                );
+            }
+        } catch (QueryException $e) {
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                0,
+                "Anda Sudah Mendaftar di Kelas Ini $e",
+                "Anda Sudah Mendaftar di Kelas Ini",
+                null
+            );
+        }
+    }
+
+    public function claimAccount(Request $request)
+    {
         // Validating the incoming request data
 //        $request->validate([
 //            'target_account_id' => 'required|exists:users,id',
 //            'mdln_user_id' => 'required',
 //            'password' => 'required',
 //        ]);
-
-
 
         // Extracting data from the validated request
         $accountId = $request->target_account_id;
@@ -35,7 +96,7 @@ class MobileHomeController extends Controller
         $account = User::find($accountId);
 
 
-        if ($mdlnUser==null){
+        if ($mdlnUser == null) {
             return MyHelper::responseErrorWithData(
                 404,
                 404,
@@ -46,7 +107,7 @@ class MobileHomeController extends Controller
             );
         }
 
-        if ($account==null){
+        if ($account == null) {
             return MyHelper::responseErrorWithData(
                 404,
                 404,
@@ -58,7 +119,7 @@ class MobileHomeController extends Controller
         }
 
         // Check if the password is correct
-        if($this->checkPassword($account, $password)) {
+        if ($this->checkPassword($account, $password)) {
             // Password is correct, proceed with claiming the account
             $account->mdln_username = $mdlnUserId;
             $account->save();
@@ -85,7 +146,8 @@ class MobileHomeController extends Controller
         }
     }
 
-    private function checkPassword(User $user, $password) {
+    private function checkPassword(User $user, $password)
+    {
         return Hash::check($password, $user->password);
     }
 
@@ -96,7 +158,7 @@ class MobileHomeController extends Controller
         $query = User::whereNull("mdln_username")
             ->orWhere("mdln_username", "")
             ->where('role', '!=', "mentor") // Exclude users with role = 1
-            ->select('id', 'name','profile_url','email');
+            ->select('id', 'name', 'profile_url', 'email');
 
         // If a name is provided, add a search condition
         if ($name) {
@@ -188,10 +250,10 @@ class MobileHomeController extends Controller
             $newData);
     }
 
-
     public function classList(Request $request)
     {
-        $userID = Auth::id();
+        $userID = $request->lms_user_id;
+        $isMyClass = $request->isMyClass;
 
         $classes = DB::table('lessons AS a')
             ->select(
@@ -200,8 +262,7 @@ class MobileHomeController extends Controller
                 'b.profile_url',
                 DB::raw('COUNT(c.student_id) AS num_students_registered'),
                 DB::raw('COUNT(DISTINCT d.student_id) AS num_students'),
-                DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered'),
-                DB::raw('CAST(cs.id AS CHAR) AS first_section')
+                DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered')
             )
             ->leftJoin('users AS b', 'a.mentor_id', '=', 'b.id')
             ->leftJoin('student_lesson AS c', function ($join) use ($userID) {
@@ -209,27 +270,28 @@ class MobileHomeController extends Controller
                     ->where('c.student_id', '=', $userID);
             })
             ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id')
-            ->join('course_section AS cs', function($join) {
-                $join->on('a.id', '=', 'cs.course_id')
-                    ->whereRaw('cs.section_order = (select min(section_order) from course_section where course_id = a.id)');
-            })
             ->whereNull('a.deleted_at') // Filtering out deleted records
-            ->groupBy('a.id', 'b.name', 'b.profile_url', 'cs.id')
-            ->get();
+            ->groupBy('a.id', 'b.name', 'b.profile_url')->get();
+
 
         foreach ($classes as $data) {
             // Ambil warna kategori jika kategori ada dalam $lessonCategories
             $color = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
-            $numStudents = DB::table('student_lesson')
-                ->where('lesson_id', $data->id)
-                ->get();
-            $numStudentsCount = $numStudents->count();
-
-            $data->color = $color;
             $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
-            $data->num_students = $numStudentsCount;
         }
 
+        $shownClass = [];
+
+        foreach ($classes as $data) {
+            if ($isMyClass == "true") {
+                $checkCount = StudentLesson::where("student_id", '=', $userID)->where("lesson_id", "=", $data->id)->count();
+                if ($checkCount > 0) {
+                    array_push($shownClass, $data);
+                }
+            } else {
+                array_push($shownClass, $data);
+            }
+        }
 
         return MyHelper::responseSuccessWithData(
             200,
@@ -237,6 +299,6 @@ class MobileHomeController extends Controller
             2,
             "success",
             "success",
-            $classes);
+            $shownClass);
     }
 }

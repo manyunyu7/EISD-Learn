@@ -28,6 +28,8 @@ Route::any('/close-ticket', [MobileUploaderController::class, 'closeTicket']);
 Route::get("/check-integration", [MobileHomeController::class, 'checkIfAccountConnected']);
 Route::get("/search-unclaimed-account", [MobileHomeController::class, 'searchUnclaimedAccount']);
 Route::any("/claim-account", [MobileHomeController::class, 'claimAccount']);
+Route::any("/register-class", [MobileHomeController::class, 'registerClass']);
+Route::any("/coba", [MobileHomeController::class, 'completedStudent']);
 
 
 Route::get("/class-list", [MobileHomeController::class, 'classList']);
