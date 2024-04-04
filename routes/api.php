@@ -34,3 +34,4 @@ Route::any("/coba", [MobileHomeController::class, 'completedStudent']);
 
 Route::get("/class-list", [MobileHomeController::class, 'classList']);
 Route::get("/class-categories", [MobileHomeController::class, 'classCategories']);
+Route::get("/class/{id}/detail", [MobileHomeController::class, 'classDetail']);

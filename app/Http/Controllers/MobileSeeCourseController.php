@@ -165,11 +165,10 @@ class MobileSeeCourseController extends Controller
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
             ->where('course_section.course_id', $lessonId)
-            ->orderBy('course_section.section_order', 'ASC')
+            ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
 
-        $section_spec = DB::select("select * from view_course_section where section_id = '$sectionId' ");
         $sectionDetail = CourseSection::findOrFail($sectionId);
         // Iterate over the sections and check if each one is already added to the student-section
         foreach ($sections as $key => $section) {
@@ -310,7 +309,7 @@ class MobileSeeCourseController extends Controller
             'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
             'sectionDetail', 'sections', 'questions',
             'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
-            'sectionOrder', 'lesson', 'section', 'section_spec', 'isRegistered', 'classInfo');
+            'sectionOrder', 'lesson', 'section', 'isRegistered', 'classInfo');
 
 
         if ($request->dump == true) {

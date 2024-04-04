@@ -177,200 +177,197 @@
                 <div class="main-content-container container-fluid px-4 mt-5">
 
                     {{-- @include('blog.breadcumb') --}}
-                    @forelse ($section_spec as $index => $sectionSpec)
-                        <!-- Page Header -->
-                        <div class="page-header row no-gutters mb-4">
-                            <div class="col-12 col-sm-12 text-center text-sm-left mb-0">
-                                <h2 class="text-uppercase">Kelas {{ $lesson->course_title }} </h2>
-                                <h3 class="page-title">Materi Ke : {{ $sectionSpec->section_order }}</h3>
-                                <h4 class="page-title">{{ $sectionSpec->section_title }}</h4>
+                    <!-- Page Header -->
+                    <div class="page-header row no-gutters mb-4">
+                        <div class="col-12 col-sm-12 text-center text-sm-left mb-0">
+                            <h2 class="text-uppercase">Kelas {{ $lesson->course_title }} </h2>
+                            <h3 class="page-title">Materi Ke : {{ $sectionDetail->section_order }}</h3>
+                            <h4 class="page-title">{{ $sectionDetail->section_title }}</h4>
+                        </div>
+                    </div>
+
+
+                    @if($sectionDetail->embedded_file!="")
+                        <div class="container-fluid" style="margin-left: -20px; margin-right: -20px">
+                            <div style="width: 100%;">
+                                {!! $sectionDetail->embedded_file !!}
                             </div>
                         </div>
+                    @endif
+
+                    @if($sectionDetail->embedded_file=="" || $sectionDetail->embedded_file==null)
+                        <div class="container-fluid">
+                            @if(Str::contains(Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
+
+                                <iframe id="pdfIframe"
+                                        src="{{ url('/') }}/library/viewerjs/src/#{{ Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
+                                        style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                        webkitallowfullscreen=""></iframe>
+                                <!-- Add this single <script> tag to the body of your HTML document -->
 
 
-                        @if($sectionDetail->embedded_file!="")
-                            <div class="container-fluid" style="margin-left: -20px; margin-right: -20px">
-                                <div style="width: 100%;">
-                                    {!! $sectionDetail->embedded_file !!}
-                                </div>
-                            </div>
-                        @endif
+                                <script>
+                                    // Function to start the loading animation
+                                    function startLoading() {
+                                        document.querySelector('.loader-container').style.display = 'flex';
+                                    }
 
-                        @if($sectionDetail->embedded_file=="" || $sectionDetail->embedded_file==null)
-                            <div class="container-fluid">
-                                @if(Str::contains(Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video),'pdf'))
+                                    // Function to stop the loading animation
+                                    function stopLoading() {
+                                        document.querySelector('.loader-container').style.display = 'none';
+                                    }
 
-                                    <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}#page=1"
-                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
-                                            webkitallowfullscreen=""></iframe>
-                                    <!-- Add this single <script> tag to the body of your HTML document -->
+                                    // Simulating page loading
+                                    window.addEventListener('load', function () {
+                                        // When the window finishes loading, stop the loading animation
+                                        stopLoading();
+                                    });
 
+                                </script>
+                                <script>
+                                    // Listen for a message from the iframe
+                                    window.addEventListener('message', function (event) {
+                                        if (event.data === 'iframeLoaded') {
+                                            startTracking();
+                                        }
+                                    });
 
-                                    <script>
-                                        // Function to start the loading animation
-                                        function startLoading() {
-                                            document.querySelector('.loader-container').style.display = 'flex';
+                                    function startTracking() {
+                                        console.log('Tracking started.');
+
+                                        function getCurrentPage() {
+                                            var iframe = document.getElementById('pdfIframe');
+                                            var currentPage = iframe.contentWindow.document.querySelector('.toolbarField.pageNumber').value;
+                                            return parseInt(currentPage, 10);
                                         }
 
-                                        // Function to stop the loading animation
-                                        function stopLoading() {
-                                            document.querySelector('.loader-container').style.display = 'none';
+                                        function getTotalPages() {
+                                            var iframe = document.getElementById('pdfIframe');
+                                            var totalPages = iframe.contentWindow.document.querySelector('.toolbarLabel').textContent;
+                                            var match = totalPages.match(/of (\d+)/);
+                                            if (match && match[1]) {
+                                                return parseInt(match[1], 10);
+                                            }
+                                            return 0;
                                         }
 
-                                        // Simulating page loading
-                                        window.addEventListener('load', function () {
-                                            // When the window finishes loading, stop the loading animation
-                                            stopLoading();
-                                        });
+                                        function calculatePercentageCompletion() {
+                                            var currentPage = getCurrentPage();
+                                            var totalPages = getTotalPages();
 
-                                    </script>
-                                    <script>
-                                        // Listen for a message from the iframe
-                                        window.addEventListener('message', function (event) {
-                                            if (event.data === 'iframeLoaded') {
-                                                startTracking();
-                                            }
-                                        });
-
-                                        function startTracking() {
-                                            console.log('Tracking started.');
-
-                                            function getCurrentPage() {
-                                                var iframe = document.getElementById('pdfIframe');
-                                                var currentPage = iframe.contentWindow.document.querySelector('.toolbarField.pageNumber').value;
-                                                return parseInt(currentPage, 10);
-                                            }
-
-                                            function getTotalPages() {
-                                                var iframe = document.getElementById('pdfIframe');
-                                                var totalPages = iframe.contentWindow.document.querySelector('.toolbarLabel').textContent;
-                                                var match = totalPages.match(/of (\d+)/);
-                                                if (match && match[1]) {
-                                                    return parseInt(match[1], 10);
-                                                }
+                                            if (totalPages === 0) {
                                                 return 0;
                                             }
 
-                                            function calculatePercentageCompletion() {
-                                                var currentPage = getCurrentPage();
-                                                var totalPages = getTotalPages();
-
-                                                if (totalPages === 0) {
-                                                    return 0;
-                                                }
-
-                                                return (currentPage / totalPages) * 100;
-                                            }
-
-                                            function updatePageInfo() {
-                                                var currentPage = getCurrentPage();
-                                                var totalPages = getTotalPages();
-                                                var percentageCompletion = calculatePercentageCompletion();
-
-                                                console.log('Current Page:', currentPage);
-                                                console.log('Total Pages:', totalPages);
-                                                console.log('Percentage Completion:', percentageCompletion + '%');
-                                            }
-
-                                            setInterval(updatePageInfo, 1000);
+                                            return (currentPage / totalPages) * 100;
                                         }
-                                    </script>
+
+                                        function updatePageInfo() {
+                                            var currentPage = getCurrentPage();
+                                            var totalPages = getTotalPages();
+                                            var percentageCompletion = calculatePercentageCompletion();
+
+                                            console.log('Current Page:', currentPage);
+                                            console.log('Total Pages:', totalPages);
+                                            console.log('Percentage Completion:', percentageCompletion + '%');
+                                        }
+
+                                        setInterval(updatePageInfo, 1000);
+                                    }
+                                </script>
+                            @else
+                                @php
+                                    $videoFormats = ['mp4', 'webm', 'ogg']; // Add more video formats as needed
+                                    $imageFormats = ['jpg', 'jpeg', 'png', 'gif']; // Add more image formats as needed
+                                    $fileExtension = pathinfo($sectionDetail->section_video, PATHINFO_EXTENSION);
+                                @endphp
+
+                                @if (in_array($fileExtension, $videoFormats))
+                                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                           width="100%"
+                                           class="video-mask" disablePictureInPicture
+                                           controlsList="nodownload">
+                                        <source
+                                            src="{{ Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}">
+                                    </video>
+                                @elseif (in_array($fileExtension, $imageFormats))
+                                    <img
+                                        src="{{ Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}"
+                                        alt="Image">
+                                @elseif (Str::contains($sectionDetail->section_video, "https://streamable"))
+                                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                           width="100%"
+                                           class="video-mask" disablePictureInPicture
+                                           controlsList="nodownload">
+                                        <source
+                                            src="{{$sectionDetail->section_video}}">
+                                    </video>
                                 @else
-                                    @php
-                                        $videoFormats = ['mp4', 'webm', 'ogg']; // Add more video formats as needed
-                                        $imageFormats = ['jpg', 'jpeg', 'png', 'gif']; // Add more image formats as needed
-                                        $fileExtension = pathinfo($sectionSpec->section_video, PATHINFO_EXTENSION);
-                                    @endphp
-
-                                    @if (in_array($fileExtension, $videoFormats))
-                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
-                                               width="100%"
-                                               class="video-mask" disablePictureInPicture
-                                               controlsList="nodownload">
-                                            <source
-                                                src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}">
-                                        </video>
-                                    @elseif (in_array($fileExtension, $imageFormats))
-                                        <img
-                                            src="{{ Storage::url('public/class/content/' . $sectionSpec->lesson_id . '/' . $sectionSpec->section_video) }}"
-                                            alt="Image">
-                                    @elseif (Str::contains($sectionSpec->section_video, "https://streamable"))
-                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
-                                               width="100%"
-                                               class="video-mask" disablePictureInPicture
-                                               controlsList="nodownload">
-                                            <source
-                                                src="{{$sectionSpec->section_video}}">
-                                        </video>
-                                    @else
-                                        <h1>Unsupported file format</h1>
-                                    @endif
+                                    <h1>Unsupported file format</h1>
                                 @endif
-                            </div>
-                        @endif
+                            @endif
+                        </div>
+                    @endif
 
-                        <script>
-                            function nextCuy() {
-                                var loaderContainer = document.querySelector('.loader-container');
-                                loaderContainer.style.display = 'flex'; // or 'flex' if it's a flex container
-                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
+                    <script>
+                        function nextCuy() {
+                            var loaderContainer = document.querySelector('.loader-container');
+                            loaderContainer.style.display = 'flex'; // or 'flex' if it's a flex container
+                            var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
+                            window.location.href = nextUrl;
+                            return;
+                            var videoPlayer = document.getElementById("myVideo");
+                            var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
+                            var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+
+                            if (progress >= 90) {
                                 window.location.href = nextUrl;
                                 return;
-                                var videoPlayer = document.getElementById("myVideo");
-                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
-                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+                            } else {
 
-                                if (progress >= 90) {
-                                    window.location.href = nextUrl;
-                                    return;
-                                } else {
-
-                                    // Prevent the default behavior of the button
-                                    event.preventDefault();
-                                    // Show a SweetAlert alert informing the user to complete the video first
-                                    Swal.fire({
-                                        title: "Video Progress",
-                                        text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                        icon: "warning",
-                                        confirmButtonText: "OK",
-                                    });
-                                }
+                                // Prevent the default behavior of the button
+                                event.preventDefault();
+                                // Show a SweetAlert alert informing the user to complete the video first
+                                Swal.fire({
+                                    title: "Video Progress",
+                                    text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+                                });
                             }
-                        </script>
+                        }
+                    </script>
 
 
-                        <div class="card mt-5">
-                            <img class="card-img-top" src="holder.js/100x180/" alt="">
-                            <div class="card-body">
+                    <div class="card mt-5">
+                        <img class="card-img-top" src="holder.js/100x180/" alt="">
+                        <div class="card-body">
 
 
-                                <h4 class="card-title">{{ $lesson->course_title }}</h4>
+                            <h4 class="card-title">{{ $lesson->course_title }}</h4>
 
-                                <p class="card-text">Materi Ke : {{ $sectionSpec->section_order }}</p>
-                                {!! $sectionSpec->section_content !!}
+                            <p class="card-text">Materi Ke : {{ $sectionDetail->section_order }}</p>
+                            {!! $sectionDetail->section_content !!}
 
-                                <div class="d-flex justify-content-between mt-2 mb-4">
-                                    @if ($prev_section != null)
-                                        <a href="{{ url('/') . "/mobile/course/$courseId/section/$prev_section" }}"
-                                           class="btn btn-primary hidden">Previous Lesson</a>
-                                    @endif
-                                    @if ($next_section != null)
-                                        <button style="background-color: #39AA81" id="nextLessonButton"
-                                                class="btn btn-primary" onclick="nextCuy();">
-                                            Next Lesson
-                                        </button>
+                            <div class="d-flex justify-content-between mt-2 mb-4">
+                                @if ($prev_section != null)
+                                    <a href="{{ url('/') . "/mobile/course/$courseId/section/$prev_section" }}"
+                                       class="btn btn-primary hidden">Previous Lesson</a>
+                                @endif
+                                @if ($next_section != null)
+                                    <button style="background-color: #39AA81" id="nextLessonButton"
+                                            class="btn btn-primary" onclick="nextCuy();">
+                                        Next Lesson
+                                    </button>
 
-                                        <!--<a href="{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
-                                        <!--    class="btn btn-primary ">Next-->
-                                        <!--    Lesson</a>-->
-                                    @endif
+                                    <!--<a href="{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
+                                    <!--    class="btn btn-primary ">Next-->
+                                    <!--    Lesson</a>-->
+                                @endif
 
-                                </div>
                             </div>
                         </div>
-                    @empty
-                    @endforelse
+                    </div>
 
                 </div>
             </div>
@@ -465,10 +462,10 @@
                         </div>
 
                         <script>
-                            document.addEventListener('DOMContentLoaded', function() {
+                            document.addEventListener('DOMContentLoaded', function () {
                                 var loaderLinks = document.querySelectorAll('.loader-link');
-                                loaderLinks.forEach(function(link) {
-                                    link.addEventListener('click', function(event) {
+                                loaderLinks.forEach(function (link) {
+                                    link.addEventListener('click', function (event) {
                                         event.preventDefault();
                                         document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
                                         window.location.href = event.currentTarget.href;

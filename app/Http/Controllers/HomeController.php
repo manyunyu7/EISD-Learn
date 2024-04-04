@@ -4,13 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
 use App\Models\StudentSection;
-use Illuminate\Http\Request;
 use Auth;
 use DB;
 use Illuminate\Support\Facades\Redirect;
-use App\Models\CourseSection;
-use App\Models\Lesson;
-use App\Models\StudentLesson;
 
 class HomeController extends Controller
 {
@@ -102,27 +98,21 @@ class HomeController extends Controller
 
             // Formula Progress Course
             $classCounts = DB::table('student_lesson AS sl')
-                            ->select('sl.lesson_id AS lesson_id',
-                                    DB::raw('COUNT(DISTINCT sl.student_id) AS total_students'),
-                                    DB::raw('COUNT(DISTINCT cs.id) AS total_sections'))
-                            ->leftJoin('course_section AS cs', 'sl.lesson_id', '=', 'cs.course_id')
-                            ->leftJoin('student_section AS ss', 'sl.student_id', '=', 'ss.student_id')
-                            ->groupBy('sl.lesson_id');
+                ->select('sl.lesson_id AS lesson_id',
+                    DB::raw('COUNT(DISTINCT sl.student_id) AS total_students'),
+                    DB::raw('COUNT(DISTINCT cs.id) AS total_sections'))
+                ->leftJoin('course_section AS cs', 'sl.lesson_id', '=', 'cs.course_id')
+                ->leftJoin('student_section AS ss', 'sl.student_id', '=', 'ss.student_id')
+                ->groupBy('sl.lesson_id');
 
-                        $results = DB::table(DB::raw('(' . $classCounts->toSql() . ') AS ClassCounts'))
-                            ->select('lesson_id',
-                                    'total_students',
-                                    'total_sections',
-                                    DB::raw('SUM(total_students * total_sections) AS tot_student'))
-                            ->mergeBindings($classCounts)
-                            ->groupBy('lesson_id', 'total_students', 'total_sections')
-                            ->get();
-
-                        return response()->json($results);
-
-            return $classCounts;
-
-
+            $results = DB::table(DB::raw('(' . $classCounts->toSql() . ') AS ClassCounts'))
+                ->select('lesson_id',
+                    'total_students',
+                    'total_sections',
+                    DB::raw('SUM(total_students * total_sections) AS tot_student'))
+                ->mergeBindings($classCounts)
+                ->groupBy('lesson_id', 'total_students', 'total_sections')
+                ->get();
 
 
 
@@ -153,8 +143,7 @@ class HomeController extends Controller
                     'projectCreatedCount',
                     'classRegisteredCount'
                 ));
-        } 
-        else if (Auth::check() && Auth::user()->role == 'student') {
+        } else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
 
@@ -181,13 +170,11 @@ class HomeController extends Controller
                 ->count();
 
 
-
-
             $userID = Auth::id();
             $myClasses = DB::select("SELECT * FROM (SELECT
                         RANK() OVER (PARTITION BY a.id ORDER BY cs.id ASC) AS ranking,
                         cs.id as first_section,
-                        a.*, 
+                        a.*,
                         b.name AS mentor_name,
                         b.profile_url,
                         COUNT(c.student_id) AS num_students_registered,
@@ -198,7 +185,7 @@ class HomeController extends Controller
                         users b ON a.mentor_id = b.id
                     LEFT JOIN
                         student_lesson c ON a.id = c.lesson_id
-                    LEFT JOIN course_section cs on a.id = cs.course_id 
+                    LEFT JOIN course_section cs on a.id = cs.course_id
                     WHERE     EXISTS (
                             SELECT 1
                             FROM student_lesson sl
@@ -208,7 +195,7 @@ class HomeController extends Controller
                     GROUP BY
                         a.id, b.name, b.profile_url, cs.id) as main_table
                         where main_table.ranking = 1;");
-            
+
 
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Student", "Dashboard"

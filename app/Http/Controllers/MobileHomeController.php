@@ -7,7 +7,6 @@ use App\Models\CourseSection;
 use App\Models\Lesson;
 use App\Models\LessonCategory;
 use App\Models\StudentLesson;
-use App\Models\StudentSection;
 use App\Models\User;
 use App\Models\UserMdln;
 use Illuminate\Database\QueryException;
@@ -19,6 +18,38 @@ use Illuminate\Support\Facades\Storage;
 
 class MobileHomeController extends Controller
 {
+
+
+    public function classDetail(Request $request, $id)
+    {
+        $courseId = $id;
+        $user_id = $request->lms_user_id;
+
+        $lesson = Lesson::findOrFail($courseId);
+
+        $classInfo = new \stdClass();
+        $isRegistered = false;
+
+        $checkIsRegistered = StudentLesson::where("student_id", "=", $user_id)
+            ->where("lesson_id", '=', "$courseId")
+            ->count();
+
+        if($checkIsRegistered!=0){
+            $isRegistered=true;
+        }
+
+        $classInfo->class_detail = $lesson;
+        $classInfo->is_registered = $isRegistered;
+
+        return MyHelper::responseSuccessWithData(
+            200,
+            200,
+            2,
+            "Success",
+            "Success",
+            $classInfo
+        );
+    }
 
     public function registerClass(Request $request)
     {
@@ -223,24 +254,24 @@ class MobileHomeController extends Controller
             ->orWhere('deleted_at', '') // Assuming empty string represents empty value
             ->get();
 
-        $data = DB::connection('ithub')->table('m_departments')->get();
+//        $data = DB::connection('ithub')->table('m_departments')->get();
         $newData = [];
 
-        foreach ($data as $item) {
-            $newItem = [
-                "id" => 1,
-                "name" => $item->name,
-                "img_path" => "qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png",
-                "created_by" => null,
-                "deleted_at" => null,
-                "created_at" => "2024-03-04T06:42:14.000000Z",
-                "updated_at" => "2024-03-25T02:09:30.000000Z",
-                "color_of_categories" => "#20cf2c",
-                "full_img_path" => "http://0.0.0.0:5253/storage/class/category/qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png"
-            ];
-
-            $newData[] = $newItem;
-        }
+//        foreach ($data as $item) {
+//            $newItem = [
+//                "id" => 1,
+//                "name" => $item->name,
+//                "img_path" => "qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png",
+//                "created_by" => null,
+//                "deleted_at" => null,
+//                "created_at" => "2024-03-04T06:42:14.000000Z",
+//                "updated_at" => "2024-03-25T02:09:30.000000Z",
+//                "color_of_categories" => "#20cf2c",
+//                "full_img_path" => "http://0.0.0.0:5253/storage/class/category/qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png"
+//            ];
+//
+//            $newData[] = $newItem;
+//        }
 
         return MyHelper::responseSuccessWithData(
             200,
@@ -248,7 +279,7 @@ class MobileHomeController extends Controller
             2,
             "success",
             "success",
-            $newData);
+            $data);
     }
 
     public function classList(Request $request)
@@ -282,6 +313,16 @@ class MobileHomeController extends Controller
 
         // Adding full image path to each class
         foreach ($classes as $data) {
+
+            $section = CourseSection::where("course_id", "=", $data->id)
+                ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
+                ->first();
+
+            if($section!=null){
+                $data->first_section = (string)$section->id;
+            }else{
+                $data->first_section = null;
+            }
             $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
         }
 
