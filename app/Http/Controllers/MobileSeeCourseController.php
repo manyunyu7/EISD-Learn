@@ -9,6 +9,7 @@ use App\Models\ExamSession;
 use App\Models\ExamTaker;
 use App\Models\Lesson;
 use App\Models\StudentSection;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -232,7 +233,7 @@ class MobileSeeCourseController extends Controller
                 // Check if the section from sectionOrder exists in completedSections
                 if (!in_array($sectionOrder[$i], $completedSections)) {
                     $isEligibleStudent = false;
-                    if($sectionTakenOnCourseCount!=0){
+                    if ($sectionTakenOnCourseCount != 0) {
 //                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
                     }
                 }
@@ -281,7 +282,7 @@ class MobileSeeCourseController extends Controller
         )->where(
             "course_section_flag", "=", $sectionId)
             ->where("user_id", '=', Auth::id())
-        ->get();
+            ->get();
 
 
         if (count($examResults) > 0) {
@@ -309,14 +310,26 @@ class MobileSeeCourseController extends Controller
 
                             )
                         GROUP BY
-                            a.id, b.name, b.profile_url;
-                        ");
+                            a.id, b.name, b.profile_url
+                        LIMIT 1;");
         // $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
         // $section = $sections;
 
+
+        if (count($classInfo) != 0) {
+            $classInfo = $classInfo[0];
+        }
+
+        $mentor = User::where("id", '=', "");
+        $sectionCount = count($sections);
+
+        // taken $sectionTakenOnCourseCount;
+        // all sections $sectionCount;
+        $progressPercentage = round(($sectionTakenOnCourseCount / $sectionCount) * 100);
+
         $compact = compact('isEligibleStudent', 'hasTakenAnyExam', 'examResults', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
             'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
-            'sectionDetail', 'sections', 'questions',
+            'sectionDetail', 'sections', 'sectionCount', 'questions', 'progressPercentage',
             'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
             'sectionOrder', 'lesson', 'section', 'isRegistered', 'classInfo');
 
