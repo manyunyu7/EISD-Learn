@@ -25,7 +25,8 @@ class MobileHomeController extends Controller
         try {
             $user_id = $request->lms_user_id;
 
-            $coursePassword = Lesson::findOrFail($request->course_id)->pin;
+            $course = Lesson::findOrFail($request->course_id);
+            $coursePassword = $course->pin;
 
             if ($request->password != $coursePassword) {
                 return MyHelper::responseErrorWithData(
@@ -51,8 +52,8 @@ class MobileHomeController extends Controller
                     200,
                     200,
                     2,
-                    "Berhasil Mendaftar Kelas!",
-                    "Berhasil Mendaftar Kelas!",
+                    "Berhasil Mendaftar Kelas $course->course_title!",
+                    "Berhasil Mendaftar Kelas $course->course_title",
                     $registerLesson
                 );
             } else {
@@ -70,7 +71,7 @@ class MobileHomeController extends Controller
                 400,
                 400,
                 0,
-                "Anda Sudah Mendaftar di Kelas Ini $e",
+                "Anda Sudah Mendaftar di Kelas $course->course_title",
                 "Anda Sudah Mendaftar di Kelas Ini",
                 null
             );
@@ -252,53 +253,54 @@ class MobileHomeController extends Controller
 
     public function classList(Request $request)
     {
+        // Extract user ID and class status from request
         $userID = $request->lms_user_id;
         $isMyClass = $request->isMyClass;
 
+        // Query to fetch classes with necessary information
         $classes = DB::table('lessons AS a')
             ->select(
-                'a.*',
-                'b.name AS mentor_name',
-                'b.profile_url',
-                DB::raw('COUNT(c.student_id) AS num_students_registered'),
-                DB::raw('COUNT(DISTINCT d.student_id) AS num_students'),
-                DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered')
+                'a.*', // Select all columns from the lessons table
+                'b.name AS mentor_name', // Select mentor's name and alias it as mentor_name
+                'b.profile_url', // Select mentor's profile URL
+                DB::raw('COUNT(c.student_id) AS num_students_registered'), // Count the number of registered students for each class and alias it as num_students_registered
+                DB::raw('COUNT(DISTINCT d.student_id) AS num_students'), // Count the total number of students for each class (excluding duplicates) and alias it as num_students
+                DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered') // Check if the current user is registered for each class and alias it as is_registered
             )
-            ->leftJoin('users AS b', 'a.mentor_id', '=', 'b.id')
-            ->leftJoin('student_lesson AS c', function ($join) use ($userID) {
+            ->leftJoin('users AS b', 'a.mentor_id', '=', 'b.id') // Left join the users table to get mentor information
+            ->leftJoin('student_lesson AS c', function ($join) use ($userID) { // Left join the student_lesson table to check if the user is registered for each class
                 $join->on('a.id', '=', 'c.lesson_id')
-                    ->where('c.student_id', '=', $userID);
+                    ->where('c.student_id', '=', $userID); // Filter the join by the current user ID
             })
-            ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id')
-            ->whereNull('a.deleted_at') // Filtering out deleted records
-            ->groupBy('a.id', 'b.name', 'b.profile_url')->get();
+            ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id') // Left join the student_lesson table again to count the total number of students for each class
+            ->whereNull('a.deleted_at') // Filter out deleted records from the lessons table
+            ->groupBy('a.id', 'b.name', 'b.profile_url') // Group the results by lesson ID, mentor name, and mentor profile URL
+            ->get(); // Execute the query and get the result set
 
+        // Fetching lesson categories if not already available
+        $lessonCategories = LessonCategory::all()->pluck('color_of_categories', 'id')->toArray();
 
+        // Adding full image path to each class
         foreach ($classes as $data) {
-            // Ambil warna kategori jika kategori ada dalam $lessonCategories
-            $color = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
             $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
         }
 
-        $shownClass = [];
+        // Filter classes based on user's registration status
+        $shownClass = $classes->filter(function ($data) use ($isMyClass, $userID) {
+            $checkCount = StudentLesson::where("student_id", $userID)
+                ->where("lesson_id", $data->id)
+                ->count();
+            return ($isMyClass == "true" && $checkCount > 0) || ($isMyClass != "true" && $checkCount == 0);
+        });
 
-        foreach ($classes as $data) {
-            if ($isMyClass == "true") {
-                $checkCount = StudentLesson::where("student_id", '=', $userID)->where("lesson_id", "=", $data->id)->count();
-                if ($checkCount > 0) {
-                    array_push($shownClass, $data);
-                }
-            } else {
-                array_push($shownClass, $data);
-            }
-        }
-
+        // Return success response with filtered classes
         return MyHelper::responseSuccessWithData(
             200,
             200,
             2,
             "success",
             "success",
-            $shownClass);
+            $shownClass->values()->all()
+        );
     }
 }
