@@ -10,7 +10,7 @@ use DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\CourseSection;
 use App\Models\Lesson;
-use StudentLesson;
+use App\Models\StudentLesson;
 
 class HomeController extends Controller
 {
@@ -100,27 +100,27 @@ class HomeController extends Controller
                 ->where('mentor_name', $user_name)
                 ->count();
 
-            // Formula Progress Course---------------------------
+            // Formula Progress Course
+            $classCounts = DB::table('student_lesson AS sl')
+                            ->select('sl.lesson_id AS lesson_id',
+                                    DB::raw('COUNT(DISTINCT sl.student_id) AS total_students'),
+                                    DB::raw('COUNT(DISTINCT cs.id) AS total_sections'))
+                            ->leftJoin('course_section AS cs', 'sl.lesson_id', '=', 'cs.course_id')
+                            ->leftJoin('student_section AS ss', 'sl.student_id', '=', 'ss.student_id')
+                            ->groupBy('sl.lesson_id');
 
-            // Total Course Yang Telah dikerjakan
+                        $results = DB::table(DB::raw('(' . $classCounts->toSql() . ') AS ClassCounts'))
+                            ->select('lesson_id',
+                                    'total_students',
+                                    'total_sections',
+                                    DB::raw('SUM(total_students * total_sections) AS tot_student'))
+                            ->mergeBindings($classCounts)
+                            ->groupBy('lesson_id', 'total_students', 'total_sections')
+                            ->get();
 
+                        return response()->json($results);
 
-            
-            // Total Keseluruhan Course Dalam Masing-masing Kelas
-            $totalCourseCounts = CourseSection::select(
-                                    'course_section.course_id',
-                                    DB::raw('COUNT(DISTINCT student_lesson.student_id) AS total_students'),
-                                    DB::raw('COUNT(course_section.id) AS total_sections')
-                                )
-                                ->leftJoin('student_lesson', 'course_section.id', '=', 'student_lesson.lesson_id')
-                                ->groupBy('course_section.course_id')
-                                ->get();
-
-                        
-            // $myStudent = DB::table('view_student_lesson')
-            //   ->where('mentor_id', $user_id)
-            //   ->get();
-            return $totalCourseCounts;
+            return $classCounts;
 
 
 
