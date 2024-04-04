@@ -448,6 +448,12 @@ class CourseSectionController extends Controller
             ->where('student_id', $user_id)
             ->exists();
 
+        // Total Section dalam sebuah course
+        $total_section = DB::table('course_section AS cs')
+                        ->where('cs.course_id', $lessonId)
+                        ->count();
+
+        // Total Section yang telah diambil/dikerjakan student
         $sectionTakenOnCourseCount = DB::table('student_section as ss')
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
@@ -455,7 +461,10 @@ class CourseSectionController extends Controller
             ->where('ss.student_id', Auth::id())
             ->where('lessons.id', $lessonId)
             ->count();
+        
+        
 
+        // return $sectionTakenOnCourseCount;
         // $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         // Fetch all sections for the lesson
         $student_sections = DB::select("select * from student_section ");
@@ -539,12 +548,26 @@ class CourseSectionController extends Controller
                 if (!in_array($sectionOrder[$i], $completedSections)) {
                     $isEligibleStudent = false;
                     if($sectionTakenOnCourseCount!=0){
-                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                        // abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
                     }
                 }
             }
             if ($isEligibleStudent) {
                 $this->startSection($currentSectionId);
+                $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
+                
+                $sectionTakenOnCourseCount = DB::table('student_section as ss')
+                ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                ->where('ss.student_id', Auth::id())
+                ->where('lessons.id', $lessonId)
+                ->count();
+
+                if($sectionTakenOnCourseCount==$total_section){
+                    $u_student_lesson->learn_status = 1;
+                    $u_student_lesson->save();
+                }
             }
         }
 
@@ -620,6 +643,7 @@ class CourseSectionController extends Controller
                         ");
         // $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
         // $section = $sections;
+
 
         $compact = compact('isEligibleStudent', 'hasTakenAnyExam', 'examResults', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
             'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
@@ -875,6 +899,12 @@ class CourseSectionController extends Controller
         $uniqueDepartments = $all_students->filter(function($student) {
             return !empty($student->department); // Filter data yang memiliki departemen yang tidak kosong
         })->pluck('department')->unique();
+
+        $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
+                            ->where('student_lesson.lesson_id', $lessonId)
+                            ->pluck('users.name', 'users.email', 'users.id');
+                            
+        return $studentsInLesson;
 
         return view("lessons.view_students")->with(compact("lessonId", "uniqueDepartments"));
     }
