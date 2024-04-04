@@ -100,7 +100,8 @@ class HomeController extends Controller
             $classCounts = DB::table('student_lesson AS sl')
                 ->select('sl.lesson_id AS lesson_id',
                     DB::raw('COUNT(DISTINCT sl.student_id) AS total_students'),
-                    DB::raw('COUNT(DISTINCT cs.id) AS total_sections'))
+                    DB::raw('COUNT(DISTINCT cs.id) AS total_sections'),
+                    DB::raw('COUNT(DISTINCT ss.id) AS progres_section'))
                 ->leftJoin('course_section AS cs', 'sl.lesson_id', '=', 'cs.course_id')
                 ->leftJoin('student_section AS ss', 'sl.student_id', '=', 'ss.student_id')
                 ->groupBy('sl.lesson_id');
@@ -109,10 +110,33 @@ class HomeController extends Controller
                 ->select('lesson_id',
                     'total_students',
                     'total_sections',
-                    DB::raw('SUM(total_students * total_sections) AS tot_student'))
+                    'progres_section',
+                    // Total Record Section yang harus ada dalam Tabel Student Section sebagai syarat selesainya suatu kelas
+                    DB::raw('SUM(total_students * total_sections) AS terms_toCompleteClass'),
+                    DB::raw("CASE
+                            WHEN progres_section >= SUM(total_students * total_sections)
+                            THEN 'Complete'
+                            ELSE 'Incomplete'
+                            END
+                            AS class_status"))
                 ->mergeBindings($classCounts)
-                ->groupBy('lesson_id', 'total_students', 'total_sections')
+                ->groupBy('lesson_id', 'total_students', 'total_sections', 'progres_section')
                 ->get();
+
+
+
+            // $studentSection = DB::table('student_section AS ss')
+            // ->leftJoin('student_lesson AS sl', 'ss.student_id', '=', 'sl.student_id')
+            // ->where('sl.lesson_id', 10)
+            // ->count();
+
+            // return response()->json($results);
+
+            // Calculate jumlah student_section yang memiliki lesson_id yang sama [Table yang relevan adalah dari course_section, lessons, dan student_section]
+
+            // return $results;
+
+
 
 
 
