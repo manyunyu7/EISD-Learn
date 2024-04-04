@@ -369,10 +369,11 @@ class CourseSectionController extends Controller
 
 
         // Get the preceding sections
-        $precedingSections = DB::select("
-         SELECT * FROM course_section WHERE course_id = :course_id ORDER BY section_order ASC", [
-            'course_id' => $lessonId,
-        ]);
+        $precedingSections = DB::table('course_section')
+            ->where('course_id', $lessonId)
+            ->orderByRaw("CAST(section_order AS UNSIGNED)")
+            ->get()
+            ->toArray();
 
         $precedingSectionIds = array_map(function ($section) {
             return $section->id;
@@ -481,6 +482,7 @@ class CourseSectionController extends Controller
             ->get();
 
 
+
         $sectionDetail = CourseSection::findOrFail($sectionId);
         // Iterate over the sections and check if each one is already added to the student-section
         foreach ($sections as $key => $section) {
@@ -491,6 +493,7 @@ class CourseSectionController extends Controller
 
             // Add the 'isTaken' attribute to the section object
             $section->isTaken = $isTaken;
+            $section->user_id = Auth::id();
             $section->isCurrent = $sectionId;
 
             if ($section->section_id == $sectionId) {
@@ -623,7 +626,6 @@ class CourseSectionController extends Controller
             'sectionDetail','sections', 'questions',
             'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
             'sectionOrder', 'lesson', 'section', 'isRegistered', 'classInfo');
-
 
         if ($request->dump == true) {
             return $compact;

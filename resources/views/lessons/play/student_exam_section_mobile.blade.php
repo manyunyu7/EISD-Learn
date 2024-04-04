@@ -12,9 +12,9 @@
                                 <label for="fullName">Nama Peserta Quiz :</label>
                                 <input type="text" id="fullName" name="fullName" class="form-control"
                                        placeholder="Enter your full name" required
-{{--                                       @auth--}}
-{{--                                           value="{{ Auth::user()->name }}"--}}
-{{--                                    @endauth--}}
+                                       @auth
+                                           value="{{ Auth::user()->name }}"
+                                    @endauth
                                 >
                             </div>
 
@@ -158,8 +158,8 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-{{--                        <th>ID</th>--}}
-{{--                        <th>User ID</th>--}}
+                        {{--                        <th>ID</th>--}}
+                        {{--                        <th>User ID</th>--}}
                         <th>Guest Name</th>
                         <th>Current Score</th>
                         <th>Finished At</th>
@@ -169,8 +169,8 @@
                     <tbody>
                     @forelse($examResults->reverse() as $result)
                         <tr>
-{{--                            <td>{{ $result['id'] }}</td>--}}
-{{--                            <td>{{ $result['user_id'] }}</td>--}}
+                            {{--                            <td>{{ $result['id'] }}</td>--}}
+                            {{--                            <td>{{ $result['user_id'] }}</td>--}}
                             <td>{{ $result['guest_name'] }}</td>
                             <td>{{ $result['current_score'] }}</td>
                             <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}</td>
@@ -207,15 +207,15 @@
                                                 <div>
                                                     <strong>Jawaban Pengguna:</strong><br>{{ $answer['correct_answer'] ?? '' }}
                                                 </div>
-{{--                                                <div>--}}
-{{--                                                    <strong>Jawaban Benar:</strong><br>{{ $answer['correct_score'] ?? '' }}--}}
-{{--                                                </div>--}}
-{{--                                                <div>--}}
-{{--                                                    <strong>Descriptive Score:</strong> {{ $answer['descriptive_score'] ?? '' }}--}}
-{{--                                                </div>--}}
-{{--                                                <div>--}}
-{{--                                                    <strong>User Choice Score:</strong> {{ $answer['user_choice_score'] ?? '' }}--}}
-{{--                                                </div>--}}
+                                                {{--                                                <div>--}}
+                                                {{--                                                    <strong>Jawaban Benar:</strong><br>{{ $answer['correct_score'] ?? '' }}--}}
+                                                {{--                                                </div>--}}
+                                                {{--                                                <div>--}}
+                                                {{--                                                    <strong>Descriptive Score:</strong> {{ $answer['descriptive_score'] ?? '' }}--}}
+                                                {{--                                                </div>--}}
+                                                {{--                                                <div>--}}
+                                                {{--                                                    <strong>User Choice Score:</strong> {{ $answer['user_choice_score'] ?? '' }}--}}
+                                                {{--                                                </div>--}}
                                                 <hr> <!-- Add a horizontal line between each answer -->
                                             @endforeach
                                         </div>
@@ -266,7 +266,7 @@
             sectionId: {{ $currentSectionId }}, // Use Blade syntax to echo the
             courseId: {{ $courseId }},
             isFinished: false,
-            fullName: "Guest" // Use Blade syntax to echo the variable
+            fullName: "{{ Auth::user()->name }}" // Use Blade syntax to echo the variable
         };
 
 
@@ -350,7 +350,7 @@
             sectionId: {{ $currentSectionId }}, // Use Blade syntax to echo the
             courseId: {{ $courseId }},
             isFinished: isFinished,
-            fullName: "Guest" // Use Blade syntax to echo the variable
+            fullName: "{{ Auth::user()->name }}" // Use Blade syntax to echo the variable
         };
 
         // Retrieve all filled answers

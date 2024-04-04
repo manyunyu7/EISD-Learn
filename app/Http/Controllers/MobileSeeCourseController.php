@@ -25,50 +25,59 @@ class MobileSeeCourseController extends Controller
         $currentSection = CourseSection::findOrFail($currentSectionId);
         $isExam = false;
         $title = "";
+
+        $userId = $request->userId;
+        Auth::loginUsingId($userId);
+
         if (!Auth::check()) {
             MyHelper::addAnalyticEvent(
                 "Mobile Buka Section", "Course Section"
             );
-//            abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
+            abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
 
-//        $user_id = Auth::user()->id;
+        $user_id = Auth::user()->id;
         $lessonId = $lesson->id;
         $isRegistered = false;
-//        if (Auth::user()->role == "student") {
-//            $student_lesson = DB::table('student_lesson')
-//                ->where('student-lesson', "$user_id-$lessonId")
-//                ->get()
-//                ->toArray();
-//
-//            $isRegistered = false;
-//            if ($student_lesson == null) {
-//                abort(401, "Anda Belum Mendaftar ke Kelas " . $lesson->name);
-//            } else {
-//                $isRegistered = true;
-//            }
-//        }
+        if (Auth::user()->role == "student") {
+            $student_lesson = DB::table('student_lesson')
+                ->where('student-lesson', "$user_id-$lessonId")
+                ->get()
+                ->toArray();
+
+            $isRegistered = false;
+            if ($student_lesson == null) {
+                abort(401, "Anda Belum Mendaftar ke Kelas " . $lesson->name);
+            } else {
+                $isRegistered = true;
+            }
+        }
 
         $sectionId = $section->id;
         $lessonId = $lesson->id;
 
         $lessonObject = Lesson::findOrFail($lessonId);
-//        if (Auth::user()->role == "student") {
-//            if ($lessonObject->can_be_accessed == "n") {
-//                MyHelper::addAnalyticEvent(
-//                    "Reject Section Diluar Jadwal", "Course Section"
-//                );
-//                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
-//            }
-//        }
+        if (Auth::user()->role == "student") {
+            if ($lessonObject->can_be_accessed == "n") {
+                MyHelper::addAnalyticEvent(
+                    "Reject Section Diluar Jadwal", "Course Section"
+                );
+                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
+            }
+        }
 
 
+        // Get the preceding sections
         $precedingSections = DB::table('course_section')
             ->where('course_id', $lessonId)
-            ->orderBy('section_order', 'ASC')
-            ->get();
+            ->orderByRaw("CAST(section_order AS UNSIGNED)")
+            ->get()
+            ->toArray();
 
-        $precedingSectionIds = $precedingSections->pluck('id')->toArray();
+        $precedingSectionIds = array_map(function ($section) {
+            return $section->id;
+        }, $precedingSections);
+
 
         $studentTakenSections = DB::table('student_section AS ss')
             ->select(
@@ -82,7 +91,7 @@ class MobileSeeCourseController extends Controller
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-//            ->where('users.id', Auth::id())
+            ->where('users.id', Auth::id())
             ->where('lessons.id', $lessonId)
             ->get();
 
@@ -103,36 +112,36 @@ class MobileSeeCourseController extends Controller
         $lastSectionTaken = null;
 
         if (Auth::check()) {
-//            if (Auth::user()->role == "student") {
-//
-//                if ($section->can_be_accessed == "n") {
-//                    abort(401, "Materi baru dapat diakses pada jadwal yang telah ditentukan");
-//                }
-//                $sectionTakenByStudent = FacadesDB::table('student_section as ss')
-//                    ->select('section_id')
-//                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
-//                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
-//                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-//                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
-//                    ->where('lessons.id', $lessonId) // Add the condition lessons.id = 5
-//                    ->pluck('ss.section_id')
-//                    ->toArray();
-//
-//                $lastSectionTaken = FacadesDB::table('student_section as ss')
-//                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
-//                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
-//                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-//                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
-//                    ->where('lessons.id', $lessonId)
-//                    ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
-//                    ->first();
-//            }
+            if (Auth::user()->role == "student") {
+
+                if ($section->can_be_accessed == "n") {
+                    abort(401, "Materi baru dapat diakses pada jadwal yang telah ditentukan");
+                }
+                $sectionTakenByStudent = DB::table('student_section as ss')
+                    ->select('section_id')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lessonId) // Add the condition lessons.id = 5
+                    ->pluck('ss.section_id')
+                    ->toArray();
+
+                $lastSectionTaken = DB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('lessons.id', $lessonId)
+                    ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
+                    ->first();
+            }
         }
 
         //return $precedingSectionIds;
         // Check if the student has taken all the preceding sections
         $isPrecedingTaken = StudentSection::whereIn('section_id', $precedingSectionIds)
-//            ->where('student_id', $user_id)
+            ->where('student_id', $user_id)
             ->exists();
 
         $sectionTakenOnCourseCount = DB::table('student_section as ss')
@@ -211,27 +220,27 @@ class MobileSeeCourseController extends Controller
 
 
         $isEligibleStudent = true; //eligible to open the section
-//        if (Auth::user()->role == "student") {
-//            $isStudent = true;
-//            $completedSections = $sectionTakenByStudent;
-//
-//            // Get the index of the current section in the sectionOrder array
-//            $currentSectionIndex = array_search($currentSectionId, $sectionOrder);
-//
-//            // Loop through the sectionOrder array from the beginning until the current section index
-//            for ($i = 0; $i < $currentSectionIndex; $i++) {
-//                // Check if the section from sectionOrder exists in completedSections
-//                if (!in_array($sectionOrder[$i], $completedSections)) {
-//                    $isEligibleStudent = false;
-//                    if($sectionTakenOnCourseCount!=0){
-////                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
-//                    }
-//                }
-//            }
-//            if ($isEligibleStudent) {
-//                $this->startSection($currentSectionId);
-//            }
-//        }
+        if (Auth::user()->role == "student") {
+            $isStudent = true;
+            $completedSections = $sectionTakenByStudent;
+
+            // Get the index of the current section in the sectionOrder array
+            $currentSectionIndex = array_search($currentSectionId, $sectionOrder);
+
+            // Loop through the sectionOrder array from the beginning until the current section index
+            for ($i = 0; $i < $currentSectionIndex; $i++) {
+                // Check if the section from sectionOrder exists in completedSections
+                if (!in_array($sectionOrder[$i], $completedSections)) {
+                    $isEligibleStudent = false;
+                    if($sectionTakenOnCourseCount!=0){
+//                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                    }
+                }
+            }
+            if ($isEligibleStudent) {
+                $this->startSection($currentSectionId);
+            }
+        }
 
         $examSession = null;
         $exam = null;
@@ -271,7 +280,7 @@ class MobileSeeCourseController extends Controller
             "course_flag", "=", $courseId
         )->where(
             "course_section_flag", "=", $sectionId)
-//            ->where("user_id", '=', Auth::id()
+            ->where("user_id", '=', Auth::id())
         ->get();
 
 

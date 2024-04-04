@@ -25,10 +25,12 @@ class MyClassController extends Controller
     public function myClass()
     {
         $userID = Auth::id();
-
-        $myClasses = DB::select("SELECT * FROM (SELECT
+        $myClasses = DB::select("
+                SELECT *,
+                       'new_attribute_value' AS new_attribute  -- Add your new attribute here
+                FROM (
+                    SELECT
                         RANK() OVER (PARTITION BY a.id ORDER BY cs.id ASC) AS ranking,
-                        cs.id as first_section,
                         a.*,
                         b.name AS mentor_name,
                         b.profile_url,
@@ -40,17 +42,30 @@ class MyClassController extends Controller
                         users b ON a.mentor_id = b.id
                     LEFT JOIN
                         student_lesson c ON a.id = c.lesson_id
-                    LEFT JOIN course_section cs on a.id = cs.course_id
-                    WHERE     EXISTS (
+                    LEFT JOIN
+                        course_section cs ON a.id = cs.course_id
+                    WHERE EXISTS (
                             SELECT 1
                             FROM student_lesson sl
                             WHERE sl.lesson_id = a.id
                             AND sl.student_id = $userID
                         )
                     GROUP BY
-                        a.id, b.name, b.profile_url, cs.id) as main_table
-                        where main_table.ranking = 1;");
-        // return $myClasses;
+                        a.id, b.name, b.profile_url, cs.id
+                ) AS main_table
+                WHERE main_table.ranking = 1;
+            ");
+
+            // Append new attribute to each row
+        foreach ($myClasses as &$class) {
+            $firstSection = DB::table('course_section')
+                ->where('course_id', '=', $class->id)
+                ->orderByRaw("CAST(section_order AS UNSIGNED), section_order ASC")
+                ->first();
+            $class->first_section = $firstSection->id;  // Modify 'new_attribute_value' accordingly
+        }
+
+
         return view('student.myclass')->with(compact('myClasses', 'userID'));
     }
 }
