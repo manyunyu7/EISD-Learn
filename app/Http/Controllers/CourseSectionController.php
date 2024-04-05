@@ -548,7 +548,7 @@ class CourseSectionController extends Controller
                 if (!in_array($sectionOrder[$i], $completedSections)) {
                     $isEligibleStudent = false;
                     if($sectionTakenOnCourseCount!=0){
-                        // abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
                     }
                 }
             }
@@ -903,7 +903,7 @@ class CourseSectionController extends Controller
                             ->where('student_lesson.lesson_id', $lessonId)
                             ->pluck('users.name', 'users.email', 'users.id');
                             
-        return $studentsInLesson;
+        // return $studentsInLesson;
 
         return view("lessons.view_students")->with(compact("lessonId", "uniqueDepartments"));
     }
