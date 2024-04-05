@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
 use App\Models\StudentSection;
+use App\Models\Exam;
 use Auth;
 use DB;
 use Illuminate\Support\Facades\Redirect;
+use PhpParser\Node\Stmt\Return_;
 
 class HomeController extends Controller
 {
@@ -130,6 +132,29 @@ class HomeController extends Controller
                 }
             }
 
+            // 3 Data Exam Terbaru
+            $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
+            $averageScores  = DB::table('exam_sessions')
+                            ->rightJoin('exam_takers', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                            ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
+                            ->select('exams.id', 'exams.title', DB::raw('ROUND(AVG(exam_takers.current_score)) as average_score'))
+                            ->where('exam_sessions.exam_type', 'Post Test')
+                            ->groupBy('exam_sessions.id')
+                            // ->orderBy('created_at', 'desc')
+                            ->take(3)
+                            ->get();
+        
+            $averageScoreArray = [];
+
+            foreach ($averageScores as $score) {
+                $averageScoreArray[] = [
+                    'exam_id' => $score->id,
+                    'title_exam' => $score->title,
+                    'average_score' => $score->average_score
+                ];
+            }
+
+            // return $averageScoreArray;
 
             $myStudent = DB::select("select * from view_student_lesson where mentor_name = '$user_name' ");
 
@@ -158,7 +183,9 @@ class HomeController extends Controller
                     'projectCreatedCount',
                     'classRegisteredCount',
                     'onProgressCount',
-                    'completedCourseCount'
+                    'completedCourseCount',
+                    'latestExams',
+                    'averageScoreArray'
                 ));
         } else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();

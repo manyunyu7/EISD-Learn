@@ -202,6 +202,10 @@
         });
     </script>
 
+
+    {{-- Charts.css --}}
+    {{-- <link rel="stylesheet" href="path/to/your/charts.min.css"> --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
 @endsection
 
 @section('main')
@@ -343,12 +347,12 @@
     
                     {{-- Total Students --}}
                     <div class="col-sm-6 col-md-6">
-                        <div class="card card-stats card-round" style="background-color: #EBEBFF">
+                        <div class="card card-stats card-round" style="background-color: #E1F7E3">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col-icon">
                                         <div class="icon-big text-center bubble-shadow-small">
-                                            <img src="{{ url('icons/dashboard_icon/active.png') }}" alt="Portfolio Icon">
+                                            <img src="{{ url('icons/dashboard_icon/students.png') }}" alt="Portfolio Icon">
                                         </div>
                                     </div>
                                     <div class="col col-stats ml-3 ml-sm-0">
@@ -369,7 +373,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-icon">
                                         <div class="icon-big text-center bubble-shadow-small">
-                                            <img src="{{ url('icons/dashboard_icon/completed.png') }}" alt="Portfolio Icon">
+                                            <img src="{{ url('icons/dashboard_icon/active.png') }}" alt="Portfolio Icon">
                                         </div>
                                     </div>
                                     <div class="col col-stats ml-3 ml-sm-0">
@@ -385,7 +389,7 @@
 
                     {{-- Completed Course --}}
                     <div class="col-sm-6 col-md-6">
-                        <div class="card card-stats card-round" style="background-color: #E1F7E3">
+                        <div class="card card-stats card-round" style="background-color: #FFEEE8">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col-icon">
@@ -409,8 +413,8 @@
                     <h1><strong>My Class</strong></h1>
                 </div>
                 {{-- BAR CHART --}}
-                <div class="col-md-12">
-                    <div class="card"> {{-- card --}}
+                {{-- <div class="col-md-12">
+                    <div class="card">
                         <div class="card-body">
                             <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                                 <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
@@ -423,7 +427,80 @@
                             </div>
                         </div>
                     </div>
+                </div> --}}
+
+
+                <div class="col-md-12">
+                    <div class="card"> {{-- card --}}
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-4">
+                                    <h3><strong>Average Score Post Test</strong></h3>
+                                </div>
+                                <div class="col-3">
+                                    <select class="form-control col-9" id="exampleFormControlSelect1" style="border: none;">
+                                        <option>Business Unit</option>
+                                        <option>2</option>
+                                    </select>
+                                </div>
+                                <div class="col-3"> 
+                                    <select class="form-control" id="exampleFormControlSelect2" style="border: none;">
+                                        <option>Department</option>
+                                        <option>2</option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
+                                        <option>Month</option>
+                                        <option>2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        <div class="card-body">
+                            <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                                <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
+                                    aria-labelledby="pills-home-tab-nobd">
+                                    <div class="">
+                                        <table class="charts-css bar multiple stacked show-labels show-primary-axis data-spacing-8">
+                                            <caption> Front End Developer Salary </caption>
+                                            <tbody>
+                                                @foreach ($averageScoreArray as $postTest)
+                                                    <tr>
+                                                        <th scope="row">{{ $postTest['title_exam'] }}</th>
+                                                        <td style="--size: calc( {{ $postTest['average_score'] }} ); background-color:#23BD33; color:white">
+                                                            <span class="data">{{ $postTest['average_score'] }}</span>
+                                                        </td>
+                                                        <td style="--size: calc( 100 - {{ $postTest['average_score'] }}); background-color:#ccf7d1">
+                                                            <span class="data"></span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+
+                                              
+                                              {{-- <tr>
+                                                <th scope="row"> {Judul Kelas II} </th>
+                                                <td style="--size: calc( 50 / 100 ); background-color:#23BD33; color:white"> <span class="data"> $50K </span> </td>
+                                                <td style="--size: calc( 50 / 100 ); background-color:#ccf7d1"> <span class="data"></span> </td>
+                                              </tr>
+                                              <tr>
+                                                <th scope="row"> {Judul Kelas III} </th>
+                                                <td style="--size: calc( 75 / 100 ); background-color:#23BD33; color:white"> <span class="data"> $75K </span> </td>
+                                                <td style="--size: calc( 25 / 100 ); background-color:#ccf7d1"> <span class="data"></span> </td>
+                                              </tr> --}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
+
                 {{-- canvasJS for Stacked Bar --}}
                 {{-- <script type="text/javascript">
                     window.onload = function () {
