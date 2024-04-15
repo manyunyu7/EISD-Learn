@@ -116,6 +116,7 @@ Route::group(['middleware’' => ['auth']], function () {
 
         Route::get('/lesson/{lessonId}/section/{sectionId}/input-score', 'CourseSectionController@viewInputScore');
         Route::get('/dashboard/mentor', 'LessonController@viewDashboard');
+        Route::get('/dashboard/mentor/course', 'LessonController@view_courseDashboard');
         // Route::post('/lesson/{lesson}/store/','CourseSectionController@store')->name('section.store');
         // Route::delete('/lesson/{lesson}/section/s','CourseSectionController@destroy')->name('section.delete');
         Route::get('/lesson/{lesson}/section/create', 'CourseSectionController@create_section');

@@ -679,19 +679,58 @@ class LessonController extends Controller
         $myClasses = DB::select("
                         SELECT 
                             a.*, 
-                            u.name AS mentor_name 
+                            u.name AS mentor_name
                         FROM 
                             lessons a
                         LEFT JOIN 
                             users u ON a.mentor_id = u.id AND u.role = 'mentor'
                         WHERE
                             a.deleted_at IS NULL
+                            AND
+                            a.is_visible = 'y'
                         ORDER BY 
-                            a.id DESC
+                            a.id ASC
                     ");
     
+        // Hitung jumlah student yang telah menyelesaikan setiap course
+        $courseCompleteCount = DB::table('student_lesson')
+        ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
+        ->where('learn_status', [0, 1])
+        ->groupBy('lesson_id')
+        ->get();
+
+        // Hitung jumlah total student dalam setiap course
+        $totalStudentsCount = DB::table('student_lesson')
+            ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
+            // ->join('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+            // ->where('lessons.is_visible', 'y') // Perhatikan penggunaan tanda kutip pada 'y'
+            ->groupBy('lesson_id')
+            ->get();
+            
+
+
+        // Inisialisasi variabel untuk menghitung jumlah kelas yang sedang dalam status "On Progress Course"
+        $onProgressCount = 0;
+        $completedCourseCount = 0;
+        // Gabungkan kedua hasil perhitungan sebelumnya untuk menentukan apakah suatu course telah selesai
+        $courseStatus = [];
+        foreach ($courseCompleteCount as $course) {
+            $lessonId = $course->lesson_id;
+            $completedStudents = $course->completed_students;
+            $totalStudents = $totalStudentsCount->where('lesson_id', $lessonId)->first()->total_students;
+
+            // Simpan dalam variabel status masing-masing kelas
+            $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 100 : round((($completedStudents/$totalStudents)*100));
+            
+        }
+
+        // dd($courseCompleteCount);
         Paginator::useBootstrap();
         // dd($myClasses) ;
-        return view('main.mentorDashboard', compact('dayta', 'myClasses'));
+        return view('main.mentorDashboard', compact('dayta', 'myClasses', 'courseStatus', 'completedStudents', 'totalStudents'));
+    }
+
+    public function view_courseDashboard(){
+        return view('main.course_dashboard');
     }
 }

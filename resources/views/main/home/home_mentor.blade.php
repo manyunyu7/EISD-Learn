@@ -408,26 +408,6 @@
                         </div>
                     </div>
     
-                {{-- MY CLASS--}}
-                <div class="col-md-12">
-                    <h1><strong>My Class</strong></h1>
-                </div>
-                {{-- BAR CHART --}}
-                {{-- <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
-                                <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
-                                    aria-labelledby="pills-home-tab-nobd">
-                                    <div class="">
-                                        <div id="chartContainer_stackedBar" style="height: 300px; width: 100%;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
 
 
                 <div class="col-md-12">
@@ -479,18 +459,6 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-
-                                              
-                                              {{-- <tr>
-                                                <th scope="row"> {Judul Kelas II} </th>
-                                                <td style="--size: calc( 50 / 100 ); background-color:#23BD33; color:white"> <span class="data"> $50K </span> </td>
-                                                <td style="--size: calc( 50 / 100 ); background-color:#ccf7d1"> <span class="data"></span> </td>
-                                              </tr>
-                                              <tr>
-                                                <th scope="row"> {Judul Kelas III} </th>
-                                                <td style="--size: calc( 75 / 100 ); background-color:#23BD33; color:white"> <span class="data"> $75K </span> </td>
-                                                <td style="--size: calc( 25 / 100 ); background-color:#ccf7d1"> <span class="data"></span> </td>
-                                              </tr> --}}
                                             </tbody>
                                         </table>
                                     </div>
