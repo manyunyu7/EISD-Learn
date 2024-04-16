@@ -271,37 +271,6 @@
             </div>
         </div>
 
-
-        <div class="row">
-            <div class="col-md-12" style="background-color: yellow">
-                <div class="">
-                    {{-- GANTI PASSWORD --}}
-                    <form method="POST" action="{{ url('/dfef') }}">
-                        @csrf
-                        <div class="row mt-3">
-                            <!-- Add form fields for the change password tab -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Current Password</label>
-                                    <input type="password" class="form-control" name="current-password" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>New Password</label>
-                                    <input type="password" class="form-control" name="new-password" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right mt-3 mb-3">
-                            <button class="btn btn-success">Change Password</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
     </div>
 
 
