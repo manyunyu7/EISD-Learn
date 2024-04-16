@@ -135,6 +135,19 @@ class MyHelper
         return response()->json(['error' => 'Unauthenticated.'], 401);
     }
 
+    public static function addAnalyticEventMobile(
+        $event,$page,$userId
+    ){
+        $data = new MyAnalyticEvent();
+        $is_logged_in = false;
+        $data->user_id=$userId;
+        $data->event=$event;
+        $data->is_logged_in=$is_logged_in;
+        $data->page=$page;
+
+        $data->save();
+    }
+
     public static function addAnalyticEvent(
         $event,$page
     ){

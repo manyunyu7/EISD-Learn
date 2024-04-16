@@ -180,25 +180,27 @@
 
                         <div class="row">
                             <div class="col-12 text-center">
-                                {!! QrCode::size(300)->generate('memek') !!}
+                                {!! QrCode::size(450)->generate($qrFormula) !!}
                             </div>
-
                             <div class="col-12 mt-4 mb-5 text-center">
+                                <!-- Add button to regenerate QR code -->
                                 <!-- Check if $enableAbsensi is 'y', null, or true -->
-                                <input type="checkbox"
-                                       id="switch-absensi" {{ $enableAbsensi === 'y' || $enableAbsensi === null || $enableAbsensi === true ? 'checked' : '' }}>
-                                <label for="switch-absensi" class="switch switch-absensi"></label>
-                                <div class="d-none">
-                                    <span id="switch-text"
-                                          class="switch-text switch-absensi-text d-inline-block align-middle text-center"
-                                          style="margin-top: 10px; margin-left: 10px; ">
+                                <div style="margin-left: -50px">
+                                    <input  type="checkbox" id="switch-absensi" {{ $enableAbsensi === 'y' || $enableAbsensi === null || $enableAbsensi === true ? 'checked' : '' }}>
+                                    <label for="switch-absensi" class="switch switch-absensi"></label>
+                                    <div class="d-none">
+                                    <span id="switch-text" class="switch-text switch-absensi-text d-inline-block align-middle text-center" style="margin-top: 10px; margin-left: 10px; ">
                                         <!-- Display 'Aktif' if $enableAbsensi is 'y', null, or true -->
                                         {{ $enableAbsensi === 'y' || $enableAbsensi === null || $enableAbsensi === true ? 'Aktif' : 'Tidak Aktif' }}
                                     </span>
+                                    </div>
                                 </div>
+
+                            </div>
+                            <div class="col-12 text-center mt-4">
+                                <button onclick="window.location.reload();" class="btn btn-primary">Regenerate QR</button>
                             </div>
                         </div>
-
 
                         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
                         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

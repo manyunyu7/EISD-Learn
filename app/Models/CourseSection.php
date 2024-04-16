@@ -10,6 +10,8 @@ class CourseSection extends Model
     use HasFactory;
     protected $table = 'course_section';
     protected $fillable = [
+        'id',
+        'enable_absensi',
         'quiz_session_id',
         'lesson_id'	,
         'lessons_title',

@@ -31,8 +31,8 @@ class MobileSeeCourseController extends Controller
         Auth::loginUsingId($userId);
 
         if (!Auth::check()) {
-            MyHelper::addAnalyticEvent(
-                "Mobile Buka Section", "Course Section"
+            MyHelper::addAnalyticEventMobile(
+                "Mobile Buka Section", "Course Section",$userId
             );
             abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
@@ -60,8 +60,8 @@ class MobileSeeCourseController extends Controller
         $lessonObject = Lesson::findOrFail($lessonId);
         if (Auth::user()->role == "student") {
             if ($lessonObject->can_be_accessed == "n") {
-                MyHelper::addAnalyticEvent(
-                    "Reject Section Diluar Jadwal", "Course Section"
+                MyHelper::addAnalyticEventMobile(
+                    "Reject Section Diluar Jadwal", "Course Section",$userId
                 );
                 abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
             }
@@ -338,8 +338,8 @@ class MobileSeeCourseController extends Controller
             return $compact;
         }
 
-        MyHelper::addAnalyticEvent(
-            "Buka Section", "Course Section"
+        MyHelper::addAnalyticEventMobile(
+            "Buka Section", "Course Section",$userId
         );
 
 

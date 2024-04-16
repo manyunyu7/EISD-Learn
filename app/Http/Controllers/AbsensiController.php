@@ -9,18 +9,24 @@ use App\Models\CourseSection;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class AbsensiController extends Controller
 {
 
+    // Replace 'your_secret_key' with a strong and secure key
+    private $key = 'yepow';
 
     public function insertAbsensiMobile(Request $request){
         $userId = $request->lms_user_id;
-        $sectionId = $request->section_id;
         $latitude = $request->latitude;
         $longitude = $request->longitude;
 
-        $section = CourseSection::find($sectionId);
+        $sectionId = $this->decryptData($request->qr_content);
+
+
+        $section = CourseSection::findOrFail($sectionId);
+
 
         if($section==null){
             return MyHelper::responseErrorWithData(
@@ -29,26 +35,43 @@ class AbsensiController extends Controller
                 0,
                 "Section Tidak Ditemukan",
                 "Class Section Not Found",
-                null
+                $sectionId
             );
         }
 
-        if($section->enable_absensi==false || $section->enable_absensi=="n"){
+        if($section->enable_absensi=="n" || $section->enable_absensi!=null && $section->enable_absensi != "y"){
             return MyHelper::responseErrorWithData(
                 400,
                 400,
                 0,
                 "Tidak Dapat Melakukan Absensi Diluar Waktu Yang Telah Ditentukan",
                 "Presensi Not Activated",
-                null
+                $sectionId
             );
         }
 
         $absensi = new Absensi();
-        $absensi->user_id = $userId;
+        $absensi->student_id = $userId;
         $absensi->latitude=$latitude;
         $absensi->longitude=$longitude;
         $absensi->section_id=$sectionId;
+
+        // Check if the combination of student_id and section_id already exists
+        $existingAbsensi = Absensi::where('student_id', $userId)
+            ->where('section_id', $sectionId)
+            ->exists();
+
+        if ($existingAbsensi) {
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                0,
+                "Absensi untuk siswa dan kelas ini sudah ada.",
+                "Duplicate Absensi",
+                $sectionId
+            );
+        }
+
 
         if($absensi->save()){
             return MyHelper::responseSuccessWithData(
@@ -66,7 +89,7 @@ class AbsensiController extends Controller
                 0,
                 "Absensi Gagal Disimpan : ",
                 "Gagal Mendaftar Kelas",
-                null
+                $sectionId
             );
         }
     }
@@ -94,6 +117,39 @@ class AbsensiController extends Controller
         $enableAbsensi = $section->enable_absensi;
         $course = Lesson::where("id",'=',$section->course_id)->first();
         $dayta = User::all();
-        return view('lessons.absensi.manage_absensi')->with(compact('dayta','sectionId','enableAbsensi','course','section'));
+
+        $courseName = $course->course_title;
+        $courseId = $course->id;
+        $qrFormula = $this->encryptData($sectionId);
+        return view('lessons.absensi.manage_absensi')->with(compact('dayta','sectionId','enableAbsensi','course','section','qrFormula'));
+    }
+
+    public function encryptData($data)
+    {
+        // Encrypt the data using AES encryption
+        $encryptedData = $this->encryptAES($data, $this->key);
+
+        return $encryptedData;
+    }
+
+    public function decryptData($data)
+    {
+        $encryptedData = $data;
+
+        // Decrypt the data using AES decryption
+        $decryptedData = $this->decryptAES($encryptedData, $this->key);
+        return $decryptedData;
+        return response()->json(['decrypted_data' => $decryptedData]);
+    }
+
+    private function encryptAES($data, $key) {
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+        return base64_encode($encrypted . '::' . $iv);
+    }
+
+    private function decryptAES($data, $key) {
+        list($encryptedData, $iv) = explode('::', base64_decode($data), 2);
+        return openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\CourseSectionController;
 use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,9 @@ Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('p
 
  Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
 
+
+Route::get('/encrypt', [AbsensiController::class, 'encryptData']);
+Route::get('/decrypt', [AbsensiController::class, 'decryptData']);
 
 Route::get('/datatable', function () {
     return view('blog.datatable');

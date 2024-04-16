@@ -51,9 +51,9 @@ class MobileHomeController extends Controller
         // Add a new attribute to each item in the $classes array
         foreach ($classes as $class) {
 
-            if($class->new_class=="Aktif"){
+            if ($class->new_class == "Aktif") {
                 $class->new_class = true;
-            }else{
+            } else {
                 $class->new_class = false;
             }
         }
@@ -154,6 +154,11 @@ class MobileHomeController extends Controller
             ]);
 
             if ($registerLesson) {
+
+                MyHelper::addAnalyticEventMobile(
+                    "Mendaftar Kelas", "Course Section", $user_id
+                );
+
                 return MyHelper::responseSuccessWithData(
                     200,
                     200,
@@ -230,6 +235,10 @@ class MobileHomeController extends Controller
             // Password is correct, proceed with claiming the account
             $account->mdln_username = $mdlnUserId;
             $account->save();
+
+            MyHelper::addAnalyticEventMobile(
+                "Mendaftar Kelas", "Course Section", $accountId
+            );
 
             // Return success response
             return MyHelper::responseSuccessWithData(
@@ -393,9 +402,9 @@ class MobileHomeController extends Controller
                 ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
                 ->first();
 
-            if($data->new_class=="Aktif"){
+            if ($data->new_class == "Aktif") {
                 $data->new_class = true;
-            }else{
+            } else {
                 $data->new_class = false;
             }
 
