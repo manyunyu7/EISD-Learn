@@ -157,7 +157,7 @@
                                                 <a 
                                                    class="btn text-white btn-round "
                                                    style="background-color: #208DBB"
-                                                   onclick="redirectToSection('{{ url('/dashboard/mentor/course') }}')">Check</a>
+                                                   onclick="redirectToSection('{{ url('/dashboard/mentor/course/'. $data->id) }}')">Check</a>
                                                    <script>
                                                         function redirectToSection(url) {
                                                             window.location.href = url;
