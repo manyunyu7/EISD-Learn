@@ -424,7 +424,7 @@
         <!-- /#page-content-wrapper -->
 
         <!-- Sidebar -->
-        <div id="sidebar-wrapper" style="background-color: whitesmoke; ">
+        <div id="sidebar-wrapper" style="background-color: whitesmoke;">
             <ul class="sidebar-nav">
                 <div class="container content-container">
                     <div class="" style="max-width: 560px">

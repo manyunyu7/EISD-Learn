@@ -131,7 +131,7 @@
                     {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                     <div class="row">
                         <div class="col-md-12">
-                            
+
                             <input hidden name="lessonId" type="text" value="{{ $lesson_id }}">
 
                             {{-- Judul Kelas --}}
@@ -141,7 +141,7 @@
                                     <input required name="title" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                                 </div>
                             </div>
-                            
+
                             {{-- Akses Konten --}}
                             <div class="row">
                                 <div class="col-sm-12 col-md-6 col-lg-6 mb-3">
@@ -166,7 +166,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {{-- Deskripsi Kelas --}}
                             <div class="mb-3">
                                 <label for="" class="mb-2">Upload File<span style="color: red">*</span></label>
@@ -195,7 +195,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     {{-- BUTTONS --}}
                     <div class="mb-3" style="display: flex; justify-content: flex-end;">
                         <div style="flex-grow: 1;"></div>
@@ -215,18 +215,18 @@
             <div class="container mb-3">
                 <div class="row">
                     <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3"> <!-- Atur ukuran kolom sesuai kebutuhan Anda -->
-                        <button class="btn mr-2 ml--10" 
+                        <button class="btn mr-2 ml--10"
                                 onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
                                 type="submit"
-                                style=" background-color: #208DBB; 
-                                        border-radius: 12px; 
-                                        width:80px; 
-                                        height: 40px; 
-                                        position: relative; 
-                                        padding: 0; 
+                                style=" background-color: #208DBB;
+                                        border-radius: 12px;
+                                        width:80px;
+                                        height: 40px;
+                                        position: relative;
+                                        padding: 0;
                                         margin-left: -15px;
-                                        display: flex; 
-                                        align-items: center;    
+                                        display: flex;
+                                        align-items: center;
                                         justify-content: center;">
                                 <span style="color:white">Rearrange</span>
                         </button>
@@ -258,15 +258,28 @@
                         <td style="overflow: hidden; white-space: nowrap;">{{ $item->section_title }}</td>
                         <td>
                             <div class="d-flex justify-content-center" >
+                                <form action="{{ route('absensi.manage', ['lesson_id' => $lesson_id, 'section_id' => $item->section_id]) }}" action="GET">
+                                    <button class="btn mr-2" style="background-color: #208DBB;
+                                                                    border-radius: 15px;
+                                                                    width:50px;
+                                                                    height: 40px;
+                                                                    position: relative;
+                                                                    padding: 0;
+                                                                    display: flex;
+                                                                    align-items: center;
+                                                                    justify-content: center;">
+                                        <img src="{{ url('/icons/absensi/absensi_btn.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                    </button>
+                                </form>
                                 <form action="{{ route('materials.edit', ['lesson' => $lesson_id, 'section_id' => $item->section_id]) }}" action="POST">
-                                    <button class="btn mr-2" style="background-color: #208DBB; 
-                                                                    border-radius: 15px; 
-                                                                    width:50px; 
-                                                                    height: 40px; 
-                                                                    position: relative; 
-                                                                    padding: 0; 
-                                                                    display: flex; 
-                                                                    align-items: center; 
+                                    <button class="btn mr-2" style="background-color: #208DBB;
+                                                                    border-radius: 15px;
+                                                                    width:50px;
+                                                                    height: 40px;
+                                                                    position: relative;
+                                                                    padding: 0;
+                                                                    display: flex;
+                                                                    align-items: center;
                                                                     justify-content: center;">
                                                 <img src="{{ url('/Icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
@@ -278,14 +291,14 @@
                                         <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
                                 </form>
-                                
+
                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                                 <script>
                                     // Setiap tombol hapus memiliki kelas .delete-btn
                                     document.querySelectorAll('.delete-btn').forEach(item => {
                                         item.addEventListener('click', function() {
                                             const sectionId = this.getAttribute('data-id');
-                                
+
                                             Swal.fire({
                                                 title: 'Are you sure?',
                                                 text: "You won't be able to revert this!",

@@ -23,23 +23,98 @@ class MobileHomeController extends Controller
     public function classDetail(Request $request, $id)
     {
         $courseId = $id;
-        $user_id = $request->lms_user_id;
+        $userId = $request->lms_user_id;
 
         $lesson = Lesson::findOrFail($courseId);
 
+        // Your existing query to fetch data
+        $classes = DB::table('lessons AS a')
+            ->select(
+                'a.*', // Select all other columns from the lessons table
+                'b.name AS mentor_name', // Select mentor's name and alias it as mentor_name
+                'b.profile_url', // Select mentor's profile URL
+                DB::raw('COUNT(c.student_id) AS num_students_registered'), // Count the number of registered students for each class and alias it as num_students_registered
+                DB::raw('COUNT(DISTINCT d.student_id) AS num_students'), // Count the total number of students for each class (excluding duplicates) and alias it as num_students
+                DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered') // Check if the current user is registered for each class and alias it as is_registered
+            )
+            ->leftJoin('users AS b', 'a.mentor_id', '=', 'b.id') // Left join the users table to get mentor information
+            ->leftJoin('student_lesson AS c', function ($join) use ($userId) { // Left join the student_lesson table to check if the user is registered for each class
+                $join->on('a.id', '=', 'c.lesson_id')
+                    ->where('c.student_id', '=', $userId); // Filter the join by the current user ID
+            })
+            ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id') // Left join the student_lesson table again to count the total number of students for each class
+            ->whereNull('a.deleted_at') // Filter out deleted records from the lessons table
+            ->where('a.id', '=', $courseId) // Filter out deleted records from the lessons table
+            ->groupBy('a.id', 'b.name', 'b.profile_url') // Group the results by lesson ID, mentor name, and mentor profile URL
+            ->get(); // Execute the query and get the result set
+
+        // Add a new attribute to each item in the $classes array
+        foreach ($classes as $class) {
+
+            if($class->new_class=="Aktif"){
+                $class->new_class = true;
+            }else{
+                $class->new_class = false;
+            }
+        }
+
+
+        if (count($classes) != 0) {
+            $classes = $classes[0];
+        }
+
+        // Fetching lesson categories if not already available
+        $lessonCategories = LessonCategory::all()->pluck('color_of_categories', 'id')->toArray();
+
+        // Adding full image path to each class
+        $section = CourseSection::where("course_id", "=", $classes->id)
+            ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
+            ->first();
+        if ($section != null) {
+            $classes->first_section = (string)$section->id;
+        } else {
+            $classes->first_section = null;
+        }
+
+        $sections = CourseSection::select('lessons.id as lesson_id',
+            'lessons.course_title as lessons_title',
+            'lessons.mentor_id',
+            'users.name as mentor_name',
+            'course_section.id as section_id',
+            'course_section.section_order',
+            'course_section.section_title',
+            'course_section.quiz_session_id',
+            'exam_sessions.time_limit_minute', // Include quiz duration
+            'course_section.section_content',
+            'course_section.section_video',
+            'course_section.created_at',
+            'course_section.updated_at',
+            'course_section.can_be_accessed')
+            ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
+            ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
+            ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
+            ->where('course_section.course_id', $id)
+            ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
+            ->get();
+
+
+        // Convert the course description into plain text or simplified HTML
+        $classes->course_description = strip_tags($classes->course_description); // Remove HTML tags
+        $classes->course_description = htmlspecialchars_decode($classes->course_description); // Decode HTML entities
+        $classes->sections = $sections; // Decode HTML entities
+        $classes->full_img_path = url("/") . Storage::url('public/class/cover/') . $classes->course_cover_image;
         $classInfo = new \stdClass();
         $isRegistered = false;
 
-        $checkIsRegistered = StudentLesson::where("student_id", "=", $user_id)
+        $checkIsRegistered = StudentLesson::where("student_id", "=", $userId)
             ->where("lesson_id", '=', "$courseId")
             ->count();
 
-        if($checkIsRegistered!=0){
-            $isRegistered=true;
+
+        if ($checkIsRegistered != 0) {
+            $isRegistered = true;
         }
 
-        $classInfo->class_detail = $lesson;
-        $classInfo->is_registered = $isRegistered;
 
         return MyHelper::responseSuccessWithData(
             200,
@@ -47,7 +122,7 @@ class MobileHomeController extends Controller
             2,
             "Success",
             "Success",
-            $classInfo
+            $classes
         );
     }
 
@@ -112,11 +187,11 @@ class MobileHomeController extends Controller
     public function claimAccount(Request $request)
     {
         // Validating the incoming request data
-//        $request->validate([
-//            'target_account_id' => 'required|exists:users,id',
-//            'mdln_user_id' => 'required',
-//            'password' => 'required',
-//        ]);
+        //        $request->validate([
+        //            'target_account_id' => 'required|exists:users,id',
+        //            'mdln_user_id' => 'required',
+        //            'password' => 'required',
+        //        ]);
 
         // Extracting data from the validated request
         $accountId = $request->target_account_id;
@@ -318,9 +393,15 @@ class MobileHomeController extends Controller
                 ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
                 ->first();
 
-            if($section!=null){
-                $data->first_section = (string)$section->id;
+            if($data->new_class=="Aktif"){
+                $data->new_class = true;
             }else{
+                $data->new_class = false;
+            }
+
+            if ($section != null) {
+                $data->first_section = (string)$section->id;
+            } else {
                 $data->first_section = null;
             }
             $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;

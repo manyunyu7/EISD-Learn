@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MobileUploaderController;
 use App\Http\Controllers\MobileHomeController;
@@ -35,3 +36,4 @@ Route::any("/coba", [MobileHomeController::class, 'completedStudent']);
 Route::get("/class-list", [MobileHomeController::class, 'classList']);
 Route::get("/class-categories", [MobileHomeController::class, 'classCategories']);
 Route::get("/class/{id}/detail", [MobileHomeController::class, 'classDetail']);
+Route::post("/store-absensi", [AbsensiController::class, 'insertAbsensiMobile']);

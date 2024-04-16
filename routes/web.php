@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseSectionController;
+use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropzoneController;
 /*
@@ -123,6 +124,13 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::get('/student/{id}/all-scores', 'ScoreController@seeByStudent');
         Route::post('/update-scores', 'CourseSectionController@updateScores');
         Route::post('/course/submission/scoring', 'FinalProjectController@score')->name('course.submission.scoring');
+
+        //update switch absensi enable-disabled, used by fetch
+        Route::post('/update-absensi', 'AbsensiController@updateAbsensi');
+
+        //Absensi
+        Route::get('/lesson/{lesson_id}/absensi/{section_id}', 'AbsensiController@manage')->name("absensi.manage");
+
 
         Route::prefix("exam")->group(function (){
             Route::get('new', 'MentorExamController@viewCreateNew');
