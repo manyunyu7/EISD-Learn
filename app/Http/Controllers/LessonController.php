@@ -730,7 +730,30 @@ class LessonController extends Controller
         return view('main.mentorDashboard', compact('dayta', 'myClasses', 'courseStatus', 'completedStudents', 'totalStudents'));
     }
 
-    public function view_courseDashboard(){
+    public function view_courseDashboard($lesson_id){
+        $class = DB::select("
+                        SELECT 
+                            lsn.*,
+                            cs.quiz_session_id AS exam_session_id,
+                            es.exam_id AS exam_id,
+                            exm.title AS exam_name
+                        FROM 
+                            lessons lsn
+                        JOIN 
+                            course_section cs ON lsn.id = cs.course_id
+                        JOIN 
+                            exam_sessions es ON cs.course_id = es.id
+                        JOIN 
+                            exams exm ON es.exam_id = exm.id
+                        WHERE
+                            lsn.id = $lesson_id
+                            AND
+                            es.exam_id = exm.id
+                        ORDER BY 
+                            lsn.id ASC
+                    ");
+                    
+        dd($class);
         return view('main.course_dashboard');
     }
 }
