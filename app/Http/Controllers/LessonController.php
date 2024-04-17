@@ -733,10 +733,17 @@ class LessonController extends Controller
     public function view_courseDashboard($lesson_id){
         $class = DB::select("
                         SELECT 
-                            lsn.*,
-                            cs.*,
-                            es.*,
-                            exm.*
+                            lsn.id AS lesson_id,
+                            lsn.course_title AS lesson_title,
+                            lsn.course_category AS lesson_category,
+                            lsn.course_cover_image AS lesson_cover_img,
+                            lsn.department_id AS lesson_dept_id,
+                            lsn.position_id AS lesson_posit_id,
+                            cs.quiz_session_id AS exam_session_id,
+                            cs.section_title AS section_title,
+                            cs.created_at AS date_create,
+                            es.exam_type AS exam_type,
+                            exm.id AS exam_id
                         FROM 
                             lessons lsn
                         LEFT JOIN 
@@ -752,15 +759,35 @@ class LessonController extends Controller
                             AND
                             es.exam_type = 'Post Test'
                         ORDER BY 
-                            lsn.id ASC
+                            cs.created_at DESC
+                        LIMIT 1
                     ");
-                    
-        // dd($class);
-        return view('main.course_dashboard', compact('class'));
+        $totalStudentsCount = DB::table('student_lesson')
+        ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
+        ->groupBy('lesson_id')
+        ->get();
+        $totalStudents = $totalStudentsCount->where('lesson_id', $lesson_id)->first()->total_students;
+
+        $examSessionId = $class[0]->exam_session_id;
+        // Query untuk mengambil nilai tertinggi dari setiap siswa berdasarkan session_id
+        $studentHighestScores = DB::select("
+                                SELECT 
+                                    u.name,
+                                    u.id,
+                                    u.department,
+                                    MAX(et.current_score) AS highest_score
+                                FROM 
+                                    exam_takers et
+                                LEFT JOIN
+                                    course_section cs ON et.session_id = cs.quiz_session_id
+                                LEFT JOIN
+                                    users u ON et.user_id = u.id
+                                WHERE
+                                    et.session_id = $examSessionId
+                                GROUP BY
+                                    et.course_section_flag, u.id
+                                ");
+        dd($studentHighestScores);
+        return view('main.course_dashboard', compact('class', 'totalStudents', 'studentHighestScores'));
     }
 }
-// SELECT 
-//     lsn.*,
-//     cs.quiz_session_id AS exam_session_id,
-//     es.exam_id AS exam_id,
-//     exm.title AS exam_name

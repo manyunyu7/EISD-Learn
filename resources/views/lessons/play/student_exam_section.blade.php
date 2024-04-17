@@ -5,7 +5,7 @@
                 <div class="col-md-12 ">
                     <div class="">
                         <div class="pt-2">
-                            <h1 class="card-title">Quiz : {{$exam->title}}</h1>
+                            <h1 class="card-title">{{$currentSection->section_title}}</h1>
 
 
                             <div class="form-group d-none">

@@ -194,7 +194,7 @@
                                             <img style="width: 6%; height: auto; margin-top: 12px"
                                                  src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">
                                             <a style="text-decoration: none;color: BLACK;"
-                                               href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                               href="{{ url('/class/students/' . $data->id) }}">
                                                 <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
                                                     <b> {{ $numStudentsCount }} </b><span style="color: #8C94A3;">students</span>
                                                 </p>

@@ -649,7 +649,7 @@ class CourseSectionController extends Controller
             'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
             'sectionDetail','sections', 'questions',
             'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
-            'sectionOrder', 'lesson', 'section', 'isRegistered', 'classInfo');
+            'sectionOrder', 'lesson', 'section', 'isRegistered', 'classInfo', 'currentSection');
 
         if ($request->dump == true) {
             return $compact;
@@ -659,7 +659,7 @@ class CourseSectionController extends Controller
             "Buka Section", "Course Section"
         );
 
-
+        // return $currentSection;
         return view('lessons.play.course_play_new', $compact);
 
     }
