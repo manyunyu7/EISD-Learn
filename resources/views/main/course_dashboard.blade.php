@@ -4,15 +4,14 @@
 
     <div class="container">
         <div class="page-inner">
+        @foreach ($class as $data)
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb bg-white">
                     <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-                    <li class="breadcrumb-item active" aria-current="page">Course - </li>
+                    <li class="breadcrumb-item active" aria-current="page">Course - {{ $data->course_title }}</li>
                 </ol>
             </nav>
-    
-    
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -29,8 +28,8 @@
                                         </div>
                                         <div>
                                             <div class="card-head-row card-tools-still-right">
-                                                <h3 style="color: black;"><b>POST TEST</b></h3>
-                                                <p class="card-category">Label Kategori</p>
+                                                <h3 style="color: black;"><b>{{ $data->section_title }}</b></h3>
+                                                <p class="card-category">{{ $data->course_category }}</p>
                                             </div>
                                         </div>
                                         <div class="ml-auto d-flex" style="margin-bottom: -190px; position: relative">
@@ -113,9 +112,9 @@
                         <div class="card-body d-flex justify-content-center align-items-center">
                             <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
                                 <img style="width: 100%; max-width: 130px; height: auto;"
-                                     src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
-                                     alt="Profile Image" class="avatar-img rounded-circle"
-                                     onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                    src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                    alt="Profile Image" class="avatar-img rounded-circle"
+                                    onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                 <div id="scoring" class="d-flex align-items-center"> <!-- Container untuk scoring -->
                                     <img style="width: 35%; height: auto; margin-right: 10px;" src="{{ url('/icons/tropy.svg') }}" alt="User Icon">
                                     <a href="#" style="text-decoration: none; color: black;">
@@ -142,9 +141,9 @@
                         <div class="card-body d-flex justify-content-center align-items-center">
                             <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
                                 <img style="width: 100%; max-width: 130px; height: auto;"
-                                     src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
-                                     alt="Profile Image" class="avatar-img rounded-circle"
-                                     onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                    src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                    alt="Profile Image" class="avatar-img rounded-circle"
+                                    onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                 <div id="scoring" class="d-flex align-items-center"> <!-- Container untuk scoring -->
                                     <img style="width: 35%; height: auto; margin-right: 10px;" src="{{ url('/icons/tropy.svg') }}" alt="User Icon">
                                     <a href="#" style="text-decoration: none; color: black;">
@@ -171,9 +170,9 @@
                         <div class="card-body d-flex justify-content-center align-items-center">
                             <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
                                 <img style="width: 100%; max-width: 130px; height: auto;"
-                                     src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
-                                     alt="Profile Image" class="avatar-img rounded-circle"
-                                     onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                    src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                    alt="Profile Image" class="avatar-img rounded-circle"
+                                    onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                 <div id="scoring" class="d-flex align-items-center"> <!-- Container untuk scoring -->
                                     <img style="width: 35%; height: auto; margin-right: 10px;" src="{{ url('/icons/tropy.svg') }}" alt="User Icon">
                                     <a href="#" style="text-decoration: none; color: black;">
@@ -223,7 +222,7 @@
                 </table>
             </div>
         </div>
-    
+
         <div class="container-fluid">
             <div class="container mt-5">
                 @if ($errors->any())
@@ -235,17 +234,18 @@
                                         toastr.error('{{ session('
                                                 $error ') }}', '{{ $error }}');
                                     });
-    
+
                                 </script>
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
-    
-    
+
+
             </div>
         </div>
+        @endforeach
     </div>
 
 

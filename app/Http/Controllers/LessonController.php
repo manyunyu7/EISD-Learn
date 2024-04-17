@@ -734,26 +734,33 @@ class LessonController extends Controller
         $class = DB::select("
                         SELECT 
                             lsn.*,
-                            cs.quiz_session_id AS exam_session_id,
-                            es.exam_id AS exam_id,
-                            exm.title AS exam_name
+                            cs.*,
+                            es.*,
+                            exm.*
                         FROM 
                             lessons lsn
-                        JOIN 
+                        LEFT JOIN 
                             course_section cs ON lsn.id = cs.course_id
-                        JOIN 
-                            exam_sessions es ON cs.course_id = es.id
-                        JOIN 
+                        LEFT JOIN 
+                            exam_sessions es ON cs.quiz_session_id = es.id
+                        LEFT JOIN 
                             exams exm ON es.exam_id = exm.id
                         WHERE
                             lsn.id = $lesson_id
                             AND
                             es.exam_id = exm.id
+                            AND
+                            es.exam_type = 'Post Test'
                         ORDER BY 
                             lsn.id ASC
                     ");
                     
-        dd($class);
-        return view('main.course_dashboard');
+        // dd($class);
+        return view('main.course_dashboard', compact('class'));
     }
 }
+// SELECT 
+//     lsn.*,
+//     cs.quiz_session_id AS exam_session_id,
+//     es.exam_id AS exam_id,
+//     exm.title AS exam_name
