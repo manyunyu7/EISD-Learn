@@ -733,6 +733,39 @@ class LessonController extends Controller
     }
 
     public function view_courseDashboard($lesson_id){
+        // $class = DB::select("
+        //                 SELECT 
+        //                     lsn.id AS lesson_id,
+        //                     lsn.course_title AS lesson_title,
+        //                     lsn.course_category AS lesson_category,
+        //                     lsn.course_cover_image AS lesson_cover_img,
+        //                     lsn.department_id AS lesson_dept_id,
+        //                     lsn.position_id AS lesson_posit_id,
+        //                     cs.quiz_session_id AS exam_session_id,
+        //                     cs.section_title AS section_title,
+        //                     cs.id AS section_id,
+        //                     cs.created_at AS date_create,
+        //                     es.exam_type AS exam_type,
+        //                     exm.id AS exam_id
+        //                 FROM 
+        //                     lessons lsn
+        //                 LEFT JOIN 
+        //                     course_section cs ON lsn.id = cs.course_id
+        //                 LEFT JOIN 
+        //                     exam_sessions es ON cs.quiz_session_id = es.id
+        //                 LEFT JOIN 
+        //                     exams exm ON es.exam_id = exm.id
+        //                 WHERE
+        //                     lsn.id = $lesson_id
+        //                     AND
+        //                     es.exam_id = exm.id
+        //                     AND
+        //                     es.exam_type = 'Post Test'
+        //                 ORDER BY 
+        //                     cs.created_at DESC
+        //                 LIMIT 1
+        // ");
+
         $class = DB::select("
                         SELECT 
                             lsn.id AS lesson_id,
@@ -759,49 +792,62 @@ class LessonController extends Controller
                             lsn.id = $lesson_id
                             AND
                             es.exam_id = exm.id
-                            AND
-                            es.exam_type = 'Post Test'
+                           
                         ORDER BY 
                             cs.created_at DESC
                         LIMIT 1
-                    ");
+        ");
         $totalStudentsCount = DB::table('student_lesson')
         ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
         ->groupBy('lesson_id')
         ->get();
         $totalStudents = $totalStudentsCount->where('lesson_id', $lesson_id)->first()->total_students;
 
-        $examSessionId = $class[0]->exam_session_id;
-        $examSectionId = $class[0]->section_id;
         
-        $students_takeExam = DB::select("
+        if(!empty($class)){
+            $examSessionId = $class[0]->exam_session_id;
+            $examSectionId = $class[0]->section_id;
+            
+            $students_takeExam = DB::select("
                                     SELECT 
-                                    u.name,
-                                    u.id,
-                                    u.department,
-                                    MAX(et.current_score) AS highest_score
-                                FROM 
-                                    exam_takers et
-                                LEFT JOIN
-                                    course_section cs ON et.session_id = cs.quiz_session_id
-                                LEFT JOIN
-                                    users u ON et.user_id = u.id
-                                WHERE
-                                    et.session_id = $examSessionId
-                                    AND et.course_section_flag = $examSectionId
-                                GROUP BY
-                                    u.id
-                                ORDER BY
-                                    highest_score ASC
-                                ");
-        
-        $count_studentsTaken = count($students_takeExam);
-        $count_studentsUntaken = $totalStudents - $count_studentsTaken;
-        
-        // dd($count_studentsUntaken);
-        // 3 Data Exam Terbaru
-        $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
+                                        u.name,
+                                        u.id,
+                                        u.department,
+                                        MAX(et.current_score) AS highest_score
+                                    FROM 
+                                        exam_takers et
+                                    LEFT JOIN
+                                        course_section cs ON et.session_id = cs.quiz_session_id
+                                    LEFT JOIN
+                                        users u ON et.user_id = u.id
+                                    WHERE
+                                        et.session_id = $examSessionId
+                                        AND et.course_section_flag = $examSectionId
+                                    GROUP BY
+                                        u.id
+                                    ORDER BY
+                                        highest_score ASC
+                                    
+            ");
+            
+            $count_studentsTaken = count($students_takeExam);
+            $count_studentsUntaken = $totalStudents - $count_studentsTaken;
+            
+            // dd($class);
+            // 3 Data Exam Terbaru
+            $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
+    
+            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken'));
+        }else{
+            // Handle case when $class is empty, for example:
+            // echo "No data found for the specified criteria.";
+            $count_studentsUntaken = 0;
+            $count_studentsTaken = 0;
+            $students_takeExam = 0;
+            $class = [];
+            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken'));
 
-        return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken'));
+        }
+        
     }
 }
