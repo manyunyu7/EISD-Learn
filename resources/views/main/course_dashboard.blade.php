@@ -14,8 +14,7 @@
       ]);
 
       var options = {
-        colors:['#67C587','#207F3F'],
-        legend.position: 'bottom'
+        colors:['#67C587','#207F3F']
       };
 
       var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -76,14 +75,14 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
-                                Post Test Progress
+                                <h3><strong>Post Test Progress</strong></h3>
                             </div>
                             <div class="card-body">
-                                <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                                <div class="tab-content" id="pills-without-border-tabContent">
                                     <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                          aria-labelledby="pills-home-tab-nobd">
                                         <div class="">
-                                            <div id="piechart" style="height: 335px; width: auto;"></div>
+                                            <div id="piechart" style="height: 300px; width: 100%;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -93,7 +92,7 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
-                                Detail Not Finished
+                                <h3><strong>Detail Not Finished</strong></h3>
                             </div>
                             <div class="card-body">
                                 
