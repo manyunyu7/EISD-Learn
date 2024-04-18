@@ -39,7 +39,12 @@ Route::get("/class-categories", [MobileHomeController::class, 'classCategories']
 Route::get("/class/{id}/detail", [MobileHomeController::class, 'classDetail']);
 
 
+Route::get("/viz/ais", [MobileVizController::class, 'ais']);
 Route::get("/viz/quiz", [MobileVizController::class, 'getQuizResult']);
+Route::get("/viz/completed-class", [MobileVizController::class, 'getCompletedClass']);
+Route::get("/viz/incompleted-class", [MobileVizController::class, 'getCompletedClass']);
+Route::get("/viz/enrolled", [MobileVizController::class, 'getCompletedClass']);
+Route::get("/viz/main-chart", [MobileVizController::class, 'mainChart']);
 
 
 Route::post("/store-absensi", [AbsensiController::class, 'insertAbsensiMobile']);
