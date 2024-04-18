@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
+use App\Models\ExamSession;
+use App\Models\ExamTaker;
 use App\Models\StudentSection;
 use App\Models\Exam;
 use Auth;
@@ -123,7 +125,7 @@ class HomeController extends Controller
 
                 // Simpan dalam variabel status masing-masing kelas
                 $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 'Completed Course' : 'On Progress Course';
-                
+
                 // Hitung berapa banyak kelas yang sedang dalam status on progress course
                 if ($courseStatus[$lessonId] === 'On Progress Course') {
                     $onProgressCount++;
@@ -132,25 +134,90 @@ class HomeController extends Controller
                 }
             }
 
-            // 3 Data Exam Terbaru
-            $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
-            $averageScores  = DB::table('exam_sessions')
-                            ->rightJoin('exam_takers', 'exam_sessions.id', '=', 'exam_takers.session_id')
-                            ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
-                            ->select('exams.id', 'exams.title', DB::raw('ROUND(AVG(exam_takers.current_score)) as average_score'))
-                            ->where('exam_sessions.exam_type', 'Post Test')
-                            ->groupBy('exam_sessions.id')
-                            // ->orderBy('created_at', 'desc')
-                            ->take(3)
-                            ->get();
-        
+            // Retrieve all records of exams taken by students
+            $takenExamCourseSection = ExamTaker::all();
+
+            // Initialize an empty array to store unique exam sessions
+            $takenExamId = [];
+            $eligibleSessionId = [];
+
+            // Loop through each taken exam
+            foreach ($takenExamCourseSection as $mExamSection){
+
+                // Find the exam session related to the taken exam
+                $examSession = ExamSession::find($mExamSection->session_id);
+
+                // If the exam session exists
+                if($examSession!=null){
+
+                    // Find the exam related to the session
+                    $exam = Exam::find($examSession->exam_id);
+                    // If the exam exists
+                    if($exam!=null){
+                        // Add the exam ID to the list of taken exam sessions
+                        array_push($takenExamId, $exam->id);
+                    }
+                }
+            }
+
+            // Filter out duplicate exam sessions and convert the array to numerical indexed array
+            $availableExamToFilter = (array_values(array_unique($takenExamId)));
+
+            // Retrieve the latest three exams based on their IDs
+            $latestExams = Exam::whereIn('id', $availableExamToFilter)->latest()->take(3)->get();
+
+            // Initialize an empty array to store average scores
             $averageScoreArray = [];
 
-            foreach ($averageScores as $score) {
+            // Retrieve the average scores of exams for the latest three exam sessions
+            $averageScores  = DB::table('exam_sessions')
+                ->rightJoin('exam_takers', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
+                ->select('exams.id', 'exams.title', DB::raw('ROUND(AVG(exam_takers.current_score)) as average_score'))
+                ->where('exam_sessions.exam_type', 'Post Test')
+                ->groupBy('exam_sessions.id')
+                ->take(3)
+                ->get();
+
+            $arraySomething = [];
+
+
+
+            $results = DB::select("
+                        SELECT
+                            sub.exam_title,
+                            sub.exam_session_id,
+                            sub.avg_score
+                        FROM
+                            (SELECT
+                                e.title as exam_title,
+                                es.id AS exam_session_id,
+                                AVG(et.current_score) AS avg_score
+                            FROM
+                                exam_takers et
+                            LEFT JOIN
+                                exam_sessions es ON et.session_id = es.id
+                            LEFT JOIN
+                                course_section cs ON cs.id = et.course_section_flag
+                            LEFT JOIN
+                                exams e ON e.id = es.exam_id
+                            LEFT JOIN
+                                users u ON et.user_id = u.id
+                            GROUP BY
+                                es.id
+                            ORDER BY
+                                es.created_at DESC
+                            LIMIT 3)
+                        AS sub
+                    ");
+
+            $averageScoreArray = [];
+
+            foreach ($results as $score) {
                 $averageScoreArray[] = [
-                    'exam_id' => $score->id,
-                    'title_exam' => $score->title,
-                    'average_score' => $score->average_score
+                    'exam_session_id' => $score->exam_session_id,
+                    'title_exam' => $score->exam_title,
+                    'average_score' => $score->avg_score
                 ];
             }
 
