@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\Paginator;
 use DB;
+use App\Models\Exam;
+
 use Alert;
 use App\Models\StudentSection;
 use App\Http\Controllers\ITHubController;
@@ -741,6 +743,7 @@ class LessonController extends Controller
                             lsn.position_id AS lesson_posit_id,
                             cs.quiz_session_id AS exam_session_id,
                             cs.section_title AS section_title,
+                            cs.id AS section_id,
                             cs.created_at AS date_create,
                             es.exam_type AS exam_type,
                             exm.id AS exam_id
@@ -769,9 +772,10 @@ class LessonController extends Controller
         $totalStudents = $totalStudentsCount->where('lesson_id', $lesson_id)->first()->total_students;
 
         $examSessionId = $class[0]->exam_session_id;
-        // Query untuk mengambil nilai tertinggi dari setiap siswa berdasarkan session_id
-        $studentHighestScores = DB::select("
-                                SELECT 
+        $examSectionId = $class[0]->section_id;
+        
+        $students_takeExam = DB::select("
+                                    SELECT 
                                     u.name,
                                     u.id,
                                     u.department,
@@ -784,10 +788,20 @@ class LessonController extends Controller
                                     users u ON et.user_id = u.id
                                 WHERE
                                     et.session_id = $examSessionId
+                                    AND et.course_section_flag = $examSectionId
                                 GROUP BY
-                                    et.course_section_flag, u.id
+                                    u.id
+                                ORDER BY
+                                    highest_score ASC
                                 ");
-        dd($studentHighestScores);
-        return view('main.course_dashboard', compact('class', 'totalStudents', 'studentHighestScores'));
+        
+        $count_studentsTaken = count($students_takeExam);
+        $count_studentsUntaken = $totalStudents - $count_studentsTaken;
+        
+        // dd($count_studentsUntaken);
+        // 3 Data Exam Terbaru
+        $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
+
+        return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken'));
     }
 }

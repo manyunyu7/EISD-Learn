@@ -1,5 +1,29 @@
 @extends('main.template')
+@section('script')
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
 
+    function drawChart() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Task', 'Hours per Day'],
+        ['Sudah Mengerjakan',     {{ $count_studentsTaken }}],
+        ['Belum Mengerjakan',      {{ $count_studentsUntaken }}]
+      ]);
+
+      var options = {
+        colors:['#67C587','#207F3F'],
+        legend.position: 'bottom'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(data, options);
+    }
+  </script>
+@endsection
 @section('main')
 
     <div class="container">
@@ -55,7 +79,14 @@
                                 Post Test Progress
                             </div>
                             <div class="card-body">
-                                
+                                <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                                    <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
+                                         aria-labelledby="pills-home-tab-nobd">
+                                        <div class="">
+                                            <div id="piechart" style="height: 335px; width: auto;"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
