@@ -830,22 +830,50 @@ class LessonController extends Controller
                                     
             ");
             
+            $students_notTakenExam = DB::select("
+                SELECT 
+                    u.id,
+                    u.name,
+                    u.profile_url,
+                    u.department
+                FROM 
+                    users u
+                INNER JOIN
+                    student_lesson sl ON u.id = sl.student_id
+                INNER JOIN
+                    course_section cs ON sl.lesson_id = cs.course_id AND cs.id = $examSectionId
+                WHERE
+                    NOT EXISTS (
+                        SELECT 1
+                        FROM exam_takers et
+                        WHERE et.user_id = u.id
+                        AND et.session_id = $examSessionId
+                        AND et.course_section_flag = $examSectionId
+                    )
+            ");
+
+
+
+
+
+            
+
             $count_studentsTaken = count($students_takeExam);
             $count_studentsUntaken = $totalStudents - $count_studentsTaken;
             
-            // dd($class);
+            // dd($students_notTakenExam);
             // 3 Data Exam Terbaru
             $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
     
-            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken'));
+            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken', 'students_notTakenExam'));
         }else{
-            // Handle case when $class is empty, for example:
-            // echo "No data found for the specified criteria.";
+            // Handle case when $class is empty
             $count_studentsUntaken = 0;
             $count_studentsTaken = 0;
             $students_takeExam = 0;
             $class = [];
-            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken'));
+            $students_notTakenExam = 0;
+            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken', 'students_notTakenExam'));
 
         }
         

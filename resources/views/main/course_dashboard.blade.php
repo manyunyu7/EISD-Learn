@@ -95,7 +95,25 @@
                                 <h3><strong>Detail Not Finished</strong></h3>
                             </div>
                             <div class="card-body">
-                                
+                                <div class="table-responsive">
+                                    <table class="table" style="border-collapse: collapse;">
+                                        <tbody>
+                                            @foreach ($students_notTakenExam as $item)
+                                            <tr style="height: 70px;">
+                                                <td scope="row">
+                                                    <div class="avatar-sm">
+                                                        <img style="width: 125%; height: auto;"
+                                                            src="{{ Storage::url('public/profile/') . $item->profile_url }}"
+                                                            alt="Profile Image" class="avatar-img rounded-circle"
+                                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                                    </div>
+                                                </td>
+                                                <td style="width: 100%; font-size:17px">{{ $item->name }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
