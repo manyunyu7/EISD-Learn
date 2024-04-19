@@ -26,7 +26,7 @@
 @section('main')
 
     <div class="container">
-        @if(!empty($class))
+        @if (!empty($class))
             @foreach ($class as $data)
             <div class="page-inner">
                 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -119,7 +119,7 @@
                     </div>
                 </div>
 
-
+                @if (($list_studentTaken->count() >= 3))
                 <h4 class="page-title">Leaderboard Score</h4>
                 <div class="col-md-12" >
                     <div class="row">
@@ -233,6 +233,17 @@
                         </div>
                     </div>
                 </div>
+                @else
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <h3>
+                                    Minimal ada 3 Student yang telah mengerjakan Post Test untuk ditampilkan dalam Leaderboard
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                 {{-- Lakukan Looping Untuk Table Ini! --}}
                 <div class="table-responsive" id="tableContainer">
@@ -250,23 +261,28 @@
                         </thead>
                         <tbody>
                             @foreach ($students_takeExam as $item)
-                            <tr class="text-center">
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <div class="avatar-sm">
-                                        <img style="width: 125%; height: auto;"
-                                            src="{{ Storage::url('public/profile/') . $item->profile_url }}"
-                                            alt="Profile Image" class="avatar-img rounded-circle"
-                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
-                                    </div>
-                                </td>
-                                <td>{{ $item->name }}</td>
-                                <td>Digital Management</td>
-                                <td>0%</td>
-                                <td>0</td>
-                                <td>{{ $item->highest_score }}</td>
-                            </tr>
+                                <?php
+                                    // Cari data dari $list_studentTaken_preTest yang memiliki user_id yang sama dengan $item
+                                    $matchedPreTest = $list_studentTaken_preTest->where('user_id', $item->id)->first();
+                                ?>
+                                <tr class="text-center">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <div class="avatar-sm">
+                                            <img style="width: 125%; height: auto;"
+                                                src="{{ Storage::url('public/profile/') . $item->profile_url }}"
+                                                alt="Profile Image" class="avatar-img rounded-circle"
+                                                onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                        </div>
+                                    </td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>Digital Management</td>
+                                    <td>0%</td>
+                                    <td>{{ $matchedPreTest ? $matchedPreTest->highest_score : '-' }}</td>
+                                    <td>{{ $item->highest_score }}</td>
+                                </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>
