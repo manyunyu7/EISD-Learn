@@ -63,7 +63,7 @@ class MobileSeeCourseController extends Controller
                 MyHelper::addAnalyticEventMobile(
                     "Reject Section Diluar Jadwal", "Course Section",$userId
                 );
-                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
+//                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan #922 $lessonObject");
             }
         }
 

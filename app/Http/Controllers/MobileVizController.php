@@ -12,38 +12,10 @@ use Illuminate\Support\Facades\DB;
 class MobileVizController extends Controller
 {
 
-    public function ais(Request $request)
-    {
-        $users = DB::select("
-        SELECT l.course_title, u.id, u.name, u.email, u.department
-        FROM student_lesson sl
-        LEFT JOIN users u ON u.id = sl.student_id
-        LEFT JOIN lessons l on l.id = sl.lesson_id
-        WHERE sl.lesson_id = 10;
-    ");
-
-
-        // Accessing the results
-        foreach ($users as $user) {
-
-            // Here you can append a new variable to each user object
-            $user->new_variable = "new value"; // Replace "new value" with the value you want to assign
-            $user->rank = "new value"; // Replace "new value" with the value you want to assign
-            $user->division = "new value"; // Replace "new value" with the value you want to assign
-            $user->percentage = "new value"; // Replace "new value" with the value you want to assign
-            $user->pre_test = "new value"; // Replace "new value" with the value you want to assign
-            $user->post_test = "new value"; // Replace "new value" with the value you want to assign
-            $user->percentage = "new value"; // Replace "new value" with the value you want to assign
-        }
-
-        return $users;
-        // Now $results array contains all the fetched rows from the query, you can append it to another variable or do further processing.
-    }
-
     public function mainChart(Request $request)
     {
         $userId = $request->lms_user_id; // Assuming you'll use the user id from the request
-        $userId = 88; // Uncomment this line if you want to hardcode the user id
+        // $userId = 88; // Uncomment this line if you want to hardcode the user id
         // Get all classes taken by the user
         $takenClasses = StudentLesson::where("student_id", "=", $userId)->get();
 
@@ -59,7 +31,7 @@ class MobileVizController extends Controller
 
 
         // Check if there are no classes
-        if ($totalClasses === 0) {
+        if ($totalClasses == 0) {
             return MyHelper::responseSuccessWithData(
                 200,
                 200,
@@ -68,11 +40,10 @@ class MobileVizController extends Controller
                 "success",
                 [
                     'completed' => 0,
-                    'incomplete' => 100
+                    'incomplete' => $allClass
                 ]
             );
         }
-
 
         // Calculate percentages and round to 2 decimal places
         $completedPercentage = round(($allClass / $totalClasses) * 100, 1);
@@ -96,7 +67,7 @@ class MobileVizController extends Controller
     public function getCompletedClass(Request $request)
     {
         $userId = $request->lms_user_id; // Assuming you'll use the user id from the request
-        $userId = 88; // Uncomment this line if you want to hardcode the user id
+        //$userId = 88; // Uncomment this line if you want to hardcode the user id
         // Get all classes taken by the user
         $takenClasses = StudentLesson::where("student_id", "=", $userId)->get();
 

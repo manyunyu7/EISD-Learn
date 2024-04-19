@@ -333,29 +333,28 @@ class MobileHomeController extends Controller
     public function classCategories(Request $request)
     {
         $userID = Auth::id();
-
         $data = LessonCategory::whereNull('deleted_at')
             ->orWhere('deleted_at', '') // Assuming empty string represents empty value
-            ->get();
+            ->get()
+            ->toArray(); // Convert collection to array
 
-//        $data = DB::connection('ithub')->table('m_departments')->get();
-        $newData = [];
+        // Insert new data at the beginning of the array
+        $newData = [
+            [
+                "id" => -99,
+                "name" => "Semua", // Update with appropriate name
+                "img_path" => "qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png",
+                "created_by" => null,
+                "deleted_at" => null,
+                "created_at" => "2024-04-18T00:00:00.000000Z", // Update with appropriate timestamp
+                "updated_at" => "2024-04-18T00:00:00.000000Z", // Update with appropriate timestamp
+                "color_of_categories" => "#20cf2c",
+                "full_img_path" => "http://0.0.0.0:5253/storage/class/category/qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png"
+            ]
+        ];
 
-//        foreach ($data as $item) {
-//            $newItem = [
-//                "id" => 1,
-//                "name" => $item->name,
-//                "img_path" => "qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png",
-//                "created_by" => null,
-//                "deleted_at" => null,
-//                "created_at" => "2024-03-04T06:42:14.000000Z",
-//                "updated_at" => "2024-03-25T02:09:30.000000Z",
-//                "color_of_categories" => "#20cf2c",
-//                "full_img_path" => "http://0.0.0.0:5253/storage/class/category/qYJgIKFdohPsLTdGYhOuJcGgdABZllJpVZbh1NzV.png"
-//            ];
-//
-//            $newData[] = $newItem;
-//        }
+        // Merge new data with existing data
+        $mergedData = array_merge($newData, $data);
 
         return MyHelper::responseSuccessWithData(
             200,
@@ -363,8 +362,10 @@ class MobileHomeController extends Controller
             2,
             "success",
             "success",
-            $data);
+            $mergedData
+        );
     }
+
 
     public function classList(Request $request)
     {
@@ -388,9 +389,26 @@ class MobileHomeController extends Controller
                     ->where('c.student_id', '=', $userID); // Filter the join by the current user ID
             })
             ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id') // Left join the student_lesson table again to count the total number of students for each class
-            ->whereNull('a.deleted_at') // Filter out deleted records from the lessons table
-            ->groupBy('a.id', 'b.name', 'b.profile_url') // Group the results by lesson ID, mentor name, and mentor profile URL
-            ->get(); // Execute the query and get the result set
+            ->whereNull('a.deleted_at'); // Filter out deleted records from the lessons table
+
+
+        if ($request->category != null) {
+
+            if($request->category!="Semua"){
+                $classes = $classes->where("a.course_category", "=", $request->category);
+            }
+        }
+
+        if ($request->search_query != null) {
+            if ($request->search_query != "") {
+                $searchTerm = '%' . $request->search_query . '%';
+                $classes = $classes->where("a.course_title", "LIKE", $searchTerm);
+            }
+        }
+
+
+        // Group the results by lesson ID, mentor name, and mentor profile URL// Execute the query and get the result set
+        $classes = $classes->groupBy('a.id', 'b.name', 'b.profile_url')->get();
 
         // Fetching lesson categories if not already available
         $lessonCategories = LessonCategory::all()->pluck('color_of_categories', 'id')->toArray();

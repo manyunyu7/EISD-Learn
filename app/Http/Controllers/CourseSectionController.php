@@ -96,11 +96,14 @@ class CourseSectionController extends Controller
             ->where('a.id', $lesson_id)
             ->orderBy(DB::raw('CAST(c.section_order AS UNSIGNED)'), 'ASC')
             ->get();
-        $examSessions = ExamSession::where(function ($query) {
-                                            $query->whereNull('is_deleted')
-                                                ->orWhere('is_deleted', '<>', 'y');
-                                        })
-                                    ->get();
+
+        $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
+            ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
+            ->where(function($query) {
+                $query->where('exams.is_deleted', '!=', 'y')
+                    ->orWhereNull('exams.is_deleted');
+            })
+            ->get();
 
         $compact = compact('dayta', 'lesson_id', 'examSessions');
         return view('lessons.manage_materials', $compact);
@@ -149,11 +152,13 @@ class CourseSectionController extends Controller
     }
 
     public function edit_material_v2($lesson_id, $section_id){
-        $examSessions = ExamSession::where(function ($query) {
-                                $query->whereNull('is_deleted')
-                                    ->orWhere('is_deleted', '<>', 'y');
-                            })
-                        ->get();
+        $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
+            ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
+            ->where(function($query) {
+                $query->where('exams.is_deleted', '!=', 'y')
+                    ->orWhereNull('exams.is_deleted');
+            })
+            ->get();
 
         $data_course_section_to_edit = CourseSection::findOrFail($section_id);
         $compact = compact('lesson_id', 'examSessions', 'section_id', 'data_course_section_to_edit');
@@ -461,8 +466,8 @@ class CourseSectionController extends Controller
             ->where('ss.student_id', Auth::id())
             ->where('lessons.id', $lessonId)
             ->count();
-        
-        
+
+
 
         // return $sectionTakenOnCourseCount;
         // $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
@@ -555,7 +560,7 @@ class CourseSectionController extends Controller
             if ($isEligibleStudent) {
                 $this->startSection($currentSectionId);
                 $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
-                
+
                 $sectionTakenOnCourseCount = DB::table('student_section as ss')
                 ->leftJoin('users', 'users.id', '=', 'ss.student_id')
                 ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
@@ -902,7 +907,7 @@ class CourseSectionController extends Controller
         $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
                             ->where('student_lesson.lesson_id', $lessonId)
                             ->pluck('users.name', 'users.email', 'users.id');
-                            
+
         // return $studentsInLesson;
 
         return view("lessons.view_students")->with(compact("lessonId", "uniqueDepartments"));
