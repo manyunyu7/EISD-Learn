@@ -95,7 +95,25 @@
                                 <h3><strong>Detail Not Finished</strong></h3>
                             </div>
                             <div class="card-body">
-                                
+                                <div class="table-responsive">
+                                    <table class="table" style="border-collapse: collapse;">
+                                        <tbody>
+                                            @foreach ($students_notTakenExam as $item)
+                                            <tr style="height: 70px;">
+                                                <td scope="row">
+                                                    <div class="avatar-sm">
+                                                        <img style="width: 125%; height: auto;"
+                                                            src="{{ Storage::url('public/profile/') . $item->profile_url }}"
+                                                            alt="Profile Image" class="avatar-img rounded-circle"
+                                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                                    </div>
+                                                </td>
+                                                <td style="width: 100%; font-size:17px">{{ $item->name }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -136,20 +154,20 @@
                                 <div class="d-flex align-items-center justify-content-center">
                                     <img style="width: 12%; height: auto; margin-right: 10px;" src="{{ url('/icons/rank_1.svg') }}" alt="User Icon">
                                     <a href="#" style="text-decoration: none; color: black;">
-                                        <p style="font-size: 18px; margin: 0;"><b>Students Name</b></p>
+                                        <p style="font-size: 18px; margin: 0;"><b>{{ $rank1->name }}</b></p>
                                     </a>
                                 </div>
                             </div>
                             <div class="card-body d-flex justify-content-center align-items-center">
                                 <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
                                     <img style="width: 100%; max-width: 130px; height: auto;"
-                                        src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                        src="{{ Storage::url('public/profile/') . $rank1->profile_url }}"
                                         alt="Profile Image" class="avatar-img rounded-circle"
                                         onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                     <div id="scoring" class="d-flex align-items-center"> <!-- Container untuk scoring -->
                                         <img style="width: 35%; height: auto; margin-right: 10px;" src="{{ url('/icons/tropy.svg') }}" alt="User Icon">
                                         <a href="#" style="text-decoration: none; color: black;">
-                                            <p style="font-size: 18px; margin: 0; white-space: nowrap;"><b>$100</b></p>
+                                            <p style="font-size: 18px; margin: 0; white-space: nowrap;"><b>{{ $rank1->current_score }}</b></p>
                                         </a>
                                     </div>
                                 </div>
@@ -165,20 +183,20 @@
                                 <div class="d-flex align-items-center justify-content-center">
                                     <img style="width: 12%; height: auto; margin-right: 10px;" src="{{ url('/icons/rank_2.svg') }}" alt="User Icon">
                                     <a href="#" style="text-decoration: none; color: black;">
-                                        <p style="font-size: 18px; margin: 0;"><b>Students Name</b></p>
+                                        <p style="font-size: 18px; margin: 0;"><b>{{ $rank2->name }}</b></p>
                                     </a>
                                 </div>
                             </div>
                             <div class="card-body d-flex justify-content-center align-items-center">
                                 <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
                                     <img style="width: 100%; max-width: 130px; height: auto;"
-                                        src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                        src="{{ Storage::url('public/profile/') . $rank2->profile_url }}"
                                         alt="Profile Image" class="avatar-img rounded-circle"
                                         onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                     <div id="scoring" class="d-flex align-items-center"> <!-- Container untuk scoring -->
                                         <img style="width: 35%; height: auto; margin-right: 10px;" src="{{ url('/icons/tropy.svg') }}" alt="User Icon">
                                         <a href="#" style="text-decoration: none; color: black;">
-                                            <p style="font-size: 18px; margin: 0; white-space: nowrap;"><b>$100</b></p>
+                                            <p style="font-size: 18px; margin: 0; white-space: nowrap;"><b>{{ $rank2->current_score }}</b></p>
                                         </a>
                                     </div>
                                 </div>
@@ -194,20 +212,20 @@
                                 <div class="d-flex align-items-center justify-content-center">
                                     <img style="width: 12%; height: auto; margin-right: 10px;" src="{{ url('/icons/rank_3.svg') }}" alt="User Icon">
                                     <a href="#" style="text-decoration: none; color: black;">
-                                        <p style="font-size: 18px; margin: 0;"><b>Students Name</b></p>
+                                        <p style="font-size: 18px; margin: 0;"><b>{{ $rank3->name }}</b></p>
                                     </a>
                                 </div>
                             </div>
                             <div class="card-body d-flex justify-content-center align-items-center">
                                 <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
                                     <img style="width: 100%; max-width: 130px; height: auto;"
-                                        src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                        src="{{ Storage::url('public/profile/') . $rank3->profile_url }}"
                                         alt="Profile Image" class="avatar-img rounded-circle"
                                         onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                     <div id="scoring" class="d-flex align-items-center"> <!-- Container untuk scoring -->
                                         <img style="width: 35%; height: auto; margin-right: 10px;" src="{{ url('/icons/tropy.svg') }}" alt="User Icon">
                                         <a href="#" style="text-decoration: none; color: black;">
-                                            <p style="font-size: 18px; margin: 0; white-space: nowrap;"><b>$100</b></p>
+                                            <p style="font-size: 18px; margin: 0; white-space: nowrap;"><b>{{ $rank3->current_score }}</b></p>
                                         </a>
                                     </div>
                                 </div>
@@ -231,17 +249,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach ($studentHighestScores as $item)
+                            @foreach ($students_takeExam as $item)
                             <tr class="text-center">
-                                <td>#1</td>
-                                <td>Img</td>
-                                <td>{{ $item->guest_name }}</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    <div class="avatar-sm">
+                                        <img style="width: 125%; height: auto;"
+                                            src="{{ Storage::url('public/profile/') . $item->profile_url }}"
+                                            alt="Profile Image" class="avatar-img rounded-circle"
+                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                    </div>
+                                </td>
+                                <td>{{ $item->name }}</td>
                                 <td>Digital Management</td>
-                                <td>100%</td>
-                                <td>95</td>
-                                <td>100</td>
+                                <td>0%</td>
+                                <td>0</td>
+                                <td>{{ $item->highest_score }}</td>
                             </tr>
-                            @endforeach --}}
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
