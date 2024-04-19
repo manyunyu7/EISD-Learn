@@ -812,6 +812,7 @@ class LessonController extends Controller
                                     SELECT 
                                         u.name,
                                         u.id,
+                                        u.profile_url,
                                         u.department,
                                         MAX(et.current_score) AS highest_score
                                     FROM 
@@ -852,20 +853,43 @@ class LessonController extends Controller
                     )
             ");
 
+            // MAX(et.current_score) AS highest_score,
+            $list_studentTaken = ExamTaker::join('users', 'exam_takers.user_id', '=', 'users.id')
+                                ->where('exam_takers.session_id', $examSessionId)
+                                ->where('exam_takers.course_section_flag', $examSectionId)
+                                ->select('exam_takers.current_score', 'users.name', 'users.profile_url', 'exam_takers.finished_at' )
+                                ->get();
 
 
+           // Mengurutkan hasil berdasarkan current_score secara menurun
+            $list_studentTaken = $list_studentTaken->sortByDesc('current_score');
 
-
-            
+            // Mengambil top 3 siswa dengan highest score tertinggi
+            $top_three_students = $list_studentTaken->take(3);
+            // Memeriksa jumlah siswa dalam koleksi
+            if ($top_three_students->count() >= 3) {
+                // Memasukkan data dari masing-masing item ke dalam variabel rank1, rank2, dan rank3
+                $rank1 = $top_three_students[0]; // Siswa dengan highest score tertinggi
+                $rank2 = $top_three_students[1]; // Siswa dengan score tertinggi kedua
+                $rank3 = $top_three_students[2]; // Siswa dengan score tertinggi ketiga
+            } else {
+                // Jika jumlah siswa kurang dari 3, berikan pesan kesalahan atau lakukan penanganan sesuai kebutuhan
+                // Misalnya:
+                echo "Tidak cukup data untuk mendapatkan top 3 siswa.";
+            }
 
             $count_studentsTaken = count($students_takeExam);
             $count_studentsUntaken = $totalStudents - $count_studentsTaken;
             
-            // dd($students_notTakenExam);
+            // dd($rank1, $rank2, $rank3);
+            // dd($list_studentTaken);
             // 3 Data Exam Terbaru
             $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
     
-            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken', 'students_notTakenExam'));
+            return  view('main.course_dashboard', 
+                    compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 
+                            'count_studentsUntaken', 'students_notTakenExam',
+                            'rank1', 'rank2', 'rank3'));
         }else{
             // Handle case when $class is empty
             $count_studentsUntaken = 0;
@@ -873,7 +897,13 @@ class LessonController extends Controller
             $students_takeExam = 0;
             $class = [];
             $students_notTakenExam = 0;
-            return view('main.course_dashboard', compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 'count_studentsUntaken', 'students_notTakenExam'));
+            $rank1 = 0;
+            $rank2 = 0;
+            $rank3 = 0;
+            return view('main.course_dashboard', 
+                    compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 
+                            'count_studentsUntaken', 'students_notTakenExam',
+                            'rank1', 'rank2', 'rank3'));
 
         }
         
