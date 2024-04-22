@@ -594,18 +594,22 @@ class CourseSectionController extends Controller
             $questions = json_decode($session->questions_answers);
             $totalScore = 0;
             $title = $exam->title;
-            foreach ($questions as $question) {
-                if (isset($question->choices)) {
-                    $choices = json_decode($question->choices, true);
-
-                    foreach ($choices as $choice) {
-                        if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
-                            $totalScore += (int)$choice['score'];
+            if ($questions != null){
+                foreach ($questions as $question) {
+                    if (isset($question->choices)) {
+                        $choices = json_decode($question->choices, true);
+    
+                        foreach ($choices as $choice) {
+                            if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
+                                $totalScore += (int)$choice['score'];
+                            }
                         }
                     }
                 }
             }
-            $question_count = count($questions);
+            if($questions != null){
+                $question_count = count($questions);
+            }
         }
 
         //check if student has taken any exam on this session
