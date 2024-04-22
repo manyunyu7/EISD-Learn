@@ -197,10 +197,10 @@
 
                     @if($sectionDetail->embedded_file=="" || $sectionDetail->embedded_file==null)
                         <div class="container-fluid">
-                            @if(Str::contains(Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
+                            @if(Str::contains(Storage::url('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
 
                                 <iframe id="pdfIframe"
-                                        src="{{ url('/') }}/library/viewerjs/src/#{{ Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
+                                        src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
                                         style="text-align:center;" width="100%" height="550" allowfullscreen=""
                                         webkitallowfullscreen=""></iframe>
                                 <!-- Add this single <script> tag to the body of your HTML document -->
@@ -288,11 +288,11 @@
                                            class="video-mask" disablePictureInPicture
                                            controlsList="nodownload">
                                         <source
-                                            src="{{ Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}">
+                                            src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}">
                                     </video>
                                 @elseif (in_array($fileExtension, $imageFormats))
                                     <img
-                                        src="{{ Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}"
+                                        src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}"
                                         alt="Image">
                                 @elseif (Str::contains($sectionDetail->section_video, "https://streamable"))
                                     <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
