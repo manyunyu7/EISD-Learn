@@ -792,10 +792,10 @@ class LessonController extends Controller
                             lsn.id = $lesson_id
                             AND
                             es.exam_id = exm.id
-                           
+                            AND
+                            es.exam_type = 'Post Test'
                         ORDER BY 
                             cs.created_at DESC
-                        LIMIT 1
         ");
         $totalStudentsCount = DB::table('student_lesson')
         ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
@@ -805,33 +805,41 @@ class LessonController extends Controller
 
         
         if(!empty($class)){
+            // QUERY POST TEST
             $examSessionId = $class[0]->exam_session_id;
             $examSectionId = $class[0]->section_id;
             
-            $students_takeExam = DB::select("
+            $students_takePostTest = DB::select("
                                     SELECT 
                                         u.name,
                                         u.id,
                                         u.profile_url,
                                         u.department,
-                                        MAX(et.current_score) AS highest_score
+                                        MAX(et.current_score) AS highest_score,
+                                        es.exam_type AS exam_type,
+                                        et.course_section_flag AS course_section_id,
+                                        et.course_flag AS course_id
                                     FROM 
                                         exam_takers et
                                     LEFT JOIN
                                         course_section cs ON et.session_id = cs.quiz_session_id
                                     LEFT JOIN
+                                        exam_sessions es ON et.session_id = es.id
+                                    LEFT JOIN
                                         users u ON et.user_id = u.id
                                     WHERE
                                         et.session_id = $examSessionId
                                         AND et.course_section_flag = $examSectionId
+                                        AND es.exam_type = 'Post Test'
                                     GROUP BY
-                                        u.id
+                                        et.user_id, et.course_flag
                                     ORDER BY
                                         highest_score ASC
                                     
             ");
+            // dd($students_takePostTest);
             
-            $students_notTakenExam = DB::select("
+            $students_notTakenPostTest = DB::select("
                 SELECT 
                     u.id,
                     u.name,
@@ -853,7 +861,6 @@ class LessonController extends Controller
                     )
             ");
 
-            // MAX(et.current_score) AS highest_score,
             $list_studentTaken = ExamTaker::join('users', 'exam_takers.user_id', '=', 'users.id')
                                 ->where('exam_takers.session_id', $examSessionId)
                                 ->where('exam_takers.course_section_flag', $examSectionId)
@@ -872,38 +879,29 @@ class LessonController extends Controller
                 $rank1 = $top_three_students[0]; // Siswa dengan highest score tertinggi
                 $rank2 = $top_three_students[1]; // Siswa dengan score tertinggi kedua
                 $rank3 = $top_three_students[2]; // Siswa dengan score tertinggi ketiga
-            } else {
+            } 
+            else {
                 // Jika jumlah siswa kurang dari 3, berikan pesan kesalahan atau lakukan penanganan sesuai kebutuhan
                 // Misalnya:
-                echo "Tidak cukup data untuk mendapatkan top 3 siswa.";
+                $rank1 = $top_three_students[0]; // Siswa dengan highest score tertinggi
+                $rank2 = $top_three_students[0]; // Siswa dengan score tertinggi kedua
+                $rank3 = $top_three_students[0]; // Siswa dengan score tertinggi ketiga
             }
 
-            $count_studentsTaken = count($students_takeExam);
+            $count_studentsTaken = count($students_takePostTest);
             $count_studentsUntaken = $totalStudents - $count_studentsTaken;
             
-            // dd($rank1, $rank2, $rank3);
-            // dd($list_studentTaken);
             // 3 Data Exam Terbaru
             $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
-    
             return  view('main.course_dashboard', 
-                    compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 
-                            'count_studentsUntaken', 'students_notTakenExam',
-                            'rank1', 'rank2', 'rank3'));
+                    compact('class', 'totalStudents', 'count_studentsTaken', 
+                            'count_studentsUntaken', 'students_notTakenPostTest', 'list_studentTaken',
+                            'rank1', 'rank2', 'rank3',
+                            'students_takePostTest'));
         }else{
-            // Handle case when $class is empty
-            $count_studentsUntaken = 0;
-            $count_studentsTaken = 0;
-            $students_takeExam = 0;
-            $class = [];
-            $students_notTakenExam = 0;
-            $rank1 = 0;
-            $rank2 = 0;
-            $rank3 = 0;
-            return view('main.course_dashboard', 
-                    compact('class', 'totalStudents', 'students_takeExam', 'count_studentsTaken', 
-                            'count_studentsUntaken', 'students_notTakenExam',
-                            'rank1', 'rank2', 'rank3'));
+            // Tampilkan pesan SweetAlert jika tidak ada post test dalam kelas
+            Alert::info('Tidak Ada Post Test', 'Tidak ada post test dalam kelas ini.');
+            return view('main.course_dashboard');
 
         }
         

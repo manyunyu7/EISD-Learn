@@ -26,7 +26,7 @@
 @section('main')
 
     <div class="container">
-        @if(!empty($class))
+        @if (!empty($class))
             @foreach ($class as $data)
             <div class="page-inner">
                 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -98,7 +98,7 @@
                                 <div class="table-responsive">
                                     <table class="table" style="border-collapse: collapse;">
                                         <tbody>
-                                            @foreach ($students_notTakenExam as $item)
+                                            @foreach ($students_notTakenPostTest as $item)
                                             <tr style="height: 70px;">
                                                 <td scope="row">
                                                     <div class="avatar-sm">
@@ -119,7 +119,7 @@
                     </div>
                 </div>
 
-
+                @if (($list_studentTaken->count() >= 3))
                 <h4 class="page-title">Leaderboard Score</h4>
                 <div class="col-md-12" >
                     <div class="row">
@@ -233,6 +233,17 @@
                         </div>
                     </div>
                 </div>
+                @else
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <h3>
+                                    Minimal ada 3 Student yang telah mengerjakan Post Test untuk ditampilkan dalam Leaderboard
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                 {{-- Lakukan Looping Untuk Table Ini! --}}
                 <div class="table-responsive" id="tableContainer">
@@ -243,30 +254,181 @@
                                 <th><h3><b></b></h3></th>
                                 <th><h3><b>Name</b></h3></th>
                                 <th><h3><b>Division</b></h3></th>
-                                <th><h3><b>Persentage</b></h3></th>
+                                <th><h3><b>Quiz</b></h3></th>
                                 <th><h3><b>Pre Test</b></h3></th>
                                 <th><h3><b>Post Test</b></h3></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($students_takeExam as $item)
-                            <tr class="text-center">
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <div class="avatar-sm">
-                                        <img style="width: 125%; height: auto;"
-                                            src="{{ Storage::url('public/profile/') . $item->profile_url }}"
-                                            alt="Profile Image" class="avatar-img rounded-circle"
-                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
-                                    </div>
-                                </td>
-                                <td>{{ $item->name }}</td>
-                                <td>Digital Management</td>
-                                <td>0%</td>
-                                <td>0</td>
-                                <td>{{ $item->highest_score }}</td>
-                            </tr>
+                            @foreach ($students_takePostTest as $item)
+                                <?php
+                                    // Cari data dari $list_studentTaken_preTest yang memiliki user_id yang sama dengan $item
+                                    $quiz_students = DB::select("
+                                                            SELECT 
+                                                                lsn.id AS lesson_id,
+                                                                lsn.course_title AS lesson_title,
+                                                                lsn.course_category AS lesson_category,
+                                                                lsn.course_cover_image AS lesson_cover_img,
+                                                                lsn.department_id AS lesson_dept_id,
+                                                                lsn.position_id AS lesson_posit_id,
+                                                                cs.quiz_session_id AS exam_session_id,
+                                                                cs.section_title AS section_title,
+                                                                cs.id AS section_id,
+                                                                cs.created_at AS date_create,
+                                                                es.exam_type AS exam_type,
+                                                                exm.id AS exam_id
+                                                            FROM 
+                                                                lessons lsn
+                                                            LEFT JOIN 
+                                                                course_section cs ON lsn.id = cs.course_id
+                                                            LEFT JOIN 
+                                                                exam_sessions es ON cs.quiz_session_id = es.id
+                                                            LEFT JOIN 
+                                                                exams exm ON es.exam_id = exm.id
+                                                            WHERE
+                                                                lsn.id = $item->course_id
+                                                                AND
+                                                                es.exam_id = exm.id
+                                                                AND
+                                                                es.exam_type = 'Quiz'
+                                                            ORDER BY 
+                                                                cs.created_at DESC
+                                    ");
+                                    $preTest_students = DB::select("
+                                                        SELECT 
+                                                            lsn.id AS lesson_id,
+                                                            lsn.course_title AS lesson_title,
+                                                            lsn.course_category AS lesson_category,
+                                                            lsn.course_cover_image AS lesson_cover_img,
+                                                            lsn.department_id AS lesson_dept_id,
+                                                            lsn.position_id AS lesson_posit_id,
+                                                            cs.quiz_session_id AS exam_session_id,
+                                                            cs.section_title AS section_title,
+                                                            cs.id AS section_id,
+                                                            cs.created_at AS date_create,
+                                                            es.exam_type AS exam_type,
+                                                            exm.id AS exam_id
+                                                        FROM 
+                                                            lessons lsn
+                                                        LEFT JOIN 
+                                                            course_section cs ON lsn.id = cs.course_id
+                                                        LEFT JOIN 
+                                                            exam_sessions es ON cs.quiz_session_id = es.id
+                                                        LEFT JOIN 
+                                                            exams exm ON es.exam_id = exm.id
+                                                        WHERE
+                                                            lsn.id = $item->course_id
+                                                            AND
+                                                            es.exam_id = exm.id
+                                                            AND
+                                                            es.exam_type = 'Pre Test'
+                                                        ORDER BY 
+                                                            cs.created_at DESC
+                                    ");
+
+
+                                    // Kondisional Segmentasi QUIZ
+                                    if (!empty($quiz_students)){
+                                        $quiz_SessionId = $quiz_students[0]->exam_session_id;
+                                        $quiz_SectionId = $quiz_students[0]->section_id;
+
+                                        $students_takeQuiz = DB::select("
+                                                            SELECT 
+                                                                u.name,
+                                                                u.id,
+                                                                u.profile_url,
+                                                                u.department,
+                                                                MAX(et.current_score) AS highest_score,
+                                                                es.exam_type AS exam_type,
+                                                                et.course_section_flag AS course_section_id,
+                                                                et.course_flag AS course_id
+                                                            FROM 
+                                                                exam_takers et
+                                                            LEFT JOIN
+                                                                course_section cs ON et.session_id = cs.quiz_session_id
+                                                            LEFT JOIN
+                                                                exam_sessions es ON et.session_id = es.id
+                                                            LEFT JOIN
+                                                                users u ON et.user_id = u.id
+                                                            WHERE
+                                                                et.user_id = $item->id
+                                                                AND et.course_flag = $item->course_id
+                                                                AND et.session_id = $quiz_SessionId
+                                                                AND et.course_section_flag = $quiz_SectionId
+                                                                AND es.exam_type = 'Quiz'
+                                                            GROUP BY
+                                                                et.user_id, et.course_flag
+                                                            ORDER BY
+                                                                highest_score ASC
+                                        ");
+                                    }
+                                    
+                                    // Kondisional Segmentasi PRE TEST
+                                    if (!empty($preTest_students)){
+                                        $preTest_SessionId = $preTest_students[0]->exam_session_id;
+                                        $preTest_SectionId = $preTest_students[0]->section_id;
+                                        
+                                        
+                                        $students_takePreTest = DB::select("
+                                                                SELECT 
+                                                                    u.name,
+                                                                    u.id,
+                                                                    u.profile_url,
+                                                                    u.department,
+                                                                    MAX(et.current_score) AS highest_score,
+                                                                    es.exam_type AS exam_type,
+                                                                    et.course_section_flag AS course_section_id,
+                                                                    et.course_flag AS course_id
+                                                                FROM 
+                                                                    exam_takers et
+                                                                LEFT JOIN
+                                                                    course_section cs ON et.session_id = cs.quiz_session_id
+                                                                LEFT JOIN
+                                                                    exam_sessions es ON et.session_id = es.id
+                                                                LEFT JOIN
+                                                                    users u ON et.user_id = u.id
+                                                                WHERE
+                                                                    et.user_id = $item->id
+                                                                    AND et.course_flag = $item->course_id
+                                                                    AND et.session_id = $preTest_SessionId
+                                                                    AND et.course_section_flag = $preTest_SectionId
+                                                                    AND es.exam_type = 'Pre Test'
+                                                                GROUP BY
+                                                                    et.user_id, et.course_flag
+                                                                ORDER BY
+                                                                    highest_score ASC
+                                        ");
+                                    }
+                                    
+                                    
+
+                                ?>
+                                <tr class="text-center">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <div class="avatar-sm">
+                                            <img style="width: 125%; height: auto;"
+                                                src="{{ Storage::url('public/profile/') . $item->profile_url }}"
+                                                alt="Profile Image" class="avatar-img rounded-circle"
+                                                onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                        </div>
+                                    </td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>Digital Management</td>
+                                    @if (!empty($students_takeQuiz))
+                                        <td>{{ $students_takeQuiz[0]->highest_score }}</td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
+                                    @if (!empty($students_takePreTest))
+                                        <td>{{ $students_takePreTest[0]->highest_score }}</td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
+                                    <td>{{ $item->highest_score }}</td>
+                                </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>
