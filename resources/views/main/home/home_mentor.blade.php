@@ -452,7 +452,7 @@
                                                     <tr>
                                                         <th scope="row">{{ $postTest['title_exam'] }}</th>
                                                         <td style="--size: calc( {{ $postTest['average_score'] }} ); background-color:#23BD33; color:white">
-                                                            <span class="data">{{ $postTest['average_score'] }}</span>
+                                                            <span class="data mr-2">{{ round($postTest['average_score']) }}%</span>
                                                         </td>
                                                         <td style="--size: calc( 100 - {{ $postTest['average_score'] }}); background-color:#ccf7d1">
                                                             <span class="data"></span>

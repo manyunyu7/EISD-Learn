@@ -254,7 +254,8 @@ class HomeController extends Controller
                     'latestExams',
                     'averageScoreArray'
                 ));
-        } else if (Auth::check() && Auth::user()->role == 'student') {
+        } 
+        else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
 
