@@ -26,7 +26,7 @@
 @section('main')
 
     <div class="container">
-        @if (!empty($class))
+        @if (count($list_studentTaken) >= 3)
             @foreach ($class as $data)
             <div class="page-inner">
                 <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -413,19 +413,30 @@
                                                 onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                         </div>
                                     </td>
-                                    <td>{{ $item->name }}</td>
+                                    @if (!empty($students_takePostTest))
+                                        <td>{{ $item->name }}</td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
                                     <td>Digital Management</td>
+                                    <td>{{ count($students_takeQuiz) }}</td>
                                     @if (!empty($students_takeQuiz))
                                         <td>{{ $students_takeQuiz[0]->highest_score }}</td>
                                     @else
                                         <td>-</td>
                                     @endif
+
                                     @if (!empty($students_takePreTest))
                                         <td>{{ $students_takePreTest[0]->highest_score }}</td>
                                     @else
                                         <td>-</td>
                                     @endif
-                                    <td>{{ $item->highest_score }}</td>
+
+                                    @if (!empty($students_takePostTest))
+                                        <td>{{ $item->highest_score }}</td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
                                 </tr>
                             @endforeach
 
@@ -462,7 +473,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div>
-                            <h4>Kelas Ini Tidak Memiliki Post Test</h4>
+                            <h4>Peserta Yang Menyelesaikan Post Test Masih Kurang Dari 3!</h4>
                         </div>
                     </div>
                 </div>

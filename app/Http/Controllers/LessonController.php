@@ -694,6 +694,8 @@ class LessonController extends Controller
                             a.id ASC
                     ");
     
+        
+
         // Hitung jumlah student yang telah menyelesaikan setiap course
         $courseCompleteCount = DB::table('student_lesson')
         ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
@@ -723,13 +725,62 @@ class LessonController extends Controller
 
             // Simpan dalam variabel status masing-masing kelas
             $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 100 : round((($completedStudents/$totalStudents)*100));
-            
+            $class = DB::select("
+                SELECT 
+                    lsn.id AS lesson_id,
+                    lsn.course_title AS lesson_title,
+                    lsn.course_category AS lesson_category,
+                    lsn.course_cover_image AS lesson_cover_img,
+                    lsn.department_id AS lesson_dept_id,
+                    lsn.position_id AS lesson_posit_id,
+                    cs.quiz_session_id AS exam_session_id,
+                    cs.section_title AS section_title,
+                    cs.id AS section_id,
+                    cs.created_at AS date_create,
+                    es.exam_type AS exam_type,
+                    exm.id AS exam_id,
+                    COUNT(et.id) AS students_count
+                FROM 
+                    lessons lsn
+                LEFT JOIN 
+                    course_section cs ON lsn.id = cs.course_id
+                LEFT JOIN 
+                    exam_sessions es ON cs.quiz_session_id = es.id
+                LEFT JOIN 
+                    exams exm ON es.exam_id = exm.id
+                LEFT JOIN
+                    exam_takers et ON es.id = et.session_id
+                WHERE
+                    lsn.id = 18
+                    AND
+                    es.exam_id = exm.id
+                    AND
+                    es.exam_type = 'Post Test'
+                    AND
+                    et.session_id = 58
+                GROUP BY
+                    lsn.id,
+                    lsn.course_title,
+                    lsn.course_category,
+                    lsn.course_cover_image,
+                    lsn.department_id,
+                    lsn.position_id,
+                    cs.quiz_session_id,
+                    cs.section_title,
+                    cs.id,
+                    cs.created_at,
+                    es.exam_type,
+                    exm.id
+                ORDER BY 
+                    cs.created_at DESC
+            ");
         }
 
-        // dd($courseCompleteCount);
+        // dd($class);
         Paginator::useBootstrap();
-        // dd($myClasses) ;
-        return view('main.mentorDashboard', compact('dayta', 'myClasses', 'courseStatus', 'completedStudents', 'totalStudents'));
+        return view('main.mentorDashboard', 
+                compact('dayta', 'myClasses', 'courseStatus', 
+                        'completedStudents', 'totalStudents'));
     }
 
     public function view_courseDashboard($lesson_id){
@@ -810,31 +861,31 @@ class LessonController extends Controller
             $examSectionId = $class[0]->section_id;
             
             $students_takePostTest = DB::select("
-                                    SELECT 
-                                        u.name,
-                                        u.id,
-                                        u.profile_url,
-                                        u.department,
-                                        MAX(et.current_score) AS highest_score,
-                                        es.exam_type AS exam_type,
-                                        et.course_section_flag AS course_section_id,
-                                        et.course_flag AS course_id
-                                    FROM 
-                                        exam_takers et
-                                    LEFT JOIN
-                                        course_section cs ON et.session_id = cs.quiz_session_id
-                                    LEFT JOIN
-                                        exam_sessions es ON et.session_id = es.id
-                                    LEFT JOIN
-                                        users u ON et.user_id = u.id
-                                    WHERE
-                                        et.session_id = $examSessionId
-                                        AND et.course_section_flag = $examSectionId
-                                        AND es.exam_type = 'Post Test'
-                                    GROUP BY
-                                        et.user_id, et.course_flag
-                                    ORDER BY
-                                        highest_score ASC
+                                        SELECT 
+                                            u.name,
+                                            u.id,
+                                            u.profile_url,
+                                            u.department,
+                                            MAX(et.current_score) AS highest_score,
+                                            es.exam_type AS exam_type,
+                                            et.course_section_flag AS course_section_id,
+                                            et.course_flag AS course_id
+                                        FROM 
+                                            exam_takers et
+                                        LEFT JOIN
+                                            course_section cs ON et.session_id = cs.quiz_session_id
+                                        LEFT JOIN
+                                            exam_sessions es ON et.session_id = es.id
+                                        LEFT JOIN
+                                            users u ON et.user_id = u.id
+                                        WHERE
+                                            et.session_id = $examSessionId
+                                            AND et.course_section_flag = $examSectionId
+                                            AND es.exam_type = 'Post Test'
+                                        GROUP BY
+                                            et.user_id, et.course_flag
+                                        ORDER BY
+                                            highest_score ASC
                                     
             ");
             // dd($students_takePostTest);
@@ -866,9 +917,9 @@ class LessonController extends Controller
                                 ->where('exam_takers.course_section_flag', $examSectionId)
                                 ->select('exam_takers.current_score', 'users.name', 'users.profile_url', 'exam_takers.finished_at' )
                                 ->get();
+            // dd();
 
-
-           // Mengurutkan hasil berdasarkan current_score secara menurun
+            // Mengurutkan hasil berdasarkan current_score secara menurun
             $list_studentTaken = $list_studentTaken->sortByDesc('current_score');
 
             // Mengambil top 3 siswa dengan highest score tertinggi
@@ -900,7 +951,7 @@ class LessonController extends Controller
                             'students_takePostTest'));
         }else{
             // Tampilkan pesan SweetAlert jika tidak ada post test dalam kelas
-            Alert::info('Tidak Ada Post Test', 'Tidak ada post test dalam kelas ini.');
+            // Alert::info('Tidak Ada Post Test', 'Tidak ada post test dalam kelas ini.');
             return view('main.course_dashboard');
 
         }

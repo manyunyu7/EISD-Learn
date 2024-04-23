@@ -153,17 +153,62 @@
         
                                         <div class="d-flex justify-content-between">
                                             {{-- href="{{ url('course/'.$data->id.'/section/'.$data->first_section) }}" --}}
+                                            @php
+                                                $class = DB::select("
+                                                    SELECT 
+                                                        lsn.id AS lesson_id,
+                                                        lsn.course_title AS lesson_title,
+                                                        lsn.course_category AS lesson_category,
+                                                        lsn.course_cover_image AS lesson_cover_img,
+                                                        lsn.department_id AS lesson_dept_id,
+                                                        lsn.position_id AS lesson_posit_id,
+                                                        cs.quiz_session_id AS exam_session_id,
+                                                        cs.section_title AS section_title,
+                                                        cs.id AS section_id,
+                                                        cs.created_at AS date_create,
+                                                        es.exam_type AS exam_type,
+                                                        exm.id AS exam_id
+                                                    FROM 
+                                                        lessons lsn
+                                                    LEFT JOIN 
+                                                        course_section cs ON lsn.id = cs.course_id
+                                                    LEFT JOIN 
+                                                        exam_sessions es ON cs.quiz_session_id = es.id
+                                                    LEFT JOIN 
+                                                        exams exm ON es.exam_id = exm.id
+                                                    WHERE
+                                                        lsn.id = $data->id
+                                                        AND
+                                                        es.exam_id = exm.id
+                                                        AND
+                                                        es.exam_type = 'Post Test'
+                                                    ORDER BY 
+                                                        cs.created_at DESC
+                                                ");
+                                            @endphp
                                             <div>
-                                                <a 
-                                                   class="btn text-white btn-round "
-                                                   style="background-color: #208DBB"
-                                                   onclick="redirectToSection('{{ url('/dashboard/mentor/course/'. $data->id) }}')">Check</a>
-                                                   <script>
-                                                        function redirectToSection(url) {
-                                                            window.location.href = url;
-                                                        }
-                                                    </script>
+                                                <a id="checkBtn" class="btn text-white btn-round{{ $class ? '' : ' empty'}}"
+                                                   style="background-color: {{ $class ? '#208DBB' : '#CCCCCC' }}"
+                                                   onclick="{{ $class ? "redirectToSection('" . url('/dashboard/mentor/course/'. $data->id) . "')" : "void(0)" }}">Check</a>
+                                                <script>
+                                                    // Mengambil tombol check
+                                                    var checkBtn = document.getElementById('checkBtn');
+                                            
+                                                    // Mengecek apakah class kosong, jika ya, menonaktifkan tombol
+                                                    if (checkBtn.classList.contains('empty')) {
+                                                        // Menghapus atribut onclick
+                                                        checkBtn.removeAttribute('onclick');
+                                                        // Mengubah warna latar belakang menjadi abu-abu
+                                                        checkBtn.style.backgroundColor = '#CCCCCC';
+                                                    }
+                                            
+                                                    // Fungsi untuk mengarahkan ke bagian yang dituju
+                                                    function redirectToSection(url) {
+                                                        window.location.href = url;
+                                                    }
+                                                </script>
                                             </div>
+                                            
         
                                             {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span>--}}
                                             <p id="progressCourse" class="h6 mb-0">
