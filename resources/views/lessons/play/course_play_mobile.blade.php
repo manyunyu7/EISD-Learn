@@ -392,8 +392,6 @@
 
 
                                 <h4 class="card-title">{{ $lesson->course_title }}</h4>
-
-                                <p class="card-text">Materi Ke : {{ $sectionDetail->section_order }}</p>
                                 {!! $sectionDetail->section_content !!}
 
                                 <div class="d-flex justify-content-between mt-2 mb-4">

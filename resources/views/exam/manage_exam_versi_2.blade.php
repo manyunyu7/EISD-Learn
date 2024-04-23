@@ -188,7 +188,7 @@
                                                                     align-items: center;
                                                                     justify-content: center;"
                                                     onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">
-                                                <img src="{{ url('iIcons/Edit.svg') }}"
+                                                <img src="{{ url('icons/Edit.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
                                             <form id="deleteForm_{{ $data->id }}" action="{{ route('exam.delete', $data->id) }}" method="POST">
