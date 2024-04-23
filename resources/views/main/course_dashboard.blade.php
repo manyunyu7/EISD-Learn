@@ -132,9 +132,9 @@
                         <script>
                             document.getElementById("seeAllLink").addEventListener("click", function(event){
                                 event.preventDefault(); // Prevent default link behavior
-                        
+
                                 var tableContainer = document.getElementById("tableContainer");
-                        
+
                                 // Toggle the display style between "block" and "none"
                                 if(tableContainer.style.display === "none") {
                                     tableContainer.style.display = "block";
@@ -142,7 +142,7 @@
                                     tableContainer.style.display = "none";
                                 }
                             });
-                        
+
                         </script>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
                             </div>
                             <div class="card-body d-flex justify-content-center align-items-center">
                                 <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
-                                    <img style="width: 100%; max-width: 130px; height: auto;"
+                                    <img style="width: 100%; max-width: 130px; height: auto;  max-height: 130px"
                                         src="{{ Storage::url('public/profile/') . $rank1->profile_url }}"
                                         alt="Profile Image" class="avatar-img rounded-circle"
                                         onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -189,7 +189,7 @@
                             </div>
                             <div class="card-body d-flex justify-content-center align-items-center">
                                 <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
-                                    <img style="width: 100%; max-width: 130px; height: auto;"
+                                    <img style="width: 100%; max-width: 130px; height: auto;  max-height: 130px"
                                         src="{{ Storage::url('public/profile/') . $rank2->profile_url }}"
                                         alt="Profile Image" class="avatar-img rounded-circle"
                                         onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
@@ -201,7 +201,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -218,7 +218,7 @@
                             </div>
                             <div class="card-body d-flex justify-content-center align-items-center">
                                 <div class="d-flex flex-column align-items-center"> <!-- Container untuk gambar dan scoring -->
-                                    <img style="width: 100%; max-width: 130px; height: auto;"
+                                    <img style="width: 100%; max-width: 130px; height: auto;  max-height: 130px"
                                         src="{{ Storage::url('public/profile/') . $rank3->profile_url }}"
                                         alt="Profile Image" class="avatar-img rounded-circle"
                                         onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
@@ -264,7 +264,7 @@
                                 <?php
                                     // Cari data dari $list_studentTaken_preTest yang memiliki user_id yang sama dengan $item
                                     $quiz_students = DB::select("
-                                                            SELECT 
+                                                            SELECT
                                                                 lsn.id AS lesson_id,
                                                                 lsn.course_title AS lesson_title,
                                                                 lsn.course_category AS lesson_category,
@@ -277,13 +277,13 @@
                                                                 cs.created_at AS date_create,
                                                                 es.exam_type AS exam_type,
                                                                 exm.id AS exam_id
-                                                            FROM 
+                                                            FROM
                                                                 lessons lsn
-                                                            LEFT JOIN 
+                                                            LEFT JOIN
                                                                 course_section cs ON lsn.id = cs.course_id
-                                                            LEFT JOIN 
+                                                            LEFT JOIN
                                                                 exam_sessions es ON cs.quiz_session_id = es.id
-                                                            LEFT JOIN 
+                                                            LEFT JOIN
                                                                 exams exm ON es.exam_id = exm.id
                                                             WHERE
                                                                 lsn.id = $item->course_id
@@ -291,11 +291,11 @@
                                                                 es.exam_id = exm.id
                                                                 AND
                                                                 es.exam_type = 'Quiz'
-                                                            ORDER BY 
+                                                            ORDER BY
                                                                 cs.created_at DESC
                                     ");
                                     $preTest_students = DB::select("
-                                                        SELECT 
+                                                        SELECT
                                                             lsn.id AS lesson_id,
                                                             lsn.course_title AS lesson_title,
                                                             lsn.course_category AS lesson_category,
@@ -308,13 +308,13 @@
                                                             cs.created_at AS date_create,
                                                             es.exam_type AS exam_type,
                                                             exm.id AS exam_id
-                                                        FROM 
+                                                        FROM
                                                             lessons lsn
-                                                        LEFT JOIN 
+                                                        LEFT JOIN
                                                             course_section cs ON lsn.id = cs.course_id
-                                                        LEFT JOIN 
+                                                        LEFT JOIN
                                                             exam_sessions es ON cs.quiz_session_id = es.id
-                                                        LEFT JOIN 
+                                                        LEFT JOIN
                                                             exams exm ON es.exam_id = exm.id
                                                         WHERE
                                                             lsn.id = $item->course_id
@@ -322,7 +322,7 @@
                                                             es.exam_id = exm.id
                                                             AND
                                                             es.exam_type = 'Pre Test'
-                                                        ORDER BY 
+                                                        ORDER BY
                                                             cs.created_at DESC
                                     ");
 
@@ -333,7 +333,7 @@
                                         $quiz_SectionId = $quiz_students[0]->section_id;
 
                                         $students_takeQuiz = DB::select("
-                                                            SELECT 
+                                                            SELECT
                                                                 u.name,
                                                                 u.id,
                                                                 u.profile_url,
@@ -342,7 +342,7 @@
                                                                 es.exam_type AS exam_type,
                                                                 et.course_section_flag AS course_section_id,
                                                                 et.course_flag AS course_id
-                                                            FROM 
+                                                            FROM
                                                                 exam_takers et
                                                             LEFT JOIN
                                                                 course_section cs ON et.session_id = cs.quiz_session_id
@@ -362,15 +362,15 @@
                                                                 highest_score ASC
                                         ");
                                     }
-                                    
+
                                     // Kondisional Segmentasi PRE TEST
                                     if (!empty($preTest_students)){
                                         $preTest_SessionId = $preTest_students[0]->exam_session_id;
                                         $preTest_SectionId = $preTest_students[0]->section_id;
-                                        
-                                        
+
+
                                         $students_takePreTest = DB::select("
-                                                                SELECT 
+                                                                SELECT
                                                                     u.name,
                                                                     u.id,
                                                                     u.profile_url,
@@ -379,7 +379,7 @@
                                                                     es.exam_type AS exam_type,
                                                                     et.course_section_flag AS course_section_id,
                                                                     et.course_flag AS course_id
-                                                                FROM 
+                                                                FROM
                                                                     exam_takers et
                                                                 LEFT JOIN
                                                                     course_section cs ON et.session_id = cs.quiz_session_id
@@ -399,8 +399,8 @@
                                                                     highest_score ASC
                                         ");
                                     }
-                                    
-                                    
+
+
 
                                 ?>
                                 <tr class="text-center">

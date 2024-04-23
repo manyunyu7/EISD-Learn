@@ -72,12 +72,12 @@
                 theme: "light2",
                 title:{
                     text: "Title of Pie Chart"
-                }, 
+                },
                 legend: {
                     horizontalAlign: "right", // Atur posisi horizontal legend ke kanan
                     verticalAlign: "center", // Atur posisi vertikal legend ke tengah
                     fontSize: 14 // Atur ukuran font untuk legend
-                },    
+                },
                 data: [
                     {
                         type: "pie",
@@ -124,7 +124,7 @@
                         {y: 120, label: "Water Filter" },
                         {y: 374, label: "Expresso Machine" },
                         {y: 350, label: "Lobby Chair" }
-                
+
                     ]
                 },
                 {
@@ -139,7 +139,7 @@
                         {y: 220, label: "Water Filter" },
                         {y: 474, label: "Expresso Machine" },
                         {y: 450, label: "Lobby Chair" }
-                
+
                     ]
                 },
                 {
@@ -154,12 +154,12 @@
                         {y: 75, label: "Water Filter" },
                         {y: 310, label: "Expresso Machine" },
                         {y: 340, label: "Lobby Chair" }
-                
+
                     ]
                 }
-            
+
                 ]
-            
+
             });
             chart_stackedBar.render();
         }
@@ -221,7 +221,7 @@
                                      aria-labelledby="pills-home-tab-nobd">
                                     <div class="d-flex align-items-center"> {{-- Use flexbox for layout --}}
                                         <div class="mr-3"> {{-- Margin right for spacing --}}
-                                            <img style="width: 100%; max-width: 130px; height: auto;"
+                                            <img style="width: 100%; max-width: 130px; height: auto;  max-height: 130px"
                                                  src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
                                                  alt="Profile Image" class="avatar-img rounded-circle"
                                                  onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
@@ -235,7 +235,7 @@
                                     </div>
                                 </div>
                             </div>
-    
+
                             <div class="ml-auto mt-5"> {{-- Align to the right with ml-auto --}}
                                 <div class="portfolio-container">
                                     <img src="{{ url('/HomeIcons/Portfolio.svg') }}" alt="Portfolio Icon">
@@ -271,7 +271,7 @@
                         </div>
                     </div>
                 </div>
-    
+
                 {{-- PIE CHART --}}
                 <div class="col-md-7">
                     <div class="card"> {{-- card --}}
@@ -295,9 +295,9 @@
                             theme: "light2",
                             title:{
                                 text: "Gaming Consoles Sold in 2012"
-                            },		
+                            },
                             data: [
-                            {       
+                            {
                                 type: "pie",
                                 showInLegend: true,
                                 toolTipContent: "{y} - #percent %",
@@ -318,12 +318,12 @@
                         chart.render();
                     }
                 </script> --}}
-    
+
                 {{-- DASHBOARD --}}
                 <div class="col-md-12">
                     <h1><strong>Dashboard</strong></h1>
                 </div>
-    
+
                     {{-- Total Class--}}
                     <div class="col-sm-6 col-md-6">
                         <div class="card card-stats card-round" style="background-color: #FFEEE8">
@@ -344,7 +344,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     {{-- Total Students --}}
                     <div class="col-sm-6 col-md-6">
                         <div class="card card-stats card-round" style="background-color: #E1F7E3">
@@ -365,7 +365,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     {{-- On Progress Course --}}
                     <div class="col-sm-6 col-md-6">
                         <div class="card card-stats card-round" style="background-color: #E1F7E3">
@@ -407,7 +407,7 @@
                             </div>
                         </div>
                     </div>
-    
+
 
 
                 <div class="col-md-12">
@@ -423,7 +423,7 @@
                                         <option>2</option>
                                     </select>
                                 </div>
-                                <div class="col-3"> 
+                                <div class="col-3">
                                     <select class="form-control" id="exampleFormControlSelect2" style="border: none;">
                                         <option>Department</option>
                                         <option>2</option>
@@ -437,9 +437,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        
-                        
+
+
+
                         <div class="card-body">
                             <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                                 <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
@@ -467,7 +467,7 @@
                         </div>
                     </div>
                 </div>
-                
+
 
                 {{-- canvasJS for Stacked Bar --}}
                 {{-- <script type="text/javascript">
@@ -496,7 +496,7 @@
                         {y: 120, label: "Water Filter" },
                         {y: 374, label: "Expresso Machine" },
                         {y: 350, label: "Lobby Chair" }
-                
+
                         ]
                         },
                         {
@@ -511,7 +511,7 @@
                         {y: 220, label: "Water Filter" },
                         {y: 474, label: "Expresso Machine" },
                         {y: 450, label: "Lobby Chair" }
-                
+
                         ]
                         },
                         {
@@ -526,32 +526,32 @@
                         {y: 75, label: "Water Filter" },
                         {y: 310, label: "Expresso Machine" },
                         {y: 340, label: "Lobby Chair" }
-                
+
                         ]
                         }
-                
+
                         ]
-                
+
                     });
-                
+
                     chart.render();
                     }
                 </script> --}}
-    
+
                 @if (session()->has('success'))
                     <script>
                         toastr.success('{{ session('
                             success ') }}',
                             ' {{ Session::get('success') }}');
-    
+
                     </script>
                 @elseif(session()-> has('error'))
                     <script>
                         toastr.error('{{ session('
                             error ') }}', ' {{ Session::get('error') }}');
-    
+
                     </script>
-    
+
                 @endif
             </div>
         </div>
