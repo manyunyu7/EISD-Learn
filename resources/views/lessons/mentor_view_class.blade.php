@@ -84,7 +84,7 @@
 
                       <div style="padding: 10px; display: flex; align-items: center;">
                         <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto; margin-top: 12px;"
-                          src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}" alt="Clock Icon">
+                          src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}" alt="Clock Icon">
                         <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top: 12px;">Modernland Training</p>
                     </div>
                     </div>

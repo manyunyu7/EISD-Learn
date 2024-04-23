@@ -391,7 +391,7 @@
                         </div>
                         <div style="flex-shrink: 1;">
                             <img style="width: 12%; height: auto;"
-                                 src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                 src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
                             Modernland Training
                         </div>
                     </div>
