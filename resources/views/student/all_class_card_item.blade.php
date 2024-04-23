@@ -34,7 +34,7 @@
                 </div>
                 <div class="class-badge"
                      style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
-                    <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
+                    <img src="{{ url('/icons/Star.svg') }}" style="margin-right: 4px;">
                     <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
                 </div>
             </div>
@@ -181,7 +181,7 @@
                 <img style="width: 10%; height: auto; margin-top: 12px;"
                      src="{{ url('/icons/UserStudent_mentor.svg') }}">
 
-                <!-- Link to view students --> 
+                <!-- Link to view students -->
                 {{-- href="{{ url('/class/class-list/students/' . $data->id) }}" --}}
                 <a style="text-decoration: none; color: black;">
                     <p style="font-size: 17px; margin-left: 10px; margin-top: 28px;">

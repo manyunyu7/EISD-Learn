@@ -117,7 +117,7 @@
                     // Anda dapat mengganti console.log dengan cara menampilkan nilainya di dalam elemen HTML
                     var resultContainer = document.getElementById('resultContainer');
                     resultContainer.innerHTML = 'Nilai dari hasil fetching: ' + sortBy;
-                    
+
                 })
                 .catch(function (error) {
                     console.error('There was a problem with the fetch operation:', error);
@@ -146,7 +146,7 @@
 
 @section('main')
 <div class="container">
-    
+
 <br><br>
 <div class="col-md-12" >
   <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -162,7 +162,7 @@
     <div class="col-md-12 " >
         <div class="col-md-4 mt-3 mb-2">
             <div class="col-md-12 mt-2 mb-2" >
-                <button class="btn btn-primary" 
+                <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#exampleModal"
                         data-bs-whatever="@mdo">
@@ -191,7 +191,7 @@
                                 <div class="mb-3">
                                     <!-- Hidden Input -->
                                     <input type="hidden" id="hiddenField" name="lessonID" value='{{ $lessonId }}'>
-                                    
+
                                     <label for="" class="mb-2">Department<span style="color: red">*</span></label>
                                     <div class="mb-3">
                                         <div class="input-group mb-3">
@@ -199,7 +199,7 @@
                                                 <option value="">Select an Option</option> <!-- Opsional, jika Anda ingin memberikan opsi default -->
                                                 @foreach($uniqueDepartments as $item)
                                                     <option value="{{ $item }}" {{ old('department_id') == $item ? 'selected' : '' }}>{{ $item }}</option>
-                                                @endforeach  
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -230,7 +230,7 @@
     <div class="col-md-12">
         @php
             use App\Models\User;
-            
+
             $sortBy = 'asc';
             $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
                                 ->where('student_lesson.lesson_id', $lessonId)
@@ -238,7 +238,7 @@
                                 ->orderBy('users.name', $sortBy)
                                 ->paginate(10);
         @endphp
-        <div class="col-md-4 mt-3 mb-5" style="background-color: cyan"> 
+        <div class="col-md-4 mt-3 mb-5" style="background-color: cyan">
             <div class="col-md-12 mt-3 mb-5">
                 <p>Sort by:</p>
                 <form id="sortForm" method="POST" action='{{ route("sortBy", ["lessonId" => $lessonId]) }}' enctype="multipart/form-data">
@@ -264,7 +264,7 @@
         });
     </script>
 
-</div>  
+</div>
 
 
 
@@ -278,7 +278,7 @@
                 <b>Pelajar</b>
             </h2>
         </div>
-        
+
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -294,10 +294,10 @@
                     <tr>
                         <th scope="row" >
                             <div class="avatar-sm">
-                                <img 
-                                    src="{{ Storage::url('public/profile/') . $student->profile_url }}" 
-                                    alt="..." 
-                                    class="avatar-img rounded-circle" 
+                                <img
+                                    src="{{ Storage::url('public/profile/') . $student->profile_url }}"
+                                    alt="..."
+                                    class="avatar-img rounded-circle"
                                     onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
                                 >
                             </div>
@@ -309,22 +309,22 @@
                             {{ $student->department }}
                         </td>
                         <td>
-                            <form  method="POST" action="{{ route('student.delete', ['id' => $student->id, 'lessonId' => $lessonId]) }}"> 
+                            <form  method="POST" action="{{ route('student.delete', ['id' => $student->id, 'lessonId' => $lessonId]) }}">
                                 @csrf
                                 @method('DELETE')
 
-                                <button onclick="return confirm('Are you sure?')" 
-                                        class="btn" 
-                                        style="background-color: #FC1E01; 
-                                                border-radius: 15px; 
-                                                width:45px; 
-                                                height: 40px; 
-                                                position: relative; 
-                                                padding: 0; 
-                                                display: flex; 
-                                                align-items: center; 
+                                <button onclick="return confirm('Are you sure?')"
+                                        class="btn"
+                                        style="background-color: #FC1E01;
+                                                border-radius: 15px;
+                                                width:45px;
+                                                height: 40px;
+                                                position: relative;
+                                                padding: 0;
+                                                display: flex;
+                                                align-items: center;
                                                 justify-content: center;">
-                                            <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                            <img src="{{ url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
                                 </button>
                             </form>
                         </td>
@@ -336,8 +336,8 @@
                   @endforelse
                 </tbody>
             </table>
-            
-            
+
+
         </div>
         <div>
             <p class="pull-end">
@@ -358,30 +358,30 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const studentsInLesson = @json($studentsInLesson);
-        
+
                 // Function to display data for a specific page
                 function displayData(pageNumber, pageSize) {
                     const startIndex = (pageNumber - 1) * pageSize;
                     const endIndex = startIndex + pageSize;
-        
+
                     // Add logic for sorting and filtering based on user input
                     const sortedAndFilteredData = applySortingAndFiltering(studentsInLesson);
-        
+
                     const currentPageData = sortedAndFilteredData.slice(startIndex, endIndex);
-        
+
                     // Clear previous data
                     document.getElementById('data-container').innerHTML = '';
-        
+
                     // Display current page data
                     currentPageData.forEach((student, index) => {
                         const row = `<tr>
                                         <th scope="row">${startIndex + index + 1}</th>
                                         <th scope="row">
                                             <div class="avatar-sm">
-                                                <img 
-                                                    src="${student.profile_url}" 
-                                                    alt="..." 
-                                                    class="avatar-img rounded-circle" 
+                                                <img
+                                                    src="${student.profile_url}"
+                                                    alt="..."
+                                                    class="avatar-img rounded-circle"
                                                     onerror="this.onerror=null; this.src='${url('/default/default_profile.png')}'; this.alt='Alternative Image';"
                                                 >
                                             </div>
@@ -392,15 +392,15 @@
                         document.getElementById('data-container').innerHTML += row;
                     });
                 }
-        
+
                 // Function to apply sorting and filtering
                 function applySortingAndFiltering(data) {
                     // Get user-selected sorting criteria
                     const sortCriteria = document.getElementById('sortBtn').textContent.trim();
-        
+
                     // Get user-input for filtering
                     const filterInput = document.getElementById('filterInput').value.toLowerCase();
-        
+
                     // Add logic for sorting
                     // Example: A to Z
                     if (sortCriteria === 'A to Z') {
@@ -408,22 +408,22 @@
                     } else if (sortCriteria === 'Z to A') {
                         data.sort((a, b) => b.name.localeCompare(a.name));
                     }
-        
+
                     // Add logic for filtering
                     // Example: Filter by name
                     const filteredData = data.filter(student => student.name.toLowerCase().includes(filterInput));
-        
+
                     return filteredData;
                 }
-        
+
                 // ... (kode JavaScript pagination dan sort sebelumnya) ...
-        
+
                 // Initial display (default pageSize is 10)
                 displayData(1, 10);
                 generatePaginationLinks(10);
             });
         </script>
-        
+
 
 
         @if (session()->has('success'))

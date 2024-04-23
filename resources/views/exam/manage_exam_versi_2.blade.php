@@ -163,7 +163,7 @@
                                                                     display: flex;
                                                                     align-items: center;
                                                                     justify-content: center;">
-                                                <img src="{{ url('/Icons/Download.svg') }}"
+                                                <img src="{{ url('/icons/Download.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
                                             <button class="btn mr-2" style="background-color: #6DCBA8;
@@ -175,7 +175,7 @@
                                                                     display: flex;
                                                                     align-items: center;
                                                                     justify-content: center;">
-                                                <img src="{{ url('/Icons/Link.svg') }}"
+                                                <img src="{{ url('/icons/Link.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
                                             <button class="btn mr-2" style="background-color: #208DBB;
@@ -188,7 +188,7 @@
                                                                     align-items: center;
                                                                     justify-content: center;"
                                                     onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">
-                                                <img src="{{ url('/Icons/Edit.svg') }}"
+                                                <img src="{{ url('iIcons/Edit.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
                                             <form id="deleteForm_{{ $data->id }}" action="{{ route('exam.delete', $data->id) }}" method="POST">
@@ -205,11 +205,11 @@
                                                                align-items: center;
                                                                justify-content: center;"
                                                         data-id="{{ $data->id }}">
-                                                    <img src="{{ url('/Icons/Delete.svg') }}"
+                                                    <img src="{{ url('/icons/Delete.svg') }}"
                                                          style="max-width: 100%; max-height: 100%;">
                                                 </button>
                                             </form>
-                                            
+
                                             <!-- SweetAlert Library -->
                                             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                                             <script>
@@ -217,9 +217,9 @@
                                                 document.querySelectorAll('.delete-btn').forEach(item => {
                                                     item.addEventListener('click', function(event) {
                                                         event.preventDefault(); // Prevent the default form submission
-                                                        
+
                                                         const sectionId = this.getAttribute('data-id');
-                                            
+
                                                         Swal.fire({
                                                             title: 'Are you sure?',
                                                             text: "You won't be able to revert this!",
@@ -237,7 +237,7 @@
                                                     });
                                                 });
                                             </script>
-                                            
+
                                         </div>
                                     </td>
                                 </tr>

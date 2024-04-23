@@ -161,18 +161,18 @@
 {{--                        <div class="input-group mb-3">--}}
 {{--                            <input required name="stm_1" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
 {{--                            <input required name="scr_1" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
-{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
+{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
 {{--                        </div>--}}
 {{--                        <div class="input-group mb-3">--}}
 {{--                            <input required name="stm_2" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
 {{--                            <input required name="scr_2" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
-{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
+{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/I=icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
 {{--                        </div>--}}
                     </div>
                 </div>
                 <script>
                     document.getElementById("addOptionAnswers").addEventListener("click", function() {
-                        var deleteIconURL = "{{ url('/Icons/Delete.svg') }}";
+                        var deleteIconURL = "{{ url('/icons/Delete.svg') }}";
                         var segmentMultipleChoices = document.getElementById("segment_multipleChoices");
                         var divInputGroupCount = segmentMultipleChoices.querySelectorAll(".input-group.mb-3").length;
 
@@ -266,7 +266,7 @@
                                             <button type="button"
                                                     class="btn btn-primary"
                                                     onclick="openEditWindow('{{ url('exam/question/'.$data->id.'/edit') }}')">
-                                                <img src="{{ url('/Icons/Edit.svg') }}" alt="Edit Icon">
+                                                <img src="{{ url('/icons/Edit.svg') }}" alt="Edit Icon">
                                             </button>
                                             <script>
                                                 function openEditWindow(url) {
@@ -282,7 +282,7 @@
                                                         class="btn btn-danger pull-left"
                                                         style="width: auto; margin-left: 5px;"
                                                         onclick="return confirm('Are you sure?')">
-                                                        <img src="{{ url('/Icons/Delete.svg') }}">
+                                                        <img src="{{ url('/icons/Delete.svg') }}">
                                                 </button>
                                             </form>
                                         </div>

@@ -161,7 +161,7 @@
 
 @section('main')
 <div class="container">
-    
+
     <div class="page-inner">
         <div class="page-header">
 
@@ -218,7 +218,7 @@
                             src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
                             alt="La Noyee">
 
-                        
+
 
                         <!-- Card body -->
                         <div class="card-body">
@@ -233,7 +233,7 @@
                                     <strong>{{ $data->course_category }}</strong>
                                 </div>
                                 <div class="class-badge" style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
-                                    <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
+                                    <img src="{{ url('/icons/Star.svg') }}" style="margin-right: 4px;">
                                     <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@
                             <h6 class="card-title"><a href="#">{{$data->course_title}}</a></h6>
                             <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
                                 settling.</p>
-                                
+
                             <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
                             <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
                                 <img style="width: 15%; height: auto; max-height: 20px" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
@@ -274,8 +274,8 @@
                             <ul style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center;">
                                 <li style="margin-right: 8px;">
                                     <img style="width: 20px; height: auto;" src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="User Icon">
-                                </li>                                
-                                <li style="margin-right: 15px; margin-bottom:5px; display: flex; align-items: center;"> 
+                                </li>
+                                <li style="margin-right: 15px; margin-bottom:5px; display: flex; align-items: center;">
                                     <a href="#" style="text-decoration: none; color: black;">
                                         <p style="font-size: 15px; margin-top: 25px; width:max-content">
                                             <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3; margin-left: 5px;">students</span>
@@ -298,15 +298,15 @@
                                     </div>
                                 </li>
                             </ul>
-                            
-                            
-                            
+
+
+
                             <script>
                                 // Wait for the DOM to fully load
                                 document.addEventListener('DOMContentLoaded', function() {
                                     // Mendapatkan semua elemen dengan kelas editButton
                                     const editButtons = document.querySelectorAll('.editButton');
-                            
+
                                     // Menambahkan event listener untuk setiap tombol edit
                                     editButtons.forEach(button => {
                                         button.addEventListener('click', function() {
