@@ -34,7 +34,7 @@
                 </div>
                 <div class="class-badge"
                      style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
-                    <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
+                    <img src="{{ url('/icons/Star.svg') }}" style="margin-right: 4px;">
                     <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
                 </div>
             </div>
@@ -50,18 +50,18 @@
 
             {{-- <div class="d-flex justify-content-between">
                 <div>
-                    <img style="width: 35%; height: auto;" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                    <img style="width: 35%; height: auto;" src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
                     <p>{{ $data->mentor_name }}</p>
                 </div>
             </div> --}}
             <li class="toga-container dropdown hidden-caret"
                 style="display: flex; justify-content: space-between; align-items: center;">
                 <img style="width: 15%; height: auto; max-height: 20px; order: 1;"
-                     src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                     src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
                 <p style="font-size: 15px; margin-bottom: 3px; order: 2; flex-grow: 1; text-align: center;">{{ $data->mentor_name }}</p>
                 <div style="order: 3;">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                        <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
+                        <img id="dotsThree" src="{{ url('/home_icons/DotsThree.svg') }}" alt="">
                     </a>
 
                     <!-- Modal -->
@@ -181,7 +181,7 @@
                 <img style="width: 10%; height: auto; margin-top: 12px;"
                      src="{{ url('/icons/UserStudent_mentor.svg') }}">
 
-                <!-- Link to view students --> 
+                <!-- Link to view students -->
                 {{-- href="{{ url('/class/class-list/students/' . $data->id) }}" --}}
                 <a style="text-decoration: none; color: black;">
                     <p style="font-size: 17px; margin-left: 10px; margin-top: 28px;">

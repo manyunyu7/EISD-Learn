@@ -281,14 +281,14 @@
                                                                     display: flex;
                                                                     align-items: center;
                                                                     justify-content: center;">
-                                                <img src="{{ url('/Icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                                <img src="{{ url('/icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
                                 </form>
                                 <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="button" class="btn delete-btn" data-id="{{ $item->section_id }}" style="background-color: #FC1E01; border-radius: 15px; width:50px; height: 40px; position: relative; padding: 0; display: flex; align-items: center; justify-content: center;">
-                                        <img src="{{ url('/Icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                        <img src="{{ url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
                                 </form>
 

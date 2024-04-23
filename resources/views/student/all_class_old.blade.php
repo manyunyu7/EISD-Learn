@@ -175,10 +175,10 @@
                                             </div>
                                             <hr>
                                             <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
-                                                <img style="width: 15%; height: auto; max-height: 20px" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                                <img style="width: 15%; height: auto; max-height: 20px" src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
                                                 <p style="font-size: 15px; margin-bottom: 3px;">{{ $data->mentor_name }}</p>
                                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                                                    <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
+                                                    <img id="dotsThree" src="{{ url('/home_icons/DotsThree.svg') }}" alt="">
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                                                     <div class="dropdown-user-scroll scrollbar-outer">
@@ -201,10 +201,10 @@
                                             <li class="toga-container dropdown hidden-caret"
                                                 style="display: flex; justify-content: space-between; align-items: center;">
                                                 <img style="width: 12%; height: auto;"
-                                                     src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                                     src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
                                                 <p>{{ $data->mentor_name }}</p>
                                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                                                    <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
+                                                    <img id="dotsThree" src="{{ url('/home_icons/DotsThree.svg') }}" alt="">
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                                                     <div class="dropdown-user-scroll scrollbar-outer">

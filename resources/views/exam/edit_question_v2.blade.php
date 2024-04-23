@@ -104,13 +104,13 @@
             <div class="mb-5">
                 <div>
                     <button type="button" id="addOptionAnswers" class="btn btn-outline-primary " style="width: 12%; margin-left: 5px;">+ Add</button>
-                </div>  
+                </div>
                 <div class="card-body row " id="segment_multipleChoices">
                     @foreach ($choices as $index => $choice)
                         <div class="input-group mb-3">
                             <input required name="stm_{{$index + 1}}" value="{{$choice['text']}}" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <input required name="scr_{{$index + 1}}" value="{{$choice['score']}}" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <button type="button" class="deleteOption btn btn-danger ml-2 "><img src="{{ url('/Icons/Delete.svg') }}"  alt="Instagram Icon"></button>
+                            <button type="button" class="deleteOption btn btn-danger ml-2 "><img src="{{ url('/icons/Delete.svg') }}"  alt="Instagram Icon"></button>
                         </div>
                     @endforeach
                 </div>
@@ -122,17 +122,17 @@
                         event.target.closest(".input-group.mb-3").remove();
                     }
                 });
-            
+
                 // Event listener untuk tombol +Add
                 document.getElementById("addOptionAnswers").addEventListener("click", function() {
-                    var deleteIconURL = "{{ url('/Icons/Delete.svg') }}";
+                    var deleteIconURL = "{{ url('/icons/Delete.svg') }}";
                     var segmentMultipleChoices = document.getElementById("segment_multipleChoices");
                     var divInputGroupCount = segmentMultipleChoices.querySelectorAll(".input-group.mb-3").length;
-            
+
                     if (divInputGroupCount < 4) {
                         var divInputGroup = document.createElement("div");
                         divInputGroup.classList.add("input-group", "mb-3");
-            
+
                         var inputOption = document.createElement("input");
                         inputOption.required = true;
                         inputOption.name = "stm_" + (divInputGroupCount + 1);
@@ -141,7 +141,7 @@
                         inputOption.classList.add("form-control");
                         inputOption.setAttribute("aria-label", "Recipient's username");
                         inputOption.setAttribute("aria-describedby", "basic-addon2");
-            
+
                         var inputScore = document.createElement("input");
                         inputScore.required = true;
                         inputScore.name = "scr_" + (divInputGroupCount + 1);
@@ -150,12 +150,12 @@
                         inputScore.classList.add("form-control");
                         inputScore.setAttribute("aria-label", "Recipient's username");
                         inputScore.setAttribute("aria-describedby", "basic-addon2");
-            
+
                         var deleteButton = document.createElement("button");
                         deleteButton.classList.add("btn", "btn-danger", "ml-2", "deleteOption");
                         deleteButton.innerHTML = '<img src="' + deleteIconURL + '" alt="Delete Icon">';
                         deleteButton.type = "button";
-            
+
                         divInputGroup.appendChild(inputOption);
                         divInputGroup.appendChild(inputScore);
                         divInputGroup.appendChild(deleteButton);
@@ -165,8 +165,8 @@
                     }
                 });
             </script>
-            
-            
+
+
 
             {{-- BUTTONS --}}
             <div class="mb-3" style="display: flex; justify-content: flex-end;">
@@ -186,7 +186,7 @@
                 </script>
             </div>
         </form>
-        
+
     </div>
 
 @endsection

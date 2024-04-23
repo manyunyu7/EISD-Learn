@@ -160,8 +160,10 @@
 
 
 @section('main')
-<div class="page-inner">
-    <div class="page-header">
+<div class="container">
+    
+    <div class="page-inner">
+        <div class="page-header">
 
         <script>
             function redirectToSection(url) {
@@ -216,106 +218,106 @@
                         src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
                         alt="La Noyee">
 
-                    
+                        
 
-                    <!-- Card body -->
-                    <div class="card-body">
-                        <!-- Badge and favorite -->
-                        <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
-                            @if($data->new_class == 'Aktif')
-                                <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
-                                    NEW
+                        <!-- Card body -->
+                        <div class="card-body">
+                            <!-- Badge and favorite -->
+                            <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+                                @if($data->new_class == 'Aktif')
+                                    <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
+                                        NEW
+                                    </div>
+                                @endif
+                                <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
+                                    <strong>{{ $data->course_category }}</strong>
                                 </div>
-                            @endif
-                            <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
-                                <strong>{{ $data->course_category }}</strong>
-                            </div>
-                            <div class="class-badge" style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
-                                <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
-                                <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
-                            </div>
-                        </div>
-                        <!-- Title -->
-                        <h6 class="card-title"><a href="#">{{$data->course_title}}</a></h6>
-                        <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
-                            settling.</p>
-                            
-                        <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
-                        <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
-                            <img style="width: 15%; height: auto; max-height: 20px" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
-                            <p style="font-size: 15px; margin-bottom: 3px;">{{ $data->mentor_name }}</p>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                                <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
-                            </a>
-                            <ul class="dropdown-menu dropdown-user animated fadeIn">
-                                <div class="dropdown-user-scroll scrollbar-outer">
-                                    <li>
-                                        <a class="dropdown-item" href="{{ url('/lesson/manage-materials/' . $data->id) }}">
-                                            Manage Materials
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{{ url('/class/students/' . $data->id) }}">
-                                            <span class="link-collapse">Manage Students</span>
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{{ url('/class/class-list/mentor-view-class/' . $data->id) }}">
-                                            <span class="link-collapse">View Class</span>
-                                        </a>
-                                    </li>
+                                <div class="class-badge" style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
+                                    <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
+                                    <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
                                 </div>
-                            </ul>
-                        </li>
-                    </div>
-
-                    <!-- Card footer -->
-                    <div class="card-footer">
-                        <ul style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center;">
-                            <li style="margin-right: 8px;">
-                                <img style="width: 20px; height: auto;" src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="User Icon">
-                            </li>                                
-                            <li style="margin-right: 15px; margin-bottom:5px; display: flex; align-items: center;"> 
-                                <a href="#" style="text-decoration: none; color: black;">
-                                    <p style="font-size: 15px; margin-top: 25px; width:max-content">
-                                        <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3; margin-left: 5px;">students</span>
-                                    </p>
+                            </div>
+                            <!-- Title -->
+                            <h6 class="card-title"><a href="#">{{$data->course_title}}</a></h6>
+                            <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
+                                settling.</p>
+                                
+                            <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
+                            <li class="toga-container dropdown hidden-caret" style="display: flex; justify-content: space-between; align-items: center;">
+                                <img style="width: 15%; height: auto; max-height: 20px" src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                <p style="font-size: 15px; margin-bottom: 3px;">{{ $data->mentor_name }}</p>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                    <img id="dotsThree" src="{{ url('/HomeIcons/DotsThree.svg') }}" alt="">
                                 </a>
+                                <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                    <div class="dropdown-user-scroll scrollbar-outer">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ url('/lesson/manage-materials/' . $data->id) }}">
+                                                Manage Materials
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="{{ url('/class/students/' . $data->id) }}">
+                                                <span class="link-collapse">Manage Students</span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="{{ url('/class/class-list/mentor-view-class/' . $data->id) }}">
+                                                <span class="link-collapse">View Class</span>
+                                            </a>
+                                        </li>
+                                    </div>
+                                </ul>
                             </li>
-                            <li style="margin-right: 10px;">
-                                <img class="editButton" id="{{ $data->id }}"  style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
-                            </li>
-                            <li style="margin-right: 20px;">
-                                <img class="deleteButton" id="{{ $data->id }}" style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
-                            </li><br>
-                            <li >
-                                <div style="display: flex; align-items: center; width: max-content; ">
-                                    <p style="margin-left: -20px; margin-bottom:0; padding: 5px 10px; font-size: 12px">Show</p>
-                                    <label class="switch" style="margin-left: -2px;">
-                                        <input type="checkbox" id="{{ $data->id }}" class="switchButton{{ $data->id }}" {{ $data->is_visible == 'y'? 'checked' : '' }}>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </li>
-                        </ul>
-                        
-                        
-                        
-                        <script>
-                            // Wait for the DOM to fully load
-                            document.addEventListener('DOMContentLoaded', function() {
-                                // Mendapatkan semua elemen dengan kelas editButton
-                                const editButtons = document.querySelectorAll('.editButton');
-                        
-                                // Menambahkan event listener untuk setiap tombol edit
-                                editButtons.forEach(button => {
-                                    button.addEventListener('click', function() {
-                                        // Mendapatkan id pelajaran dari id tombol edit yang diklik
-                                        const lessonId = button.getAttribute('id');
-                                        // Mengalihkan halaman ke URL yang ditentukan saat tombol edit diklik dengan id pelajaran yang sesuai
-                                        window.location.href = "{{ url('/lesson/edit_class') }}/" + lessonId;
+                        </div>
+
+                        <!-- Card footer -->
+                        <div class="card-footer">
+                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center;">
+                                <li style="margin-right: 8px;">
+                                    <img style="width: 20px; height: auto;" src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="User Icon">
+                                </li>                                
+                                <li style="margin-right: 15px; margin-bottom:5px; display: flex; align-items: center;"> 
+                                    <a href="#" style="text-decoration: none; color: black;">
+                                        <p style="font-size: 15px; margin-top: 25px; width:max-content">
+                                            <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3; margin-left: 5px;">students</span>
+                                        </p>
+                                    </a>
+                                </li>
+                                <li style="margin-right: 10px;">
+                                    <img class="editButton" id="{{ $data->id }}"  style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
+                                </li>
+                                <li style="margin-right: 20px;">
+                                    <img class="deleteButton" id="{{ $data->id }}" style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                                </li><br>
+                                <li >
+                                    <div style="display: flex; align-items: center; width: max-content; ">
+                                        <p style="margin-left: -20px; margin-bottom:0; padding: 5px 10px; font-size: 12px">Show</p>
+                                        <label class="switch" style="margin-left: -2px;">
+                                            <input type="checkbox" id="{{ $data->id }}" class="switchButton{{ $data->id }}" {{ $data->is_visible == 'y'? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </li>
+                            </ul>
+                            
+                            
+                            
+                            <script>
+                                // Wait for the DOM to fully load
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // Mendapatkan semua elemen dengan kelas editButton
+                                    const editButtons = document.querySelectorAll('.editButton');
+                            
+                                    // Menambahkan event listener untuk setiap tombol edit
+                                    editButtons.forEach(button => {
+                                        button.addEventListener('click', function() {
+                                            // Mendapatkan id pelajaran dari id tombol edit yang diklik
+                                            const lessonId = button.getAttribute('id');
+                                            // Mengalihkan halaman ke URL yang ditentukan saat tombol edit diklik dengan id pelajaran yang sesuai
+                                            window.location.href = "{{ url('/lesson/edit_class') }}/" + lessonId;
+                                        });
                                     });
                                 });
-                            });
-                        </script>
+                            </script>
 
                         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                         <script>
