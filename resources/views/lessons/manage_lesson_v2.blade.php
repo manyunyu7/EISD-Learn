@@ -271,35 +271,31 @@
 
                         <!-- Card footer -->
                         <div class="card-footer">
-                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center;">
-                                <li style="margin-right: 8px;">
-                                    <img style="width: 20px; height: auto;" src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="User Icon">
+                            <ul class="list-unstyled d-flex align-items-center justify-content-between">
+                                <li>
+                                    <div class="d-flex align-items-center">
+                                        <img class="img-fluid mr-2" src="{{ url('/icons/UserStudent_mentor.svg') }}" alt="User Icon" style="width: 20px; height: auto;">
+                                        <a href="#" class="text-decoration-none text-dark">
+                                            <p class="m-0" style="font-size: 15px;"><b>{{ $numStudentsCount }}</b> <span style="color: #8C94A3; margin-left: 5px; display: none">students</span></p>
+                                        </a>
+                                    </div>
                                 </li>
-                                <li style="margin-right: 15px; margin-bottom:5px; display: flex; align-items: center;">
-                                    <a href="#" style="text-decoration: none; color: black;">
-                                        <p style="font-size: 15px; margin-top: 25px; width:max-content">
-                                            <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3; margin-left: 5px;">students</span>
-                                        </p>
-                                    </a>
-                                </li>
-                                <li style="margin-right: 10px;">
-                                    <img class="editButton" id="{{ $data->id }}"  style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
-                                </li>
-                                <li style="margin-right: 20px;">
-                                    <img class="deleteButton" id="{{ $data->id }}" style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
-                                </li><br>
-                                <li >
-                                    <div style="display: flex; align-items: center; width: max-content; ">
-                                        <p style="margin-left: -20px; margin-bottom:0; padding: 5px 10px; font-size: 12px">Show</p>
-                                        <label class="switch" style="margin-left: -2px;">
-                                            <input type="checkbox" id="{{ $data->id }}" class="switchButton{{ $data->id }}" {{ $data->is_visible == 'y'? 'checked' : '' }}>
-                                            <span class="slider round"></span>
-                                        </label>
+                                <li>
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="d-flex align-items-center">
+                                                <p class="mb-0 mr-2" style="font-size: 12px;">Show</p>
+                                                <label class="switch mb-0">
+                                                    <input type="checkbox" id="{{ $data->id }}" class="switchButton{{ $data->id }}" {{ $data->is_visible == 'y'? 'checked' : '' }}>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <img class="editButton mr-2" id="{{ $data->id }}" style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
+                                        <img class="deleteButton" id="{{ $data->id }}" style="width: 25px; height: auto; cursor: pointer;" src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
                                     </div>
                                 </li>
                             </ul>
-
-
 
                             <script>
                                 // Wait for the DOM to fully load
