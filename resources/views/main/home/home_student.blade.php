@@ -142,7 +142,7 @@
                                 </a>
                                 <a href="https://www.linkedin.com/in/{{ Auth::user()->url_linkedin }}" target="_blank"
                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
-                                    <img src="{{ url('/home_icons/LinkedIn.svg') }}" alt="Instagram Icon">
+                                    <img src="{{ url('/home_icons/linkedin.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://instagram.com/#" target="_blank" rel="noopener noreferrer"
                                    class="btn btnColor btn-icon">
