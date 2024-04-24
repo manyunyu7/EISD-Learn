@@ -66,7 +66,6 @@
 </style>
 @section('head-section')
     <!-- Datatables -->
-
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
 @endsection
 
@@ -95,8 +94,10 @@
         });
 
     </script>
+    
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
     <!-- Datatables -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script>
@@ -162,7 +163,6 @@
 @section('main')
 <div class="page-inner">
     <div class="page-header">
-
         <script>
             function redirectToSection(url) {
                 window.location.href = url;
@@ -208,15 +208,15 @@
                 $numStudentsCount = count($numStudents);
             @endphp
 
-            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+            <div class="col-sm-12 col-md-4 col-lg-4 col-xl-2">
                 <div class="card shadow ">
-                    <!-- Image -->
+                    <!-- Cover Image Course -->
                     <img class="card-img-top"
                          style="aspect-ratio: 16 / 9"
                          onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
                          src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                         alt="La Noyee">
-
+                         alt="La Noyee"
+                    >
 
                     <!-- Card body -->
                     <div class="card-body">

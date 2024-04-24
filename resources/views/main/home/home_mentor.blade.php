@@ -228,17 +228,17 @@
                                 <div>
                                     <div class="card-head-row card-tools-still-right">
                                         <h3 style="color: black;"><b>{{ Auth::user()->name }}</b></h3>
-                                        <p class="card-category">Digital Management</p>
+                                        <p class="card-category" style="color: red">Department Mentor</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="ml-auto mt-5"> {{-- Align to the right with ml-auto --}}
+                    <div class="ml-auto mt-5">
                         <div class="portfolio-container">
-                            <img src="{{ url('/home_icons/Portfolio.svg') }}" alt="Portfolio Icon">
-                            <p>{{ Auth::user()->url_personal_website }}</p>
+                            <img src="{{ url('/home_icons/Email.svg') }}" alt="Portfolio Icon">
+                            <p>{{ Auth::user()->email }}</p>
                         </div>
                         <div class="social-icon">
                             <a href="https://facebook.com/.{{ Auth::user()->url_facebook }}" target="_blank"
@@ -273,7 +273,7 @@
 
         {{-- PIE CHART --}}
         <div class="col-md-7">
-            <div class="card"> {{-- card --}}
+            <div class="card">
                 <div class="card-body">
                     <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                         <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
@@ -286,131 +286,100 @@
                 </div>
             </div>
         </div>
-        {{-- canvasJS for Pie Chart --}}
-        {{-- <script type="text/javascript">
-            window.onload = function () {
-                var chart = new CanvasJS.Chart("chartContainer_pieChart",
-                {
-                    theme: "light2",
-                    title:{
-                        text: "Gaming Consoles Sold in 2012"
-                    },
-                    data: [
-                    {
-                        type: "pie",
-                        showInLegend: true,
-                        toolTipContent: "{y} - #percent %",
-                        yValueFormatString: "#,##0,,.## Million",
-                        legendText: "{indexLabel}",
-                        dataPoints: [
-                            {  y: 4181563, indexLabel: "PlayStation 3" },
-                            {  y: 2175498, indexLabel: "Wii" },
-                            {  y: 3125844, indexLabel: "Xbox 360" },
-                            {  y: 1176121, indexLabel: "Nintendo DS"},
-                            {  y: 1727161, indexLabel: "PSP" },
-                            {  y: 4303364, indexLabel: "Nintendo 3DS"},
-                            {  y: 1717786, indexLabel: "PS Vita"}
-                        ]
-                    }
-                    ]
-                });
-                chart.render();
-            }
-        </script> --}}
+
 
         {{-- DASHBOARD --}}
         <div class="col-md-12">
             <h1><strong>Dashboard</strong></h1>
         </div>
 
-            {{-- Total Class--}}
-            <div class="col-sm-6 col-md-6">
-                <div class="card card-stats card-round" style="background-color: #FFEEE8">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center bubble-shadow-small">
-                                    <img src="{{ url('icons/dashboard_icon/enrolled.png') }}" alt="Portfolio Icon">
-                                </div>
+        {{-- Total Class--}}
+        <div class="col-sm-6 col-md-6">
+            <div class="card card-stats card-round" style="background-color: #FFEEE8">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center bubble-shadow-small">
+                                <img src="{{ url('icons/dashboard_icon/enrolled.png') }}" alt="Portfolio Icon">
                             </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <h4 class="card-title">{{ $classRegisteredCount }}</h4>
-                                    <p class="card-category">Total Class</p>
-                                </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                            <div class="numbers">
+                                <h4 class="card-title">{{ $classRegisteredCount }}</h4>
+                                <p class="card-category">Total Class</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- Total Students --}}
-            <div class="col-sm-6 col-md-6">
-                <div class="card card-stats card-round" style="background-color: #E1F7E3">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center bubble-shadow-small">
-                                    <img src="{{ url('icons/dashboard_icon/students.png') }}" alt="Portfolio Icon">
-                                </div>
+        {{-- Total Students --}}
+        <div class="col-sm-6 col-md-6">
+            <div class="card card-stats card-round" style="background-color: #E1F7E3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center bubble-shadow-small">
+                                <img src="{{ url('icons/dashboard_icon/students.png') }}" alt="Portfolio Icon">
                             </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <h4 class="card-title">{{ $studentCount }}</h4>
-                                    <p class="card-category">Total Students</p>
-                                </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                            <div class="numbers">
+                                <h4 class="card-title">{{ $studentCount }}</h4>
+                                <p class="card-category">Total Students</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- On Progress Course --}}
-            <div class="col-sm-6 col-md-6">
-                <div class="card card-stats card-round" style="background-color: #E1F7E3">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center bubble-shadow-small">
-                                    <img src="{{ url('icons/dashboard_icon/active.png') }}" alt="Portfolio Icon">
-                                </div>
+        {{-- On Progress Course --}}
+        <div class="col-sm-6 col-md-6">
+            <div class="card card-stats card-round" style="background-color: #E1F7E3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center bubble-shadow-small">
+                                <img src="{{ url('icons/dashboard_icon/active.png') }}" alt="Portfolio Icon">
                             </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <h4 class="card-title">{{ $onProgressCount }}</h4>
-                                    <p class="card-category">On Progress Course</p>
-                                </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                            <div class="numbers">
+                                <h4 class="card-title">{{ $onProgressCount }}</h4>
+                                <p class="card-category">On Progress Course</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- Completed Course --}}
-            <div class="col-sm-6 col-md-6">
-                <div class="card card-stats card-round" style="background-color: #FFEEE8">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center bubble-shadow-small">
-                                    <img src="{{ url('icons/dashboard_icon/completed.png') }}" alt="Portfolio Icon">
-                                </div>
+        {{-- Completed Course --}}
+        <div class="col-sm-6 col-md-6">
+            <div class="card card-stats card-round" style="background-color: #FFEEE8">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center bubble-shadow-small">
+                                <img src="{{ url('icons/dashboard_icon/completed.png') }}" alt="Portfolio Icon">
                             </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <h4 class="card-title">{{ $completedCourseCount }}</h4>
-                                    <p class="card-category">Completed Course</p>
-                                </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                            <div class="numbers">
+                                <h4 class="card-title">{{ $completedCourseCount }}</h4>
+                                <p class="card-category">Completed Course</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-
-
+        {{-- Average Score Post Test --}}
         <div class="col-md-12">
-            <div class="card"> {{-- card --}}
+            <div class="card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4">
@@ -436,8 +405,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
                 <div class="card-body">
                     <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
@@ -468,81 +435,11 @@
         </div>
 
 
-        {{-- canvasJS for Stacked Bar --}}
-        {{-- <script type="text/javascript">
-            window.onload = function () {
-            var chart = new CanvasJS.Chart("chartContainer_stackedBar",
-            {
-                title:{
-                text: "Division of products Sold in Quarter."
-                },
-                toolTip: {
-                shared: true
-                },
-                axisY:{
-                title: "percent"
-                },
-                data:[
-                {
-                type: "stackedBar100",
-                showInLegend: true,
-                name: "April",
-                dataPoints: [
-                {y: 600, label: "Water Filter" },
-                {y: 400, label: "Modern Chair" },
-                {y: 120, label: "VOIP Phone" },
-                {y: 250, label: "Microwave" },
-                {y: 120, label: "Water Filter" },
-                {y: 374, label: "Expresso Machine" },
-                {y: 350, label: "Lobby Chair" }
-
-                ]
-                },
-                {
-                type: "stackedBar100",
-                showInLegend: true,
-                name: "May",
-                dataPoints: [
-                {y: 400, label: "Water Filter" },
-                {y: 500, label: "Modern Chair" },
-                {y: 220, label: "VOIP Phone" },
-                {y: 350, label: "Microwave" },
-                {y: 220, label: "Water Filter" },
-                {y: 474, label: "Expresso Machine" },
-                {y: 450, label: "Lobby Chair" }
-
-                ]
-                },
-                {
-                type: "stackedBar100",
-                showInLegend: true,
-                name: "June",
-                dataPoints: [
-                {y: 300, label: "Water Filter" },
-                {y: 610, label: "Modern Chair" },
-                {y: 215, label: "VOIP Phone" },
-                {y: 221, label: "Microwave" },
-                {y: 75, label: "Water Filter" },
-                {y: 310, label: "Expresso Machine" },
-                {y: 340, label: "Lobby Chair" }
-
-                ]
-                }
-
-                ]
-
-            });
-
-            chart.render();
-            }
-        </script> --}}
-
         @if (session()->has('success'))
             <script>
                 toastr.success('{{ session('
                     success ') }}',
                     ' {{ Session::get('success') }}');
-
             </script>
         @elseif(session()-> has('error'))
             <script>
