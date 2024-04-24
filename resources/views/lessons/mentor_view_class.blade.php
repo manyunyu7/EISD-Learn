@@ -52,8 +52,7 @@
 @endsection
 
 @section('main')
-<div class="container">
-    <br><br>
+<br><br>
     <div class="col-md-12" >
       <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -223,26 +222,25 @@
 
       <!-- Second Container -->
       <div class="col-md-2">
-        <button type="button"
-                class="btn"
-                style="padding: 10px;
-                        background-color: #208DBB;
-                        color: white;
-                        border-radius: 10px !important;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        width: auto;
-                        max-width: 200px;">
-            <span
-                style="font-weight: bold;
-                        font-size: 18px;">
-                Preview Class
-            </span>
-        </button>
-    </div>
-
-  </div>
-</div>
+            <a href="{{ $preview_url }}">
+                <button type="button"
+                    class="btn"
+                    style="padding: 10px;
+                            background-color: #208DBB;
+                            color: white;
+                            border-radius: 10px !important;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: auto;
+                            max-width: 200px;">
+                <span
+                    style="font-weight: bold;
+                            font-size: 18px;">
+                    Preview Class
+                </span>
+            </button>
+            </a>
+        </div>
 
 @endsection

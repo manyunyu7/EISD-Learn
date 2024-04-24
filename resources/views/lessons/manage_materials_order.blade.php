@@ -120,7 +120,7 @@
         </nav>
     </div>
 
-    <div class="container page-inner">
+    <div class="page-inner">
         <div class="page-header">
             <h1><strong>Urutan Materi</strong></h1>
         </div>

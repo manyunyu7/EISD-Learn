@@ -438,24 +438,22 @@
                                 <a href="{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}"
                                    class="loader-link"
                                    style="text-decoration: none; color: inherit;">
-                                    @if (Auth::user()->role!='mentor')
-                                        {{-- Check if the item is marked as taken --}}
-                                        @if ($item->isTaken)
-                                            {{-- Display a checked checkbox icon indicating completion --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                alt="Completed"/>
-                                            {{-- Check if it's the current section --}}
-                                        @elseif ($item->section_id == $currentSectionId)
-                                            {{-- Display a checked checkbox icon indicating completion --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                alt="Completed"/>
-                                        @else
-                                            {{-- Display an empty checkbox icon indicating incomplete --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}"
-                                                alt="Incomplete"/>
-                                        @endif
-                                        {{-- Display the section title --}}
+                                    {{-- Check if the item is marked as taken --}}
+                                    @if ($item->isTaken)
+                                        {{-- Display a checked checkbox icon indicating completion --}}
+                                        <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
+                                             alt="Completed"/>
+                                        {{-- Check if it's the current section --}}
+                                    @elseif ($item->section_id == $currentSectionId)
+                                        {{-- Display a checked checkbox icon indicating completion --}}
+                                        <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
+                                             alt="Completed"/>
+                                    @else
+                                        {{-- Display an empty checkbox icon indicating incomplete --}}
+                                        <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}"
+                                             alt="Incomplete"/>
                                     @endif
+                                    {{-- Display the section title --}}
                                     <span style="display: inline-block;">
                                         {{ $item->section_title }}
                                     </span>

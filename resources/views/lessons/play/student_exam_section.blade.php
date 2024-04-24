@@ -158,8 +158,6 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-{{--                        <th>ID</th>--}}
-{{--                        <th>User ID</th>--}}
                         <th>Guest Name</th>
                         <th>Current Score</th>
                         <th>Finished At</th>
@@ -169,8 +167,6 @@
                     <tbody>
                     @forelse($examResults->reverse() as $result)
                         <tr>
-{{--                            <td>{{ $result['id'] }}</td>--}}
-{{--                            <td>{{ $result['user_id'] }}</td>--}}
                             <td>{{ $result['guest_name'] }}</td>
                             <td>{{ $result['current_score'] }}</td>
                             <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}</td>

@@ -145,8 +145,6 @@
 @endsection
 
 @section('main')
-<div class="container">
-
 <br><br>
 <div class="col-md-12" >
   <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -436,6 +434,5 @@
             </script>
         @endif
     </div>
-</div>
 </div>
 @endsection

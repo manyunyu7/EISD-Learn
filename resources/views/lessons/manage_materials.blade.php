@@ -119,13 +119,13 @@
         </nav>
     </div>
 
-    <div class="container page-inner">
+    <div class="page-inner">
         <div class="page-header">
             <h1><strong>Tambah Materi Baru</strong></h1>
         </div>
         {{-- FORM TAMBAH MATERI --}}
         <div class="col-md-12">
-            <div class="container load-soal" style="background-color: none">
+            <div class="load-soal" style="background-color: none">
                 <form id="addSessionForm" action="{{ url('/lesson/create_materials/'.$lesson_id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
@@ -211,36 +211,32 @@
         </div>
 
         {{-- BUTTON REARRANGE --}}
-        <div class="page-header">
-            <div class="container mb-3">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3"> <!-- Atur ukuran kolom sesuai kebutuhan Anda -->
-                        <button class="btn mr-2 ml--10"
-                                onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
-                                type="submit"
-                                style=" background-color: #208DBB;
-                                        border-radius: 12px;
-                                        width:80px;
-                                        height: 40px;
-                                        position: relative;
-                                        padding: 0;
-                                        margin-left: -15px;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;">
-                                <span style="color:white">Rearrange</span>
-                        </button>
-                        <script>
-                            function redirectToSection(url) {
-                                window.location.href = url;
-                            }
-                        </script>
-                    </div>
-                </div>
+        <div class="page-header mb-3">
+            <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3">
+                <button class="btn mr-2 ml--10"
+                        onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
+                        type="submit"
+                        style=" background-color: #208DBB;
+                                border-radius: 12px;
+                                width:80px;
+                                height: 40px;
+                                position: relative;
+                                padding: 0;
+                                margin-left: -15px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;">
+                        <span style="color:white">Rearrange</span>
+                </button>
+                <script>
+                    function redirectToSection(url) {
+                        window.location.href = url;
+                    }
+                </script>
             </div>
         </div>
         <div class="page-header">
-            <h1 class="mt--4"><strong>Urutan Materi</strong></h1><br>
+            <h1 class="mt--8"><strong>Urutan Materi</strong></h1><br>
         </div>
         <div class="table-responsive">
             <table class="table">

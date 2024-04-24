@@ -673,6 +673,9 @@ class CourseSectionController extends Controller
 
     }
 
+    public function prewiew_course(){
+        return view('lessons.play.course_play_preview');
+    }
 
     function startSection($sectionId)
     {
