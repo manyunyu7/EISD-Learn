@@ -901,10 +901,6 @@ class CourseSectionController extends Controller
         Paginator::useBootstrap();
         $sortBy = $request->sortBy ?? 'asc';
         $lessonId = $request->lessonId;
-        // $sortBy = $request->sortBy;
-        // Mengambil data siswa yang memiliki student_id dan lesson_id yang sesuai
-
-
         $all_students = User::all();
         // Lakukan pengelompokan data berdasarkan departemen dan simpan dalam daftar unik
         $uniqueDepartments = $all_students->filter(function($student) {
@@ -917,23 +913,8 @@ class CourseSectionController extends Controller
                                 ->orderBy('users.name', $sortBy)
                                 ->paginate(10);
 
-        // return $studentsInLesson;
-
         return view("lessons.view_students")->with(compact("lessonId", "sortBy", "uniqueDepartments", "studentsInLesson"));
     }
-
-    public function sortBy(Request $request, $lessonId){
-        $sortBy = $request->sortBy ?? 'asc';
-        $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
-                                ->where('student_lesson.lesson_id', $lessonId)
-                                ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
-                                ->orderBy('users.name', $sortBy)
-                                ->paginate(10);
-        return $studentsInLesson;
-        // return response()->json($studentsInLesson);
-    }
-
-
 
     public function delete_Students($id, $lessonId){
         StudentLesson::where('student_id', $id)->where('lesson_id', $lessonId)->delete();
