@@ -67,7 +67,8 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/class/class-list/mentor-view-class/{id}', 'DetailClassController@mentor_viewClass');
     Route::get('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
     Route::get('/class/students/{lessonId}', 'CourseSectionController@viewStudents');
-    Route::post('sortBy', 'CourseSectionController@sortBy')->name('sortBy');
+    // Route::post('sortBy', 'CourseSectionController@sortBy')->name('sortBy');
+    Route::post('/sortBy/{lessonId?}', [CourseSectionController::class, 'sortBy'])->name('sortBy');
 
 
     Route::get('/class/class-list', 'ClassListController@classList');

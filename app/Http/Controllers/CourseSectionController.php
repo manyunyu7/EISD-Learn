@@ -927,7 +927,8 @@ class CourseSectionController extends Controller
                                 ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
                                 ->orderBy('users.name', $sortBy)
                                 ->paginate(10);
-        return response()->json($studentsInLesson);
+        return $studentsInLesson;
+        // return response()->json($studentsInLesson);
     }
 
 
