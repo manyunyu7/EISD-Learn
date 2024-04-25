@@ -94,6 +94,12 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Add event listener to department dropdown
             var sortByDropdown = document.getElementById('sortSelect');
+            const sortForm = document.getElementById('sortForm');
+
+            sortSelect.addEventListener('change', function() {
+                sortForm.submit();
+            });
+
             sortByDropdown.addEventListener('change', function () {
                 var sortBy_value = this.value;
                 // Make a Fetch request to fetch students based on sorting preference
@@ -116,8 +122,15 @@
                     console.log('Nilai dari hasil fetching:', sortBy);
                     // Anda dapat mengganti console.log dengan cara menampilkan nilainya di dalam elemen HTML
                     var resultContainer = document.getElementById('resultContainer');
-                    resultContainer.innerHTML = 'Nilai dari hasil fetching: ' + sortBy;
+                    // resultContainer.innerHTML = 'Nilai dari hasil fetching: ' + sortBy;
 
+                    // Tampilkan data siswa yang telah diurutkan
+                    var studentsHtml = '';
+                    sortBy.forEach(function(student) {
+                        studentsHtml += '<p>' + student.name + '</p>';
+                        // Tambahkan kolom lain yang ingin Anda tampilkan di sini
+                    });
+                    resultContainer.innerHTML = studentsHtml;
                 })
                 .catch(function (error) {
                     console.error('There was a problem with the fetch operation:', error);
@@ -236,7 +249,7 @@
                                 ->orderBy('users.name', $sortBy)
                                 ->paginate(10);
         @endphp
-        <div class="col-md-4 mt-3 mb-5" style="background-color: cyan">
+        <div class="col-md-4 mt-3 mb-5" > {{-- style="background-color: cyan" --}}
             <div class="col-md-12 mt-3 mb-5">
                 <p>Sort by:</p>
                 <form id="sortForm" method="POST" action='{{ route("sortBy", ["lessonId" => $lessonId]) }}' enctype="multipart/form-data">
@@ -251,16 +264,12 @@
         </div>
     </div>
 
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sortSelect = document.getElementById('sortSelect');
-            const sortForm = document.getElementById('sortForm');
-
-            sortSelect.addEventListener('change', function() {
-                sortForm.submit();
-            });
+            
         });
-    </script>
+    </script> --}}
 
 </div>
 
