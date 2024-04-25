@@ -899,7 +899,7 @@ class CourseSectionController extends Controller
 
     public function viewStudents(Request $request, $lessonId){
         Paginator::useBootstrap();
-        // $sortBy = $request->sortBy ?? 'asc';
+        $sortBy = $request->sortBy ?? 'asc';
         $lessonId = $request->lessonId;
         // $sortBy = $request->sortBy;
         // Mengambil data siswa yang memiliki student_id dan lesson_id yang sesuai
@@ -912,12 +912,14 @@ class CourseSectionController extends Controller
         })->pluck('department')->unique();
 
         $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
-                            ->where('student_lesson.lesson_id', $lessonId)
-                            ->pluck('users.name', 'users.email', 'users.id');
+                                ->where('student_lesson.lesson_id', $lessonId)
+                                ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
+                                ->orderBy('users.name', $sortBy)
+                                ->paginate(10);
 
         // return $studentsInLesson;
 
-        return view("lessons.view_students")->with(compact("lessonId", "uniqueDepartments"));
+        return view("lessons.view_students")->with(compact("lessonId", "sortBy", "uniqueDepartments", "studentsInLesson"));
     }
 
     public function sortBy(Request $request, $lessonId){
