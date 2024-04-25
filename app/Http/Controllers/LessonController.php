@@ -44,11 +44,11 @@ class LessonController extends Controller
         $categories = LessonCategory::all();
 
         // $Users_ithub = DB::connection('ithub')->table('users')->get();
-        $Users_ithub = DB::connection('ithub')
-                        ->table('users')
-                        ->join('u_employees', 'users.id', '=', 'u_employees.user_id')
-                        ->where('users.name', '=', 'Kevin Valerian Ninia')
-                        ->get();
+        // $Users_ithub = DB::connection('ithub')
+        //                 ->table('users')
+        //                 ->join('u_employees', 'users.id', '=', 'u_employees.user_id')
+        //                 ->where('users.name', '=', 'Kevin Valerian Ninia')
+        //                 ->get();
 
         // return($Users_ithub);
         
