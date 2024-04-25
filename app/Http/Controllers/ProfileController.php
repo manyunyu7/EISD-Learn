@@ -68,7 +68,7 @@ class ProfileController extends Controller
     // // Contoh di dalam controller
     // public function showFullName()
     // {
-        
+
 
     //     return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
     // }
@@ -100,7 +100,7 @@ class ProfileController extends Controller
         $first_name = $request->input('first_name');
         $end_name = $request->input('end_name');
         $complete_name = $first_name.' '.$end_name;
-        
+
         if ($request->file('profile_image') == "") {
             $user->update([
                 'name' => $complete_name,
@@ -119,7 +119,7 @@ class ProfileController extends Controller
             }
             //upload new image
             $image = $request->file('profile_image');
-            $image->storeAs('public/profile/', $image->hashName());
+            Storage::disk('public')->put('profile/'.$image->hashName(), $image);
             $user->update([
                 'profile_url' => $image->hashName(),
                 'contact' => $request->phone,
@@ -130,8 +130,8 @@ class ProfileController extends Controller
             ]);
         }
 
-       
-        
+
+
         if ($user) {
             //redirect dengan pesan sukses
             return redirect('profile')->with(['success' => 'Data Berhasil Diupdate!']);
@@ -140,7 +140,7 @@ class ProfileController extends Controller
             return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
         }
 
-       
+
     }
 
 
@@ -156,7 +156,7 @@ class ProfileController extends Controller
 
         $user = User::findOrFail(Auth::user()->id);
         $website = $request->input("website");
-        
+
 
         $fb = $request->input("facebook");
         $ig = $request->input("instagram");
@@ -182,10 +182,10 @@ class ProfileController extends Controller
                 'url_youtube' => $yt,
             ]);
         }
-        
 
-        
-        
+
+
+
         if ($user) {
             //redirect dengan pesan sukses
             return redirect('profile')->with(['success' => 'Data Berhasil Diupdate!']);
@@ -194,7 +194,7 @@ class ProfileController extends Controller
             return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
         }
 
-       
+
     }
 
 }
