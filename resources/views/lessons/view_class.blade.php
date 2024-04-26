@@ -96,6 +96,7 @@
                 <a href="javascript:void();" data-switch="0">
                     <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
                             src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                            style="aspect-ratio: 16 / 9"
                             alt="La Noyee">
                 </a>
 
