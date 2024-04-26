@@ -297,11 +297,11 @@
 
                     @endphp
 
-                    <div class="col-sm-6 col-xl-3">
+                    <div class="col-sm-6 col-xl-4">
                         <div class="card shadow ">
                             <!-- Image -->
                             <img class="card-img-top"
-                                 style="max-height: 200px"
+                            style="aspect-ratio: 16 / 9"
                                  onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
                                  src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
                                  alt="La Noyee">
@@ -353,16 +353,11 @@
                                 </ul>
                             </div>
                             <!-- Card footer -->
-                            <div class="card-footer pt-0 pb-3">
-                                {{--                                <div class="d-flex justify-content-between d-none">--}}
-                                {{--                                    <span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>12h 56m</span>--}}
-                                {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span>--}}
-                                {{--                                </div>--}}
+                            <div class="card-footer pt-0 pb-3"> 
                                 <div style="display: flex; justify-content: center; align-items: center;">
                                     <img style="width: 6%; height: auto; margin-top: 12px"
                                          src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">
-                                    <a style="text-decoration: none;color: BLACK;"
-                                       href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                    <a style="text-decoration: none;color: BLACK;">
                                         <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
                                             <b> {{ $data->num_students_registered }} </b><span style="color: #8C94A3;">students</span>
                                         </p>

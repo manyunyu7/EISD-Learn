@@ -13,7 +13,7 @@
     <div class="card shadow ">
         <!-- Image -->
         <img class="card-img-top"
-             style="max-height: 220px"
+            style="aspect-ratio: 16 / 9"
              onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
              src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
              alt="La Noyee">
