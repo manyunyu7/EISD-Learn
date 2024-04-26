@@ -211,7 +211,7 @@
                             </div>
                             <div class="col col-stats ml-3 ml-sm-0">
                                 <div class="numbers">
-                                    <h4 class="card-title">$ 1,345</h4>
+                                    <h4 class="card-title">{{ $classRegisteredCount }}</h4>
                                     <p class="card-category">Enrolled Course</p>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@
                             </div>
                             <div class="col col-stats ml-3 ml-sm-0">
                                 <div class="numbers">
-                                    <h4 class="card-title">$ 1,345</h4>
+                                    <h4 class="card-title">{{ $activeCourse }}</h4>
                                     <p class="card-category">Active Course</p>
                                 </div>
                             </div>
@@ -252,7 +252,7 @@
                             </div>
                             <div class="col col-stats ml-3 ml-sm-0">
                                 <div class="numbers">
-                                    <h4 class="card-title">$ 1,345</h4>
+                                    <h4 class="card-title">{{ $completedCourse }}</h4>
                                     <p class="card-category">Completed Course</p>
                                 </div>
                             </div>

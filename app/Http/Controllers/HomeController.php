@@ -277,6 +277,22 @@ class HomeController extends Controller
                 ->where('student_id', $userId)
                 ->count();
 
+            $activeCourse = DB::table('student_lesson')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->leftJoin('users', 'student_lesson.student_id', '=', 'users.id')
+                ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
+                ->where('student_id', $userId)
+                ->where('learn_status', 0)
+                ->count();
+
+            $completedCourse = DB::table('student_lesson')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->leftJoin('users', 'student_lesson.student_id', '=', 'users.id')
+                ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
+                ->where('student_id', $userId)
+                ->where('learn_status', 1)
+                ->count();
+
             $blogCreatedCount = DB::table('view_blog')
                 ->where('user_id', $userId)
                 ->count();
@@ -339,7 +355,9 @@ class HomeController extends Controller
                     'leaderboard',
                     'blogCreatedCount',
                     'projectCreatedCount',
-                    'classRegisteredCount'
+                    'classRegisteredCount',
+                    'activeCourse',
+                    'completedCourse'
                 ));
         }
     }
