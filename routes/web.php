@@ -70,7 +70,7 @@ Route::group(['middleware’' => ['auth']], function () {
     // Route::post('sortBy', 'CourseSectionController@sortBy')->name('sortBy');
     Route::post('/sortBy/{lessonId?}', [CourseSectionController::class, 'sortBy'])->name('sortBy');
 
-
+    
     Route::get('/class/class-list', 'ClassListController@classList');
     Route::get('/class/my-class', 'MyClassController@myClass');
     Route::get('/my-class/open/{lessonId}/section/{sectionId}', 'OpenClassController@openClass')->name('course.openClass');
@@ -148,6 +148,7 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
             Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
+            Route::get('download-exam/{examId}', 'MentorExamController@downloadExam');
 
             Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
             Route::get('{id}/edit', 'MentorExamController@viewEditExam')->name("exam.edit");

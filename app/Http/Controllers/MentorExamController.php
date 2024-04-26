@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
+use DB;
 class MentorExamController extends Controller
 {
     public function viewCreateNew()
@@ -397,6 +397,8 @@ class MentorExamController extends Controller
             return $compact;
         }
         // dd($dayta);
+        // return $dayta;
+
         return view("exam.manage_exam_versi_2")->with($compact);
     }
 
@@ -429,6 +431,39 @@ class MentorExamController extends Controller
         return view("exam.create_exam_v2_next_step")->with($compact);
     }
 
+    public function downloadExam($examId){
+        $data_exam = DB::select("
+                        SELECT 
+                            e.id as exam_id,
+                            e.title as exam_title,
+                            l.course_title as course,
+                            l.id as course_id,
+                            et.current_score as exam_score,
+                            u.name as takers_name,
+                            es.exam_type as type,
+                            cs.section_title as course_section_title,
+                            es.id as exam_session_id,
+                            cs.id as course_section_id
+                        FROM 
+                            exam_takers et
+                        LEFT JOIN 
+                            exam_sessions es ON et.session_id = es.id
+                        LEFT JOIN 
+                            course_section cs ON cs.id = et.course_section_flag
+                        LEFT JOIN 
+                            exams e ON e.id = es.exam_id
+                        LEFT JOIN 
+                            users u ON et.user_id = u.id
+                        LEFT JOIN 
+                            lessons l ON l.id = cs.course_id
+                        WHERE
+                            e.id = $examId
+                    ");
+                    
+        // return $data_exam;
+        return view("exam.download_exam_pages", compact('data_exam'));
+    }
+
     public function updateExam(Request $request)
     {
         $exam = Exam::findOrFail($request->id);
@@ -458,7 +493,6 @@ class MentorExamController extends Controller
             return redirect('exam/new')->with(['error' => 'Gagal Menyimpan Exam']);
         }
     }
-
 
     public function storeNewExam(Request $request)
     {
@@ -524,33 +558,4 @@ class MentorExamController extends Controller
         }
     }
 
-    // BACKUP storeNewExam
-    // public function storeNewExam(Request $request)
-    // {
-    //     $exam = new Exam();
-    //     $user_id = Auth::id();
-    //     $exam->title = $request->title;
-    //     $exam->randomize = $request->randomize;
-    //     $exam->can_access = $request->can_access;
-    //     $exam->start_date = $request->startDate;
-    //     $exam->end_date = $request->endDate;
-    //     $exam->instruction = $request->instruction;
-    //     $exam->description = $request->description;
-    //     $exam->created_by = $user_id;
-
-    //     if ($request->file('image') != "") {
-    //         $image = $request->file('image');
-    //         $name = $image->hashName();
-    //         $image->storeAs('public/exam/cover/', $name);
-    //         $exam->image = $name;
-    //     }
-
-    //     if ($exam->save()) {
-    //         //redirect dengan pesan sukses
-    //         return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
-    //     } else {
-    //         //redirect dengan pesan error
-    //         return redirect('exam/new')->with(['error' => 'Gagal Menyimpan Exam']);
-    //     }
-    // }
 }

@@ -133,7 +133,6 @@
             </div>
         </div>
         <div class="container-fluid">
-
             <div class="row">
                 <h1 class="mb-3 col-12"><b>Quiz/Pre Test/Post Test/Evaluation</b></h1>
 
@@ -154,6 +153,7 @@
                                     <td style="text-align: center;">
                                         <div class="d-flex justify-content-center">
                                             <!-- Tombol-tombol di dalam baris yang responsif -->
+                                            {{-- BTN DOWNLOAD --}}
                                             <button class="btn mr-2" style="background-color: #4BC9FF;
                                                                     border-radius: 15px;
                                                                     width:45px;
@@ -162,10 +162,12 @@
                                                                     padding: 0;
                                                                     display: flex;
                                                                     align-items: center;
-                                                                    justify-content: center;">
+                                                                    justify-content: center;"
+                                                    onclick="redirectToSection_download('{{ url('/exam/download-exam/' . $data->id) }}')">
                                                 <img src="{{ url('/icons/Download.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
+                                            {{-- BTN COPY LINK --}}
                                             <button class="btn mr-2" style="background-color: #6DCBA8;
                                                                     border-radius: 15px;
                                                                     width:45px;
@@ -178,6 +180,7 @@
                                                 <img src="{{ url('/icons/Link.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
+                                            {{-- BTN EDIT EXAM --}}
                                             <button class="btn mr-2" style="background-color: #208DBB;
                                                                     border-radius: 15px;
                                                                     width:45px;
@@ -191,6 +194,7 @@
                                                 <img src="{{ url('icons/Edit.svg') }}"
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
+                                            {{-- BTN DELETE --}}
                                             <form id="deleteForm_{{ $data->id }}" action="{{ route('exam.delete', $data->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -252,6 +256,9 @@
                 </div>
                 <script>
                     function redirectToSection_edit(url) {
+                        window.location.href = url;
+                    }
+                    function redirectToSection_download(url) {
                         window.location.href = url;
                     }
                 </script>
