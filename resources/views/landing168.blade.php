@@ -101,29 +101,16 @@
 <body>
 
 
-<nav style="background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
-     class="navbar navbar-expand-lg sticky-top"
-     aria-label="Fifth navbar example">
+<nav class="navbar navbar-expand navbar-dark bg-white" aria-label="Second navbar example">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img src="{{asset("/home_icons/icon_navbar_modern.png")}}" alt="" height="24">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample05"
-                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#"><img src="{{asset("/home_icons/icon_navbar_modern.png")}}" alt="" height="24"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExample05">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item dropdown d-none">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-bs-toggle="dropdown"
-                       aria-expanded="false">Dropdown</a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdown05">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
+        <div class="collapse navbar-collapse" id="navbarsExample02">
+            <ul class="navbar-nav me-auto">
+
             </ul>
             @auth
                 <a href="{{ url('/home') }}" class="btn btn-danger font-mulish">Home</a>
@@ -133,6 +120,44 @@
         </div>
     </div>
 </nav>
+
+{{--<nav style="background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"--}}
+{{--     class="navbar navbar-expand-lg sticky-top"--}}
+{{--     aria-label="Fifth navbar example">--}}
+{{--    <div class="container-fluid">--}}
+{{--        <a class="navbar-brand" href="#">--}}
+{{--            <img src="{{asset("/home_icons/icon_navbar_modern.png")}}" alt="" height="24">--}}
+{{--        </a>--}}
+{{--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample05"--}}
+{{--                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">--}}
+{{--            <span class="navbar-toggler-icon"></span>--}}
+{{--        </button>--}}
+
+{{--        <div class="collapse ">--}}
+{{--            <ul class="navbar-nav me-auto mb-2 mb-lg-0">--}}
+{{--                <li class="nav-item dropdown d-none">--}}
+{{--                    <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-bs-toggle="dropdown"--}}
+{{--                       aria-expanded="false">Dropdown</a>--}}
+{{--                    <ul class="dropdown-menu" aria-labelledby="dropdown05">--}}
+{{--                        <li><a class="dropdown-item" href="#">Action</a></li>--}}
+{{--                        <li><a class="dropdown-item" href="#">Another action</a></li>--}}
+{{--                        <li><a class="dropdown-item" href="#">Something else here</a></li>--}}
+{{--                    </ul>--}}
+{{--                </li>--}}
+{{--            </ul>--}}
+
+{{--            <form class="form-inline my-2 my-md-0">--}}
+{{--                <input class="form-control" type="text" placeholder="Search">--}}
+{{--            </form>--}}
+
+{{--            @auth--}}
+{{--                <a href="{{ url('/home') }}" class="btn btn-danger font-mulish">Home</a>--}}
+{{--            @else--}}
+{{--                <a href="{{ url('/login') }}" class="btn btn-danger font-mulish">Login</a>--}}
+{{--            @endauth--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--</nav>--}}
 
 <div id="first-section" class="container-fluid">
     <div class="row">
