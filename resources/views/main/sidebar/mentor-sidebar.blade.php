@@ -3,6 +3,7 @@
 <li class="nav-item {{ Request::is('home*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('/home') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/ic_home.svg"
+             class="nav-ok-logo"
              style="width: 14%;
                     height: auto;
                     margin-top: 5px;
@@ -17,6 +18,7 @@
 <li class="nav-item {{ Request::is('lesson/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('lesson/manage_v2') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/class.svg"
+             class="nav-ok-logo"
              style="width: 14%;
                     height: auto;
                     margin-top: 5px;
@@ -31,8 +33,10 @@
 <li class="nav-item {{ Request::is('exam/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('exam/manage-exam-v2') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/Exam.svg"
+             class="nav-ok-logo"
              style="width: 14%;
                 height: auto;
+                min-width: 14%!important;
                 margin-top: 5px;
                 "
         >
@@ -45,6 +49,7 @@
 <li class="nav-item {{ Request::is('dashboard/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('/dashboard/mentor') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/Dashboard.svg"
+             class="nav-ok-logo"
              style="width: 14%;
                 height: auto;
                 margin-top: 5px;

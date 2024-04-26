@@ -1,68 +1,50 @@
-<nav class="navbar navbar-header navbar-expand-lg" style="background-color: #ffffff">
+<nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark2">
 
     <div class="container-fluid">
-        @auth
-
-        <div class="text">
-            <small id="greeting" style="color: rgb(112, 112, 112)">Good Morning,</small>
-            <script>
-                function updateGreeting() {
-                    var currentTime = new Date();
-                    var currentHour = currentTime.getHours();
-
-                    var greetingElement = document.getElementById('greeting');
-
-                    if (currentHour >= 5 && currentHour < 12) {
-                        greetingElement.textContent = 'Good Morning,';
-                    } else if (currentHour >= 12 && currentHour < 18) {
-                        greetingElement.textContent = 'Good Afternoon,';
-                    } else {
-                        greetingElement.textContent = 'Good Evening,';
-                    }
-                }
-
-                // Update greeting initially
-                updateGreeting();
-
-                // Update greeting every minute (adjust the interval as needed)
-                setInterval(updateGreeting, 60000);
-            </script>
-
-            <h4 style="color: black"><b>{{ Auth::user()->name }}!</b></h4>
-        </div>
-        <div class="collapse ml-md-auto align-items-right" id="search-nav">
-            <form class="navbar-right navbar-form nav-search mr-md-5 d-flex">
+        <div class="collapse" id="search-nav" style="">
+            <form class="navbar-left navbar-form nav-search mr-md-3">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <button type="submit" class="btn btn-search pr-1">
                             <i class="fa fa-search search-icon"></i>
                         </button>
                     </div>
-                    <input style="width: 10px" type="text" placeholder="Search ..." class="form-control">
+                    <input type="text" placeholder="Search ..." class="form-control">
                 </div>
             </form>
         </div>
-        
-        <ul class="navbar-nav topbar-nav ml-md-auto align-items-center hidden">
+        <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+            <li class="nav-item toggle-nav-search hidden-caret submenu">
+                <a class="nav-link collapsed" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+                    <i class="fa fa-search"></i>
+                </a>
+            </li>
             <li class="nav-item dropdown hidden-caret">
                 <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                     <div class="avatar-sm">
-                        <img 
-                            src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}" 
-                            alt="..." 
-                            class="avatar-img rounded-circle" 
+                        <img
+                            src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                            alt="..."
+                            class="avatar-img rounded-circle"
                             onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
                         >
-                    </div> 
+                    </div>
                 </a>
+
                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                     <div class="dropdown-user-scroll scrollbar-outer">
                         <li>
                             <div class="user-box">
-                                <div class="avatar-lg"><img src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}" alt="image profile" class="avatar-img rounded"></div>
-                                <div class="u-text">
+                                <div class="avatar-sm">
+                                    <img
+                                        src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                        alt="..."
+                                        class="avatar-img rounded-circle"
+                                        onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
+                                    >
+                                </div>                                <div class="u-text">
                                     <h4>{{ Auth::user()->name }}</h4>
-                                    <p class="text-muted">{{ Auth::user()->email }}</p><a href="/" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                    <p class="text-muted">{{ Auth::user()->email }}</p><a href="{{ url('/profile') }}" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                 </div>
                             </div>
                         </li>
@@ -82,9 +64,6 @@
                     </div>
                 </ul>
             </li>
-
         </ul>
-
-        @endauth
     </div>
 </nav>

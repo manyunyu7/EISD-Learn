@@ -61,7 +61,7 @@
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.min.css">
+    <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.css">
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
     <!---Select2 To MultiSelect -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
@@ -267,21 +267,19 @@
 <div class="wrapper">
 
     @if(!isset($showCompact))
+
         <div class="main-header">
             <!-- Logo Header -->
-            <div class="logo-header" style="background-color: #1D2026">
-                <a href="{{url('/home')}}" class="logo">
-                    <div style="text-align: center;">
-                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"
-                             style="width: 80%;
-                                    height: auto;
-                                    display: flex;
-                                    margin-top: 5px;
-                             "
-                        >
-                    </div>
-                </a>
+            <div class="logo-header" data-background-color="dark2">
 
+                <a href="../index.html" class="logo">
+                    <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg" style="max-height: 30px" alt="navbar brand" class="navbar-brand">
+                </a>
+                <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon">
+						<i class="icon-menu"></i>
+					</span>
+                </button>
                 <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
                 <div class="nav-toggle">
                     <button class="btn btn-toggle toggle-sidebar">
@@ -292,12 +290,44 @@
             <!-- End Logo Header -->
 
             <!-- Navbar Header -->
+
+            <!-- Navbar Header -->
             @auth
                 @include('main.nav_bar')
             @endauth
 
+
             <!-- End Navbar -->
         </div>
+
+{{--        <div class="main-header">--}}
+{{--            <!-- Logo Header -->--}}
+{{--            <div class="logo-header" style="background-color: #1D2026">--}}
+{{--                <a href="{{url('/home')}}" class="logo">--}}
+{{--                    <div style="text-align: center;">--}}
+{{--                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"--}}
+{{--                             style="width: 80%;--}}
+{{--                                    height: auto;--}}
+{{--                                    display: flex;--}}
+{{--                                    margin-top: 5px;--}}
+{{--                             "--}}
+{{--                        >--}}
+{{--                    </div>--}}
+{{--                </a>--}}
+
+{{--                <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>--}}
+{{--                <div class="nav-toggle">--}}
+{{--                    <button class="btn btn-toggle toggle-sidebar">--}}
+{{--                        <i class="icon-menu"></i>--}}
+{{--                    </button>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            <!-- End Logo Header -->--}}
+
+
+
+{{--            <!-- End Navbar -->--}}
+{{--        </div>--}}
 
         <!-- Sidebar -->
         @include('main.side-bar')
