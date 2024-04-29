@@ -94,10 +94,10 @@
         });
 
     </script>
-    
+
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
     <!-- Datatables -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script>
@@ -269,6 +269,11 @@
                                         <a class="dropdown-item"
                                            href="{{ url('/class/class-list/mentor-view-class/' . $data->id) }}">
                                             <span class="link-collapse">View Class</span>
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item"
+                                           href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
+                                            <span class="link-collapse">Dashboard Post Test</span>
                                         </a>
                                     </li>
                                 </div>

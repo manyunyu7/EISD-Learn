@@ -70,7 +70,7 @@ Route::group(['middleware’' => ['auth']], function () {
     // Route::post('sortBy', 'CourseSectionController@sortBy')->name('sortBy');
     Route::post('/sortBy/{lessonId?}', [CourseSectionController::class, 'sortBy'])->name('sortBy');
 
-    
+
     Route::get('/class/class-list', 'ClassListController@classList');
     Route::get('/class/my-class', 'MyClassController@myClass');
     Route::get('/my-class/open/{lessonId}/section/{sectionId}', 'OpenClassController@openClass')->name('course.openClass');
@@ -89,6 +89,9 @@ Route::group(['middleware’' => ['auth']], function () {
 
 
         Route::prefix("lesson")->group(function (){
+
+            Route::get('/{id}/dashboard', 'ClassDashboardController@viewClassDashboard');
+
             Route::get('category', ['uses' => 'LessonCategoryController@manage']);
             Route::get('category/create', ['uses' => 'LessonCategoryController@create']);
             Route::post('category/store', 'LessonCategoryController@store')->name('lesson_category.store');

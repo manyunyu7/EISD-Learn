@@ -37,8 +37,6 @@
     <script
         src="{{asset('atlantis/examples')}}/assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 
 
     <!-- Fonts and icons -->
