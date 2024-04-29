@@ -336,9 +336,16 @@ class HomeController extends Controller
                     ->where('course_id', '=', $class->id)
                     ->orderByRaw("CAST(section_order AS UNSIGNED), section_order ASC")
                     ->first();
-                $class->first_section = $firstSection->id;  // Modify 'new_attribute_value' accordingly
+                // Tambahkan pengecekan untuk memastikan $firstSection tidak null
+                if ($firstSection !== null) {
+                    $class->first_section = $firstSection->id;
+                } else {
+                    // Handle jika $firstSection null
+                    $class->first_section = null; // Atau nilai default lainnya sesuai kebutuhan
+                }
             }
 
+            // return $myClasses;
 
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Student", "Dashboard"

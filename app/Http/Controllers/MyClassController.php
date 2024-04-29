@@ -62,8 +62,8 @@ class MyClassController extends Controller
                 ->where('course_id', '=', $class->id)
                 ->orderByRaw("CAST(section_order AS UNSIGNED), section_order ASC")
                 ->first();
-                
-             // Tambahkan pengecekan untuk memastikan $firstSection tidak null
+
+            // Tambahkan pengecekan untuk memastikan $firstSection tidak null
             if ($firstSection !== null) {
                 $class->first_section = $firstSection->id;
             } else {
@@ -71,9 +71,11 @@ class MyClassController extends Controller
                 $class->first_section = null; // Atau nilai default lainnya sesuai kebutuhan
             }
         }
+        $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+
 
         // return $class->first_section;
 
-        return view('student.myclass')->with(compact('myClasses', 'userID'));
+        return view('student.myclass')->with(compact('myClasses', 'userID', 'lessonCategories'));
     }
 }

@@ -1,14 +1,14 @@
 <style>
 
-    .class-badge {
+    /* .class-badge {
         display: inline-block;
         padding: .25em .4em;
-        font-size: 16px; /* You can adjust the font size as needed */
+        font-size: 16px; 
         font-weight: bold;
         border-radius: 4px;
-        color: #ffffff; /* Default text color */
-        background-color: #007bff; /* Default background color */
-    }
+        color: #ffffff; 
+        background-color: #007bff; 
+    } */
 
     .album-poster-parent {
         padding: 10px;

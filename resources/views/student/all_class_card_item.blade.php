@@ -20,13 +20,12 @@
         <!-- Card body -->
         <div class="card-body">
             <!-- Badge and favorite -->
-            <div
-                style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+            <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
                 @if($data->new_class == 'Aktif')
-                <div class="class-badge"
-                     style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
-                    NEW
-                </div>
+                    <div class="class-badge"
+                        style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
+                        NEW
+                    </div>
                 @endif
                 <div class="class-badge"
                      style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
@@ -47,13 +46,6 @@
 
             <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
 
-
-            {{-- <div class="d-flex justify-content-between">
-                <div>
-                    <img style="width: 35%; height: auto;" src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
-                    <p>{{ $data->mentor_name }}</p>
-                </div>
-            </div> --}}
             <li class="toga-container dropdown hidden-caret"
                 style="display: flex; justify-content: space-between; align-items: center;">
                 <img style="width: 15%; height: auto; max-height: 20px; order: 1;"
