@@ -292,7 +292,7 @@
                                 <a href="#" style="text-decoration: none; color: black;">
                                     <p style="font-size: 15px; margin-top: 25px; width:max-content">
                                         <b>{{ $numStudentsCount }}</b><span
-                                            style="color: #8C94A3; margin-left: 5px;">students</span>
+                                            style="color: #8C94A3; margin-left: 5px;"></span>
                                     </p>
                                 </a>
                             </li>

@@ -2,7 +2,7 @@
 
 @section('head-section')
     <!-- Datatables -->
-    
+
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     <script>
@@ -39,7 +39,7 @@
         });
 
     </script>
-    
+
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Datatables -->
@@ -216,7 +216,7 @@
             });
         }
     </script>
-    
+
 
     <script>
         //message with toastr
@@ -243,24 +243,26 @@
 
 
 @section('main')
-<br><br>
-    <div class="col-md-12" >
-        {{-- BREADCRUMB --}}
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
-                <li class="breadcrumb-item"><a href={{url('/lesson/manage_v2')}}>Class</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add Class</li>
-            </ol>
-        </nav>
-    </div>
 
-    <div class="container page-inner">
+
+    <div class="page-inner">
+
+        <div class="col-md-12" >
+            {{-- BREADCRUMB --}}
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
+                    <li class="breadcrumb-item"><a href={{url('/lesson/manage_v2')}}>Class</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Class</li>
+                </ol>
+            </nav>
+        </div>
+
         <div class="page-header" >
             <h1><b>Tambah Kelas Baru</b></h1>
         </div>
         {{-- SOAL UJIAN --}}
-        <div class="container load-soal" style="background-color: none">
+        <div class="container-fluid load-soal">
             <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
@@ -273,7 +275,7 @@
                                 <input required name="pass_class" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
-        
+
                         {{-- Judul Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Judul Kelas<span style="color: red">*</span></label>
@@ -281,7 +283,7 @@
                                 <input required name="title" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
-                        
+
                         {{-- Kategori --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Kategori<span style="color: red">*</span></label>
@@ -303,24 +305,24 @@
                             <div class="input-group mb-3">
                                 <input type="radio" id="general" name="tipe" value="General" checked style="margin-right: 10px;" onclick="showGeneralInfo()">
                                 <label for="general" class="mr-3">General</label>
-                                
+
                                 <input type="radio" id="specific" name="tipe" value="Specific" style="margin-right: 10px;" onclick="hideGeneralInfo()">
                                 <label for="specific">Specific</label>
                             </div>
                             <small id="generalInfo"  style="color: red; display: inline;">Tipe General dapat diakses oleh semua department</small>
                         </div>
-                        
+
                         <script>
                             function showGeneralInfo() {
                                 document.getElementById("generalInfo").style.display = "inline";
                             }
-                        
+
                             function hideGeneralInfo() {
                                 document.getElementById("generalInfo").style.display = "none";
                             }
                         </script>
-                        
-                        
+
+
                         {{-- Departemen --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Departemen<span style="color: red">*</span></label>
@@ -328,7 +330,7 @@
                                 <select id="department_id" name="department_id[]"  class="form-control form-select-lg js-example-basic-multiple" multiple disabled></select>
                             </div>
                         </div>
-                        
+
 
 
                         {{-- Posisi --}}
@@ -338,7 +340,7 @@
                                 <select id="position_id" name="position_id[]" class="form-control form-select-lg js-example-basic-multiple" multiple></select>
                             </div>
                         </div>
-        
+
                         {{-- Target Employee --}}
                         {{-- <div class="mb-3">
                             <label for="" class="mb-2">Member -  Non Member<span style="color: red">*</span></label>
@@ -383,7 +385,7 @@
                             document.addEventListener('DOMContentLoaded', function () {
                                 var btn_new_class   = document.getElementById('btn-new-clas');
                                 var isActive_NC     = false;
-                        
+
                                 // New Class Setup
                                 btn_new_class.addEventListener('click', function () {
                                     // Tidak Aktif
@@ -393,7 +395,7 @@
                                         btn_new_class.textContent = 'Tidak Aktif';
                                         btn_new_class.value ='Tidak Aktif';
                                         isActive_NC = false;
-                                    } 
+                                    }
                                     // Aktif
                                     else {
                                         btn_new_class.classList.remove('btn-danger');
@@ -406,7 +408,7 @@
                             });
                         </script>
                     </div>
-    
+
                     <div class="col-md-4">
                         {{-- Cover Class --}}
                         <div class="card mt-5">
@@ -414,13 +416,13 @@
                                 <div class="text-center">
                                     <div class="card" style="width: 100%; max-width: 1080px;">
                                         <img id="imgPreview"
-                                             src="{{ Storage::url('public/class/cover/') }}" 
+                                             src="{{ Storage::url('public/class/cover/') }}"
                                              onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
-                                             class="rounded" 
-                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;" 
+                                             class="rounded"
+                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;"
                                              alt="...">
                                     </div>
-                                    
+
                                     <div class="input-group mb-3">
                                         <input required type="file" name="image" class="form-control" id="input-image" accept="image/*" onchange="validateImage(this)">
                                     </div>
@@ -428,7 +430,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <script>
                             function validateImage(input) {
                                 if (input.files && input.files[0]) {
@@ -453,12 +455,12 @@
                                 }
                             }
                         </script>
-                        
+
                     </div>
                 </div>
-                
 
-                
+
+
 
                 {{-- BUTTONS --}}
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">

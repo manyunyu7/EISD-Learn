@@ -245,12 +245,12 @@
 
     <div class="page-inner" style="background-color: #ffffff !important;">
 
-        <div class="col-md-12" style="margin-top: 88px">
+        <div class="col-md-12">
             {{-- BREADCRUMB --}}
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href={{url('/')}}>Home</a></li>
-                    <li class="breadcrumb-item"><a href={{url('/lesson')}}>Kelas</a></li>
+                    <li class="breadcrumb-item"><a href={{url('/lesson/manage_v2')}}>Kelas</a></li>
                     <li class="breadcrumb-item"><a
                             href={{url("/lesson/manage_v2/".$lesson->id."/dashboard")}}>Dashboard</a></li>
                 </ol>
@@ -417,7 +417,7 @@
                             <tr>
                                 <th style="background-color: #F8F8F8"><h3><b>Rank</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Nama Siswa</b></h3></th>
-                                <th style="background-color: #F8F8F8"><h3><b>Percentage</b></h3></th>
+                                <th style="background-color: #F8F8F8"><h3><b>Penyelesaian Materi</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Pre-Test</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Post-Test</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Total Score</b></h3></th>

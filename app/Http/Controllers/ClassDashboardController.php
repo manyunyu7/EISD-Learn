@@ -137,8 +137,18 @@ class ClassDashboardController extends Controller
                 }
             }
 
-            // Calculate the percentage completion for the student
-            $percentage = count($takenSections) / count($sections) * 100;
+            $percentage = 0;
+            // Check if $sections is not empty and $takenSections is not empty before calculating percentage
+            if (!empty($sections) && !empty($takenSections)) {
+                // Calculate the percentage completion for the student
+                $percentage = count($takenSections) / count($sections) * 100;
+            } elseif (empty($sections)) {
+                // Handle the case when $sections is empty (avoid division by zero)
+                $percentage = 0; // or any other appropriate value
+            } else {
+                // Handle the case when $takenSections is empty
+                $percentage = 0; // or any other appropriate value
+            }
 
             // Add summary information for the student to the array
             $summaryPrePost[] = (object)[
