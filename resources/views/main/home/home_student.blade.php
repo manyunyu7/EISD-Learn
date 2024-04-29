@@ -269,30 +269,32 @@
                 @forelse ($myClasses as $data)
                     @php
                     $userID = Auth::id();
-                        $silabusClass = DB::select("SELECT
-                                        a.*
-                                        FROM
-                                            course_section a
-                                        WHERE
-                                            a.course_id = $data->id
-                                        ");
-                        $hasTaken  = DB::select("SELECT
-                                        a.*
-                                        FROM
-                                            student_section a
-                                        LEFT JOIN
-                                            course_section b  ON a.section_id = b.id
-                                        WHERE
-                                            a.student_id = $userID AND b.course_id = $data->id;
-                                        "
-                                        );
-                        $totalSections = count($silabusClass);
-                        $total_hasTaken = count($hasTaken);
-                        if($totalSections != null and $total_hasTaken != null){
-                            $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
-                        }else{
-                            $progressPercentage = 0;
-                        }
+                    $silabusClass = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        course_section a
+                                    WHERE
+                                        a.course_id = $data->id
+                                    ");
+                    $hasTaken  = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        student_section a
+                                    LEFT JOIN
+                                        course_section b  ON a.section_id = b.id
+                                    WHERE
+                                        a.student_id = $userID AND b.course_id = $data->id;
+                                    "
+                                    );
+                    $totalSections = count($silabusClass);
+                    $total_hasTaken = count($hasTaken);
+                    if($totalSections != null and $total_hasTaken != null){
+                        $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                    }else{
+                        $progressPercentage = 0;
+                    }
+
+                    $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
 
                     @endphp
 
@@ -308,11 +310,10 @@
                             <!-- Card body -->
                             <div class="card-body">
                                 <!-- Badge and favorite -->
-                                <div
-                                    style="width: 100%; display: flex; justify-content: space-between; margin-bottom: .5rem;">
+                                <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
                                     <div class="class-badge"
-                                         style="color: {{ $data->course_title ?? '#ffffff' }}; margin-right: auto; background-color: {{ $data->course_title ?? '#007bff' }};">
-                                        {{ $data->course_category }}
+                                         style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
+                                        <strong>{{ $data->course_category }}</strong>
                                     </div>
                                 </div>
                                 <!-- Title -->

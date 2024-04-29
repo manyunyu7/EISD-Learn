@@ -345,6 +345,8 @@ class HomeController extends Controller
                 }
             }
 
+            $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+
             // return $myClasses;
 
             MyHelper::addAnalyticEvent(
@@ -364,7 +366,8 @@ class HomeController extends Controller
                     'projectCreatedCount',
                     'classRegisteredCount',
                     'activeCourse',
-                    'completedCourse'
+                    'completedCourse', 
+                    'lessonCategories'
                 ));
         }
     }
