@@ -1,5 +1,4 @@
-<nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark2">
-
+<nav class="navbar navbar-header navbar-expand-lg" style="background-color: #1D2026">
     <div class="container-fluid">
         <div class="collapse" id="search-nav" style="">
             <form class="navbar-left navbar-form nav-search mr-md-3">

@@ -1,10 +1,11 @@
 <li class="nav-item {{ Request::is('home/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
         <a href="{{ url('/home') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/ic_home.svg"
+             class="nav-ok-logo"
              style="width: 14%;
-                height: auto;
-                margin-top: 5px;
-                "
+                    height: auto;
+                    margin-top: 5px;
+                    margin-right: 10px;"
         >
         <p class="{{ Request::is('home/*') ? 'text-white' : ''}}"
            style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Home</p>
@@ -15,10 +16,11 @@
 <li class="nav-item {{ (Request::is('class/*')) ? 'active' : ''}}">
     <a data-toggle="collapse" href="#base" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/class.svg"
+             class="nav-ok-logo"
              style="width: 14%;
-                height: auto;
-                margin-top: 5px;
-                "
+                    height: auto;
+                    margin-top: 5px;
+                    margin-right: 10px;"
         >
         <p style="margin-left: 10px; {{ (Request::is('class/*')) ? 'color: white !important;' : '' }}"
            class="{{ (Request::is('class/*')) ? 'text-white active' : '' }}">Class</p>

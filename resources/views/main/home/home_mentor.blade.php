@@ -209,7 +209,7 @@
 @endsection
 
 @section('main')
-<div class="page-inner" style="background-color: none;">
+<div class="page-inner mt-5" style="background-color: none;">
     <div class="row mt--2 border-primary">
         {{-- PROFILE USER --}}
         <div class="col-md-5">

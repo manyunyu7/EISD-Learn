@@ -270,10 +270,10 @@
 
         <div class="main-header">
             <!-- Logo Header -->
-            <div class="logo-header" data-background-color="dark2">
+            <div class="logo-header" style="background-color: #1D2026">
 
                 <a href="../index.html" class="logo">
-                    <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg" style="max-height: 30px" alt="navbar brand" class="navbar-brand">
+                    <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg" style="width: 80%; height: auto;display: flex;margin-top: 5px;" alt="navbar brand" class="navbar-brand">
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon">

@@ -61,11 +61,11 @@
 </li>
 
 
-<hr>
-<p class="text-center">MENU LAMA</p>
+{{-- <hr>
+<p class="text-center">MENU LAMA</p> --}}
 {{-- MENU LAMA --}}
 {{-- CLASS --}}
-<li class="nav-item">
+{{-- <li class="nav-item">
     <a data-toggle="collapse" href="#lesson">
         <i class="fas fas fa-book"></i>
         <p>Kelas</p>
@@ -90,10 +90,10 @@
             </li>
         </ul>
     </div>
-</li>
+</li> --}}
 
 {{-- EXAM --}}
-<li class="nav-item">
+{{-- <li class="nav-item">
     <a data-toggle="collapse" href="#exam">
         <i class="fas fa-pen-square"></i>
         <p>Exam</p>
@@ -113,7 +113,7 @@
             </li>
         </ul>
     </div>
-</li>
+</li> --}}
 
 {{-- BLOGS --}}
 {{-- <li class="nav-item {{ Request::is('blog/*') ? 'active' : '' }}">

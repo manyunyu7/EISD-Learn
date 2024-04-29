@@ -56,15 +56,23 @@ class MyClassController extends Controller
                 WHERE main_table.ranking = 1;
             ");
 
-            // Append new attribute to each row
+        // Append new attribute to each row
         foreach ($myClasses as &$class) {
             $firstSection = DB::table('course_section')
                 ->where('course_id', '=', $class->id)
                 ->orderByRaw("CAST(section_order AS UNSIGNED), section_order ASC")
                 ->first();
-            $class->first_section = $firstSection->id;  // Modify 'new_attribute_value' accordingly
+                
+             // Tambahkan pengecekan untuk memastikan $firstSection tidak null
+            if ($firstSection !== null) {
+                $class->first_section = $firstSection->id;
+            } else {
+                // Handle jika $firstSection null
+                $class->first_section = null; // Atau nilai default lainnya sesuai kebutuhan
+            }
         }
 
+        // return $class->first_section;
 
         return view('student.myclass')->with(compact('myClasses', 'userID'));
     }

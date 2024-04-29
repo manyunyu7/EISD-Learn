@@ -138,7 +138,7 @@
                 </div>
                 @empty
                     <div class="alert alert-danger">
-                        Kelas Ini Belum Memiliki Materi
+                        Kelas Ini Belum Memiliki Materi {{ $data->id }}
                     </div>
                 @endforelse
             </div>
@@ -224,23 +224,71 @@
 
     <!-- Second Container -->
     <div class="col-md-2">
-    <button type="button"
-            class="btn"
-            style="padding: 10px;
-                    background-color: #208DBB;
-                    color: white;
-                    border-radius: 10px !important;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    width: auto;
-                    max-width: 200px;">
-        <span
-            style="font-weight: bold;
-                    font-size: 18px;">
-            Join Class
-        </span>
-    </button>
-</div>
+        <button type="button"
+                class="btn"
+                style="padding: 10px;
+                        background-color: #208DBB;
+                        color: white;
+                        border-radius: 10px !important;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: auto;
+                        max-width: 200px;"
+                data-toggle="modal"
+                data-target="#inputPinModal{{$data->id}}">
+            <span
+                style="font-weight: bold;
+                        font-size: 18px;">
+                Join Class
+            </span>
+        </button>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="inputPinModal{{$data->id}}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="POST" action="{{ url('/input-pin') }}">
+                {{-- cek Token CSRF --}}
+                @csrf
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="exampleModalLabel"><b>Masukan
+                                PIN</b></h1>
+                        <button type="button" class="close"
+                                data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body center"
+                         style="justify-content: center">
+                        <p>Untuk masuk ke dalam kelas, silakan masukan PIN
+                            terlebih dahulu</p>
+                        <div class="mb-3">
+                            <!-- Hidden Input -->
+                            <input type="hidden" id="hiddenField"
+                                   name="idClass" value='{{ $data->id }}'>
+                            <!-- PIN Input -->
+                            <input name="pin"
+                                   style="border: 1px solid #ced4da;"
+                                   class="form-control" type="text" id="pin"
+                                   required
+                                   placeholder="Masukan PIN disini">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger"
+                                data-dismiss="modal">Cancel
+                        </button>
+                        <button type="submit" class="btn "
+                                style="background-color: #208DBB"><span
+                                style="color: white">Submit</span>
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
 
 @endsection

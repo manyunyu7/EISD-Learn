@@ -103,7 +103,7 @@
 @endsection
 
 @section('main')
-    <div class="page-inner" style="background-color: white!important;">
+    <div class="page-inner mt-5" style="background-color: white!important;">
         <div class="row mt--2 border-primary">
 
             {{-- PROFILE USER --}}
@@ -165,17 +165,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- TEMPLATE CONTAINER --}}
-            {{-- <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-
-                    </div>
-                </div>
-            </div> --}}
-
-
 
             {{-- TRACKING DATA COURSES --}}
             <div class="col-md-8">
@@ -261,6 +250,16 @@
                 </div>
             </div>
 
+            {{-- @php
+                // Ambil warna kategori jika kategori ada dalam $lessonCategories
+                $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                $numStudents = DB::select(
+                                "SELECT *
+                                    FROM
+                                        student_lesson a
+                                    WHERE a.lesson_id = $data->id");
+                $numStudentsCount = count($numStudents);
+            @endphp --}}
             {{-- MY CLASS--}}
             <div class="col-md-12">
                 <h1><strong>My Class</strong></h1>
