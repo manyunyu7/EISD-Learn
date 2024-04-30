@@ -174,9 +174,7 @@
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                  aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
-                                    <div class="">
-                                        {{-- <canvas id="myChart" height="60"></canvas> --}}
-                                    </div>
+                                    <h2>123456789</h2>
                                 </div>
                             </div>
                         </div>

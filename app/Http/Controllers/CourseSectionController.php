@@ -24,6 +24,7 @@ use File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\StudentLesson;
+use Carbon\Carbon;
 
 class CourseSectionController extends Controller
 {
@@ -571,6 +572,7 @@ class CourseSectionController extends Controller
 
                 if($sectionTakenOnCourseCount==$total_section){
                     $u_student_lesson->learn_status = 1;
+                    $u_student_lesson->finished_at = Carbon::now();
                     $u_student_lesson->save();
                 }
             }
