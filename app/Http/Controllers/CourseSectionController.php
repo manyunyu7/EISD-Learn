@@ -16,8 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class CourseSectionController extends Controller
 {
@@ -310,9 +310,9 @@ class CourseSectionController extends Controller
             }
         }
 
-        $compact = compact('isHaveExam', 'isHaveSession', 'exam',
+        $compact = compact('isHaveExam','isHaveSession', 'exam',
             'examTitle',
-            'examSession', 'examSessionTitle', 'students', 'lesson', 'userAttempts');
+            'examSession', 'examSessionTitle', 'students', 'lesson','userAttempts');
         if ($request->dump == true) {
             return $compact;
         }
@@ -567,9 +567,13 @@ class CourseSectionController extends Controller
                     ->where('lessons.id', $lessonId)
                     ->count();
 
-                if ($sectionTakenOnCourseCount == $total_section) {
-                    $u_student_lesson->learn_status = 1;
-                    $u_student_lesson->save();
+                if($sectionTakenOnCourseCount==$total_section){
+                    if($u_student_lesson->learn_status != 1){
+                        $u_student_lesson->finished_at = Carbon::now();
+                        $u_student_lesson->learn_status = 1;
+                        $u_student_lesson->save();
+                    }
+
                 }
             }
         }
