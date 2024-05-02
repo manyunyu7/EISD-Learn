@@ -199,10 +199,19 @@
                         <div class="container-fluid">
                             @if(Str::contains(Storage::url('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
 
-                                <iframe id="pdfIframe"
-                                        src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
-                                        style="text-align:center;" width="100%" height="550" allowfullscreen=""
-                                        webkitallowfullscreen=""></iframe>
+                                @if(str_contains($sectionDetail->section_video,'course-s3'))
+                                    <iframe id="pdfIframe"
+                                            src="{{ url('/') }}/library/viewerjs/src/#{{"https://lms-modernland.s3.ap-southeast-3.amazonaws.com/"."$sectionDetail->section_video" }}#page=1"
+                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                            webkitallowfullscreen=""></iframe>
+                                @else
+                                    <iframe id="pdfIframe"
+                                            src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
+                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                            webkitallowfullscreen=""></iframe>
+                                @endif
+
+
                                 <!-- Add this single <script> tag to the body of your HTML document -->
 
 
@@ -282,14 +291,24 @@
                                     $fileExtension = pathinfo($sectionDetail->section_video, PATHINFO_EXTENSION);
                                 @endphp
 
-                                @if (in_array($fileExtension, $videoFormats))
-                                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
-                                           width="100%"
-                                           class="video-mask" disablePictureInPicture
-                                           controlsList="nodownload">
-                                        <source
-                                            src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}">
-                                    </video>
+                                @if (in_array($fileExtension, $videoFormats) || str_contains($sectionDetail->section_video,".mp4"))
+                                    @if(str_contains($sectionDetail->section_video,'course-s3'))
+                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                               width="100%"
+                                               class="video-mask" disablePictureInPicture
+                                               controlsList="nodownload">
+                                            <source
+                                                src="{{"https://lms-modernland.s3.ap-southeast-3.amazonaws.com/"."$sectionDetail->section_video" }}">
+                                        </video>
+                                    @else
+                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                               width="100%"
+                                               class="video-mask" disablePictureInPicture
+                                               controlsList="nodownload">
+                                            <source
+                                                src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}">
+                                        </video>
+                                    @endif
                                 @elseif (in_array($fileExtension, $imageFormats))
                                     <img
                                         src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}"
@@ -443,16 +462,16 @@
                                         @if ($item->isTaken)
                                             {{-- Display a checked checkbox icon indicating completion --}}
                                             <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                alt="Completed"/>
+                                                 alt="Completed"/>
                                             {{-- Check if it's the current section --}}
                                         @elseif ($item->section_id == $currentSectionId)
                                             {{-- Display a checked checkbox icon indicating completion --}}
                                             <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                alt="Completed"/>
+                                                 alt="Completed"/>
                                         @else
                                             {{-- Display an empty checkbox icon indicating incomplete --}}
                                             <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}"
-                                                alt="Incomplete"/>
+                                                 alt="Incomplete"/>
                                         @endif
                                         {{-- Display the section title --}}
                                     @endif

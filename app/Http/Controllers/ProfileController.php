@@ -74,7 +74,11 @@ class ProfileController extends Controller
     // }
 
 
-
+    /**
+     * update
+     * @param mixed $request
+     * @return void
+     */
     /**
      * update
      * @param mixed $request
@@ -82,75 +86,66 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
+
         MyHelper::addAnalyticEvent(
             "Update Foto Profile","Profile"
         );
 
-        // $this->validate($request, [
-        //     'imagez' => 'image|mimes:png,jpg,jpeg',
-        //     'name' => 'required',
-        //     'phone' => 'required',
-        //     'phone' => 'required',
-        //    'jobs'   => 'required',
-        //    'motto'   => 'required',
-        //     'email' => 'required',
-        // ]);
-
-        $user = User::findOrFail(Auth::user()->id);
+        $user = User::findOrFail(auth()->id());
         $first_name = $request->input('first_name');
         $end_name = $request->input('end_name');
         $complete_name = $first_name.' '.$end_name;
 
-        if ($request->file('profile_image') == "") {
-            $user->update([
-                'name' => $complete_name,
-                'contact' => $request->phone,
-                'institute' => "",
-                'motto' => "",
-                'jobs' => "",
-                'email' => $request->email,
-            ]);
-        } else if ($request->file('profile_image') != "") {
-            // Storage::url('public/profile/') . Auth::user()->profile_url;
-            //hapus old image
-            if ($user->profile_url == "error.png") {
-            } else {
-                Storage::disk('local')->delete('public/profile/' . $user->profile_url);
+        if ($request->hasFile('profile_image')) {
+            // Delete old image from S3 if not the default image
+            if ($user->profile_url !== "error.png") {
+                Storage::disk('s3')->delete('profile-s3/' . $user->profile_url);
             }
-            //upload new image
+
+            // Upload new image to S3
             $image = $request->file('profile_image');
-            Storage::disk('public')->put('profile/'.$image->hashName(), $image);
+            $imagePath = 'profile-s3/' . $image->hashName();
+            Storage::disk('s3')->put($imagePath, file_get_contents($image));
+
+            // Update user profile data
             $user->update([
-                'profile_url' => $image->hashName(),
+                'profile_url' => $imagePath,
                 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
                 'jobs' => $request->jobs,
                 'email' => $request->email,
+                'name' => $complete_name,
+            ]);
+        } else {
+            // Update user profile data without changing the image
+            $user->update([
+                'contact' => $request->phone,
+                'institute' => $request->institute,
+                'motto' => $request->motto,
+                'jobs' => $request->jobs,
+                'email' => $request->email,
+                'name' => $complete_name,
             ]);
         }
 
 
-
-        if ($user) {
-            //redirect dengan pesan sukses
+        // Check if user update was successful
+        if ($user->wasChanged()) {
+            // Redirect with success message
             return redirect('profile')->with(['success' => 'Data Berhasil Diupdate!']);
         } else {
-            //redirect dengan pesan error
+            // Redirect with error message
             return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
         }
-
-
     }
-
-
 
 
     public function updateSocMed(Request $request)
     {
         // return $request->all();
         MyHelper::addAnalyticEvent(
-            "Update Foto Profile","Profile"
+            "Update Socieal Media","Profile"
         );
 
 
@@ -182,8 +177,6 @@ class ProfileController extends Controller
                 'url_youtube' => $yt,
             ]);
         }
-
-
 
 
         if ($user) {
