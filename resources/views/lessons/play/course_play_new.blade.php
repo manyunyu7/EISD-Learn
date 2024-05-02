@@ -292,13 +292,23 @@
                                 @endphp
 
                                 @if (in_array($fileExtension, $videoFormats))
-                                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
-                                           width="100%"
-                                           class="video-mask" disablePictureInPicture
-                                           controlsList="nodownload">
-                                        <source
-                                            src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}">
-                                    </video>
+                                    @if(str_contains($sectionDetail->section_video,'course-s3'))
+                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                               width="100%"
+                                               class="video-mask" disablePictureInPicture
+                                               controlsList="nodownload">
+                                            <source
+                                                src="{{"https://lms-modernland.s3.ap-southeast-3.amazonaws.com/"."$sectionDetail->section_video" }}">
+                                        </video>
+                                    @else
+                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                               width="100%"
+                                               class="video-mask" disablePictureInPicture
+                                               controlsList="nodownload">
+                                            <source
+                                                src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}">
+                                        </video>
+                                    @endif
                                 @elseif (in_array($fileExtension, $imageFormats))
                                     <img
                                         src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}"
