@@ -293,6 +293,17 @@ class HomeController extends Controller
                 ->where('learn_status', 1)
                 ->count();
 
+            $monthly_CompletedCourse = DB::table('student_lesson')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->leftJoin('users', 'student_lesson.student_id', '=', 'users.id')
+                ->select(DB::raw('YEAR(student_lesson.finished_at) as year, MONTH(student_lesson.finished_at) as month, COUNT(*) as completed_count'))
+                ->where('student_lesson.student_id', $userId)
+                ->where('student_lesson.learn_status', 1)
+                ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
+                ->get();
+            
+            // return $monthly_CompletedCourse;
+
             $blogCreatedCount = DB::table('view_blog')
                 ->where('user_id', $userId)
                 ->count();

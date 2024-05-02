@@ -571,9 +571,12 @@ class CourseSectionController extends Controller
                 ->count();
 
                 if($sectionTakenOnCourseCount==$total_section){
-                    $u_student_lesson->learn_status = 1;
-                    $u_student_lesson->finished_at = Carbon::now();
-                    $u_student_lesson->save();
+                    if($u_student_lesson->learn_status != 1){
+                        $u_student_lesson->finished_at = Carbon::now();
+                        $u_student_lesson->learn_status = 1;
+                        $u_student_lesson->save();
+                    }
+                    
                 }
             }
         }

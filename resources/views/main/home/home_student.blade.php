@@ -7,7 +7,7 @@
     {{-- @include('main.home.script_student') --}}
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
     {{-- <script>
         var userScores = @json($userScores);
 
@@ -100,6 +100,75 @@
         });
     </script>
 
+    <script>
+        window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                axisX: {
+                    interval: 1,
+                    intervalType: "month",
+                    valueFormatString: "MM",
+                    gridThickness: 0
+                },
+                axisY: {
+                    gridThickness: 0
+                },
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    reversed: true,
+                    verticalAlign: "center",
+                    horizontalAlign: "right"
+                },
+                data: [
+                    {
+                        type: "stackedColumn100",
+                        name: "Kelas Yang Selesai",
+                        showInLegend: true,
+                        xValueFormatString: "MM",
+                        markerColor: "#23BD33",
+                        dataPoints: [
+                            { label: "Jan", y: 0, color:"#23BD33"},
+                            { label: "Feb", y: 0, color:"#23BD33" },
+                            { label: "Mar", y: 1, color:"#23BD33" },
+                            { label: "Apr", y: 2, color:"#23BD33" },
+                            { label: "May", y: 3, color:"#23BD33" },
+                            { label: "Jun", y: 0, color:"#23BD33" },
+                            { label: "Jul", y: 0, color:"#23BD33" },
+                            { label: "Aug", y: 0, color:"#23BD33" },
+                            { label: "Sep", y: 0, color:"#23BD33" },
+                            { label: "Okt", y: 0, color:"#23BD33" },
+                            { label: "Nov", y: 0, color:"#23BD33" },
+                            { label: "Dec", y: 0, color:"#23BD33" }
+                        ]
+                    },
+                    {
+                        type: "stackedColumn100",
+                        name: "Kuota Kelas Tersisa",
+                        showInLegend: true,
+                        xValueFormatString: "MM",
+                        markerColor: "#ccf7d1",
+                        dataPoints: [
+                            { label: "Jan", y: 5, color:"#ccf7d1" },
+                            { label: "Feb", y: 5, color:"#ccf7d1" },
+                            { label: "Mar", y: 5, color:"#ccf7d1" },
+                            { label: "Apr", y: 5, color:"#ccf7d1" },
+                            { label: "May", y: 5, color:"#ccf7d1" },
+                            { label: "Jun", y: 5, color:"#ccf7d1" },
+                            { label: "Jul", y: 5, color:"#ccf7d1" },
+                            { label: "Aug", y: 5, color:"#ccf7d1" },
+                            { label: "Sep", y: 5, color:"#ccf7d1" },
+                            { label: "Okt", y: 5, color:"#ccf7d1" },
+                            { label: "Nov", y: 5, color:"#ccf7d1" },
+                            { label: "Dec", y: 5, color:"#ccf7d1" }
+                        ]
+                    }
+                ]
+            });
+            chart.render();
+        }
+    </script>
 @endsection
 
 @section('main')
@@ -174,13 +243,41 @@
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                  aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
-                                    <h2>123456789</h2>
+                                    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            {{-- SAMPLE --}}
+            {{-- <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
+                                aria-labelledby="pills-home-tab-nobd">
+                                <div class="">
+                                    <table class="charts-css bar multiple stacked show-labels show-primary-axis data-spacing-8">
+                                        <caption> Front End Developer Salary </caption>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">Januari</th>
+                                                <td style="--size: calc( 3 * 10 ); background-color:#23BD33; color:white">
+                                                </td>
+                                                <td style="--size: calc( 100 - (3*10)); background-color:#ccf7d1">
+                                                    <span class="data"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
 
             {{-- DASHBOARD --}}
             <div class="col-md-12">
