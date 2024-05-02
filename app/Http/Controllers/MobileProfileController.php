@@ -9,23 +9,25 @@ use Illuminate\Support\Facades\Storage;
 
 class MobileProfileController extends Controller
 {
-    public function updatePhoto(Request $request){
+    public function updatePhoto(Request $request)
+    {
         try {
             // Update the user with filtered data
             $user = User::findOrFail($request->lms_user_id);
 
             //hapus old image
             if ($user->profile_url != "error.png") {
-                Storage::disk('public')->delete('profile/' . $user->profile_url);
+                Storage::disk('s3')->delete('profile-s3/' . $user->profile_url);
             }
 
             //upload new image
             if ($request->hasFile('profile_image')) {
                 $image = $request->file('profile_image');
-                $imagePath = 'profile/' . $image->hashName();
-                Storage::disk('public')->put($imagePath, file_get_contents($image));
-                $user->profile_url = $image->hashName();
+                $imagePath = 'profile-s3/' . $image->hashName();
+                Storage::disk('s3')->put($imagePath, file_get_contents($image));
+                $user->profile_url = $imagePath;
             }
+
 
             $user->save();
 

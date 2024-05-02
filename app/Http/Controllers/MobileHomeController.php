@@ -297,17 +297,17 @@ class MobileHomeController extends Controller
     {
         $mdlnUserId = $request->mdln_user_id;
 
-        $mdlnUser = UserMdln::find($mdlnUserId);
-
-        if ($mdlnUser == null) {
-            return MyHelper::responseErrorWithData(
-                404,
-                404,
-                0,
-                "Pengguna Tidak Ditemukan",
-                "User Not Found on Ithub",
-                null);
-        }
+//        $mdlnUser = UserMdln::find($mdlnUserId);
+//
+//        if ($mdlnUser == null) {
+//            return MyHelper::responseErrorWithData(
+//                404,
+//                404,
+//                0,
+//                "Pengguna Tidak Ditemukan",
+//                "User Not Found on Ithub",
+//                null);
+//        }
 
         $userLMS = User::where('mdln_username', $mdlnUserId)->first();
 
