@@ -254,7 +254,8 @@ class HomeController extends Controller
                     'latestExams',
                     'averageScoreArray'
                 ));
-        } else if (Auth::check() && Auth::user()->role == 'student') {
+        } 
+        else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
 
@@ -274,6 +275,22 @@ class HomeController extends Controller
 
             $classRegisteredCount = DB::table('view_student_lesson')
                 ->where('student_id', $userId)
+                ->count();
+
+            $activeCourse = DB::table('student_lesson')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->leftJoin('users', 'student_lesson.student_id', '=', 'users.id')
+                ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
+                ->where('student_id', $userId)
+                ->where('learn_status', 0)
+                ->count();
+
+            $completedCourse = DB::table('student_lesson')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->leftJoin('users', 'student_lesson.student_id', '=', 'users.id')
+                ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
+                ->where('student_id', $userId)
+                ->where('learn_status', 1)
                 ->count();
 
             $blogCreatedCount = DB::table('view_blog')
@@ -319,9 +336,18 @@ class HomeController extends Controller
                     ->where('course_id', '=', $class->id)
                     ->orderByRaw("CAST(section_order AS UNSIGNED), section_order ASC")
                     ->first();
-                $class->first_section = $firstSection->id;  // Modify 'new_attribute_value' accordingly
+                // Tambahkan pengecekan untuk memastikan $firstSection tidak null
+                if ($firstSection !== null) {
+                    $class->first_section = $firstSection->id;
+                } else {
+                    // Handle jika $firstSection null
+                    $class->first_section = null; // Atau nilai default lainnya sesuai kebutuhan
+                }
             }
 
+            $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+
+            // return $myClasses;
 
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Student", "Dashboard"
@@ -338,7 +364,10 @@ class HomeController extends Controller
                     'leaderboard',
                     'blogCreatedCount',
                     'projectCreatedCount',
-                    'classRegisteredCount'
+                    'classRegisteredCount',
+                    'activeCourse',
+                    'completedCourse', 
+                    'lessonCategories'
                 ));
         }
     }

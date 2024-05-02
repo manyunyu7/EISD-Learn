@@ -64,7 +64,14 @@ class DetailClassController extends Controller
         $jumlahSection = $dayta->count();
 
 
-        return view("lessons.mentor_view_class")->with(compact("dayta", "data", "jumlahSection"));
+        $first_section = '0';
+        
+        if ($jumlahSection > 0){
+            $first_section = $dayta->first()->section_id;
+        }
+        $preview_url = url('/')."/course/$id/section/$first_section";
+
+        return view("lessons.mentor_view_class")->with(compact("dayta", "data", "jumlahSection", "first_section", "preview_url"));
     }
     
 

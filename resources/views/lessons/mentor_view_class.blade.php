@@ -48,12 +48,11 @@
           }
         });
       </script>
-       
+
 @endsection
 
 @section('main')
-<div class="container">
-    <br><br>
+<br><br>
     <div class="col-md-12" >
       <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -63,7 +62,7 @@
         </ol>
       </nav>
     </div>
-    
+
 
     <div class="row mt--2 border-primary col-md-12">
       <!-- Yellow Container -->
@@ -77,21 +76,21 @@
                     <p class="col-md-6" style="margin: 0; margin-right: 10px;">
                       <span class="badge dynamic-badge" style="border-radius: 0; font-size: 16px; font-weight: bold;">{{ $data->course_category }}</span>
                     </p>
-                  
+
                     <!-- Mentor Label -->
-                    <div id="mentorLabel" class="mt--2 col-md-6" style="width: 100%; display: flex; align-items: center; 
+                    <div id="mentorLabel" class="mt--2 col-md-6" style="width: 100%; display: flex; align-items: center;
                       @media (max-width: 767px) { order: 2; }">
-                      
+
                       <div style="padding: 10px; display: flex; align-items: center;">
-                        <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto; margin-top: 12px;" 
-                          src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}" alt="Clock Icon">
+                        <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto; margin-top: 12px;"
+                          src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}" alt="Clock Icon">
                         <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top: 12px;">Modernland Training</p>
                     </div>
                     </div>
                 </div>
-                  
-                  
-                  
+
+
+
                 <div class="col-md-12 mt-3">
                     <a href="javascript:void();" data-switch="0">
                         <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
@@ -107,31 +106,31 @@
                         <h2 class="mt--2">
                             <b>Silabus</b>
                         </h2>
-                        
-                        
+
+
                         <div class="mb-3" style="margin-left: auto; margin-right: 5px;">
                             <div style="padding: 10px; display: flex; align-items: center;">
-                                <img style="max-width: 24px; max-height: 24px; margin-right: 12px;" src="{{ url('/Icons/Folder.svg') }}" alt="Folder Icon">
+                                <img style="max-width: 24px; max-height: 24px; margin-right: 12px;" src="{{ url('/icons/Folder.svg') }}" alt="Folder Icon">
                                 <p style="font-size: 1rem; margin: 0;">{{ $jumlahSection }} Sections</p>
                             </div>
                         </div>
-                        
+
                         <div class="mb-3" style="margin-left: 5px;">
                             <div style="padding: 10px; display: flex; align-items: center;">
-                                <img style="max-width: 24px; max-height: 24px; margin-right: 12px;" src="{{ url('/Icons/Clock.svg') }}" alt="Clock Icon">
+                                <img style="max-width: 24px; max-height: 24px; margin-right: 12px;" src="{{ url('/icons/Clock.svg') }}" alt="Clock Icon">
                                 <p style="font-size: 1rem; margin: 0; margin-right: 6px">30m</p>
                             </div>
                         </div>
                     </div>
-                    
-                    
+
+
                     @forelse ($dayta as $data)
                     <div style="border-collapse: collapse; width: 100%;">
                         <div style="border: 1px solid #ccc; padding: 10px; display: flex; align-items: center;">
                         <p style="margin: 0; margin-right: 10px; font-size: 16px">
                             {{ $data->section_title }}
                         </p>
-                        <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;" src="{{ url('/Icons/Clock.svg') }}" alt="Clock Icon">
+                        <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;" src="{{ url('/icons/Clock.svg') }}" alt="Clock Icon">
                         <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:1px">30m</p>
                         </div>
                     </div>
@@ -146,11 +145,11 @@
               <!-- JavaScript for dynamic badge colors -->
               <script>
                 var badges = document.querySelectorAll('.dynamic-badge');
-            
+
                 badges.forEach(function (badge) {
                     var selectedCategory = badge.textContent;
                     var badgeColor, textColor;
-            
+
                     switch (selectedCategory) {
                         case 'Management Trainee':
                             badgeColor = '#f7c8ca';
@@ -199,11 +198,11 @@
                         case 'Senior High School':
                             badgeColor = 'olive';
                             break;
-            
+
                         default:
                             badgeColor = 'gray';
                     }
-            
+
                     badge.style.backgroundColor = badgeColor;
                     badge.style.color = textColor; // Set text color to white
                 });
@@ -223,26 +222,25 @@
 
       <!-- Second Container -->
       <div class="col-md-2">
-        <button type="button" 
-                class="btn" 
-                style="padding: 10px; 
-                        background-color: #208DBB; 
-                        color: white; 
-                        border-radius: 10px !important;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        width: auto; 
-                        max-width: 200px;">
-            <span 
-                style="font-weight: bold;
-                        font-size: 18px;">
-                Preview Class
-            </span>
-        </button>
-    </div>
-    
-  </div>
-</div>
+            <a href="{{ $preview_url }}">
+                <button type="button"
+                    class="btn"
+                    style="padding: 10px;
+                            background-color: #208DBB;
+                            color: white;
+                            border-radius: 10px !important;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: auto;
+                            max-width: 200px;">
+                <span
+                    style="font-weight: bold;
+                            font-size: 18px;">
+                    Preview Class
+                </span>
+            </button>
+            </a>
+        </div>
 
 @endsection

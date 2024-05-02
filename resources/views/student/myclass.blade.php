@@ -47,49 +47,53 @@
             @forelse ($myClasses as $data)
                 @php
                     $userID = Auth::id();
-                        $silabusClass = DB::select("SELECT
-                                        a.*
-                                        FROM
-                                            course_section a
-                                        WHERE
-                                            a.course_id = $data->id
-                                        ");
-                        $hasTaken  = DB::select("SELECT
-                                        a.*
-                                        FROM
-                                            student_section a
-                                        LEFT JOIN
-                                            course_section b  ON a.section_id = b.id
-                                        WHERE
-                                            a.student_id = $userID AND b.course_id = $data->id;
-                                        "
-                                        );
-                        $totalSections = count($silabusClass);
-                        $total_hasTaken = count($hasTaken);
-                        if($totalSections != null and $total_hasTaken != null){
-                            $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
-                        }else{
-                            $progressPercentage = 0;
-                        }
+                    $silabusClass = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        course_section a
+                                    WHERE
+                                        a.course_id = $data->id
+                                    ");
+                    $hasTaken  = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        student_section a
+                                    LEFT JOIN
+                                        course_section b  ON a.section_id = b.id
+                                    WHERE
+                                        a.student_id = $userID AND b.course_id = $data->id;
+                                    "
+                                    );
+                    $totalSections = count($silabusClass);
+                    $total_hasTaken = count($hasTaken);
+                    if($totalSections != null and $total_hasTaken != null){
+                        $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                    }else{
+                        $progressPercentage = 0;
+                    }
+                    $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
                 @endphp
 
-                <div class="col-sm-6 col-xl-3">
+                <div class="col-sm-6 col-xl-4">
                     <div class="card shadow ">
                         <!-- Image -->
                         <img class="card-img-top"
-                             style="max-height: 200px"
+                            style="aspect-ratio: 16 / 9"
                              onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
                              src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
                              alt="La Noyee">
-                        {{--                            <img src="assets/images/courses/4by3/08.jpg"  class="card-img-top" alt="course image">--}}
                         <!-- Card body -->
                         <div class="card-body">
-                            <!-- Badge and favorite -->
-                            <div
-                                style="width: 100%; display: flex; justify-content: space-between; margin-bottom: .5rem;">
+                            <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+                                @if($data->new_class == 'Aktif')
+                                    <div class="class-badge"
+                                        style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
+                                        NEW
+                                    </div>
+                                @endif
                                 <div class="class-badge"
-                                     style="color: {{ $data->course_title ?? '#ffffff' }}; margin-right: auto; background-color: {{ $data->course_title ?? '#007bff' }};">
-                                    {{ $data->course_category }}
+                                    style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
+                                    <strong>{{ $data->course_category }}</strong>
                                 </div>
                             </div>
                             <!-- Title -->
@@ -102,16 +106,12 @@
 
                             <div class="d-flex justify-content-between">
                                 <div>
-{{--                                    <a href="{{ url('/my-class/open/'.$data->id.'/section/'.$data->first_section) }}"--}}
-                                    <a href="{{ url('course/'.$data->id.'/section/'.$data->first_section) }}"
-                                       class="btn text-white btn-round "
-                                       style="background-color: #208DBB">Check</a>
+                                    <a href="{{ $data->first_section ? url('course/'.$data->id.'/section/'.$data->first_section) : "javascript:void(0)" }}"
+                                       class="btn text-white btn-round"
+                                       style="background-color: {{ $data->first_section ? '#208DBB' : '#ffcb52' }}">{{ $data->first_section ? 'Check' : 'Kelas Belum Memiliki Materi' }}</a>
                                 </div>
-
-                                {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span>--}}
-                                <p id="progressCourse" class="h6 mb-0">{{ $progressPercentage }}%
-                                    Completed</p>
-
+                                
+                                <p id="progressCourse" class="h6 mb-0 {{ $data->first_section ? '' : 'd-none' }}">{{ $progressPercentage }}% Completed</p>
                             </div>
 
                             <!-- Rating star -->
@@ -131,15 +131,10 @@
                         </div>
                         <!-- Card footer -->
                         <div class="card-footer pt-0 pb-3">
-                            {{--                                <div class="d-flex justify-content-between d-none">--}}
-                            {{--                                    <span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>12h 56m</span>--}}
-                            {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span>--}}
-                            {{--                                </div>--}}
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <img style="width: 6%; height: auto; margin-top: 12px"
                                      src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">
-                                <a style="text-decoration: none;color: BLACK;"
-                                   href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                <a style="text-decoration: none;color: BLACK;">
                                     <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
                                         <b> {{ $data->num_students_registered }} </b><span style="color: #8C94A3;">students</span>
                                     </p>

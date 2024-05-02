@@ -3577,6 +3577,9 @@ label.error {
 .table-head-bg-info thead {
   border: 1px solid #48ABF7 !important; }
 
+.table-head-bg-grey thead {
+    border: 1px solid #f5f5f5 !important; }
+
 .table-head-bg-success thead {
   border: 1px solid #31CE36 !important; }
 

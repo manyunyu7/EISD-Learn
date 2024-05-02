@@ -97,8 +97,6 @@
 
 
 @section('main')
-
-
     <div class="page-inner">
         <div class="page-header">
 

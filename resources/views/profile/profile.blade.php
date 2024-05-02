@@ -106,7 +106,7 @@
                                     <div class="text-center">
                                         <div class="card">
                                             <img id="profileImage"
-                                                 src="{{ Storage::url('public/profile/').Auth::user()->profile_url }}"
+                                                 src="{{Auth::user()->full_img_path }}"
                                                  onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
                                                  class="rounded"
                                                  alt="...">

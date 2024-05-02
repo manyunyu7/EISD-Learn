@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\CourseSectionController;
+use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropzoneController;
@@ -44,6 +45,10 @@ Route::get('/datatable', function () {
     return view('blog.datatable');
 });
 
+Route::get('s3/image-upload', [ LaravelEstriController::class, 'imageUpload' ])->name('image.upload');
+Route::post('s3/image-upload', [ LaravelEstriController::class, 'imageUploadPost' ])->name('image.upload.post');
+Route::get('s3/get', [ LaravelEstriController::class, 'getAllFilesWithUrls' ]);
+
 Route::redirect('/course', '/classes');
 
 
@@ -67,7 +72,9 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/class/class-list/mentor-view-class/{id}', 'DetailClassController@mentor_viewClass');
     Route::get('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
     Route::get('/class/students/{lessonId}', 'CourseSectionController@viewStudents');
-    Route::post('sortBy', 'CourseSectionController@sortBy')->name('sortBy');
+    // Route::post('sortBy', 'CourseSectionController@sortBy')->name('sortBy');
+    Route::post('/sortBy/{lessonId?}', [CourseSectionController::class, 'sortBy'])->name('sortBy');
+
 
 
     Route::get('/class/class-list', 'ClassListController@classList');
@@ -88,6 +95,9 @@ Route::group(['middleware’' => ['auth']], function () {
 
 
         Route::prefix("lesson")->group(function (){
+
+            Route::get('/{id}/dashboard', 'ClassDashboardController@viewClassDashboard');
+
             Route::get('category', ['uses' => 'LessonCategoryController@manage']);
             Route::get('category/create', ['uses' => 'LessonCategoryController@create']);
             Route::post('category/store', 'LessonCategoryController@store')->name('lesson_category.store');
@@ -147,6 +157,7 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
             Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
+            Route::get('download-exam/{examId}', 'MentorExamController@downloadExam');
 
             Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
             Route::get('{id}/edit', 'MentorExamController@viewEditExam')->name("exam.edit");

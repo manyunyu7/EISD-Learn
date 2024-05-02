@@ -199,19 +199,10 @@
                         <div class="container-fluid">
                             @if(Str::contains(Storage::url('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
 
-                                @if(str_contains($sectionDetail->section_video,'course-s3'))
-                                    <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{"https://lms-modernland.s3.ap-southeast-3.amazonaws.com/"."$sectionDetail->section_video" }}#page=1"
-                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
-                                            webkitallowfullscreen=""></iframe>
-                                @else
-                                    <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
-                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
-                                            webkitallowfullscreen=""></iframe>
-                                @endif
-
-
+                                <iframe id="pdfIframe"
+                                        src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
+                                        style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                        webkitallowfullscreen=""></iframe>
                                 <!-- Add this single <script> tag to the body of your HTML document -->
 
 
@@ -447,24 +438,22 @@
                                 <a href="{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}"
                                    class="loader-link"
                                    style="text-decoration: none; color: inherit;">
-                                    @if (Auth::user()->role!='mentor')
-                                        {{-- Check if the item is marked as taken --}}
-                                        @if ($item->isTaken)
-                                            {{-- Display a checked checkbox icon indicating completion --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                 alt="Completed"/>
-                                            {{-- Check if it's the current section --}}
-                                        @elseif ($item->section_id == $currentSectionId)
-                                            {{-- Display a checked checkbox icon indicating completion --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                 alt="Completed"/>
-                                        @else
-                                            {{-- Display an empty checkbox icon indicating incomplete --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}"
-                                                 alt="Incomplete"/>
-                                        @endif
-                                        {{-- Display the section title --}}
+                                    {{-- Check if the item is marked as taken --}}
+                                    @if ($item->isTaken)
+                                        {{-- Display a checked checkbox icon indicating completion --}}
+                                        <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
+                                             alt="Completed"/>
+                                        {{-- Check if it's the current section --}}
+                                    @elseif ($item->section_id == $currentSectionId)
+                                        {{-- Display a checked checkbox icon indicating completion --}}
+                                        <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
+                                             alt="Completed"/>
+                                    @else
+                                        {{-- Display an empty checkbox icon indicating incomplete --}}
+                                        <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}"
+                                             alt="Incomplete"/>
                                     @endif
+                                    {{-- Display the section title --}}
                                     <span style="display: inline-block;">
                                         {{ $item->section_title }}
                                     </span>

@@ -285,12 +285,12 @@
         </nav>
     </div>
 
-    <div class="container page-inner">
+    <div class="page-inner">
         <div class="page-header" >
             <h1><b>Edit Kelas</b></h1>
         </div>
         {{-- SOAL UJIAN --}}
-        <div class="container load-soal" style="background-color: none">
+        <div class="load-soal" style="background-color: none">
             <form id="addSessionForm" action="{{ url('/update-lesson/'. $lesson_id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
@@ -450,7 +450,7 @@
                                         <img id="imgPreview"
                                              style="aspect-ratio: 16 / 9"
                                              src="{{ Storage::url('public/class/cover/').$myClass->course_cover_image }}" 
-                                             onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
+                                             onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.jpg') }}'; this.alt='Alternative Image';"
                                              class="rounded" 
                                              style="max-width:3840px; max-height: 2160px; object-fit: contain;" 
                                              alt="...">

@@ -244,10 +244,10 @@
 
                         @if($sectionDetail->embedded_file=="" || $sectionDetail->embedded_file==null)
                             <div class="container-fluid">
-                                @if(Str::contains(Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
+                                @if(Str::contains(Storage::url('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video),'pdf'))
 
                                     <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{ Storage::url('public/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
+                                            src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}#page=1"
                                             style="text-align:center;" width="100%" height="550" allowfullscreen=""
                                             webkitallowfullscreen=""></iframe>
                                     <!-- Add this single <script> tag to the body of your HTML document -->
@@ -392,8 +392,6 @@
 
 
                                 <h4 class="card-title">{{ $lesson->course_title }}</h4>
-
-                                <p class="card-text">Materi Ke : {{ $sectionDetail->section_order }}</p>
                                 {!! $sectionDetail->section_content !!}
 
                                 <div class="d-flex justify-content-between mt-2 mb-4">
@@ -438,7 +436,7 @@
                             </div>
                             <div style="flex-shrink: 1;">
                                 <img style="width: 12%; height: auto;"
-                                     src="{{ url('/HomeIcons/Toga_MDLNTraining.svg') }}">
+                                     src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
                                 {{$classInfo->mentor_name}}
                             </div>
                         </div>

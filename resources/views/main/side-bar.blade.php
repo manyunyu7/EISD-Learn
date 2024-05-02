@@ -11,28 +11,29 @@
                     <li class="nav-item {{ Request::is('profile') ? 'active' : '' }}" style="display: flex; justify-content: center;">
                         <a href="{{ url('/profile') }}" style="display: flex; align-items: center;">
                             <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/myProfile.svg"
+                                 class="nav-ok-logo"
                                  style="width: 14%;
-                                height: auto;
-                                margin-top: 5px;
-                                "
+                                        height: auto;
+                                        margin-top: 5px;
+                                        margin-right: 10px;"
                             >
                             <p class="{{ Request::is('profile') ? 'text-white' : ''}}"
-                               style="margin-left: 10px; {{ (Request::is('profile')) ? 'color: white !important;' : '' }}">My Profile</p>
+                               style="margin : 0px; {{ (Request::is('profile')) ? 'color: white !important;' : '' }}">My Profile</p>
                         </a>
                     </li>
 
 
-                    <li class="nav-item {{ Request::is('home/*') ? 'active' : '' }}" style="display: flex; justify-content: center; margin-top: 300px">
-                        <a href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                           style="display: flex; align-items: center;">
+                    <li class="nav-item {{ Request::is('lesson/*') ? 'active' : '' }}" style="display: flex; justify-content: center; margin-top: 300px">
+                        <a href="{{ route('logout') }}" style="display: flex; align-items: center;" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/SignOut.svg"
+                                 class="nav-ok-logo"
                                  style="width: 14%;
-                                height: auto;
-                                margin-top: 5px;
-                                "
+                                        height: auto;
+                                        margin-top: 5px;
+                                        margin-right: 10px;"
                             >
-                            <p class="{{ Request::is('home/*') ? 'text-white' : ''}}"
-                               style="margin-left: 10px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}">Logout</p>
+                            <p style="margin: 0px; {{ (Request::is('home')) ? 'color: white !important;' : '' }}"
+                               class="{{ Request::is('home/*') ? 'text-white' : ''}}">Logout</p>
 
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf

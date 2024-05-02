@@ -156,99 +156,68 @@
 
 @section('main')
 
+
     <div class="page-inner">
-        <div class="page-header">
-            <h4 class="page-title">Course</h4>
-            <ul class="breadcrumbs">
-                <li class="nav-home">
-                    <a href="#">
-                        <i class="flaticon-home"></i>
-                    </a>
-                </li>
-                <li class="separator">
-                    <i class="flaticon-right-arrow"></i>
-                </li>
-                <li class="nav-item">
-                    <a href="#">Course</a>
-                </li>
-                <li class="separator">
-                    <i class="flaticon-right-arrow"></i>
-                </li>
-                <li class="nav-item">
-                    <a href="#">Manage</a>
-                </li>
-            </ul>
+        <div class="col-md-12 mt-2">
+            {{-- BREADCRUMB --}}
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
+                    <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Unduh Exam </li>
+                </ol>
+            </nav>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Daftar Kelas Milik Anda</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="basic-datatables"
-                                   class="table table-bordered  @if (count($dayta) < 1) d-none @endif">
-                                <thead>
-                                <tr>
-                                    <th scope="col">GAMBAR</th>
-                                    <th scope="col">JUDUL</th>
-                                    <th scope="col">MATERI</th>
-                                    <th scope="col">SISWA</th>
-                                    <th scope="col">CONTENT</th>
-                                    <th scope="col">PENULIS</th>
-                                    <th scope="col">KATEGORI</th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @forelse ($dayta as $data)
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Hasil Ujian</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="basic-datatables" class="table table-bordered  @if (count($data_exam) < 1) d-none @endif">
+                                    <thead>
                                     <tr>
-                                        <td class="text-center">
-                                            <img
-                                                src="{{ Storage::url('public/class/cover/').$data->course_cover_image }}"
-                                                class="rounded" style="width: 150px">
+                                        <th><h3><b>Judul Exam</b></h3></th>
+                                        <th><h3><b>Kelas</b></h3></th>
+                                        <th><h3><b>Nama Siswa</b></h3></th>
+                                        <th><h3><b>Judul Exam Dalam Kelas</b></h3></th>
+                                        <th><h3><b>Tipe Exam</b></h3></th>
+                                        <th><h3><b>Skor</b></h3></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @forelse ($data_exam as $data)
+                                    <tr>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->exam_title }}
                                         </td>
-                                        <td>{{ $data->course_title }}</td>
-                                        @php
-                                            $course_id = $data->id
-                                        @endphp
-                                        <td><a href="{{url("/lesson/$course_id/section/")}}"
-                                               class="badge badge-primary">Manage Materi</a></td>
-                                        <td><a href="{{url("/lesson/$course_id/students/")}}"
-                                               class="badge badge-primary">Manage Siswa</a></td>
-                                        <td><a href="{{url("/lesson/$course_id")}}">
-                                                <button type="button" class="btn btn-outline-primary">Lihat Kelas
-                                                </button>
-                                            </a></td>
-                                        <td>{{ $data->mentor_name}}</td>
-                                        @php
-                                            $cat = $data->course_category;
-                                        @endphp
-                                        <td>{{  $cat }}</td>
-                                        <td class="text-center">
-                                            <form id="delete-post-form"
-                                                  action="{{ route('lesson.destroy', $data->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button onclick="return confirm('Are you sure?')"
-                                                        class="btn btn-sm btn-danger ">HAPUS
-                                                </button>
-                                            </form>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->course }}
                                         </td>
-                                        <td>
-                                            <a href="{{ route('lesson.edit', $data->id) }}"
-                                               class="btn btn-sm btn-primary">EDIT</a>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->takers_name }}
+                                        </td>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->course_section_title }}
+                                        </td>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->type }}
+                                        </td>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->exam_score }}
                                         </td>
                                     </tr>
-                                @empty
-                                    <div class="alert alert-danger">
-                                        Anda Belum Memiliki Kelas
-                                    </div>
-                                @endforelse
-                                </tbody>
-                            </table>
+                                    @empty
+                                        <div class="alert alert-danger">
+                                            Belum Ada Peserta Yang Mengerjakan Exam Ini
+                                        </div>
+                                    @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

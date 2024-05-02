@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\MobileProfileController;
 use App\Http\Controllers\MobileVizController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MobileUploaderController;
@@ -27,6 +28,9 @@ Route::post('/upload', [MobileUploaderController::class, 'upload']);
 Route::any('/check', [MobileUploaderController::class, 'check']);
 Route::any('/close-ticket', [MobileUploaderController::class, 'closeTicket']);
 
+Route::post("/update-user-photo/", [MobileProfileController::class, 'updatePhoto']);
+Route::get("/user-detail/", [MobileProfileController::class, 'getUserProfile']);
+Route::post("/update-user/", [MobileProfileController::class, 'updateUser']);
 Route::get("/check-integration", [MobileHomeController::class, 'checkIfAccountConnected']);
 Route::get("/search-unclaimed-account", [MobileHomeController::class, 'searchUnclaimedAccount']);
 Route::any("/claim-account", [MobileHomeController::class, 'claimAccount']);

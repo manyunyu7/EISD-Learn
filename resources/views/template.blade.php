@@ -94,8 +94,8 @@
                 max-height: 20vh; /* Adjust the maximum height of the image */
             }
 
-        
-            
+
+
 
             @keyframes blink {
                 0%, 100% {
@@ -115,11 +115,11 @@
                 }
             }
 
-            
+
         </style>
         @stack("InternalStyle")
 
-        
+
     <!-- Lottie Animate -->
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
@@ -180,7 +180,7 @@
                             <img src="{{URL::to('/')}}/Instagram.svg" alt="">
                         </a>
                         <a href="https://www.linkedin.com/in/kevinvalerianninia">
-                            <img src="{{URL::to('/')}}/Linkedin.svg" alt="">
+                            <img src="{{URL::to('/')}}/linkedin.svg" alt="">
                         </a>
                         <a href="https://www.instagram.com/kevinvarn21">
                             <img src="{{URL::to('/')}}/Youtube.svg" alt="">

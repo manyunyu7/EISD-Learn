@@ -103,7 +103,7 @@
 @endsection
 
 @section('main')
-    <div class="page-inner" style="background-color: white!important;">
+    <div class="page-inner mt-5" style="background-color: white!important;">
         <div class="row mt--2 border-primary">
 
             {{-- PROFILE USER --}}
@@ -115,7 +115,7 @@
                                  aria-labelledby="pills-home-tab-nobd">
                                 <div class="d-flex align-items-center"> {{-- Use flexbox for layout --}}
                                     <div class="mr-3"> {{-- Margin right for spacing --}}
-                                        <img style="width: 100%; max-width: 130px; height: auto;"
+                                        <img style="width: 100%; max-width: 130px; height: auto; max-height: 130px"
                                              src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
                                              alt="Profile Image" class="avatar-img rounded-circle"
                                              onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
@@ -132,50 +132,39 @@
 
                         <div class="ml-auto mt-5"> {{-- Align to the right with ml-auto --}}
                             <div class="portfolio-container">
-                                <img src="{{ url('/HomeIcons/Portfolio.svg') }}" alt="Portfolio Icon">
+                                <img src="{{ url('/home_icons/Portfolio.svg') }}" alt="Portfolio Icon">
                                 <p>{{ Auth::user()->url_personal_website }}</p>
                             </div>
                             <div class="social-icon">
                                 <a href="https://facebook.com/.{{ Auth::user()->url_facebook }}" target="_blank"
                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
-                                    <img src="{{ url('/HomeIcons/Facebook.svg') }}" alt="Facebook Icon">
+                                    <img src="{{ url('/home_icons/Facebook.svg') }}" alt="Facebook Icon">
                                 </a>
                                 <a href="https://www.linkedin.com/in/{{ Auth::user()->url_linkedin }}" target="_blank"
                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
-                                    <img src="{{ url('/HomeIcons/LinkedIn.svg') }}" alt="Instagram Icon">
+                                    <img src="{{ url('/home_icons/linkedin.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://instagram.com/#" target="_blank" rel="noopener noreferrer"
                                    class="btn btnColor btn-icon">
-                                    <img src="{{ url('/HomeIcons/Twitter.svg') }}" alt="Instagram Icon">
+                                    <img src="{{ url('/home_icons/Twitter.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://instagram.com/{{ Auth::user()->url_instagram }}" target="_blank"
                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
-                                    <img src="{{ url('/HomeIcons/Instagram.svg') }}" alt="Instagram Icon">
+                                    <img src="{{ url('/home_icons/Instagram.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://youtube.com/{{ Auth::user()->url_youtube }}" target="_blank"
                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
-                                    <img src="{{ url('/HomeIcons/Youtube.svg') }}" alt="Instagram Icon">
+                                    <img src="{{ url('/home_icons/Youtube.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://wa.me/{{ Auth::user()->url_whatsapp }}" target="_blank"
                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
-                                    <img src="{{ url('/HomeIcons/Whatsapp.svg') }}" alt="Instagram Icon">
+                                    <img src="{{ url('/home_icons/Whatsapp.svg') }}" alt="Instagram Icon">
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {{-- TEMPLATE CONTAINER --}}
-            {{-- <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-
-                    </div>
-                </div>
-            </div> --}}
-
-
 
             {{-- TRACKING DATA COURSES --}}
             <div class="col-md-8">
@@ -211,7 +200,7 @@
                             </div>
                             <div class="col col-stats ml-3 ml-sm-0">
                                 <div class="numbers">
-                                    <h4 class="card-title">$ 1,345</h4>
+                                    <h4 class="card-title">{{ $classRegisteredCount }}</h4>
                                     <p class="card-category">Enrolled Course</p>
                                 </div>
                             </div>
@@ -232,7 +221,7 @@
                             </div>
                             <div class="col col-stats ml-3 ml-sm-0">
                                 <div class="numbers">
-                                    <h4 class="card-title">$ 1,345</h4>
+                                    <h4 class="card-title">{{ $activeCourse }}</h4>
                                     <p class="card-category">Active Course</p>
                                 </div>
                             </div>
@@ -252,7 +241,7 @@
                             </div>
                             <div class="col col-stats ml-3 ml-sm-0">
                                 <div class="numbers">
-                                    <h4 class="card-title">$ 1,345</h4>
+                                    <h4 class="card-title">{{ $completedCourse }}</h4>
                                     <p class="card-category">Completed Course</p>
                                 </div>
                             </div>
@@ -261,6 +250,16 @@
                 </div>
             </div>
 
+            {{-- @php
+                // Ambil warna kategori jika kategori ada dalam $lessonCategories
+                $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                $numStudents = DB::select(
+                                "SELECT *
+                                    FROM
+                                        student_lesson a
+                                    WHERE a.lesson_id = $data->id");
+                $numStudentsCount = count($numStudents);
+            @endphp --}}
             {{-- MY CLASS--}}
             <div class="col-md-12">
                 <h1><strong>My Class</strong></h1>
@@ -270,38 +269,40 @@
                 @forelse ($myClasses as $data)
                     @php
                     $userID = Auth::id();
-                        $silabusClass = DB::select("SELECT
-                                        a.*
-                                        FROM
-                                            course_section a
-                                        WHERE
-                                            a.course_id = $data->id
-                                        ");
-                        $hasTaken  = DB::select("SELECT
-                                        a.*
-                                        FROM
-                                            student_section a
-                                        LEFT JOIN
-                                            course_section b  ON a.section_id = b.id
-                                        WHERE
-                                            a.student_id = $userID AND b.course_id = $data->id;
-                                        "
-                                        );
-                        $totalSections = count($silabusClass);
-                        $total_hasTaken = count($hasTaken);
-                        if($totalSections != null and $total_hasTaken != null){
-                            $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
-                        }else{
-                            $progressPercentage = 0;
-                        }
+                    $silabusClass = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        course_section a
+                                    WHERE
+                                        a.course_id = $data->id
+                                    ");
+                    $hasTaken  = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        student_section a
+                                    LEFT JOIN
+                                        course_section b  ON a.section_id = b.id
+                                    WHERE
+                                        a.student_id = $userID AND b.course_id = $data->id;
+                                    "
+                                    );
+                    $totalSections = count($silabusClass);
+                    $total_hasTaken = count($hasTaken);
+                    if($totalSections != null and $total_hasTaken != null){
+                        $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                    }else{
+                        $progressPercentage = 0;
+                    }
+
+                    $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
 
                     @endphp
 
-                    <div class="col-sm-6 col-xl-3">
+                    <div class="col-sm-6 col-xl-4">
                         <div class="card shadow ">
                             <!-- Image -->
                             <img class="card-img-top"
-                                 style="max-height: 200px"
+                            style="aspect-ratio: 16 / 9"
                                  onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
                                  src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
                                  alt="La Noyee">
@@ -309,11 +310,10 @@
                             <!-- Card body -->
                             <div class="card-body">
                                 <!-- Badge and favorite -->
-                                <div
-                                    style="width: 100%; display: flex; justify-content: space-between; margin-bottom: .5rem;">
+                                <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
                                     <div class="class-badge"
-                                         style="color: {{ $data->course_title ?? '#ffffff' }}; margin-right: auto; background-color: {{ $data->course_title ?? '#007bff' }};">
-                                        {{ $data->course_category }}
+                                         style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
+                                        <strong>{{ $data->course_category }}</strong>
                                     </div>
                                 </div>
                                 <!-- Title -->
@@ -353,16 +353,11 @@
                                 </ul>
                             </div>
                             <!-- Card footer -->
-                            <div class="card-footer pt-0 pb-3">
-                                {{--                                <div class="d-flex justify-content-between d-none">--}}
-                                {{--                                    <span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>12h 56m</span>--}}
-                                {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span>--}}
-                                {{--                                </div>--}}
+                            <div class="card-footer pt-0 pb-3"> 
                                 <div style="display: flex; justify-content: center; align-items: center;">
                                     <img style="width: 6%; height: auto; margin-top: 12px"
                                          src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">
-                                    <a style="text-decoration: none;color: BLACK;"
-                                       href="{{ url('/class/class-list/students/' . $data->id) }}">
+                                    <a style="text-decoration: none;color: BLACK;">
                                         <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
                                             <b> {{ $data->num_students_registered }} </b><span style="color: #8C94A3;">students</span>
                                         </p>

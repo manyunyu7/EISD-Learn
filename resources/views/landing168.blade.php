@@ -101,29 +101,16 @@
 <body>
 
 
-<nav style="background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
-     class="navbar navbar-expand-lg sticky-top"
-     aria-label="Fifth navbar example">
+<nav class="navbar navbar-expand navbar-dark bg-white" aria-label="Second navbar example">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img src="{{asset("/HomeIcons/icon_navbar_modern.png")}}" alt="" height="24">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample05"
-                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#"><img src="{{asset("/home_icons/icon_navbar_modern.png")}}" alt="" height="24"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExample05">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item dropdown d-none">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-bs-toggle="dropdown"
-                       aria-expanded="false">Dropdown</a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdown05">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
+        <div class="collapse navbar-collapse" id="navbarsExample02">
+            <ul class="navbar-nav me-auto">
+
             </ul>
             @auth
                 <a href="{{ url('/home') }}" class="btn btn-danger font-mulish">Home</a>
@@ -134,6 +121,44 @@
     </div>
 </nav>
 
+{{--<nav style="background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"--}}
+{{--     class="navbar navbar-expand-lg sticky-top"--}}
+{{--     aria-label="Fifth navbar example">--}}
+{{--    <div class="container-fluid">--}}
+{{--        <a class="navbar-brand" href="#">--}}
+{{--            <img src="{{asset("/home_icons/icon_navbar_modern.png")}}" alt="" height="24">--}}
+{{--        </a>--}}
+{{--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample05"--}}
+{{--                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">--}}
+{{--            <span class="navbar-toggler-icon"></span>--}}
+{{--        </button>--}}
+
+{{--        <div class="collapse ">--}}
+{{--            <ul class="navbar-nav me-auto mb-2 mb-lg-0">--}}
+{{--                <li class="nav-item dropdown d-none">--}}
+{{--                    <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-bs-toggle="dropdown"--}}
+{{--                       aria-expanded="false">Dropdown</a>--}}
+{{--                    <ul class="dropdown-menu" aria-labelledby="dropdown05">--}}
+{{--                        <li><a class="dropdown-item" href="#">Action</a></li>--}}
+{{--                        <li><a class="dropdown-item" href="#">Another action</a></li>--}}
+{{--                        <li><a class="dropdown-item" href="#">Something else here</a></li>--}}
+{{--                    </ul>--}}
+{{--                </li>--}}
+{{--            </ul>--}}
+
+{{--            <form class="form-inline my-2 my-md-0">--}}
+{{--                <input class="form-control" type="text" placeholder="Search">--}}
+{{--            </form>--}}
+
+{{--            @auth--}}
+{{--                <a href="{{ url('/home') }}" class="btn btn-danger font-mulish">Home</a>--}}
+{{--            @else--}}
+{{--                <a href="{{ url('/login') }}" class="btn btn-danger font-mulish">Login</a>--}}
+{{--            @endauth--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--</nav>--}}
+
 <div id="first-section" class="container-fluid">
     <div class="row">
 
@@ -141,7 +166,7 @@
             <div style="height: 100%" class="bg-red">
                 <div class="box w-100">
                     <div class="container p-5 w-100">
-                        <img src="{{url("HomeIcons/icon_toga_home.png")}}" style="max-height: 150px"
+                        <img src="{{url("home_icons/icon_toga_home.png")}}" style="max-height: 150px"
                              class="rounded float-start"
                              alt="...">
                     </div>
@@ -174,7 +199,7 @@
         <div class="col-md-6 col-lg-6 vh-100 d-sm-none d-xl-block d-md-block d-none"
              data-aos="fade-left" data-aos-delay="800"
              style="position: relative;">
-            <img src="{{url("HomeIcons/uwes_talking.png")}}"
+            <img src="{{url("home_icons/uwes_talking.png")}}"
                  style="height: 90%; object-fit: contain; object-position: bottom; position: absolute; bottom: 0; right: 0;"
                  class="rounded float-start img-fluid"
                  alt="...">
@@ -187,7 +212,7 @@
         <div id="jamal-talking" class="col-md-6 col-lg-6 vh-100 "
              data-aos="fade-up-right" data-aos-delay="500"
              style="position: relative;">
-            <img src="{{url("HomeIcons/jamal_talking.png")}}"
+            <img src="{{url("home_icons/jamal_talking.png")}}"
                  style="height: 100%; object-fit: contain; object-position: left; position: absolute; left: 0;"
                  class="rounded float-start img-fluid"
                  alt="...">
@@ -212,7 +237,7 @@
                         >
                             <div class="col-md-3" style="flex: 0 0 auto; width: 100%; max-width: 25%;">
                                 <div class="d-flex justify-content-end justify-content-center">
-                                    <img src="{{ URL::to('/HomeIcons') }}/ic_content_pelatihan.png" class="img-fluid"
+                                    <img src="{{ URL::to('/home_icons') }}/ic_content_pelatihan.png" class="img-fluid"
                                          alt="Image 2" style="max-height: 88px; margin-left: 10px;">
                                 </div>
                             </div>
@@ -228,7 +253,7 @@
                         >
                             <div class="col-md-3" style="flex: 0 0 auto; width: 100%; max-width: 25%;">
                                 <div class="d-flex justify-content-end justify-content-center">
-                                    <img src="{{ URL::to('/HomeIcons') }}/ic_content_ujian.png" class="img-fluid"
+                                    <img src="{{ URL::to('/home_icons') }}/ic_content_ujian.png" class="img-fluid"
                                          alt="Image 2" style="max-height: 100px; margin-right: 10px;">
                                 </div>
                             </div>
@@ -244,7 +269,7 @@
                         >
                             <div class="col-md-3" style="flex: 0 0 auto; width: 100%; max-width: 25%;">
                                 <div class="d-flex justify-content-end justify-content-center">
-                                    <img src="{{ URL::to('/HomeIcons') }}/ic_content_leaderboard.png" class="img-fluid"
+                                    <img src="{{ URL::to('/home_icons') }}/ic_content_leaderboard.png" class="img-fluid"
                                          alt="Image 2" style="max-height: 100px; margin-right: 10px;">
                                 </div>
                             </div>
@@ -260,7 +285,7 @@
                         >
                             <div class="col-md-3" style="flex: 0 0 auto; width: 100%; max-width: 25%;">
                                 <div class="d-flex justify-content-end justify-content-center">
-                                    <img src="{{ URL::to('/HomeIcons') }}/ic_content_video.png" class="img-fluid"
+                                    <img src="{{ URL::to('/home_icons') }}/ic_content_video.png" class="img-fluid"
                                          alt="Image 2" style="max-height: 100px; margin-right: 10px;">
                                 </div>
                             </div>
@@ -395,7 +420,7 @@
              data-aos="fade-left" data-aos-delay="500"
              style="position: relative;">
             <div style="display: flex; justify-content: center; margin-top: 100px">
-                <img src="{{url("HomeIcons/cluster_modern.png")}}"
+                <img src="{{url("home_icons/cluster_modern.png")}}"
                      style="height: 90%; object-fit: contain; object-position: bottom;"
                      class="rounded img-fluid"
                      alt="...">
@@ -416,7 +441,7 @@
             </svg>
         </a>
         <div class="container">
-            <img src="{{asset("/HomeIcons/logo_modern_light.png")}}" alt="" height="24">
+            <img src="{{asset("/home_icons/logo_modern_light.png")}}" alt="" height="24">
             <p>Test</p>
             <p style="color: #8C94A3">Commercial Area 5th, Green Central City, Jl. Gajah Mada, RT.3/RW.5, Glodok, Kec.
                 Taman Sari, Jakarta, Daerah Khusus Ibukota Jakarta 11120</p>

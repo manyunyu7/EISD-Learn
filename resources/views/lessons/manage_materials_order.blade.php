@@ -120,7 +120,7 @@
         </nav>
     </div>
 
-    <div class="container page-inner">
+    <div class="page-inner">
         <div class="page-header">
             <h1><strong>Urutan Materi</strong></h1>
         </div>
@@ -136,7 +136,7 @@
             <tbody>
                 @forelse ($dayta as $item)
                 <tr data-id="{{ $item->section_id }}">
-                    <td class="text-center"><img src="{{ url('/Icons/Sort.svg') }}"></td>
+                    <td class="text-center"><img src="{{ url('/icons/Sort.svg') }}"></td>
                     <td><h4>{{ $item->section_title }}</h4></td>
                 </tr>
                 @empty
