@@ -291,7 +291,7 @@
                                     $fileExtension = pathinfo($sectionDetail->section_video, PATHINFO_EXTENSION);
                                 @endphp
 
-                                @if (in_array($fileExtension, $videoFormats))
+                                @if (in_array($fileExtension, $videoFormats) || str_contains($sectionDetail->section_video,".mp4"))
                                     @if(str_contains($sectionDetail->section_video,'course-s3'))
                                         <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
                                                width="100%"

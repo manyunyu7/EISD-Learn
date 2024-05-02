@@ -768,7 +768,7 @@ class CourseSectionController extends Controller
 
         // Set common attributes
         $inputDeyta->course_id = $lesson_id ?? '';
-        $inputDeyta->section_content = $request->{'content'} ?? '';
+        $inputDeyta->section_content =$request->{'content'} ?? '';
         $inputDeyta->section_order = $section_order ?? '';
         $inputDeyta->can_be_accessed = $request->access ?? '';
         $inputDeyta->quiz_session_id = $request->quiz_session_id ?? '';
