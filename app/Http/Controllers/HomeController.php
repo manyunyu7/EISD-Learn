@@ -402,7 +402,41 @@ class HomeController extends Controller
 
             $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
 
-            // return $myClasses;
+
+            // BUILD QUERY POST TEST SCORE
+            $postTestScore = DB::select("
+                            SELECT 
+                                et.user_id AS userID,
+                                es.id AS exam_SessionId,
+                                es.exam_type AS examType,
+                                cs.section_title AS title_exam,
+                                exm.title AS materiExam,
+                                MAX(et.current_score) AS highest_currentScore,
+                                et.course_flag AS courseID,
+                                et.course_section_flag AS courseSectionID
+                            FROM 
+                                exam_takers AS et
+                            LEFT JOIN
+                                exam_sessions AS es ON et.session_id = es.id
+                            LEFT JOIN
+                                course_section AS cs ON es.id = cs.quiz_session_id
+                            LEFT JOIN
+                                exams AS exm ON es.exam_id = exm.id
+                            WHERE
+                                et.user_id = $userID
+                                AND
+                                es.exam_type = 'Post Test'
+                            GROUP BY
+                                et.user_id,
+                                es.exam_type,
+                                es.id,
+                                cs.section_title,
+                                exm.title,
+                                et.course_flag,
+                                et.course_section_flag
+            ");
+
+            // return $postTestScore;
 
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Student", "Dashboard"
@@ -424,7 +458,8 @@ class HomeController extends Controller
                     'completedCourse', 
                     'lessonCategories',
                     'jan', 'feb', 'mar', 'apr', 'mei', 'jun',
-                    'jul', 'agt', 'sep', 'okt', 'nov', 'des'
+                    'jul', 'agt', 'sep', 'okt', 'nov', 'des',
+                    'postTestScore'
                 ));
         }
     }

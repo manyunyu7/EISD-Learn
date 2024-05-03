@@ -116,7 +116,7 @@
             var des = <?php echo json_encode($des); ?>;
 
 
-            var chart = new CanvasJS.Chart("chartContainer", {
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
                             animationEnabled: true,
                             axisX: {
                                 interval: 1,
@@ -185,8 +185,40 @@
                                     ]
                                 }
                             ]
-                });
-                chart.render();
+            });
+            chart1.render();
+
+            var resultPostTest = <?php echo json_encode($postTestScore); ?>;
+            var dataPoints = [];
+
+            
+            resultPostTest.forEach(function(item) {
+                var xValue = item.title_exam; 
+                var yValue = parseInt(item.highest_currentScore); 
+
+                dataPoints.push({ label: xValue, y: yValue });
+            });
+
+            console.log(dataPoints);
+            var chart2 = new CanvasJS.Chart("chartContainer2",{
+                axisX: {
+                    interval: 1,
+                    labelAngle: -45 
+                },
+                axisY: {
+                    minimum: 0, 
+                    maximum: 100, 
+                    labelFormatter: function (e) {
+                        return parseInt(e.value);
+                    }
+                },
+                data: [{
+                    type: "line",
+                    dataPoints: dataPoints 
+                }]
+            });
+
+            chart2.render();
         }
     </script>
 @endsection
@@ -277,7 +309,37 @@
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                 aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
-                                    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                                    <div id="chartContainer1" style="height: 370px; width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- TRACKING POST TEST SCORE --}}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-9">
+                                <h3><strong>Post Test Score</strong></h3>
+                            </div>
+                            
+                            <div class="col-3">
+                                <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
+                                    <option>2024</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
+                                aria-labelledby="pills-home-tab-nobd">
+                                <div class="">
+                                    <div id="chartContainer2" style="height: 370px; width: 100%;"></div>
                                 </div>
                             </div>
                         </div>
