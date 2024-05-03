@@ -328,7 +328,18 @@
                             
                             <div class="col-3">
                                 <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
-                                    <option>2024</option>
+                                    <option>Januari</option>
+                                    <option>Februari</option>
+                                    <option>Maret</option>
+                                    <option>April</option>
+                                    <option>Mei</option>
+                                    <option>Juni</option>
+                                    <option>Juli</option>
+                                    <option>Agustus</option>
+                                    <option>September</option>
+                                    <option>Oktober</option>
+                                    <option>November</option>
+                                    <option>Desember</option>
                                 </select>
                             </div>
                         </div>
