@@ -102,71 +102,123 @@
 
     <script>
         window.onload = function () {
-            var chart = new CanvasJS.Chart("chartContainer", {
-                animationEnabled: true,
+            var jan = <?php echo json_encode($jan); ?>;
+            var feb = <?php echo json_encode($feb); ?>;
+            var mar = <?php echo json_encode($mar); ?>;
+            var apr = <?php echo json_encode($apr); ?>;
+            var mei = <?php echo json_encode($mei); ?>;
+            var jun = <?php echo json_encode($jun); ?>;
+            var jul = <?php echo json_encode($jul); ?>;
+            var agt = <?php echo json_encode($agt); ?>;
+            var sep = <?php echo json_encode($sep); ?>;
+            var okt = <?php echo json_encode($okt); ?>;
+            var nov = <?php echo json_encode($nov); ?>;
+            var des = <?php echo json_encode($des); ?>;
+
+
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+                            animationEnabled: true,
+                            axisX: {
+                                interval: 1,
+                                intervalType: "month",
+                                valueFormatString: "MM",
+                                tickLength: 0,
+                                lineThickness: 0,
+                                gridThickness: 0
+                            },
+                            axisY: {
+                                lineThickness: 0,
+                                tickLength: 0,
+                                gridThickness: 0,
+                                labelFontSize: 0
+                            },
+                            legend: {
+                                reversed: true,
+                                verticalAlign: "center",
+                                horizontalAlign: "right"
+                            },
+                            data: [
+                                {
+                                    type: "stackedColumn100",
+                                    name: "Kelas Yang Selesai",
+                                    showInLegend: false,
+                                    xValueFormatString: "MM",
+                                    markerColor: "#23BD33",
+                                    dataPoints: [
+                                        { label: "Jan", y: jan.completed_count, color:"#23BD33"},
+                                        { label: "Feb", y: feb.completed_count, color:"#23BD33" },
+                                        { label: "Mar", y: mar.completed_count, color:"#23BD33" },
+                                        { label: "Apr", y: apr.completed_count, color:"#23BD33" },
+                                        { label: "May", y: mei.completed_count, color:"#23BD33" },
+                                        { label: "Jun", y: jun.completed_count, color:"#23BD33" },
+                                        { label: "Jul", y: jul.completed_count, color:"#23BD33" },
+                                        { label: "Aug", y: agt.completed_count, color:"#23BD33" },
+                                        { label: "Sep", y: sep.completed_count, color:"#23BD33" },
+                                        { label: "Okt", y: okt.completed_count, color:"#23BD33" },
+                                        { label: "Nov", y: nov.completed_count, color:"#23BD33" },
+                                        { label: "Dec", y: des.completed_count, color:"#23BD33" }
+                                    ],
+                                    indexLabel: "{y}", 
+                                    indexLabelPlacement: "outside", 
+                                    indexLabelFontColor: "#333", 
+                                    indexLabelFontSize: 14 
+                                },
+                                {
+                                    type: "stackedColumn100",
+                                    name: "Kuota Kelas Tersisa",
+                                    showInLegend: false,
+                                    xValueFormatString: "MM",
+                                    markerColor: "#ccf7d1",
+                                    dataPoints: [
+                                        { label: "Jan", y: (5-jan.completed_count), color:"#ccf7d1"},
+                                        { label: "Feb", y: (5-feb.completed_count), color:"#ccf7d1" },
+                                        { label: "Mar", y: (5-mar.completed_count), color:"#ccf7d1" },
+                                        { label: "Apr", y: (5-apr.completed_count), color:"#ccf7d1" },
+                                        { label: "May", y: (5-mei.completed_count), color:"#ccf7d1" },
+                                        { label: "Jun", y: (5-jun.completed_count), color:"#ccf7d1" },
+                                        { label: "Jul", y: (5-jul.completed_count), color:"#ccf7d1" },
+                                        { label: "Aug", y: (5-agt.completed_count), color:"#ccf7d1" },
+                                        { label: "Sep", y: (5-sep.completed_count), color:"#ccf7d1" },
+                                        { label: "Okt", y: (5-okt.completed_count), color:"#ccf7d1" },
+                                        { label: "Nov", y: (5-nov.completed_count), color:"#ccf7d1" },
+                                        { label: "Dec", y: (5-des.completed_count), color:"#ccf7d1" }
+                                    ]
+                                }
+                            ]
+            });
+            chart1.render();
+
+            var resultPostTest = <?php echo json_encode($postTestScore); ?>;
+            var dataPoints = [];
+
+            
+            resultPostTest.forEach(function(item) {
+                var xValue = item.title_exam; 
+                var yValue = parseInt(item.highest_currentScore); 
+
+                dataPoints.push({ label: xValue, y: yValue });
+            });
+
+            console.log(dataPoints);
+            var chart2 = new CanvasJS.Chart("chartContainer2",{
                 axisX: {
                     interval: 1,
-                    intervalType: "month",
-                    valueFormatString: "MM",
-                    gridThickness: 0
+                    labelAngle: -45 
                 },
                 axisY: {
-                    gridThickness: 0
-                },
-                toolTip: {
-                    shared: true
-                },
-                legend: {
-                    reversed: true,
-                    verticalAlign: "center",
-                    horizontalAlign: "right"
-                },
-                data: [
-                    {
-                        type: "stackedColumn100",
-                        name: "Kelas Yang Selesai",
-                        showInLegend: true,
-                        xValueFormatString: "MM",
-                        markerColor: "#23BD33",
-                        dataPoints: [
-                            { label: "Jan", y: 0, color:"#23BD33"},
-                            { label: "Feb", y: 0, color:"#23BD33" },
-                            { label: "Mar", y: 1, color:"#23BD33" },
-                            { label: "Apr", y: 2, color:"#23BD33" },
-                            { label: "May", y: 3, color:"#23BD33" },
-                            { label: "Jun", y: 0, color:"#23BD33" },
-                            { label: "Jul", y: 0, color:"#23BD33" },
-                            { label: "Aug", y: 0, color:"#23BD33" },
-                            { label: "Sep", y: 0, color:"#23BD33" },
-                            { label: "Okt", y: 0, color:"#23BD33" },
-                            { label: "Nov", y: 0, color:"#23BD33" },
-                            { label: "Dec", y: 0, color:"#23BD33" }
-                        ]
-                    },
-                    {
-                        type: "stackedColumn100",
-                        name: "Kuota Kelas Tersisa",
-                        showInLegend: true,
-                        xValueFormatString: "MM",
-                        markerColor: "#ccf7d1",
-                        dataPoints: [
-                            { label: "Jan", y: 5, color:"#ccf7d1" },
-                            { label: "Feb", y: 5, color:"#ccf7d1" },
-                            { label: "Mar", y: 5, color:"#ccf7d1" },
-                            { label: "Apr", y: 5, color:"#ccf7d1" },
-                            { label: "May", y: 5, color:"#ccf7d1" },
-                            { label: "Jun", y: 5, color:"#ccf7d1" },
-                            { label: "Jul", y: 5, color:"#ccf7d1" },
-                            { label: "Aug", y: 5, color:"#ccf7d1" },
-                            { label: "Sep", y: 5, color:"#ccf7d1" },
-                            { label: "Okt", y: 5, color:"#ccf7d1" },
-                            { label: "Nov", y: 5, color:"#ccf7d1" },
-                            { label: "Dec", y: 5, color:"#ccf7d1" }
-                        ]
+                    minimum: 0, 
+                    maximum: 100, 
+                    labelFormatter: function (e) {
+                        return parseInt(e.value);
                     }
-                ]
+                },
+                data: [{
+                    type: "line",
+                    dataPoints: dataPoints 
+                }]
             });
-            chart.render();
+
+            chart2.render();
         }
     </script>
 @endsection
@@ -237,13 +289,27 @@
 
             {{-- TRACKING DATA COURSES --}}
             <div class="col-md-8">
-                <div class="card"> {{-- card --}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-9">
+                                <h3><strong>Data Completed Courses (Pcs)</strong></h3>
+                            </div>
+                            
+                            <div class="col-3">
+                                <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
+                                    <option>2024</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-body">
                         <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
-                                 aria-labelledby="pills-home-tab-nobd">
+                                aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
-                                    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                                    <div id="chartContainer1" style="height: 370px; width: 100%;"></div>
                                 </div>
                             </div>
                         </div>
@@ -251,33 +317,47 @@
                 </div>
             </div>
 
-            {{-- SAMPLE --}}
-            {{-- <div class="col-md-12">
+            {{-- TRACKING POST TEST SCORE --}}
+            <div class="col-md-12">
                 <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-9">
+                                <h3><strong>Post Test Score</strong></h3>
+                            </div>
+                            
+                            <div class="col-3">
+                                <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
+                                    <option>Januari</option>
+                                    <option>Februari</option>
+                                    <option>Maret</option>
+                                    <option>April</option>
+                                    <option>Mei</option>
+                                    <option>Juni</option>
+                                    <option>Juli</option>
+                                    <option>Agustus</option>
+                                    <option>September</option>
+                                    <option>Oktober</option>
+                                    <option>November</option>
+                                    <option>Desember</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-body">
                         <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                 aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
-                                    <table class="charts-css bar multiple stacked show-labels show-primary-axis data-spacing-8">
-                                        <caption> Front End Developer Salary </caption>
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row">Januari</th>
-                                                <td style="--size: calc( 3 * 10 ); background-color:#23BD33; color:white">
-                                                </td>
-                                                <td style="--size: calc( 100 - (3*10)); background-color:#ccf7d1">
-                                                    <span class="data"></span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div id="chartContainer2" style="height: 370px; width: 100%;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> --}}
+            </div>
+            
 
             {{-- DASHBOARD --}}
             <div class="col-md-12">

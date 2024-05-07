@@ -301,9 +301,53 @@ class HomeController extends Controller
                 ->where('student_lesson.learn_status', 1)
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();
-            
-            // return $monthly_CompletedCourse;
+                        
+                $completedCourse_monthly = [];
 
+                // Loop untuk mengisi data per bulan
+                for ($i = 1; $i <= 12; $i++) {
+                    $found = false;
+                    foreach ($monthly_CompletedCourse as $course) {
+                        if ($course->month == $i) {
+                            // Simpan data per bulan sebagai objek
+                            $completedCourse_monthly[$i] = (object) [
+                                "year" => $course->year,
+                                "month" => $course->month,
+                                "completed_count" => $course->completed_count
+                            ];
+                            $found = true;
+                            break;
+                        }
+                    }
+                    // Jika tidak ada data untuk bulan tersebut, definisikan sebagai 0
+                    if (!$found) {
+                        $completedCourse_monthly[$i] = (object) [
+                            "year" => date("Y"),
+                            "month" => $i,
+                            "completed_count" => 0
+                        ];
+                    }
+                }
+                
+                // Sortir array berdasarkan bulan
+                ksort($completedCourse_monthly);
+                
+                // Setelah data disiapkan, Anda dapat mengakses properti month dengan benar
+                $jan = $completedCourse_monthly[1];
+                $feb = $completedCourse_monthly[2];
+                $mar = $completedCourse_monthly[3];
+                $apr = $completedCourse_monthly[4];
+                $mei = $completedCourse_monthly[5];
+                $jun = $completedCourse_monthly[6];
+                $jul = $completedCourse_monthly[7];
+                $agt = $completedCourse_monthly[8];
+                $sep = $completedCourse_monthly[9];
+                $okt = $completedCourse_monthly[10];
+                $nov = $completedCourse_monthly[11];
+                $des = $completedCourse_monthly[12];
+                
+                
+            
             $blogCreatedCount = DB::table('view_blog')
                 ->where('user_id', $userId)
                 ->count();
@@ -358,7 +402,41 @@ class HomeController extends Controller
 
             $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
 
-            // return $myClasses;
+
+            // BUILD QUERY POST TEST SCORE
+            $postTestScore = DB::select("
+                            SELECT 
+                                et.user_id AS userID,
+                                es.id AS exam_SessionId,
+                                es.exam_type AS examType,
+                                cs.section_title AS title_exam,
+                                exm.title AS materiExam,
+                                MAX(et.current_score) AS highest_currentScore,
+                                et.course_flag AS courseID,
+                                et.course_section_flag AS courseSectionID
+                            FROM 
+                                exam_takers AS et
+                            LEFT JOIN
+                                exam_sessions AS es ON et.session_id = es.id
+                            LEFT JOIN
+                                course_section AS cs ON es.id = cs.quiz_session_id
+                            LEFT JOIN
+                                exams AS exm ON es.exam_id = exm.id
+                            WHERE
+                                et.user_id = $userID
+                                AND
+                                es.exam_type = 'Post Test'
+                            GROUP BY
+                                et.user_id,
+                                es.exam_type,
+                                es.id,
+                                cs.section_title,
+                                exm.title,
+                                et.course_flag,
+                                et.course_section_flag
+            ");
+
+            // return $postTestScore;
 
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Student", "Dashboard"
@@ -378,7 +456,10 @@ class HomeController extends Controller
                     'classRegisteredCount',
                     'activeCourse',
                     'completedCourse', 
-                    'lessonCategories'
+                    'lessonCategories',
+                    'jan', 'feb', 'mar', 'apr', 'mei', 'jun',
+                    'jul', 'agt', 'sep', 'okt', 'nov', 'des',
+                    'postTestScore'
                 ));
         }
     }
