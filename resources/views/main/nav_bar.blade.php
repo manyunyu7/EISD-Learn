@@ -22,7 +22,7 @@
                 <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                     <div class="avatar-sm">
                         <img
-                            src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                            src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
                             alt="..."
                             class="avatar-img rounded-circle"
                             onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
@@ -36,7 +36,7 @@
                             <div class="user-box">
                                 <div class="avatar-sm">
                                     <img
-                                        src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                        src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
                                         alt="..."
                                         class="avatar-img rounded-circle"
                                         onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"

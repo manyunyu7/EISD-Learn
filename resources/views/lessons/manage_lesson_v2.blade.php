@@ -1,72 +1,74 @@
 @extends('main.template')
-<style>
-    /* The switch - the box around the slider */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 36px; /* Lebar switch */
-        height: 18px; /* Tinggi switch */
-    }
 
-    /* Hide default HTML checkbox */
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    /* The slider */
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
-        border-radius: 12px; /* Bentuk kotak switch */
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 14px; /* Tinggi slider */
-        width: 14px; /* Lebar slider */
-        left: 2px; /* Jarak dari kiri */
-        bottom: 2px; /* Jarak dari bawah */
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%; /* Bentuk bulatan di dalam slider */
-    }
-
-    /* Warna latar belakang slider saat diaktifkan */
-    input:checked + .slider {
-        background-color: #FC1E01;
-    }
-
-    /* Bayangan saat slider difokuskan */
-    input:focus + .slider {
-        box-shadow: 0 0 1px #FC1E01;
-    }
-
-    /* Perpindahan slider saat diaktifkan */
-    input:checked + .slider:before {
-        transform: translateX(16px); /* Perpindahan slider saat diaktifkan */
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 18px; /* Bentuk bulat switch */
-    }
-
-    .slider.round:before {
-        border-radius: 50%; /* Bentuk bulat dalam slider */
-    }
-</style>
 @section('head-section')
     <!-- Datatables -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+
+    <style>
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px; /* Lebar switch */
+            height: 18px; /* Tinggi switch */
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 12px; /* Bentuk kotak switch */
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px; /* Tinggi slider */
+            width: 14px; /* Lebar slider */
+            left: 2px; /* Jarak dari kiri */
+            bottom: 2px; /* Jarak dari bawah */
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%; /* Bentuk bulatan di dalam slider */
+        }
+
+        /* Warna latar belakang slider saat diaktifkan */
+        input:checked + .slider {
+            background-color: #FC1E01;
+        }
+
+        /* Bayangan saat slider difokuskan */
+        input:focus + .slider {
+            box-shadow: 0 0 1px #FC1E01;
+        }
+
+        /* Perpindahan slider saat diaktifkan */
+        input:checked + .slider:before {
+            transform: translateX(16px); /* Perpindahan slider saat diaktifkan */
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 18px; /* Bentuk bulat switch */
+        }
+
+        .slider.round:before {
+            border-radius: 50%; /* Bentuk bulat dalam slider */
+        }
+    </style>
 @endsection
 
 @section('script')
@@ -170,7 +172,6 @@
         </script>
     </div>
 
-
     <div class="col-md-12">
         <h1><strong>All Class</strong></h1>
     </div>
@@ -214,7 +215,7 @@
                     <img class="card-img-top"
                          style="aspect-ratio: 16 / 9"
                          onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-                         src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                         src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}"
                          alt="La Noyee"
                     >
 

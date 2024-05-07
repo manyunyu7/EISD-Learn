@@ -12,9 +12,4 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
-class MyEstriHelper
-{
-
-
-
-}
+$myS3BaseUrl = "https://lms-modernland.s3.ap-southeast-3.amazonaws.com/";

@@ -2,7 +2,7 @@
 
 @section('head-section')
     <!-- Datatables -->
-    
+
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     <script>
@@ -39,7 +39,7 @@
         });
 
     </script>
-    
+
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Datatables -->
@@ -267,7 +267,7 @@
         @endif
     </script>
 
-    
+
 
 @endsection
 
@@ -303,7 +303,7 @@
                                 <input required value="{{ $myClass->pin }}" name="pass_class" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
-        
+
                         {{-- Judul Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Judul Kelas<span style="color: red">*</span></label>
@@ -311,7 +311,7 @@
                                 <input required value="{{ $myClass->course_title }}" name="title" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
-                        
+
                         {{-- Kategori --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Kategori<span style="color: red">*</span></label>
@@ -334,7 +334,7 @@
                             <div class="input-group mb-3">
                                 <input type="radio" id="general" name="tipe" value="General" {{ $myClass->tipe == "General" ? "checked" : "" }} style="margin-right: 10px;" onclick="showGeneralInfo()">
                                 <label for="general" class="mr-3">General</label>
-                                
+
                                 <input type="radio" id="specific" name="tipe" value="Specific" {{ $myClass->tipe == "Specific" ? "checked" : "" }} style="margin-right: 10px;" onclick="hideGeneralInfo()">
                                 <label for="specific">Specific</label>
                             </div>
@@ -361,7 +361,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
 
                         {{-- Posisi --}}
                         <div class="mb-3">
@@ -416,7 +416,7 @@
                             document.addEventListener('DOMContentLoaded', function () {
                                 var btn_new_class   = document.getElementById('public-access-btn');
                                 var isActive_NC     = false;
-                        
+
                                 // New Class Setup
                                 btn_new_class.addEventListener('click', function () {
                                     // Tidak Aktif
@@ -426,7 +426,7 @@
                                         btn_new_class.textContent = 'Tidak Aktif';
                                         btn_new_class.value ='Tidak Aktif';
                                         isActive_NC = false;
-                                    } 
+                                    }
                                     // Aktif
                                     else {
                                         btn_new_class.classList.remove('btn-danger');
@@ -439,7 +439,7 @@
                             });
                         </script>
                     </div>
-    
+
 
                     <div class="col-md-4">
                         {{-- Cover Class --}}
@@ -449,13 +449,13 @@
                                     <div class="card" style="width: 100%; max-width: 1080px;">
                                         <img id="imgPreview"
                                              style="aspect-ratio: 16 / 9"
-                                             src="{{ Storage::url('public/class/cover/').$myClass->course_cover_image }}" 
+                                             src="{{ env('AWS_BASE_URL') . $myClass->course_cover_image }}"
                                              onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.jpg') }}'; this.alt='Alternative Image';"
-                                             class="rounded" 
-                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;" 
+                                             class="rounded"
+                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;"
                                              alt="...">
                                     </div>
-                                    
+
                                     <div class="input-group mb-3">
                                         <input hidden name="existing_file_name" value="{{ $myClass->course_cover_image }}" type="text">
                                         <input  type="file" name="image" class="form-control" id="input-image" accept="image/*" onchange="validateImage(this)">
@@ -464,7 +464,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <script>
                             function validateImage(input) {
                                 if (input.files && input.files[0]) {
@@ -491,7 +491,7 @@
                         </script>
                     </div>
                 </div>
-                
+
 
                 {{-- BUTTONS --}}
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">

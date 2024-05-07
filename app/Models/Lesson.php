@@ -27,7 +27,11 @@ class Lesson extends Model
     public function getFullImgPathAttribute()
     {
         // Assuming your image path is stored in a column named 'img_path'
-        $imgPath = $this->img_path; // Adjust this according to your actual attribute name
+        $imgPath = $this->course_cover_image; // Adjust this according to your actual attribute name
+
+        if(str_contains($this->course_cover_image,"lesson-s3")){
+            return "https://lms-modernland.s3.ap-southeast-3.amazonaws.com/".$this->course_cover_image;
+        }
 
         // Manipulate the path if needed
         // For example, you might want to prepend the base URL
