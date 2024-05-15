@@ -47,6 +47,7 @@ class ClassDashboardController extends Controller
 
         // Extract quiz session IDs
         $quizSessionIds = [];
+        
         $sectionIds = [];
         $lessonIds = [];
 
@@ -55,7 +56,7 @@ class ClassDashboardController extends Controller
             $sectionIds[] = (int)$section->section_id;
             $lessonIds[] = (int)$section->lesson_id;
         }
-
+                                                                                                                                                                                                                                                                                        
 
         // Find the latest pre-test and post-test sections
         $postTest = null;
@@ -74,7 +75,7 @@ class ClassDashboardController extends Controller
             $lastPostTestDetail = DB::table('exam_sessions as es')
                 ->select('e.title as exam_title', 'es.*')
                 ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
-                ->where('es.id', '=', 11)
+                ->whereIn('es.id', $quizSessionIds)
                 ->first();
         }
 
