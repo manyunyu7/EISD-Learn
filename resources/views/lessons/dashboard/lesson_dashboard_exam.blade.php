@@ -289,7 +289,6 @@
 
                 <div class="col-md-12 mb-5">
                     <div class="row">
-
                         <div class="col-md-6 col-12" style="display: inline-block; vertical-align: top;">
                             <div class="card" style="height: 100%;">
                                 <div class="card-header">
@@ -409,7 +408,6 @@
                 </div>
 
                 <div class="col-md-12">
-
                     <div class="table-responsive">
                         <table id="basic-datatables"
                                class="table table-bordered  @if (count($summaryPrePost) < 1) d-none @endif">
@@ -419,6 +417,7 @@
                                 <th style="background-color: #F8F8F8"><h3><b>Nama Siswa</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Penyelesaian Materi</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Pre-Test</b></h3></th>
+                                <th style="background-color: #F8F8F8"><h3><b>Quiz</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Post-Test</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Total Score</b></h3></th>
                             </tr>
@@ -446,6 +445,9 @@
                                     </td>
                                     <td style="overflow: hidden; white-space: nowrap;">
                                         {{ optional($data)->highest_pre_test_score }}
+                                    </td>
+                                    <td style="overflow: hidden; white-space: nowrap;">
+                                        {{ optional($data)->highest_quiz_score }}
                                     </td>
                                     <td style="overflow: hidden; white-space: nowrap;">
                                         {{ optional($data)->highest_post_test_score }}

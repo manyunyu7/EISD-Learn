@@ -251,7 +251,7 @@
                             </div>
                         </div>
 
-                        <div class="ml-auto mt-5"> {{-- Align to the right with ml-auto --}}
+                        <div class="ml-auto mt-5"> 
                             <div class="portfolio-container">
                                 <img src="{{ url('/home_icons/Portfolio.svg') }}" alt="Portfolio Icon">
                                 <p>{{ Auth::user()->url_personal_website }}</p>

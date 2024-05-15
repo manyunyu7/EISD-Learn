@@ -47,7 +47,7 @@
 
 {{-- DASHBOARD --}}
 <li class="nav-item {{ Request::is('dashboard/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
-    <a href="{{ url('/dashboard/mentor') }}" style="display: flex; align-items: center;">
+    <a href="{{ url('/dashboard/mentor') }}"  style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/Dashboard.svg"
              class="nav-ok-logo"
              style="width: 14%;

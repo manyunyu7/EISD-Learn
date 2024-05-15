@@ -47,8 +47,13 @@ class ClassDashboardController extends Controller
 
         // Extract quiz session IDs
         $quizSessionIds = [];
+        $sectionIds = [];
+        $lessonIds = [];
+
         foreach ($sections as $section) {
             $quizSessionIds[] = (int)$section->quiz_session_id;
+            $sectionIds[] = (int)$section->section_id;
+            $lessonIds[] = (int)$section->lesson_id;
         }
 
 
@@ -90,6 +95,8 @@ class ClassDashboardController extends Controller
             ->leftJoin('lessons as l', 'l.id', '=', 'cs.course_id')
             ->select('e.id as exam_id', 'e.title as exam_title', 'l.course_title as course', 'l.id as course_id', 'et.current_score as exam_score', 'u.name as takers_name', 'es.exam_type as type', 'cs.section_title as course_section_title', 'es.id as exam_session_id', 'cs.id as course_section_id')
             ->whereIn('es.id', $quizSessionIds)
+            ->whereIn('et.course_section_flag', $sectionIds)
+            ->whereIn('et.course_flag', $lessonIds)
             ->where('et.is_finished', 'y')
             ->get();
 
@@ -102,19 +109,24 @@ class ClassDashboardController extends Controller
             $studentId = $student->student_id;
             $studentName = $student->student_name;
             $studentPhoto = $student->profile_url;
+            $quizScore = 0;
             $preTestScore = 0;
             $postTestScore = 0;
             $takenSections = [];
             $untakenSections = [];
 
+            // return $examResults;
             // Calculate highest pre-test and post-test scores for the student
             foreach ($examResults as $exam) {
                 if ($exam->takers_name === $studentName) {
                     if ($exam->type === 'Pre Test' && $exam->exam_score > $preTestScore) {
                         $preTestScore = $exam->exam_score;
                     }
+                    if ($exam->type === 'Quiz' && $exam->exam_score > $quizScore) {
+                        $quizScore = $exam->exam_score;     
+                    }
                     if ($exam->type === 'Post Test' && $exam->exam_score > $postTestScore) {
-                        $postTestScore = $exam->exam_score;
+                        $postTestScore = $exam->exam_score;      
                     }
                 }
             }
@@ -156,6 +168,7 @@ class ClassDashboardController extends Controller
                 'student_name' => $studentName,
                 'student_photo' => $studentPhoto,
                 'highest_pre_test_score' => $preTestScore,
+                'highest_quiz_score' => $quizScore,
                 'highest_post_test_score' => $postTestScore,
                 'taken_section' => $takenSections,
                 'untaken_section' => $untakenSections,

@@ -187,9 +187,11 @@
                                                 ");
                                             @endphp
                                             <div>
+                                                {{-- href="{{ url('/lesson/'.$data->id.'/dashboard/') }}" --}}
+                                                {{-- onclick="{{ $class ? "redirectToSection('" . url('/dashboard/mentor/course/'. $data->id) . "')" : "void(0)" }}" --}}
                                                 <a id="checkBtn" class="btn text-white btn-round{{ $class ? '' : ' empty'}}"
                                                    style="background-color: {{ $class ? '#208DBB' : '#CCCCCC' }}"
-                                                   onclick="{{ $class ? "redirectToSection('" . url('/dashboard/mentor/course/'. $data->id) . "')" : "void(0)" }}">Check</a>
+                                                   onclick="{{ $class ? "redirectToSection('" . url('/lesson/'.$data->id.'/dashboard/') . "')" : "void(0)" }}">Check</a>
                                                 <script>
                                                     // Mengambil tombol check
                                                     var checkBtn = document.getElementById('checkBtn');

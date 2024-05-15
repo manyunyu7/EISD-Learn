@@ -400,8 +400,6 @@
                                         ");
                                     }
 
-
-
                                 ?>
                                 <tr class="text-center">
                                     <td>{{ $loop->iteration }}</td>
@@ -419,7 +417,7 @@
                                         <td>-</td>
                                     @endif
                                     <td>Digital Management</td>
-                                    <td>{{ count($students_takeQuiz) }}</td>
+                                    {{-- <td>{{ count($students_takeQuiz) }}</td> --}}
                                     @if (!empty($students_takeQuiz))
                                         <td>{{ $students_takeQuiz[0]->highest_score }}</td>
                                     @else

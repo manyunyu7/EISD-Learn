@@ -426,7 +426,7 @@ class CourseSectionController extends Controller
                 if ($section->can_be_accessed == "n") {
                     abort(401, "Materi baru dapat diakses pada jadwal yang telah ditentukan");
                 }
-                $sectionTakenByStudent = FacadesDB::table('student_section as ss')
+                $sectionTakenByStudent = DB::table('student_section as ss')
                     ->select('section_id')
                     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
                     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
@@ -436,7 +436,7 @@ class CourseSectionController extends Controller
                     ->pluck('ss.section_id')
                     ->toArray();
 
-                $lastSectionTaken = FacadesDB::table('student_section as ss')
+                $lastSectionTaken = DB::table('student_section as ss')
                     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
                     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
@@ -652,7 +652,7 @@ class CourseSectionController extends Controller
                         GROUP BY
                             a.id, b.name, b.profile_url;
                         ");
-        // $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
+        // $sections = DB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
         // $section = $sections;
 
 
