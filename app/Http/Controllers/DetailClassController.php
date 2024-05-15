@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class DetailClassController extends Controller
 {
     //
-    public function viewClass($id){
+    public function viewClass(Request $request,$id){
         // $lesson_id = $lesson->id;
         $data = Lesson::findOrFail($id);
         $dayta = DB::table('course_section as c')
@@ -34,9 +34,13 @@ class DetailClassController extends Controller
             ->orderBy('c.section_order', 'ASC')
             ->get();
 
-        // return $dayta;
         $jumlahSection = $dayta->count();
-        return view("lessons.view_class")->with(compact("data","dayta", "jumlahSection"));
+        $compact = compact("data","dayta", "jumlahSection");
+        if($request->dump==true){
+            return $compact;
+        }
+        // return $dayta;
+        return view("lessons.view_class")->with($compact);
     }
 
     public function mentor_viewClass($id){
@@ -65,7 +69,7 @@ class DetailClassController extends Controller
 
 
         $first_section = '0';
-        
+
         if ($jumlahSection > 0){
             $first_section = $dayta->first()->section_id;
         }
@@ -73,7 +77,7 @@ class DetailClassController extends Controller
 
         return view("lessons.mentor_view_class")->with(compact("dayta", "data", "jumlahSection", "first_section", "preview_url"));
     }
-    
+
 
     public function viewStudents(Request $request, $lessonId){
         Paginator::useBootstrap();
@@ -86,10 +90,10 @@ class DetailClassController extends Controller
         ->select('users.name', 'users.department') // Pilih kolom yang ingin Anda ambil dari tabel users
         ->orderBy('users.name', $sortBy)
         ->paginate(10);
-        
+
         // return $request->all();
         // return $sortBy;
         return view("lessons.view_students")->with(compact("studentsInLesson", "sortBy", "lessonId"));
     }
-    
+
 }

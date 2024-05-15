@@ -272,7 +272,7 @@
             <!-- Logo Header -->
             <div class="logo-header" style="background-color: #1D2026">
 
-                <a href="../index.html" class="logo">
+                <a href="{{url("home")}}" class="logo">
                     <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"
                          style="width: 80%; height: auto;display: flex;margin-top: 5px;" alt="navbar brand"
                          class="navbar-brand">

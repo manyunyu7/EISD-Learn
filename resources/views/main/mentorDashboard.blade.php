@@ -97,26 +97,25 @@
 
 
 @section('main')
-    <div class="container">
-        <div class="page-inner " style="background-color: none">
-            <div class="container-fluid">
-                <div class="row">
-                    <h1 class="mb-3 col-12"><b>Dashboard</b></h1>
-    
-                    <div class="mt-3 row">
+    <div class="page-inner">
+        <div class="container-fluid">
+            <div class="row">
+                <h1 class="mb-3 col-12"><b>Dashboard</b></h1>
+
+                <div class="mt-3 row">
+                    @php
+                        // Ambil semua kategori pelajaran sekali
+                        $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+                    @endphp
+                    @forelse ($myClasses as $data)
                         @php
-                            // Ambil semua kategori pelajaran sekali
-                            $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
-                        @endphp
-                        @forelse ($myClasses as $data)
-                            @php
-                                $userID = Auth::id();
-                                $numStudents = DB::select(
-                                "SELECT *
-                                    FROM
-                                        student_lesson a
-                                    WHERE a.lesson_id = $data->id");
-                                $numStudentsCount = count($numStudents);
+                            $userID = Auth::id();
+                            $numStudents = DB::select(
+                            "SELECT *
+                                FROM
+                                    student_lesson a
+                                WHERE a.lesson_id = $data->id");
+                            $numStudentsCount = count($numStudents);
 
                                 // Ambil warna kategori jika kategori ada dalam $lessonCategories
                                 $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';

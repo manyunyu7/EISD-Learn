@@ -629,7 +629,6 @@ class CourseSectionController extends Controller
             $hasTakenAnyExam = true;
         }
 
-
         $classInfo = DB::select("SELECT
                         a.*,
                         b.name AS mentor_name,

@@ -236,8 +236,8 @@
                                  aria-labelledby="pills-home-tab-nobd">
                                 <div class="d-flex align-items-center"> {{-- Use flexbox for layout --}}
                                     <div class="mr-3"> {{-- Margin right for spacing --}}
-                                        <img style="width: 100%; max-width: 130px; height: auto; max-height: 130px"
-                                             src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                        <img style="width: 130px; height: 130px; object-fit: cover"
+                                             src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
                                              alt="Profile Image" class="avatar-img rounded-circle"
                                              onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                     </div>
@@ -528,7 +528,7 @@
                                 </ul>
                             </div>
                             <!-- Card footer -->
-                            <div class="card-footer pt-0 pb-3"> 
+                            <div class="card-footer pt-0 pb-3">
                                 <div style="display: flex; justify-content: center; align-items: center;">
                                     <img style="width: 6%; height: auto; margin-top: 12px"
                                          src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">

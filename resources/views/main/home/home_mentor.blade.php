@@ -154,8 +154,8 @@
 @endsection
 
 @section('main')
-<div class="page-inner mt-5" style="background-color: none;">
-    <div class="row mt--2 border-primary">
+<div class="page-inner" style="margin-top: 50px">
+    <div class="row mt-2 border-primary">
         {{-- PROFILE USER --}}
         <div class="col-md-5">
             <div class="card">
@@ -166,14 +166,14 @@
                             <div class="d-flex align-items-center"> {{-- Use flexbox for layout --}}
                                 <div class="mr-3"> {{-- Margin right for spacing --}}
                                     <img style="width: 100%; max-width: 130px; height: auto;  max-height: 130px"
-                                         src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
+                                         src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
                                          alt="Profile Image" class="avatar-img rounded-circle"
                                          onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                 </div>
                                 <div>
                                     <div class="card-head-row card-tools-still-right">
                                         <h3 style="color: black;"><b>{{ Auth::user()->name }}</b></h3>
-                                        <p class="card-category" style="color: red">Department Mentor</p>
+                                        <p class="card-category d-none" style="color: red">Department Mentor</p>
                                     </div>
                                 </div>
                             </div>

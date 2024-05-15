@@ -8,46 +8,6 @@
 
 
 @section('script')
-    {{-- @include('main.home.script_student') --}}
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        const DISPLAY = true;
-        const BORDER = true;
-        const CHART_AREA = true;
-        const TICKS = true;
-        const ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
-            datasets: [
-              {
-                label: 'Blue Line',
-                data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
-                borderColor: 'blue',
-                borderWidth: 2,
-                fill: false
-              },
-              {
-                label: 'Red Line',
-                data: [5, 9, 8, 2, 6, 7, 5, 9, 8, 2, 6, 7],
-                borderColor: 'red',
-                borderWidth: 2,
-                fill: false
-              }
-            ]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
-      </script>
 
 @endsection
 
@@ -93,12 +53,16 @@
 
 
             <div class="col-md-12 mt-3">
-                <a href="javascript:void();" data-switch="0">
-                    <img class="card-img-top" onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
-                            src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                            style="aspect-ratio: 16 / 9"
-                            alt="La Noyee">
-                </a>
+                <div style="text-align: center;">
+                    <a href="javascript:void();" data-switch="0">
+                        <img
+                            style="height: auto!important; max-height: 80vh; object-fit: cover; width: 100vw!important;
+                                    max-width: 70vw!important; display: inline-block; border-radius: 20px;"
+                            class="card-img-top"
+                            onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
+                            src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}" alt="La Noyee">
+                    </a>
+                </div>
 
 
                 <h2 class="mt-3"><b>Deskripsi</b></h2>
@@ -126,11 +90,11 @@
                 </div>
 
 
-                @forelse ($dayta as $data)
+                @forelse ($dayta as $item)
                 <div style="border-collapse: collapse; width: 100%;">
                     <div style="border: 1px solid #ccc; padding: 10px; display: flex; align-items: center;">
                     <p style="margin: 0; margin-right: 10px; font-size: 16px">
-                        {{ $data->section_title }}
+                        {{ $item->section_title }}
                     </p>
                     <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;" src="{{ url('/icons/Clock.svg') }}" alt="Clock Icon">
                     <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:1px">30m</p>
@@ -138,77 +102,11 @@
                 </div>
                 @empty
                     <div class="alert alert-danger">
-                        Kelas Ini Belum Memiliki Materi {{ $data->id }}
+                        Kelas Ini Belum Memiliki Materi
                     </div>
                 @endforelse
             </div>
         </div>
-
-            <!-- JavaScript for dynamic badge colors -->
-            <script>
-            var badges = document.querySelectorAll('.dynamic-badge');
-
-            badges.forEach(function (badge) {
-                var selectedCategory = badge.textContent;
-                var badgeColor, textColor;
-
-                switch (selectedCategory) {
-                    case 'Management Trainee':
-                        badgeColor = '#f7c8ca';
-                        textColor = '#D02025';
-                        break;
-                    case 'General':
-                        badgeColor = 'blue';
-                        break;
-                    case 'Design':
-                        badgeColor = 'green';
-                        break;
-                    case 'Finance & Accounting':
-                        badgeColor = 'purple';
-                        break;
-                    case 'Human Resource and Development':
-                        badgeColor = 'orange';
-                        break;
-                    case '3D Modelling':
-                        badgeColor = 'pink';
-                        break;
-                    case 'Digital Management':
-                        badgeColor = '#EBEBFF';
-                        textColor = '#342F98';
-                        break;
-                    case 'Marketing and Business':
-                        badgeColor = 'yellow';
-                        break;
-                    case 'Food and Beverage':
-                        badgeColor = 'brown';
-                        break;
-                    case 'Management':
-                        badgeColor = 'teal';
-                        break;
-                    case 'Social and Politics':
-                        badgeColor = 'indigo';
-                        break;
-                    case 'Office':
-                        badgeColor = 'maroon';
-                        break;
-                    case 'Outdoor Activity':
-                        badgeColor = 'lime';
-                        break;
-                    case 'Junior High School':
-                        badgeColor = 'navy';
-                        break;
-                    case 'Senior High School':
-                        badgeColor = 'olive';
-                        break;
-
-                    default:
-                        badgeColor = 'gray';
-                }
-
-                badge.style.backgroundColor = badgeColor;
-                badge.style.color = textColor; // Set text color to white
-            });
-            </script>
 
             @if (session()->has('success'))
                 <script>
@@ -236,7 +134,7 @@
                         width: auto;
                         max-width: 200px;"
                 data-toggle="modal"
-                data-target="#inputPinModal{{$data->id}}">
+                data-target="#inputPinModal">
             <span
                 style="font-weight: bold;
                         font-size: 18px;">
@@ -245,7 +143,7 @@
         </button>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="inputPinModal{{$data->id}}" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="inputPinModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="{{ url('/input-pin') }}">
                 {{-- cek Token CSRF --}}

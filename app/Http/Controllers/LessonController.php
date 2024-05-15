@@ -51,10 +51,10 @@ class LessonController extends Controller
         //                 ->get();
 
         // return($Users_ithub);
-        
+
         // return($m_departments_ithub);
         $compact = compact('categories');
-        
+
         if($request->dump==true){
             return $compact;
         }
@@ -166,19 +166,19 @@ class LessonController extends Controller
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
         $myClasses = DB::select("
-                        SELECT 
-                            a.*, 
-                            u.name AS mentor_name 
-                        FROM 
+                        SELECT
+                            a.*,
+                            u.name AS mentor_name
+                        FROM
                             lessons a
-                        LEFT JOIN 
+                        LEFT JOIN
                             users u ON a.mentor_id = u.id AND u.role = 'mentor'
                         WHERE
                             a.deleted_at IS NULL
-                        ORDER BY 
+                        ORDER BY
                             a.id DESC
                     ");
-    
+
         Paginator::useBootstrap();
         // dd($myClasses) ;
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
@@ -200,9 +200,9 @@ class LessonController extends Controller
                     ->where('users.role', 'mentor')
                     ->where('lessons.id', $lesson_id)
                     ->first(); // Ambil baris pertama dari hasil query
-        
-        $deptId = $myClass->department_id;   
-        $postId = $myClass->position_id;   
+
+        $deptId = $myClass->department_id;
+        $postId = $myClass->position_id;
 
         $compact = compact('deptId', 'postId', 'categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id');
         // dd($myClass);
@@ -213,7 +213,6 @@ class LessonController extends Controller
         // dd($request->all()) ;
         ini_set('upload_max_filesize', '500M');
         ini_set('post_max_size', '500M');
-        // Alert::success('pesan yang ingin disampaikan', 'Judul Pesan');
         $this->validate($request, [
             // 'image' => 'required',
             'title' => 'required',
@@ -221,9 +220,8 @@ class LessonController extends Controller
         ]);
 
         //upload image
-       
         $cat = $request->input('category');
-        
+
         // $video->storeAs('public/class/trailer', $video->hashName());
         $user_id = Auth::id();
 
@@ -236,22 +234,15 @@ class LessonController extends Controller
         $update_data_lesson = Lesson::findOrFail($lesson_id);
 
         $image = $request->file('image');
-        $old_image_name = $request->existing_file_name;
+        $old_image_name = $update_data_lesson->course_cover_image;
         $new_image_name = null;
 
-        // Jika ada file gambar yang diunggah
-        if ($image) {
-            $new_image_name = $image->hashName();
-            $image->storeAs('public/class/cover', $new_image_name);
-        }
-
-        // Periksa jika file gambar baru diunggah atau input file tidak kosong
-        if ($new_image_name || $request->hasFile('image')) {
-            // Jika file gambar baru diunggah atau input file tidak kosong (artinya gambar dihapus)
-            $update_data_lesson->course_cover_image = $new_image_name;
-        } else {
-            // Jika tidak ada perubahan pada gambar, biarkan nilai kolom gambar tetap seperti yang ada sebelumnya
-            $update_data_lesson->course_cover_image = $old_image_name;
+        if ($image != null) {
+            Storage::disk('s3')->delete("profile-s3/$old_image_name");
+            $image = $request->file('image');
+            $imagePath = "lesson-s3/" . $image->hashName();
+            Storage::disk('s3')->put($imagePath, file_get_contents($image));
+            $update_data_lesson->course_cover_image = $imagePath;
         }
 
         $update_data_lesson->course_title       = $request->title;
@@ -272,7 +263,7 @@ class LessonController extends Controller
         $update_data_lesson->department_id      = json_encode($request->department_id);
         $update_data_lesson->position_id        = json_encode($request->position_id);
 
-        
+
         if ($update_data_lesson->save()) {
             //redirect dengan pesan sukses
             return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Diperbaharui!']);
@@ -282,8 +273,8 @@ class LessonController extends Controller
             return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Diperbaharui!']);
             return back();
         }
-        
-        
+
+
     }
 
     public function delete_class_v2($lessonId){
@@ -291,7 +282,7 @@ class LessonController extends Controller
         $update_data_lesson_for_deleted_at              = Lesson::findOrFail($lessonId);
         $update_data_lesson_for_deleted_at->deleted_at  = $current_timestamp;
         $update_data_lesson_for_deleted_at->save();
-        
+
         return back()->with(['success' => 'Class Deleted Successfully']);
     }
 
@@ -558,7 +549,13 @@ class LessonController extends Controller
 
         //upload image
         $image = $request->file('image');
-        $image->storeAs('public/class/cover', $image->hashName());
+        $imagePath = "";
+        if ($image != null) {
+            $image = $request->file('image');
+            $imagePath = "lesson-s3/" . $image->hashName();
+            Storage::disk('s3')->put($imagePath, file_get_contents($image));
+        }
+
         $user_id = Auth::id();
 
         // Setting Value Kategori
@@ -576,7 +573,7 @@ class LessonController extends Controller
         $position = $request->position_id;
 
         $insert_to_Lesson = new Lesson();
-        $insert_to_Lesson->course_cover_image = $image->hashName();
+        $insert_to_Lesson->course_cover_image = $imagePath;
         $insert_to_Lesson->course_title = $request->title;
         $insert_to_Lesson->course_trailer = 'Value';
         $insert_to_Lesson->course_category = $cat;
@@ -629,7 +626,7 @@ class LessonController extends Controller
 
         $isVisible = Lesson::findOrFail($lessonId);
         $isVisible->is_visible = $switchStatus;
-        
+
         if ($isVisible->save()) {
             //redirect dengan pesan sukses
             return redirect('lesson/manage_v2')->with(['success' => 'Kelas Telah Diaktifkan!']);
@@ -679,22 +676,22 @@ class LessonController extends Controller
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
         $myClasses = DB::select("
-                        SELECT 
-                            a.*, 
+                        SELECT
+                            a.*,
                             u.name AS mentor_name
-                        FROM 
+                        FROM
                             lessons a
-                        LEFT JOIN 
+                        LEFT JOIN
                             users u ON a.mentor_id = u.id AND u.role = 'mentor'
                         WHERE
                             a.deleted_at IS NULL
                             AND
                             a.is_visible = 'y'
-                        ORDER BY 
+                        ORDER BY
                             a.id ASC
                     ");
-    
-        
+
+
 
         // Hitung jumlah student yang telah menyelesaikan setiap course
         $courseCompleteCount = DB::table('student_lesson')
@@ -710,7 +707,7 @@ class LessonController extends Controller
             // ->where('lessons.is_visible', 'y') // Perhatikan penggunaan tanda kutip pada 'y'
             ->groupBy('lesson_id')
             ->get();
-            
+
 
 
         // Inisialisasi variabel untuk menghitung jumlah kelas yang sedang dalam status "On Progress Course"
@@ -726,7 +723,7 @@ class LessonController extends Controller
             // Simpan dalam variabel status masing-masing kelas
             $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 100 : round((($completedStudents/$totalStudents)*100));
             $class = DB::select("
-                SELECT 
+                SELECT
                     lsn.id AS lesson_id,
                     lsn.course_title AS lesson_title,
                     lsn.course_category AS lesson_category,
@@ -740,13 +737,13 @@ class LessonController extends Controller
                     es.exam_type AS exam_type,
                     exm.id AS exam_id,
                     COUNT(et.id) AS students_count
-                FROM 
+                FROM
                     lessons lsn
-                LEFT JOIN 
+                LEFT JOIN
                     course_section cs ON lsn.id = cs.course_id
-                LEFT JOIN 
+                LEFT JOIN
                     exam_sessions es ON cs.quiz_session_id = es.id
-                LEFT JOIN 
+                LEFT JOIN
                     exams exm ON es.exam_id = exm.id
                 LEFT JOIN
                     exam_takers et ON es.id = et.session_id
@@ -771,21 +768,21 @@ class LessonController extends Controller
                     cs.created_at,
                     es.exam_type,
                     exm.id
-                ORDER BY 
+                ORDER BY
                     cs.created_at DESC
             ");
         }
 
         // dd($class);
         Paginator::useBootstrap();
-        return view('main.mentorDashboard', 
-                compact('dayta', 'myClasses', 'courseStatus', 
+        return view('main.mentorDashboard',
+                compact('dayta', 'myClasses', 'courseStatus',
                         'completedStudents', 'totalStudents'));
     }
 
     public function view_courseDashboard($lesson_id){
         // $class = DB::select("
-        //                 SELECT 
+        //                 SELECT
         //                     lsn.id AS lesson_id,
         //                     lsn.course_title AS lesson_title,
         //                     lsn.course_category AS lesson_category,
@@ -798,13 +795,13 @@ class LessonController extends Controller
         //                     cs.created_at AS date_create,
         //                     es.exam_type AS exam_type,
         //                     exm.id AS exam_id
-        //                 FROM 
+        //                 FROM
         //                     lessons lsn
-        //                 LEFT JOIN 
+        //                 LEFT JOIN
         //                     course_section cs ON lsn.id = cs.course_id
-        //                 LEFT JOIN 
+        //                 LEFT JOIN
         //                     exam_sessions es ON cs.quiz_session_id = es.id
-        //                 LEFT JOIN 
+        //                 LEFT JOIN
         //                     exams exm ON es.exam_id = exm.id
         //                 WHERE
         //                     lsn.id = $lesson_id
@@ -812,13 +809,13 @@ class LessonController extends Controller
         //                     es.exam_id = exm.id
         //                     AND
         //                     es.exam_type = 'Post Test'
-        //                 ORDER BY 
+        //                 ORDER BY
         //                     cs.created_at DESC
         //                 LIMIT 1
         // ");
 
         $class = DB::select("
-                        SELECT 
+                        SELECT
                             lsn.id AS lesson_id,
                             lsn.course_title AS lesson_title,
                             lsn.course_category AS lesson_category,
@@ -831,13 +828,13 @@ class LessonController extends Controller
                             cs.created_at AS date_create,
                             es.exam_type AS exam_type,
                             exm.id AS exam_id
-                        FROM 
+                        FROM
                             lessons lsn
-                        LEFT JOIN 
+                        LEFT JOIN
                             course_section cs ON lsn.id = cs.course_id
-                        LEFT JOIN 
+                        LEFT JOIN
                             exam_sessions es ON cs.quiz_session_id = es.id
-                        LEFT JOIN 
+                        LEFT JOIN
                             exams exm ON es.exam_id = exm.id
                         WHERE
                             lsn.id = $lesson_id
@@ -845,7 +842,7 @@ class LessonController extends Controller
                             es.exam_id = exm.id
                             AND
                             es.exam_type = 'Post Test'
-                        ORDER BY 
+                        ORDER BY
                             cs.created_at DESC
         ");
         $totalStudentsCount = DB::table('student_lesson')
@@ -854,14 +851,14 @@ class LessonController extends Controller
         ->get();
         $totalStudents = $totalStudentsCount->where('lesson_id', $lesson_id)->first()->total_students;
 
-        
+
         if(!empty($class)){
             // QUERY POST TEST
             $examSessionId = $class[0]->exam_session_id;
             $examSectionId = $class[0]->section_id;
-            
+
             $students_takePostTest = DB::select("
-                                        SELECT 
+                                        SELECT
                                             u.name,
                                             u.id,
                                             u.profile_url,
@@ -870,7 +867,7 @@ class LessonController extends Controller
                                             es.exam_type AS exam_type,
                                             et.course_section_flag AS course_section_id,
                                             et.course_flag AS course_id
-                                        FROM 
+                                        FROM
                                             exam_takers et
                                         LEFT JOIN
                                             course_section cs ON et.session_id = cs.quiz_session_id
@@ -886,17 +883,17 @@ class LessonController extends Controller
                                             et.user_id, et.course_flag
                                         ORDER BY
                                             highest_score ASC
-                                    
+
             ");
             // dd($students_takePostTest);
-            
+
             $students_notTakenPostTest = DB::select("
-                SELECT 
+                SELECT
                     u.id,
                     u.name,
                     u.profile_url,
                     u.department
-                FROM 
+                FROM
                     users u
                 INNER JOIN
                     student_lesson sl ON u.id = sl.student_id
@@ -930,7 +927,7 @@ class LessonController extends Controller
                 $rank1 = $top_three_students[0]; // Siswa dengan highest score tertinggi
                 $rank2 = $top_three_students[1]; // Siswa dengan score tertinggi kedua
                 $rank3 = $top_three_students[2]; // Siswa dengan score tertinggi ketiga
-            } 
+            }
             else {
                 // Jika jumlah siswa kurang dari 3, berikan pesan kesalahan atau lakukan penanganan sesuai kebutuhan
                 // Misalnya:
@@ -941,11 +938,11 @@ class LessonController extends Controller
 
             $count_studentsTaken = count($students_takePostTest);
             $count_studentsUntaken = $totalStudents - $count_studentsTaken;
-            
+
             // 3 Data Exam Terbaru
             $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
-            return  view('main.course_dashboard', 
-                    compact('class', 'totalStudents', 'count_studentsTaken', 
+            return  view('main.course_dashboard',
+                    compact('class', 'totalStudents', 'count_studentsTaken',
                             'count_studentsUntaken', 'students_notTakenPostTest', 'list_studentTaken',
                             'rank1', 'rank2', 'rank3',
                             'students_takePostTest'));
@@ -955,6 +952,6 @@ class LessonController extends Controller
             return view('main.course_dashboard');
 
         }
-        
+
     }
 }

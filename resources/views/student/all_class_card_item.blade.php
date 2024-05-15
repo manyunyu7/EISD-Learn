@@ -15,7 +15,7 @@
         <img class="card-img-top"
             style="aspect-ratio: 16 / 9"
              onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-             src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+             src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}"
              alt="La Noyee">
         <!-- Card body -->
         <div class="card-body">
