@@ -76,7 +76,8 @@ class MobileHomeController extends Controller
             $classes->first_section = null;
         }
 
-        $sections = CourseSection::select('lessons.id as lesson_id',
+        $sections = CourseSection::select(
+            'lessons.id as lesson_id',
             'lessons.course_title as lessons_title',
             'lessons.mentor_id',
             'users.name as mentor_name',
@@ -89,7 +90,8 @@ class MobileHomeController extends Controller
             'course_section.section_video',
             'course_section.created_at',
             'course_section.updated_at',
-            'course_section.can_be_accessed')
+            'course_section.can_be_accessed'
+        )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
@@ -156,7 +158,9 @@ class MobileHomeController extends Controller
             if ($registerLesson) {
 
                 MyHelper::addAnalyticEventMobile(
-                    "Mendaftar Kelas", "Course Section", $user_id
+                    "Mendaftar Kelas",
+                    "Course Section",
+                    $user_id
                 );
 
                 return MyHelper::responseSuccessWithData(
@@ -237,7 +241,9 @@ class MobileHomeController extends Controller
             $account->save();
 
             MyHelper::addAnalyticEventMobile(
-                "Mendaftar Kelas", "Course Section", $accountId
+                "Mendaftar Kelas",
+                "Course Section",
+                $accountId
             );
 
             // Return success response
@@ -297,17 +303,17 @@ class MobileHomeController extends Controller
     {
         $mdlnUserId = $request->mdln_user_id;
 
-//        $mdlnUser = UserMdln::find($mdlnUserId);
-//
-//        if ($mdlnUser == null) {
-//            return MyHelper::responseErrorWithData(
-//                404,
-//                404,
-//                0,
-//                "Pengguna Tidak Ditemukan",
-//                "User Not Found on Ithub",
-//                null);
-//        }
+        //        $mdlnUser = UserMdln::find($mdlnUserId);
+        //
+        //        if ($mdlnUser == null) {
+        //            return MyHelper::responseErrorWithData(
+        //                404,
+        //                404,
+        //                0,
+        //                "Pengguna Tidak Ditemukan",
+        //                "User Not Found on Ithub",
+        //                null);
+        //        }
 
         $userLMS = User::where('mdln_username', $mdlnUserId)->first();
 
@@ -318,7 +324,8 @@ class MobileHomeController extends Controller
                 0,
                 "Pengguna Tidak Ditemukan",
                 "User Not Found on Ithub",
-                null);
+                null
+            );
         }
 
         return MyHelper::responseSuccessWithData(
@@ -327,7 +334,8 @@ class MobileHomeController extends Controller
             2,
             "success",
             "success",
-            $userLMS);
+            $userLMS
+        );
     }
 
     public function classCategories(Request $request)
@@ -394,7 +402,7 @@ class MobileHomeController extends Controller
 
         if ($request->category != null) {
 
-            if($request->category!="Semua"){
+            if ($request->category != "Semua") {
                 $classes = $classes->where("a.course_category", "=", $request->category);
             }
         }
@@ -431,7 +439,14 @@ class MobileHomeController extends Controller
             } else {
                 $data->first_section = null;
             }
-            $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
+
+
+            $awsBaseUrl = env('AWS_BASE_URL');
+            if (str_contains($data->course_cover_image, "lesson-s3")) {
+                $data->full_img_path = env('AWS_BASE_URL') . $data->course_cover_image;
+            } else {
+                $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
+            }
         }
 
         // Filter classes based on user's registration status
