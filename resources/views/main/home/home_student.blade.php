@@ -435,6 +435,9 @@
                                     WHERE a.lesson_id = $data->id");
                 $numStudentsCount = count($numStudents);
             @endphp --}}
+
+
+
             {{-- MY CLASS--}}
             <div class="col-md-12">
                 <h1><strong>My Class</strong></h1>
@@ -479,7 +482,7 @@
                             <img class="card-img-top"
                             style="aspect-ratio: 16 / 9"
                                  onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-                                 src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                                 src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}"
                                  alt="La Noyee">
                             {{--                            <img src="assets/images/courses/4by3/08.jpg"  class="card-img-top" alt="course image">--}}
                             <!-- Card body -->
