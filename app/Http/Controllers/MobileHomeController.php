@@ -104,8 +104,15 @@ class MobileHomeController extends Controller
         $classes->course_description = strip_tags($classes->course_description); // Remove HTML tags
         $classes->course_description = htmlspecialchars_decode($classes->course_description); // Decode HTML entities
         $classes->sections = $sections; // Decode HTML entities
-        $classes->full_img_path = url("/") . Storage::url('public/class/cover/') . $classes->course_cover_image;
-        $classInfo = new \stdClass();
+
+        $awsBaseUrl = env('AWS_BASE_URL');
+        if (str_contains($classes->course_cover_image, "lesson-s3")) {
+            $classes->full_img_path = env('AWS_BASE_URL') . $classes->course_cover_image;
+        } else {
+            $classes->full_img_path = url("/") . Storage::url('public/class/cover/') . $classes->course_cover_image;
+        }
+
+        $classInfo = new \stdClass(); //nry
         $isRegistered = false;
 
         $checkIsRegistered = StudentLesson::where("student_id", "=", $userId)
