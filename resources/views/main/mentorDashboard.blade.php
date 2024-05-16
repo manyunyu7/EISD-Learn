@@ -127,18 +127,13 @@
                                     <img class="card-img-top"
                                     style="aspect-ratio: 16 / 9"
                                          onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-                                         src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
+                                         src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}"
                                          alt="La Noyee">
                                     {{--                            <img src="assets/images/courses/4by3/08.jpg"  class="card-img-top" alt="course image">--}}
                                     <!-- Card body -->
                                     <div class="card-body">
                                         <!-- Badge and favorite -->
                                         <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: .5rem;">
-                                            {{-- @if($data->new_class == 'Aktif')
-                                                <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
-                                                    NEW
-                                                </div>
-                                            @endif --}}
                                             <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
                                                 <strong>{{ $data->course_category }}</strong>
                                             </div>
