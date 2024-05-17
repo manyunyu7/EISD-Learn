@@ -29,9 +29,10 @@
                     <span>&#9662;</span>
                 </button>
                 <ul class="dropdown-menu" style="width: 100%;" id="categoryDropdown">
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Management Trainee')">Management Trainee</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Digital Management')">Digital Management</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('')">General</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('All Category')">All Category</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Awareness')">Awareness</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Functional')">Functional</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Leadership')">Leadership</a></li>
                 </ul>
             </div>
         </div>

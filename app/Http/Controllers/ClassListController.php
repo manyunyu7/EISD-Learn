@@ -45,10 +45,11 @@ class ClassListController extends Controller
 
         $userID = Auth::id();
         
-        $sortParam = request('sort');
-        $catParam  = request('category');
+        $sortParam = request('sort' , 'Latest') ;
+        $catParam  = request('category', 'All Category');
 
         $sortBy = ($sortParam == 'Latest') ? 'desc' : 'asc';
+        $catBy = ($catParam == 'All Category') ? '*' : $catParam;
 
         $classesQuery = DB::table('lessons as a')
             ->select([
@@ -74,10 +75,13 @@ class ClassListController extends Controller
                 }, function ($query) use ($sortBy) {
                     return $query->orderBy('num_students_registered', $sortBy);
                 })
+            ->when($catParam != 'All Category', function ($query) use ($catParam) {
+                    return $query->where('a.course_category', $catParam);
+                })
             ->get();
 
 
-        // return $classesQuery;
+        // return $sortParam;
 
         $classes = [];
         foreach ($classesQuery as $classItem) {
