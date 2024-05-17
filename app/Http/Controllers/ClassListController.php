@@ -46,12 +46,9 @@ class ClassListController extends Controller
         $userID = Auth::id();
         
         $sortParam = request('sort');
+        $catParam  = request('category');
 
         $sortBy = ($sortParam == 'Latest') ? 'desc' : 'asc';
-
-        $sortValue = ($sortParam == 'Latest') ? 'a.created_at' : 'num_students_registered';
-
-        $categoryBy = request('category');   
 
         $classesQuery = DB::table('lessons as a')
             ->select([
@@ -73,10 +70,10 @@ class ClassListController extends Controller
             ->groupBy('a.id', 'b.name', 'b.profile_url')
             ->orderBy('a.created_at', $sortBy)
             ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
-                return $query->orderBy('a.created_at', $sortBy);
-            }, function ($query) use ($sortBy) {
-                return $query->orderBy('num_students_registered', $sortBy);
-            })
+                    return $query->orderBy('a.created_at', $sortBy);
+                }, function ($query) use ($sortBy) {
+                    return $query->orderBy('num_students_registered', $sortBy);
+                })
             ->get();
 
 
