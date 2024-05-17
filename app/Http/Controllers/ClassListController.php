@@ -25,14 +25,6 @@ class ClassListController extends Controller
 {
     public function landing()
     {
-
-        // $user_id  = Auth::id();
-        // $lesson_id = $lesson->id;
-        // if($user_id != $lesson->mentor_id){
-        //     abort(401,'Unauthorized');
-        // }
-        // $dayta = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
-        // $dayta = DB::select("select * from view_course_section  where mentor_id = $user_id");
         return view('landing');
     }
 
@@ -52,6 +44,15 @@ class ClassListController extends Controller
         }
 
         $userID = Auth::id();
+        
+        $sortParam = request('sort');
+
+        $sortBy = ($sortParam == 'Latest') ? 'desc' : 'asc';
+
+        $sortValue = ($sortParam == 'Latest') ? 'a.created_at' : 'num_students_registered';
+
+        $categoryBy = request('category');   
+
         $classesQuery = DB::table('lessons as a')
             ->select([
                 'a.*',
@@ -68,13 +69,20 @@ class ClassListController extends Controller
                     ->whereRaw('sl.lesson_id = a.id')
                     ->where('sl.student_id', $userID);
             })
+            ->where('a.is_visible', 'y')
             ->groupBy('a.id', 'b.name', 'b.profile_url')
+            ->orderBy('a.created_at', $sortBy)
+            ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
+                return $query->orderBy('a.created_at', $sortBy);
+            }, function ($query) use ($sortBy) {
+                return $query->orderBy('num_students_registered', $sortBy);
+            })
             ->get();
 
 
+        // return $classesQuery;
 
         $classes = [];
-
         foreach ($classesQuery as $classItem) {
             if ($classItem->deleted_at === null || $classItem->deleted_at === '') {
                 $classes[] = $classItem;
