@@ -1,7 +1,7 @@
 <!-- Sort by Dropdown -->
 <div class="row mt-2 border-primary col-md-12">
     <div class="row page-inner col-md-12">
-        <div class="col-sm-3 col-md-5 col-lg-2 mb-3">
+        <div class="col-md-4 mb-3">
             <p>Sort by:</p>
             <div class="btn-group">
                 <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px"
@@ -12,14 +12,14 @@
                 </button>
                 <ul class="dropdown-menu" style="width: 100%;" id="sortDropdown">
                     <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Latest')">Latest</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Recommend')">Recommend</a></li>
+                    <!-- <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Recommend')">Recommend</a></li> -->
                     <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Most Student')">Most Student</a></li>
                 </ul>
             </div>
         </div>
 
         <!-- Category Dropdown -->
-        <div class="col-sm-3 col-md-5 col-lg-2 ml-2">
+        <div class="col-md-8 mb-3">
             <p>Category:</p>
             <div class="btn-group">
                 <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px"
@@ -29,9 +29,10 @@
                     <span>&#9662;</span>
                 </button>
                 <ul class="dropdown-menu" style="width: 100%;" id="categoryDropdown">
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Management Trainee')">Management Trainee</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Digital Management')">Digital Management</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('General')">General</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('All Category')">All Category</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Awareness')">Awareness</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Functional')">Functional</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Leadership')">Leadership</a></li>
                 </ul>
             </div>
         </div>

@@ -148,7 +148,7 @@
                         style="width: 300px; height: 300px;"
                         loop autoplay></lottie-player>
                 </div>
-                <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas Manapun</strong>
+                <strong class="w-100 text-center">Kelas Belum Tersedia</strong>
             @endforelse
         </div>
     </div>
