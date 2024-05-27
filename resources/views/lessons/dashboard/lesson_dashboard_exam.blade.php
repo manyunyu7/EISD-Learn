@@ -417,7 +417,7 @@
                                 <th style="background-color: #F8F8F8"><h3><b>Pre-Test</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Quiz</b></h3></th>
                                 <th style="background-color: #F8F8F8"><h3><b>Post-Test</b></h3></th>
-                                <th style="background-color: #F8F8F8"><h3><b>Total Score</b></h3></th>
+                                {{-- <th style="background-color: #F8F8F8"><h3><b>Total Score</b></h3></th> --}}
                             </tr>
                             </thead>
                             <tbody>
@@ -450,9 +450,9 @@
                                     <td style="overflow: hidden; white-space: nowrap;">
                                         {{ optional($data)->highest_post_test_score }}
                                     </td>
-                                    <td style="overflow: hidden; white-space: nowrap;">
+                                    {{-- <td style="overflow: hidden; white-space: nowrap;">
                                         {{ optional($data)->total_score }}
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @empty
                                 <!-- Handle the case where $summaryPrePost is empty -->
