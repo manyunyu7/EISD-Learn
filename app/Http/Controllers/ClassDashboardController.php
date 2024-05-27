@@ -79,6 +79,8 @@ class ClassDashboardController extends Controller
                 ->first();
         }
 
+        // return $lastPostTestDetail;
+
 
         // Get students enrolled in the lesson
         $studentOnLesson = DB::table('student_lesson as sl')
@@ -230,9 +232,12 @@ class ClassDashboardController extends Controller
             $rankingCard = $summaryPrePost; // Or any other fallback logic you want to implement
         }
 
+        // return $rankingCard;
+
         $takenCount = count($studentsTakenPostTest);
         $notTakenCount = count($studentsNotTakenPostTest);
 
+        // return $lesson;
         // Return the compact array containing all relevant information
         $compact = compact(
             'sections',

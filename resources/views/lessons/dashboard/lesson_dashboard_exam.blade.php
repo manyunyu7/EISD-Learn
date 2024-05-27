@@ -16,13 +16,13 @@
         }
 
         .exam-title-card-img-container {
-            width: 20%; /* 2/10 of screen width */
+            width: 21%; /* 2/10 of screen width */
             display: inline-block;
             vertical-align: middle;
         }
 
         .exam-title-card-img-container img {
-            border-radius: 50%;
+            /* border-radius: 50%; */
             max-width: 100%;
             height: auto;
             display: block;
@@ -264,13 +264,12 @@
                         <div class="card exam-title-card mt-5">
                             <div class="card-body">
                                 <div class="exam-title-card-img-container mr-2">
-                                    <img style="width: 175px; height: 175px; object-fit: cover"
-                                         src="{{ Storage::url('public/class/cover/') . $lesson->course_cover_image }}"
+                                    <img  style="aspect-ratio: 16 / 9"
+                                         src="{{ env('AWS_BASE_URL') . $lesson->course_cover_image }}"
                                          alt="Profile Image">
                                 </div>
                                 <div class="exam-title-card-content">
-                                    <h2 class="text-dark"
-                                        style="font-size: 22px">{{$lastPostTestDetail->exam_title}}</h2>
+                                    <h2 class="text-dark" style="font-size: 22px">{{$lastPostTestDetail->exam_title}}</h2>
                                     <h2 class="card-title" style="font-size: 22px">{{$lesson->lesson_title}}</h2>
                                     <p class="card-subtitle mb-2 text-muted">Subtitle</p>
                                     <p class="student-count-exam-title-card">{{$studentCount}} Student</p>
@@ -324,10 +323,10 @@
                                                                 <div
                                                                     style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; margin-right: 10px;">
                                                                     <img
-                                                                        src="{{asset('storage/profile/' . $data->profile_url)}}"
+                                                                        src="{{ env('AWS_BASE_URL') . $data->profile_url }}"
                                                                         alt="Profile Picture"
                                                                         style="width: 100%; height: 100%; object-fit: cover;"
-                                                                        onerror="this.src='{{url("/default/default_profile.png")}}'; this.alt='Default Profile Picture';">
+                                                                        onerror="this.src='{{ asset('default/default_profile.png') }}'; this.alt='Default Profile Picture';">
                                                                 </div>
                                                                 {{ optional($data)->student_name }}
                                                             </div>
@@ -365,7 +364,7 @@
                                     <div class="card-header" style="padding: 10px;">
                                         <div class="d-flex align-items-center justify-content-center">
                                             <img style="width: 12%; height: 70px; margin-right: 10px;"
-                                                 src="http://0.0.0.0:5253/icons/rank_{{ $loop->index + 1 }}.svg"
+                                                 src="{{asset('icons/rank_' . $loop->index+1 . '.svg')}}"
                                                  alt="User Icon">
                                             <a href="#" style="text-decoration: none; color: black;">
                                                 <div style="display: flex; align-items: center;">
@@ -380,15 +379,14 @@
                                             <!-- Container untuk gambar dan scoring -->
                                             <img
                                                 style="width: 100%; max-width: 130px; min-height: 130px; margin-bottom: 30px;  max-height: 130px"
-                                                src="{{asset('storage/profile/' . $data->student_photo)}}"
+                                                src="{{ env('AWS_BASE_URL') . $data->student_photo }}"
                                                 alt="Alternative Image" class="avatar-img rounded-circle"
 
-                                                onerror="this.onerror=null; this.src='http://0.0.0.0:5253/default/default_profile.png';
-                                 this.alt='Alternative Image';">
+                                                onerror="this.onerror=null; this.src='{{ asset('default/default_profile.png') }}'; this.alt='Alternative Image';">
                                             <div id="scoring" class="d-flex align-items-center">
                                                 <!-- Container untuk scoring -->
                                                 <img style="width: 35%; height: auto; margin-right: 10px;"
-                                                     src="http://0.0.0.0:5253/icons/tropy.svg" alt="User Icon">
+                                                 src="{{asset('icons/tropy.svg')}}" alt="Tropy Icon">
                                                 <a href="#" style="text-decoration: none; color: black;">
                                                     <p style="font-size: 15px; margin: 0; white-space: nowrap;">
                                                         <b>{{$data->total_score}} Point</b></p>
@@ -432,10 +430,10 @@
                                         <div style="display: flex; align-items: center;">
                                             <div
                                                 style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; margin-right: 10px;">
-                                                <img src="{{asset('storage/profile/' . $data->student_photo)}}"
+                                                <img src="{{ env('AWS_BASE_URL') . $data->student_photo }}"
                                                      alt="Profile Picture"
                                                      style="width: 100%; height: 100%; object-fit: cover;"
-                                                     onerror="this.src='{{url("/default/default_profile.png")}}'; this.alt='Default Profile Picture';">
+                                                     onerror="this.src='{{ asset('default/default_profile.png') }}'; this.alt='Default Profile Picture';">
                                             </div>
                                             {{ optional($data)->student_name }}
                                         </div>
