@@ -354,7 +354,7 @@
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseOne"
                                             aria-expanded="true" aria-controls="collapseOne">
-                                            Apa itu Modernland Learning perusahaan
+                                            <strong>Apa itu Modernland Learning perusahaan</strong>
                                     </button>
                                 </h2>
                                 <div id="collapseOne" class="accordion-collapse collapse show"
@@ -371,7 +371,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseTwo" aria-expanded="false"
                                             aria-controls="collapseTwo">
-                                            Bagaimana cara saya mengakses Modernland Learning?
+                                            <strong>Bagaimana cara saya mengakses Modernland Learning?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
@@ -386,7 +386,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseThree" aria-expanded="false"
                                             aria-controls="collapseThree">
-                                            Apakah ada batas waktu untuk menyelesaikan kursus?
+                                            <strong>Apakah ada batas waktu untuk menyelesaikan kursus?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
@@ -401,7 +401,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse4" aria-expanded="false"
                                             aria-controls="collapse4">
-                                            Apa manfaat menggunakan Modernland Learning dalam pengembangan karyawan?
+                                            <strong>Apa manfaat menggunakan Modernland Learning dalam pengembangan karyawan?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#accordionExample">
@@ -416,7 +416,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse5" aria-expanded="false"
                                             aria-controls="collapse5">
-                                            Apakah hasil pembelajaran saya dipantau?
+                                            <strong>Apakah hasil pembelajaran saya dipantau?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#accordionExample">
@@ -431,7 +431,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse6" aria-expanded="false"
                                             aria-controls="collapse6">
-                                            Apakah materi pembelajaran dapat diakses secara offline?
+                                            <strong>Apakah materi pembelajaran dapat diakses secara offline?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#accordionExample">
@@ -446,7 +446,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse7" aria-expanded="false"
                                             aria-controls="collapse7">
-                                            Apakah ada ujian atau tugas dalam setiap kursus?
+                                            <strong>Apakah ada ujian atau tugas dalam setiap kursus?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7" data-bs-parent="#accordionExample">
@@ -461,7 +461,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse8" aria-expanded="false"
                                             aria-controls="collapse8">
-                                            Apakah Modernland Learning memiliki sumber daya pendukung, seperti materi referensi tambahan?
+                                            <strong>Apakah Modernland Learning memiliki sumber daya pendukung, seperti materi referensi tambahan?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="heading8" data-bs-parent="#accordionExample">
@@ -476,7 +476,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse9" aria-expanded="false"
                                             aria-controls="collapse9">
-                                            Apakah leaderboard tersedia di Modernland Learning?
+                                            <strong>Apakah leaderboard tersedia di Modernland Learning?</strong>
                                     </button>
                                 </h2>
                                 <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="heading9" data-bs-parent="#accordionExample">
