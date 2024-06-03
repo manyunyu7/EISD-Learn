@@ -168,7 +168,8 @@
                                                      style="max-width: 100%; max-height: 100%;">
                                             </button>
                                             {{-- BTN COPY LINK --}}
-                                            <button class="btn mr-2" style="background-color: #6DCBA8;
+                                            <input type="text" class="text" value="sample copy text{{ $loop->index+1 }}" readonly hidden>
+                                            <button class="btn mr-2" onclick="copyLink()" style="background-color: #6DCBA8;
                                                                     border-radius: 15px;
                                                                     width:45px;
                                                                     height: 40px;
@@ -177,9 +178,32 @@
                                                                     display: flex;
                                                                     align-items: center;
                                                                     justify-content: center;">
-                                                <img src="{{ url('/icons/Link.svg') }}"
-                                                     style="max-width: 100%; max-height: 100%;">
+                                                <img src="{{ url('/icons/Link.svg') }}" style="max-width: 100%; max-height: 100%;">
                                             </button>
+                                            <p id="message"></p>
+                                            <script>
+                                                function copyLink() {
+                                                    // Ambil elemen input yang berisi link
+                                                    var copyText = document.querySelector(".copy-text");
+                                                
+                                                    // copyText.querySelector("button").addEventListener("click", function(){
+                                                    //     var input = copyText.querySelector("input.text");
+                                                    //     input.select();
+                                                    //     document.execCommand("copy");
+                                                    //     copyText.classList.add("active");
+
+                                                    //     window.getSelection().removeAllRanges();
+                                                    //     setTimeout(function(){
+                                                    //         copyText.classList.remove("active");
+                                                    //     }, 2500);
+                                                    // });
+
+                                                    copyText.querySelector("button").addEventListener("click", function(){
+                                                        var input = copyText.querySelector("input.text");
+                                                        console.log(input);
+                                                    });
+                                                }
+                                            </script>
                                             {{-- BTN EDIT EXAM --}}
                                             <button class="btn mr-2" style="background-color: #208DBB;
                                                                     border-radius: 15px;

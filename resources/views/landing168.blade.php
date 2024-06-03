@@ -103,7 +103,7 @@
 
 <nav class="navbar navbar-expand navbar-dark bg-white" aria-label="Second navbar example">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img src="{{asset("/home_icons/icon_navbar_modern.png")}}" alt="" height="24"></a>
+        <a class="navbar-brand" href="#"><img src="{{asset("/home_assets/img/Logo.png")}}" alt="" height="50"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -159,7 +159,7 @@
 {{--    </div>--}}
 {{--</nav>--}}
 
-<div id="first-section" class="container-fluid">
+{{-- <div id="first-section" class="container-fluid">
     <div class="row">
 
         <div class="col-md-6 col-lg-6" data-aos="fade-right" data-aos-delay="300">
@@ -205,21 +205,47 @@
                  alt="...">
         </div>
     </div>
+</div> --}}
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{{url("home_assets/img/Corousel 1.jpg")}}" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="{{url("home_assets/img/Corousel 2.jpg")}}" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="{{url("home_assets/img/Corousel 3.jpg")}}" class="d-block w-100" alt="...">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
 </div>
 <hr style="height: 1px; border: none; color: #000; background-color: #000; margin-top: -1px">
 <div id="second-section" class="container-fluid">
-    <div class="row">
-        <div id="jamal-talking" class="col-md-6 col-lg-6 vh-100 "
+    <div class="row" >
+        <div id="jamal-talking" class="col-md-6 col-lg-6"
              data-aos="fade-up-right" data-aos-delay="500"
-             style="position: relative;">
-            <img src="{{url("home_icons/jamal_talking.png")}}"
+             style="position: relative;" >
+            <img src="{{url("home_assets/img/Middle.png")}}"
                  style="height: 100%; object-fit: contain; object-position: left; position: absolute; left: 0;"
                  class="rounded float-start img-fluid"
                  alt="...">
         </div>
 
-        <div class="col-md-6 col-lg-6 mt-5">
-            <div style="height: 100%">
+        <div class="col-md-6 col-lg-6" >
+            <div style="height: 100%; ">
                 <div class="">
                     <div class="container justify-content-center" style="margin-top: 8px">
 
@@ -314,97 +340,148 @@
                 <div class="">
                     <div class="container justify-content-center" style="margin-top: 8px">
 
-                        <div class="mb-5 col-12"
-                             data-aos="fade-left" data-aos-delay="500"
-                        >
+                        <div class="mb-5 col-12" data-aos="fade-left" data-aos-delay="500">
                             <h3 style="font-size: 34px; font-weight: bolder">
-                            <span
-                                style="background-color: black; color: white; padding: 5px 10px; border-radius: 10px;">FAQ</span>
+                                <span style="background-color: black; color: white; padding: 5px 10px; border-radius: 10px;">
+                                    FAQ
+                                </span>
                             </h3>
                         </div>
 
-                        <div class="accordion"
-                             data-aos="fade-left" data-aos-delay="500"
-                        >
-                            <div class="accordion-item"
-                                 data-aos="fade-left" data-aos-delay="700"
-                            >
+                        <div class="accordion" data-aos="fade-left" data-aos-delay="500">
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
                                 <h2 class="accordion-header" id="headingOne">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseOne"
                                             aria-expanded="true" aria-controls="collapseOne">
-                                        Accordion Item #1
+                                            Apa itu Modernland Learning perusahaan
                                     </button>
                                 </h2>
                                 <div id="collapseOne" class="accordion-collapse collapse show"
                                      aria-labelledby="headingOne"
                                      data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        <strong>This is the first item's accordion body.</strong> It is shown by
-                                        default, until the collapse
-                                        plugin adds the appropriate classes that we use to style each element. These
-                                        classes control the
-                                        overall appearance, as well as the showing and hiding via CSS transitions. You
-                                        can modify any of
-                                        this with custom CSS or overriding our default variables. It's also worth noting
-                                        that just about any
-                                        HTML can go within the <code>.accordion-body</code>, though the transition does
-                                        limit overflow.
+                                        Modernland Learning adalah platform pembelajaran digital yang memungkinkan karyawan untuk mengakses materi pelatihan dan kursus secara online.
                                     </div>
                                 </div>
                             </div>
-                            <div class="accordion-item"
-                                 data-aos="fade-left" data-aos-delay="700"
-                            >
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
                                 <h2 class="accordion-header" id="headingTwo">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseTwo" aria-expanded="false"
                                             aria-controls="collapseTwo">
-                                        Accordion Item #2
+                                            Bagaimana cara saya mengakses Modernland Learning?
                                     </button>
                                 </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                                     data-bs-parent="#accordionExample">
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        <strong>This is the second item's accordion body.</strong> It is hidden by
-                                        default, until the
-                                        collapse plugin adds the appropriate classes that we use to style each element.
-                                        These classes
-                                        control the overall appearance, as well as the showing and hiding via CSS
-                                        transitions. You can
-                                        modify any of this with custom CSS or overriding our default variables. It's
-                                        also worth noting that
-                                        just about any HTML can go within the <code>.accordion-body</code>, though the
-                                        transition does limit
-                                        overflow.
+                                        Setelah login ke platform, anda dapat mengaksesnya dari perangkat apa pun dengan koneksi internet.
                                     </div>
                                 </div>
                             </div>
-                            <div class="accordion-item"
-                                 data-aos="fade-left" data-aos-delay="700"
-                            >
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
                                 <h2 class="accordion-header" id="headingThree">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseThree" aria-expanded="false"
                                             aria-controls="collapseThree">
-                                        Accordion Item #3
+                                            Apakah ada batas waktu untuk menyelesaikan kursus?
                                     </button>
                                 </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse"
-                                     aria-labelledby="headingThree"
-                                     data-bs-parent="#accordionExample">
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        <strong>This is the third item's accordion body.</strong> It is hidden by
-                                        default, until the
-                                        collapse plugin adds the appropriate classes that we use to style each element.
-                                        These classes
-                                        control the overall appearance, as well as the showing and hiding via CSS
-                                        transitions. You can
-                                        modify any of this with custom CSS or overriding our default variables. It's
-                                        also worth noting that
-                                        just about any HTML can go within the <code>.accordion-body</code>, though the
-                                        transition does limit
-                                        overflow.
+                                        Beberapa course mungkin memiliki batas waktu. Namun, sebagian besar dapat diakses sesuai dengan kebutuhan dan kenyamanan Anda.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
+                                <h2 class="accordion-header" id="heading4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse4" aria-expanded="false"
+                                            aria-controls="collapse4">
+                                            Apa manfaat menggunakan Modernland Learning dalam pengembangan karyawan?
+                                    </button>
+                                </h2>
+                                <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        Modernland Learning memungkinkan pengembangan mandiri, akses fleksibel, dan meningkatkan efisiensi waktu pembelajaran.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
+                                <h2 class="accordion-header" id="heading5">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse5" aria-expanded="false"
+                                            aria-controls="collapse5">
+                                            Apakah hasil pembelajaran saya dipantau?
+                                    </button>
+                                </h2>
+                                <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        Ya, kemajuan Anda dipantau.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
+                                <h2 class="accordion-header" id="heading6">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse6" aria-expanded="false"
+                                            aria-controls="collapse6">
+                                            Apakah materi pembelajaran dapat diakses secara offline?
+                                    </button>
+                                </h2>
+                                <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        Saat ini, materi hanya dapat diakses secara online. Namun materi yang ada di dalam kelas dapat diunduh.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
+                                <h2 class="accordion-header" id="heading7">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse7" aria-expanded="false"
+                                            aria-controls="collapse7">
+                                            Apakah ada ujian atau tugas dalam setiap kursus?
+                                    </button>
+                                </h2>
+                                <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        Setiap kursus mungkin memiliki elemen evaluasi seperti pre-test, post-test, maupun quiz untuk mengukur pemahaman Anda.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
+                                <h2 class="accordion-header" id="heading8">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse8" aria-expanded="false"
+                                            aria-controls="collapse8">
+                                            Apakah Modernland Learning memiliki sumber daya pendukung, seperti materi referensi tambahan?
+                                    </button>
+                                </h2>
+                                <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="heading8" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        Ya, Modernland Learning menyediakan sumber daya tambahan seperti bacaan, video, dan tautan untuk memperkaya pembelajaran Anda.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item" data-aos="fade-left" data-aos-delay="700">
+                                <h2 class="accordion-header" id="heading9">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse9" aria-expanded="false"
+                                            aria-controls="collapse9">
+                                            Apakah leaderboard tersedia di Modernland Learning?
+                                    </button>
+                                </h2>
+                                <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="heading9" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        Ya, leaderboard tersedia di Modernland Learning.
                                     </div>
                                 </div>
                             </div>
@@ -420,7 +497,7 @@
              data-aos="fade-left" data-aos-delay="500"
              style="position: relative;">
             <div style="display: flex; justify-content: center; margin-top: 100px">
-                <img src="{{url("home_icons/cluster_modern.png")}}"
+                <img src="{{url("home_assets/img/Footer.png")}}"
                      style="height: 90%; object-fit: contain; object-position: bottom;"
                      class="rounded img-fluid"
                      alt="...">
