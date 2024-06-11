@@ -270,11 +270,11 @@
 
         <div class="main-header">
             <!-- Logo Header -->
-            <div class="logo-header" style="background-color: #261d1e">
+            <div class="logo-header" style="background-color: #1D2026">
 
                 <a href="{{url("home")}}" class="logo">
-                    <img src="{{asset("/home_assets/img/Logo.png")}}"
-                         style="width: 32%; height: auto;display: flex;margin-top: 5px;" alt="navbar brand"
+                    <img src="{{asset("/home_assets/img/learning_putih.png")}}"
+                         style="width: 55%; height: auto;display: flex;margin-top: 10px; margin-left: 30px" alt="navbar brand"
                          class="navbar-brand">
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
