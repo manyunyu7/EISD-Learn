@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Google\Service\CloudSourceRepositories\Repo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,8 +12,21 @@ class ModernlandIntegrationController extends Controller
 
     public function getLearningUsers(Request $request)
     {
-        $query = User::query();
+        // Get the API credentials header
+        $apiCredentials = $request->header('lms');
+        if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
+            $response = [
+                'meta' => [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => 'Invalid API Key'
+                ],
+            ];
 
+            return response()->json($response);
+        }
+
+        $query = User::query();
         // Optional filter for unclaimed=true
         if ($request->has('unclaimed') && $request->unclaimed == 'true') {
             $query->where(function ($query) {
@@ -71,6 +85,20 @@ class ModernlandIntegrationController extends Controller
 
     public function createNewLMSUser(Request $request)
     {
+
+        // Get the API credentials header
+        $apiCredentials = $request->header('lms');
+        if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
+            $response = [
+                'meta' => [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => 'Invalid API Key'
+                ],
+            ];
+
+            return response()->json($response);
+        }
         // Validate incoming request data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -125,8 +153,24 @@ class ModernlandIntegrationController extends Controller
         ], 200);
     }
 
+
     public function updateLMSUser(Request $request)
     {
+
+        // Get the API credentials header
+        $apiCredentials = $request->header('lms');
+        if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
+            $response = [
+                'meta' => [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => 'Invalid API Key'
+                ],
+            ];
+
+            return response()->json($response);
+        }
+
         $mdln_username = $request->mdln_username;
         // Find the user by mdln_username
         $user = User::where('mdln_username', $mdln_username)->first();
