@@ -218,6 +218,16 @@ class MobileHomeController extends Controller
         // Finding the user account by ID
         $account = User::find($accountId);
 
+    
+        $employees = DB::connection('ithub')
+            ->table('u_employee')
+            ->join('user', 'u_employee.user_id', '=', 'user.id')
+            ->select('u_employee.position_id', 'u_employee.department_id', 'user.name')
+            ->where('user.id', '=', $mdlnUserId)
+            ->get();
+
+        // return response()->json($employees);
+
 
         if ($mdlnUser == null) {
             return MyHelper::responseErrorWithData(
@@ -245,6 +255,8 @@ class MobileHomeController extends Controller
         if ($this->checkPassword($account, $password)) {
             // Password is correct, proceed with claiming the account
             $account->mdln_username = $mdlnUserId;
+            $account->department_id = $employees->department_id;
+            $account->position_id   = $employees->position_id;
             $account->save();
 
             MyHelper::addAnalyticEventMobile(

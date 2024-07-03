@@ -36,6 +36,14 @@ class HomeController extends Controller
             return Redirect::away("/");
         }
 
+        $departments = DB::connection('ithub')
+                        ->table('m_departments')
+                        ->select('id', 'code', 'name')
+                        ->where('code', 'like', '%_NEW%')
+                        ->get();
+        // return response()->json($departments);
+        // return response()->json($departments);
+
         $averageScoreSubquery = DB::table('student_section')
             ->select('student_id', DB::raw('AVG(score) as average_score'))
             ->groupBy('student_id');
@@ -106,6 +114,7 @@ class HomeController extends Controller
                 ->where('learn_status', [0, 1])
                 ->groupBy('lesson_id')
                 ->get();
+
 
             // Hitung jumlah total student dalam setiap course
             $totalStudentsCount = DB::table('student_lesson')

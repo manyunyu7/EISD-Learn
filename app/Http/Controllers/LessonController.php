@@ -607,6 +607,7 @@ class LessonController extends Controller
         $departments = DB::connection('ithub')
                         ->table('m_departments')
                         ->select('id', 'code', 'name')
+                        ->where('code', 'like', '%_NEW%')
                         ->get();
         // return response()->json($departments);
         return response()->json($departments);
