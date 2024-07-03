@@ -220,10 +220,10 @@ class MobileHomeController extends Controller
 
     
         $employees = DB::connection('ithub')
-            ->table('u_employee')
-            ->join('user', 'u_employee.user_id', '=', 'user.id')
-            ->select('u_employee.position_id', 'u_employee.department_id', 'user.name')
-            ->where('user.id', '=', $mdlnUserId)
+            ->table('u_employees')
+            ->join('users', 'u_employees.user_id', '=', 'users.id')
+            ->select('u_employees.position_id', 'u_employees.department_id', 'users.name')
+            ->where('users.id', '=', $mdlnUserId)
             ->get();
 
         // return response()->json($employees);
