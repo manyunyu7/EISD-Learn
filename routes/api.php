@@ -25,6 +25,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/lms/users', [ModernlandIntegrationController::class, 'getLearningUsers']);
+Route::post('/lms/user/create', [ModernlandIntegrationController::class, 'createNewLMSUser']);
+Route::post('/lms/user/update', [ModernlandIntegrationController::class, 'updateLMSUser']);
 
 
 Route::post('/upload', [MobileUploaderController::class, 'upload']);

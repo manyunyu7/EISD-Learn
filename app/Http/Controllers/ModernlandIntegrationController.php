@@ -125,8 +125,9 @@ class ModernlandIntegrationController extends Controller
         ], 200);
     }
 
-    public function updateLMSUser(Request $request, $mdln_username)
+    public function updateLMSUser(Request $request)
     {
+        $mdln_username = $request->mdln_username;
         // Find the user by mdln_username
         $user = User::where('mdln_username', $mdln_username)->first();
 
