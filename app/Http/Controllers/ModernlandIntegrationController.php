@@ -23,6 +23,15 @@ class ModernlandIntegrationController extends Controller
             });
         }
 
+        // Optional search filter
+        if ($request->has('q')) {
+            $search = $request->input('q');
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
         // Get limit and page from request or set default values
         $limit = $request->input('limit', 10); // Default limit is 10
         $page = $request->input('page', 1); // Default page is 1
