@@ -6,6 +6,7 @@ use App\Http\Controllers\MobileVizController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MobileUploaderController;
 use App\Http\Controllers\MobileHomeController;
+use App\Http\Controllers\ModernlandIntegrationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/lms/users', [ModernlandIntegrationController::class, 'getLearningUsers']);
 
 
 Route::post('/upload', [MobileUploaderController::class, 'upload']);
@@ -52,5 +55,3 @@ Route::get("/viz/main-chart", [MobileVizController::class, 'mainChart']);
 
 
 Route::post("/store-absensi", [AbsensiController::class, 'insertAbsensiMobile']);
-
-
