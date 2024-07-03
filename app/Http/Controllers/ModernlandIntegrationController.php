@@ -23,8 +23,12 @@ class ModernlandIntegrationController extends Controller
             });
         }
 
+        // Get limit and page from request or set default values
+        $limit = $request->input('limit', 10); // Default limit is 10
+        $page = $request->input('page', 1); // Default page is 1
+
         // Paginate the results
-        $users = $query->paginate(10); // Adjust '10' to the desired number of items per page
+        $users = $query->paginate($limit, ['*'], 'page', $page);
 
         // Prepare the response structure
         $response = [
