@@ -200,46 +200,168 @@ class MobileHomeController extends Controller
         }
     }
 
+    public function registerClass(Request $request)
+    {
+        try {
+            $user_id = $request->lms_user_id;
+ 
+            $course = Lesson::findOrFail($request->course_id);
+            $coursePassword = $course->pin;
+ 
+            if ($request->password != $coursePassword) {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Password Kelas Salah",
+                    "Password Kelas Salah",
+                    null
+                );
+            }
+ 
+            $registerLesson = StudentLesson::create([
+                'student_id' => $user_id,
+                'lesson_id' => $request->course_id,
+                'learn_status' => 0,
+                'certificate_file' => "",
+                'student-lesson' => "$user_id-$request->course_id",
+            ]);
+ 
+            if ($registerLesson) {
+ 
+                MyHelper::addAnalyticEventMobile(
+                    "Mendaftar Kelas",
+                    "Course Section",
+                    $user_id
+                );
+ 
+                return MyHelper::responseSuccessWithData(
+                    200,
+                    200,
+                    2,
+                    "Berhasil Mendaftar Kelas $course->course_title!",
+                    "Berhasil Mendaftar Kelas $course->course_title",
+                    $registerLesson
+                );
+            } else {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Gagal Mendaftar Kelas",
+                    "Gagal Mendaftar Kelas",
+                    null
+                );
+            }
+        } catch (QueryException $e) {
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                0,
+                "Anda Sudah Mendaftar di Kelas $course->course_title",
+                "Anda Sudah Mendaftar di Kelas Ini",
+                null
+            );
+        }
+    }
+ 
     public function claimAccount(Request $request)
     {
-        // Validating the incoming request data
-        //        $request->validate([
-        //            'target_account_id' => 'required|exists:users,id',
-        //            'mdln_user_id' => 'required',
-        //            'password' => 'required',
-        //        ]);
-
-        // Extracting data from the validated request
+        // Extracting data from the request
         $accountId = $request->target_account_id;
         $mdlnUserId = $request->mdln_user_id;
         $password = $request->password;
-
+ 
+        // Fetching MDLN user data
         $mdlnUser = UserMdln::find($mdlnUserId);
-        // Finding the user account by ID
-        $account = User::find($accountId);
-
-    
-        $employees = DB::connection('ithub')
-            ->table('u_employees')
-            ->join('users', 'u_employees.user_id', '=', 'users.id')
-            ->select('u_employees.position_id', 'u_employees.department_id', 'users.name')
-            ->where('users.id', '=', $mdlnUserId)
-            ->get();
-
-        // return response()->json($employees);
-
-
         if ($mdlnUser == null) {
             return MyHelper::responseErrorWithData(
                 404,
                 404,
                 0,
-                "Akun ITHUB Tidak Ditemukan",
-                "ITHUB account not found",
+                "Akun it-hub Tidak Ditemukan",
+                "it-hub account not found",
                 null
             );
         }
-
+ 
+        // Fetching user data from ithub database
+        $user = DB::connection('ithub')->selectOne("
+            SELECT
+                a.created_at,
+                a.id,
+                a.name,
+                a.username,
+                a.email,
+                a.is_active,
+                b.is_approval,
+                a.last_login,
+                a.pin,
+                b.gender,
+                b.image,
+                b.sign,
+                b.nip,
+                (
+                    SELECT json_build_object('id', d.id, 'name', d.name)
+                    FROM u_employees b
+                    JOIN m_departments c ON b.department_id = c.id
+                    JOIN m_divisions d ON c.division_id = d.id
+                    WHERE b.user_id = a.id
+                    LIMIT 1
+                ) AS division,
+                (
+                    SELECT json_build_object('id', b.department_id, 'name', c.name)
+                    FROM u_employees b
+                    JOIN m_departments c ON b.department_id = c.id
+                    WHERE b.user_id = a.id
+                    LIMIT 1
+                ) AS department,
+                (
+                    SELECT json_build_object('id', b.sub_department_id, 'name', c.name)
+                    FROM u_sub_department_user b
+                    JOIN m_sub_departments c ON b.sub_department_id = c.id
+                    WHERE b.user_id = a.id
+                    LIMIT 1
+                ) AS sub_department,
+                (
+                    SELECT json_build_object('id', b.position_id, 'name', c.name)
+                    FROM u_employees b
+                    JOIN m_positions c ON b.position_id = c.id
+                    WHERE b.user_id = a.id
+                    LIMIT 1
+                ) AS position,
+                (
+                    SELECT json_agg(json_build_object('id', b.id, 'role_id', b.role_id, 'name', c.name))
+                    FROM u_role_user b
+                    JOIN m_roles c ON b.role_id = c.id
+                    WHERE b.user_id = a.id
+                ) AS roles,
+                (
+                    SELECT json_agg(json_build_object('id', b.id, 'site_id', b.site_id, 'name', c.name, 'code', c.code))
+                    FROM u_site_user b
+                    JOIN m_sites c ON b.site_id = c.id
+                    WHERE b.user_id = a.id
+                ) AS sites
+            FROM users a
+            JOIN u_employees b ON a.id = b.user_id
+            WHERE a.deleted_at IS NULL AND a.id = ?
+            LIMIT 1;
+        ", [$mdlnUserId]);
+ 
+ 
+        $position = json_decode($user->position);
+        $department = json_decode($user->department);
+        $division = json_decode($user->division);
+        $subDepartment = json_decode($user->sub_department);
+        // Extracting IDs
+        $divisionId = $division->id;
+        $departmentId = $department->id ?? null;
+        $departmentName = $department->name ?? null;
+        $subDepartmentId = $subDepartment->id ?? null;
+        $positionId = $position->id ?? null;
+ 
+        // Fetching LMS user account
+        $account = User::find($accountId);
         if ($account == null) {
             return MyHelper::responseErrorWithData(
                 404,
@@ -250,21 +372,26 @@ class MobileHomeController extends Controller
                 null
             );
         }
-
+ 
         // Check if the password is correct
         if ($this->checkPassword($account, $password)) {
-            // Password is correct, proceed with claiming the account
+            // Updating account details
             $account->mdln_username = $mdlnUserId;
-            $account->department_id = $employees->department_id;
-            $account->position_id   = $employees->position_id;
+            $account->department_id = $departmentId;
+            $account->department = $departmentName;
+            $account->position_id = $positionId;
             $account->save();
-
+ 
             MyHelper::addAnalyticEventMobile(
                 "Mendaftar Kelas",
                 "Course Section",
                 $accountId
             );
-
+ 
+            $returnData = new stdClass();
+            $returnData->lmsAccount = $account;
+            $returnData->ithubAccount = $user;
+ 
             // Return success response
             return MyHelper::responseSuccessWithData(
                 200,
@@ -272,7 +399,7 @@ class MobileHomeController extends Controller
                 2,
                 "Akun Berhasil Terhubung",
                 "Account Successfully Connected",
-                $account
+                $returnData
             );
         } else {
             // Password is incorrect, return error response
