@@ -274,7 +274,7 @@
 
                 <a href="{{url("home")}}" class="logo">
                     <img src="{{asset("/home_assets/img/learning_putih.png")}}"
-                         style="width: 55%; height: auto;display: flex;margin-top: 10px; margin-left: 30px" alt="navbar brand"
+                         style="width: 55%; object-fit:contain; min-height:50px; max-height: 78px; height: 10px;display: flex;margin-top: 10px; margin-left: 30px" alt="navbar brand"
                          class="navbar-brand">
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"

@@ -228,8 +228,20 @@ class MobileHomeController extends Controller
             LEFT JOIN m_group_employees c ON a.group_user_employee_id = c.id
             WHERE b.deleted_at IS NULL AND b.id = ?
             LIMIT 1;", [$mdlnUserId]);
+        
+        // $u_site_employee = DB::connection('ithub')->selectOne(
+        //     "SELECT a.
+        //     FROM u_site_user a
+        //     JOIN users b ON a.user_id = b.id
+        //     LEFT JOIN m_sites c ON a.site_id = c.id
+        //     WHERE b.deleted_at IS NULL AND b.id = ?
+        //     LIMIT 1;", [$mdlnUserId]);
+
+        return $user;
 
  
+        // return $u_structure_employee;
+
         $department = json_decode($user->department);
 
         $division = json_decode($user->division);
@@ -242,6 +254,7 @@ class MobileHomeController extends Controller
         $subDepartmentId = $subDepartment->id ?? null;
         $positionId = $u_structure_employee->group_user_employee_id ?? null;
  
+        return $positionId;
 
         // Fetching LMS user account
         $account = User::find($accountId);
@@ -263,6 +276,9 @@ class MobileHomeController extends Controller
             $account->department_id = $departmentId;
             $account->department = $departmentName;
             $account->position_id = $positionId;
+            
+            // $account->location = $;
+            // $account->jabatan = $positionId;
             $account->save();
 
             MyHelper::addAnalyticEventMobile(
