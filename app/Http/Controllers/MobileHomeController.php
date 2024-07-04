@@ -200,70 +200,7 @@ class MobileHomeController extends Controller
         }
     }
 
-    public function registerClass(Request $request)
-    {
-        try {
-            $user_id = $request->lms_user_id;
- 
-            $course = Lesson::findOrFail($request->course_id);
-            $coursePassword = $course->pin;
- 
-            if ($request->password != $coursePassword) {
-                return MyHelper::responseErrorWithData(
-                    400,
-                    400,
-                    0,
-                    "Password Kelas Salah",
-                    "Password Kelas Salah",
-                    null
-                );
-            }
- 
-            $registerLesson = StudentLesson::create([
-                'student_id' => $user_id,
-                'lesson_id' => $request->course_id,
-                'learn_status' => 0,
-                'certificate_file' => "",
-                'student-lesson' => "$user_id-$request->course_id",
-            ]);
- 
-            if ($registerLesson) {
- 
-                MyHelper::addAnalyticEventMobile(
-                    "Mendaftar Kelas",
-                    "Course Section",
-                    $user_id
-                );
- 
-                return MyHelper::responseSuccessWithData(
-                    200,
-                    200,
-                    2,
-                    "Berhasil Mendaftar Kelas $course->course_title!",
-                    "Berhasil Mendaftar Kelas $course->course_title",
-                    $registerLesson
-                );
-            } else {
-                return MyHelper::responseErrorWithData(
-                    400,
-                    400,
-                    0,
-                    "Gagal Mendaftar Kelas",
-                    "Gagal Mendaftar Kelas",
-                    null
-                );
-            }
-        } catch (QueryException $e) {
-            return MyHelper::responseErrorWithData(
-                400,
-                400,
-                0,
-                "Anda Sudah Mendaftar di Kelas $course->course_title",
-                "Anda Sudah Mendaftar di Kelas Ini",
-                null
-            );
-        }
-    }
+   
  
     public function claimAccount(Request $request)
     {
@@ -348,18 +285,28 @@ class MobileHomeController extends Controller
             LIMIT 1;
         ", [$mdlnUserId]);
  
+        $u_structure_employee = DB::connection('ithub')->selectOne(
+            "SELECT a.group_user_employee_id, c.name
+            FROM u_structure_user a
+            JOIN users b ON a.user_employee_id = b.id
+            LEFT JOIN m_group_employees c ON a.group_user_employee_id = c.id
+            WHERE b.deleted_at IS NULL AND b.id = ?
+            LIMIT 1;", [$mdlnUserId]);
+
  
-        $position = json_decode($user->position);
         $department = json_decode($user->department);
+
         $division = json_decode($user->division);
         $subDepartment = json_decode($user->sub_department);
+        
         // Extracting IDs
         $divisionId = $division->id;
         $departmentId = $department->id ?? null;
         $departmentName = $department->name ?? null;
         $subDepartmentId = $subDepartment->id ?? null;
-        $positionId = $position->id ?? null;
+        $positionId = $u_structure_employee->group_user_employee_id ?? null;
  
+
         // Fetching LMS user account
         $account = User::find($accountId);
         if ($account == null) {
