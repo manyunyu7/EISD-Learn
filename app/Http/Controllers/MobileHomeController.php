@@ -237,7 +237,7 @@ class MobileHomeController extends Controller
         //     WHERE b.deleted_at IS NULL AND b.id = ?
         //     LIMIT 1;", [$mdlnUserId]);
 
-        return $user;
+        // return $user;
 
  
         // return $u_structure_employee;
@@ -246,6 +246,7 @@ class MobileHomeController extends Controller
 
         $division = json_decode($user->division);
         $subDepartment = json_decode($user->sub_department);
+        $location = json_decode($user->sites);
         
         // Extracting IDs
         $divisionId = $division->id;
@@ -253,8 +254,13 @@ class MobileHomeController extends Controller
         $departmentName = $department->name ?? null;
         $subDepartmentId = $subDepartment->id ?? null;
         $positionId = $u_structure_employee->group_user_employee_id ?? null;
- 
-        return $positionId;
+        if (is_array($location) && isset($location[0])) {
+            // Mengakses site_id dari elemen pertama
+            $locationId = $location[0]->site_id ?? null;
+        } else {
+            // Menangani kasus di mana lokasi tidak valid atau elemen pertama tidak ada
+            $locationId = null;
+        }
 
         // Fetching LMS user account
         $account = User::find($accountId);
@@ -277,8 +283,8 @@ class MobileHomeController extends Controller
             $account->department = $departmentName;
             $account->position_id = $positionId;
             
-            // $account->location = $;
-            // $account->jabatan = $positionId;
+            $account->location = $locationId;
+            $account->jabatan = $positionId;
             $account->save();
 
             MyHelper::addAnalyticEventMobile(
