@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use stdClass;
 
 class MobileHomeController extends Controller
 {
@@ -135,71 +136,6 @@ class MobileHomeController extends Controller
         );
     }
 
-    public function registerClass(Request $request)
-    {
-        try {
-            $user_id = $request->lms_user_id;
-
-            $course = Lesson::findOrFail($request->course_id);
-            $coursePassword = $course->pin;
-
-            if ($request->password != $coursePassword) {
-                return MyHelper::responseErrorWithData(
-                    400,
-                    400,
-                    0,
-                    "Password Kelas Salah",
-                    "Password Kelas Salah",
-                    null
-                );
-            }
-
-            $registerLesson = StudentLesson::create([
-                'student_id' => $user_id,
-                'lesson_id' => $request->course_id,
-                'learn_status' => 0,
-                'certificate_file' => "",
-                'student-lesson' => "$user_id-$request->course_id",
-            ]);
-
-            if ($registerLesson) {
-
-                MyHelper::addAnalyticEventMobile(
-                    "Mendaftar Kelas",
-                    "Course Section",
-                    $user_id
-                );
-
-                return MyHelper::responseSuccessWithData(
-                    200,
-                    200,
-                    2,
-                    "Berhasil Mendaftar Kelas $course->course_title!",
-                    "Berhasil Mendaftar Kelas $course->course_title",
-                    $registerLesson
-                );
-            } else {
-                return MyHelper::responseErrorWithData(
-                    400,
-                    400,
-                    0,
-                    "Gagal Mendaftar Kelas",
-                    "Gagal Mendaftar Kelas",
-                    null
-                );
-            }
-        } catch (QueryException $e) {
-            return MyHelper::responseErrorWithData(
-                400,
-                400,
-                0,
-                "Anda Sudah Mendaftar di Kelas $course->course_title",
-                "Anda Sudah Mendaftar di Kelas Ini",
-                null
-            );
-        }
-    }
-
    
  
     public function claimAccount(Request $request)
@@ -208,7 +144,7 @@ class MobileHomeController extends Controller
         $accountId = $request->target_account_id;
         $mdlnUserId = $request->mdln_user_id;
         $password = $request->password;
- 
+
         // Fetching MDLN user data
         $mdlnUser = UserMdln::find($mdlnUserId);
         if ($mdlnUser == null) {
@@ -221,7 +157,7 @@ class MobileHomeController extends Controller
                 null
             );
         }
- 
+
         // Fetching user data from ithub database
         $user = DB::connection('ithub')->selectOne("
             SELECT
@@ -319,7 +255,7 @@ class MobileHomeController extends Controller
                 null
             );
         }
- 
+
         // Check if the password is correct
         if ($this->checkPassword($account, $password)) {
             // Updating account details
@@ -328,17 +264,17 @@ class MobileHomeController extends Controller
             $account->department = $departmentName;
             $account->position_id = $positionId;
             $account->save();
- 
+
             MyHelper::addAnalyticEventMobile(
                 "Mendaftar Kelas",
                 "Course Section",
                 $accountId
             );
- 
+
             $returnData = new stdClass();
             $returnData->lmsAccount = $account;
             $returnData->ithubAccount = $user;
- 
+
             // Return success response
             return MyHelper::responseSuccessWithData(
                 200,
