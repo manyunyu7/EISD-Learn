@@ -1,0 +1,17 @@
+/*
+ * Radar Chart
+ */
+.charts-css {
+
+  &.radar {
+
+    // Layout
+    tbody {
+      @include circle;
+
+      tr {
+        @include visually-hidden;
+      }
+    }
+  }
+}

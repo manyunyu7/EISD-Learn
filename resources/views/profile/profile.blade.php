@@ -1,6 +1,279 @@
 @extends('main.template')
 @section('main')
 
+    <div class="page-inner">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb bg-white">
+                <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+            </ol>
+        </nav>
+
+
+
+        <h4 class="page-title">Akun Saya</h4>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                    <div class="row">
+                        {{-- SECTION PROFILE FORM --}}
+                        <div class="col-md-8">
+                            <div class="">
+                                @csrf
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nama Lengkap</label>
+                                            <input id="inputTitle" type="text"
+                                                   class="form-control @error('first_name') is-invalid has-error @enderror"
+                                                   name="first_name" value="{{ $twoWords_ofName }}"
+                                                   placeholder="Nama Anda" readonly>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nama Belakang</label>
+                                            <input type="text" class="form-control-file form-control"
+                                                   name="end_name" value="{{ $end_ofName }}"
+                                                   id="" placeholder="" aria-describedby="fileHelpId" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Username</label>
+                                            <input type="text"
+                                                   class="form-control @error('username') is-invalid has-error @enderror"
+                                                   name="username" placeholder="Username"
+                                                   value="{{ old('email', Auth::user()->username) }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email"
+                                                   class="form-control @error('email') is-invalid has-error @enderror"
+                                                   name="email" placeholder="Email"
+                                                   value="{{ old('email', Auth::user()->email) }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Jabatan</label>
+                                            <input type="text"
+                                                   class="form-control @error('email') is-invalid has-error @enderror"
+                                                   name="jabatan" placeholder="Jabatan"
+                                                   value="{{ old('jabatan', Auth::user()->jabatan) }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Department</label>
+                                            <input type="text"
+                                                   class="form-control @error('email') is-invalid has-error @enderror"
+                                                   name="department" placeholder="Department"
+                                                   value="{{ old('department', Auth::user()->department) }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Unit Business</label>
+                                            <input type="text"
+                                                   class="form-control @error('email') is-invalid has-error @enderror"
+                                                   name="unit_business" placeholder="Unit Business"
+                                                   value="{{ old('location', Auth::user()->location) }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>No Telepon</label>
+                                            <input type="text"
+                                                   class="form-control  @error('phone') is-invalid has-error @enderror"
+                                                   value="{{ old('phone', Auth::user()->contact) }}" name="phone"
+                                                   placeholder="Phone">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        {{-- SECTION PROFILE PICTURE --}}
+                        <div class="col-md-4">
+                            <div class="card mt-5">
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <div class="card">
+                                            <img id="profileImage"
+                                                 src="{{Auth::user()->full_img_path }}"
+                                                 onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
+                                                 class="rounded"
+                                                 alt="...">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <input type="file" name="profile_image" class="form-control"
+                                                   id="inputGroupFile02" accept="image/*" onchange="previewImage()">
+                                        </div>
+                                        {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
+                                        <small width="100%">Image size should be under 1 MB and image ratio needs to be
+                                            1:1</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            function previewImage() {
+                                var input = document.getElementById('inputGroupFile02');
+                                var image = document.getElementById('profileImage');
+                                var reader = new FileReader();
+
+                                reader.onload = function (e) {
+                                    var img = new Image();
+                                    img.src = e.target.result;
+
+                                    img.onload = function () {
+                                        // Cek apakah gambar memiliki rasio 1:1
+                                        if (img.width === img.height) {
+                                            image.src = e.target.result;
+                                        } else {
+                                            alert("Image size should be under 1 MB and image ratio needs to be 1:1");
+                                            // Reset input
+                                            input.value = "";
+                                        }
+                                    };
+                                };
+
+                                if (input.files[0]) {
+                                    reader.readAsDataURL(input.files[0]);
+                                }
+                            }
+                        </script>
+
+                        <div class="col-md-12">
+                            <div class="text-right mt-3 mb-3">
+                                <button class="btn btn-custom">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h4 class="page-title">Media Sosial</h4>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ route('profile.updateSocMed') }}" enctype="multipart/form-data">
+                    <div class="row">
+                        {{-- SECTION PROFILE FORM --}}
+                        <div class="col-md-12">
+                            <div class="">
+                                @csrf
+                                <div class="row mt-3">
+                                    <div class="col-md-12 ">
+                                        <div class="form-group">
+                                            <label>Personal Website</label>
+                                            <input type="text"
+                                                   class="form-control @error('website') is-invalid has-error @enderror"
+                                                   name="website"
+                                                   value="{{ old('url_personal_website', Auth::user()->url_personal_website) }}"
+                                                   placeholder="Personal website or portfolio URL"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Facebook</label>
+                                            <input type="text"
+                                                   class="form-control @error('facebook') is-invalid has-error @enderror"
+                                                   name="facebook" placeholder="Username"
+                                                   value="{{ old('url_facebook', Auth::user()->url_facebook) }}"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Instagram</label>
+                                            <input type="text"
+                                                   class="form-control @error('email') is-invalid has-error @enderror"
+                                                   name="instagram" placeholder="Username"
+                                                   value="{{ old('url_instagram', Auth::user()->url_instagram) }}"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>LinkedIn</label>
+                                            <input type="text"
+                                                   class="form-control @error('linkedin') is-invalid has-error @enderror"
+                                                   name="linkedin" placeholder="Username"
+                                                   value="{{ old('url_linkedin', Auth::user()->url_linkedin) }}"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Twitter</label>
+                                            <input type="text"
+                                                   class="form-control  @error('twitter') is-invalid has-error @enderror"
+                                                   name="twitter" placeholder="Username"
+                                                   value="{{ old('url_twitter', Auth::user()->url_twitter) }}"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Whatsapp</label>
+                                            <input type="text"
+                                                   class="form-control  @error('phone') is-invalid has-error @enderror"
+                                                   name="whatsapp" placeholder="Phone Number"
+                                                   value="{{ old('url_whatsapp', Auth::user()->url_whatsapp) }}"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Youtube</label>
+                                            <input type="text"
+                                                   class="form-control @error('youtube') is-invalid has-error @enderror"
+                                                   name="youtube" placeholder="Username"
+                                                   value="{{ old('url_youtube', Auth::user()->url_youtube) }}"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="text-right mt-3 mb-3">
+                                <button class="btn btn-custom">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h4 class="page-title">Ubah Password</h4>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                    <div class="row">
+                        @csrf
+                        <div class="col-md-2">
+                            <div class="mt-3 mb-3">
+                                <button class="btn btn-custom">Change Password</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
     <div class="container-fluid">
 
         <div class="container mt-5">
@@ -21,158 +294,7 @@
                 </div>
             @endif
 
-            <h4 class="page-title">User Profile</h4>
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card card-with-nav">
-                        <div class="card-header">
-                            <div class="row row-nav-line">
-                                <ul class="nav nav-tabs nav-line nav-color-secondary w-100 pl-3" role="tablist">
-                                    <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#home"
-                                                            role="tab" aria-selected="true">Profile</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-                                @csrf
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Name</label>
-                                            <input id="inputTitle" type="text"
-                                                   class="form-control @error('name') is-invalid has-error @enderror"
-                                                   name="name" value="{{ old('name', Auth::user()->name) }}"
-                                                   placeholder="Nama Anda">
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Ganti Foto</label>
-                                            <input type="file" class="form-control-file form-control" name="imagez"
-                                                   id="" placeholder="" aria-describedby="fileHelpId">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Email</label>
-                                            <input type="email"
-                                                   class="form-control @error('email') is-invalid has-error @enderror"
-                                                   name="email" placeholder="Email"
-                                                   value="{{ old('email', Auth::user()->email) }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-12">
-
-                                        <div class="form-group">
-                                            <label>Phone</label>
-                                            <input type="text"
-                                                   class="form-control  @error('phone') is-invalid has-error @enderror"
-                                                   value="{{ old('phone', Auth::user()->contact) }}" name="phone"
-                                                   placeholder="Phone">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-right mt-3 mb-3">
-                                    <button class="btn btn-success">Save</button>
-                                    <button class="btn btn-danger">Reset</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="card card-with-nav">
-                        <div class="card-header">
-                            <div class="row row-nav-line">
-                                <ul class="nav nav-tabs nav-line nav-color-secondary w-100 pl-3" role="tablist">
-                                    <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#home"
-                                                            role="tab" aria-selected="true">Ganti Password</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <form method="POST" action="{{ url('/dfef') }}">
-                                @csrf
-                                <div class="row mt-3">
-                                    <!-- Add form fields for the change password tab -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Current Password</label>
-                                            <input type="password" class="form-control" name="current-password" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>New Password</label>
-                                            <input type="password" class="form-control" name="new-password" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="text-right mt-3 mb-3">
-                                    <button class="btn btn-success">Change Password</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-md-4">
-                    <div class="card card-profile">
-                        <div class="card-header" style="background-image: url('../assets/img/blogpost.jpg')">
-                            <div class="profile-picture">
-                                <div class="avatar avatar-xl">
-                                    <img src="{{ Storage::url('public/profile/') . Auth::user()->profile_url }}"
-                                         alt="..." class="avatar-img rounded-circle">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="user-profile text-center">
-                                <div class="name">{{ Auth::user()->name }}</div>
-                                <div class="job">{{ Auth::user()->jobs }}</div>
-                                <div class="desc">{{ Auth::user()->motto }}</div>
-                                <div class="social-media d-none">
-                                    <a class="btn btn-info btn-twitter btn-sm btn-link" href="#">
-                                        <span class="btn-label just-icon"><i class="flaticon-twitter"></i> </span>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="#">
-                                        <span class="btn-label just-icon"><i class="flaticon-google-plus"></i> </span>
-                                    </a>
-                                    <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
-                                        <span class="btn-label just-icon"><i class="flaticon-facebook"></i> </span>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="#">
-                                        <span class="btn-label just-icon"><i class="flaticon-dribbble"></i> </span>
-                                    </a>
-                                </div>
-
-                                <div class="view-profile d-none">
-                                    <a href="#" class="btn btn-secondary btn-block">Simpan Foto Profile</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer d-none">
-                            <div class="row user-stats text-center">
-                                <div class="col">
-                                    <div class="number">125</div>
-                                    <div class="title">Post</div>
-                                </div>
-                                <div class="col">
-                                    <div class="number">25K</div>
-                                    <div class="title">Followers</div>
-                                </div>
-                                <div class="col">
-                                    <div class="number">134</div>
-                                    <div class="title">Following</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

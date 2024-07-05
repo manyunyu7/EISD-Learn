@@ -1,0 +1,17 @@
+/*
+ * Polar Chart
+ */
+.charts-css {
+
+  &.polar {
+
+    // Layout
+    tbody {
+      @include circle;
+
+      tr {
+        @include visually-hidden;
+      }
+    }
+  }
+}

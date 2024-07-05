@@ -80,6 +80,7 @@ class LessonCategoryController extends Controller
 
         // Update other fields
         $data->name = $request->title;
+        $data->color_of_categories = $request->color_ofCategory;
 
         if ($data->save()) {
             // Redirect with success message
@@ -110,6 +111,7 @@ class LessonCategoryController extends Controller
 
         $data = new LessonCategory();
         $data->name=$request->title;
+        $data->color_of_categories=$request->color_ofCategory;
         $image->storeAs('public/class/category', $image->hashName());
         $data->img_path = $image->hashName();
 

@@ -1,0 +1,107 @@
+/*
+ * Chart wrapper element
+ */
+.charts-css {
+  // Colors
+  @each $index, $color in $colors {
+    --#{ $variable-prefix }color-#{ $index }: #{ $color };
+  }
+
+  // General Colors
+  --#{ $variable-prefix }chart-bg-color: rgb(245 245 245);
+
+  // Axes
+  --#{ $variable-prefix }primary-axis-color: rgba(0 0 0 / 100%);
+  --#{ $variable-prefix }primary-axis-style: solid;
+  --#{ $variable-prefix }primary-axis-width: 1px;
+  --#{ $variable-prefix }secondary-axes-color: rgba(0 0 0 / 15%);
+  --#{ $variable-prefix }secondary-axes-style: solid;
+  --#{ $variable-prefix }secondary-axes-width: 1px;
+  --#{ $variable-prefix }data-axes-color: rgba(0 0 0 / 15%);
+  --#{ $variable-prefix }data-axes-style: solid;
+  --#{ $variable-prefix }data-axes-width: 1px;
+
+  // Legend
+  --#{ $variable-prefix }legend-border-color: rgb(200 200 200);
+  --#{ $variable-prefix }legend-border-style: solid;
+  --#{ $variable-prefix }legend-border-width: 1px;
+
+  // Position child elements relative to main chart element
+  position: relative;
+
+  // Not a table anymore
+  display: block;
+
+  // Chart Dimensions
+  width: 100%;
+  height: 100%;
+
+  // Reset
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+
+  // Keep colors in print view
+  print-color-adjust: exact;
+
+  &,
+  &::after,
+  &::before,
+  & *,
+  & *::after,
+  & *::before {
+    box-sizing: border-box;
+  }
+}
+
+/*
+ * Reset table element
+ */
+table.charts-css {
+  border-collapse: collapse;
+  border-spacing: 0;
+  empty-cells: show;
+  overflow: initial;
+  background-color: transparent;
+
+  // Reset
+  caption,
+  colgroup,
+  thead,
+  tbody,
+  tr,
+  th,
+  td {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+  }
+
+  // Hide unused tags
+  colgroup,
+  thead,
+  tfoot {
+    @include visually-hidden;
+  }
+
+  tbody {
+    position: relative;
+  }
+
+}
+
+/*
+ * Reset list elements
+ */
+ul.charts-css,
+ol.charts-css {
+  list-style-type: none;
+
+  li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+}

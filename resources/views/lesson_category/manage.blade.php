@@ -139,6 +139,7 @@
                                 <tr>
                                     <th scope="col">Icon</th>
                                     <th scope="col">Category Name</th>
+                                    <th>Color</th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
                                 </tr>
@@ -150,6 +151,7 @@
                                             <img src="{{ Storage::url('public/class/category/').$data->img_path }}" class="rounded" style="width: 150px">
                                         </td>
                                         <td>{{ $data->name }}</td>
+                                        <td>{{ $data->color_of_categories }}</td>
                                         <td class="text-center">
                                             <form id="delete-post-form" action="{{ route('lesson_category.destroy', $data->id) }}" method="POST">
                                                 @csrf

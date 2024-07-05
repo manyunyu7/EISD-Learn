@@ -51,24 +51,25 @@
                 </li>
                 <hr>
                 <div class="container">
-
                     @forelse ($section as $item)
                         <li class="nav-item card p-1 bg-light" style="margin-bottom: 6px !important">
                             <a href="{{ route('course.see_section', [$item->lesson_id, $item->section_id]) }}">
                                 <span class="badge badge-default">{{ $item->section_order }}</span><br>
                             </a>
-                            <p class="text-dark" style="margin-bottom: 0px !important">{{ $item->section_title }}</p>
+                            
                             <div class="mt-1 mb-1">
                                 @if (isset($item) && isset($item->isTaken))
                                     @php
                                         $isCurrent = $item->isCurrent ?? false;
                                     @endphp
                                     @if ($item->isTaken && !$isCurrent)
-                                        <span class="badge badge-success text-small">Sudah Dipelajari</span>
+                                        {{-- <span class="badge badge-success text-small">Sudah Dipelajari</span> --}}
+                                        <input type="checkbox" checked> <p class="text-dark" style="margin-bottom: 0px !important">{{ $item->section_title }}</p>
                                     @elseif ($isCurrent)
-                                        <span class="badge badge-primary text-small">Sedang Dipelajari</span>
+                                        {{-- <span class="badge badge-primary text-small">Sedang Dipelajari</span> --}}
+                                        <input type="checkbox" checked> <p class="text-dark" style="margin-bottom: 0px !important">{{ $item->section_title }}</p>
                                     @else
-                                        <span class="badge badge-secondary text-small">Belum Diambil</span>
+                                    <input type="checkbox" disabled> <p class="text-dark" style="margin-bottom: 0px !important">{{ $item->section_title }}</p>
                                     @endif
                                 @endif
                             </div>
@@ -104,7 +105,7 @@
                     </li>
                     @endif
 
-                @endauth
+                    @endauth
                 </li>
                 <!-- <li class="mx-4 mt-2">
                         <a href="http://themekita.com/atlantis-bootstrap-dashboard.html" class="btn btn-primary btn-block">
@@ -114,3 +115,8 @@
         </div>
     </div>
 </div>
+
+
+
+
+
