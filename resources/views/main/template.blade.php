@@ -38,6 +38,7 @@
         src="{{asset('atlantis/examples')}}/assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
 
 
+
     <!-- Fonts and icons -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -58,11 +59,16 @@
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.min.css">
+    <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/atlantis.css">
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
     <!---Select2 To MultiSelect -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          integrity="sha512-B1ib/Ck6tv2zH6Vdww+4M1lbq3VMH/w+42F8A4yqdLZOd5YCvn/3VgkArJznP6px5X6vN+Mf1VjwHeSi5sSRuw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .loader-overlay {
             position: fixed;
@@ -75,6 +81,28 @@
             align-items: center;
             justify-content: center;
             z-index: 9999; /* Make sure the loader is above everything else */
+        }
+
+        /*.nav-item.active {*/
+        /*    !* Define styles for active elements with class nav-item *!*/
+        /*    background-color: salmon;*/
+        /*}*/
+
+        /* CSS for the breadcrumb navigation */
+        .breadcrumb {
+            background-color: white;
+            border: 1px solid #ECEEF4; /* Thin gray border */
+            border-radius: 15px; /* Rounded corners */
+            padding: 10px; /* Adjust padding as needed */
+        }
+
+        .breadcrumb li {
+            display: inline;
+            margin-right: 5px; /* Adjust spacing between breadcrumb items */
+        }
+
+        .breadcrumb li:last-child {
+            margin-right: 0; /* Remove margin from the last breadcrumb item */
         }
 
         .hidden-actions {
@@ -175,6 +203,21 @@
                 transform: rotate(360deg);
             }
         }
+
+
+        .btn-custom {
+            width: auto;
+            height: 45px;
+            margin: 10px;
+            padding: 0px 10px;
+            background-color: #208DBB;
+            color: white;
+            border-radius: 10px !important;
+        }
+
+
+        /* STYLE CSS FOR SOCMED SECTION AT PROFILE PAGES */
+
     </style>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
@@ -224,13 +267,15 @@
 <div class="wrapper">
 
     @if(!isset($showCompact))
+
         <div class="main-header">
             <!-- Logo Header -->
-            <div class="logo-header" data-background-color="dark">
+            <div class="logo-header" style="background-color: #1D2026">
 
-                <a href="{{url('/home')}}" class="logo">
-                    <p class="navbar-brand text-white">{{config('app.name')}}</p>
-                    {{-- <img src="{{URL::to('/')}}/home_assets/esd_3.png" alt="navbar brand" class="navbar-brand"> --}}
+                <a href="{{url("home")}}" class="logo">
+                    <img src="{{asset("/home_assets/img/learning_putih.png")}}"
+                         style="width: 55%; object-fit:contain; min-height:50px; max-height: 78px; height: 10px;display: flex;margin-top: 10px; margin-left: 30px" alt="navbar brand"
+                         class="navbar-brand">
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
                         data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -248,12 +293,44 @@
             <!-- End Logo Header -->
 
             <!-- Navbar Header -->
+
+            <!-- Navbar Header -->
             @auth
                 @include('main.nav_bar')
             @endauth
 
+
             <!-- End Navbar -->
         </div>
+
+        {{--        <div class="main-header">--}}
+        {{--            <!-- Logo Header -->--}}
+        {{--            <div class="logo-header" style="background-color: #1D2026">--}}
+        {{--                <a href="{{url('/home')}}" class="logo">--}}
+        {{--                    <div style="text-align: center;">--}}
+        {{--                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"--}}
+        {{--                             style="width: 80%;--}}
+        {{--                                    height: auto;--}}
+        {{--                                    display: flex;--}}
+        {{--                                    margin-top: 5px;--}}
+        {{--                             "--}}
+        {{--                        >--}}
+        {{--                    </div>--}}
+        {{--                </a>--}}
+
+        {{--                <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>--}}
+        {{--                <div class="nav-toggle">--}}
+        {{--                    <button class="btn btn-toggle toggle-sidebar">--}}
+        {{--                        <i class="icon-menu"></i>--}}
+        {{--                    </button>--}}
+        {{--                </div>--}}
+        {{--            </div>--}}
+        {{--            <!-- End Logo Header -->--}}
+
+
+
+        {{--            <!-- End Navbar -->--}}
+        {{--        </div>--}}
 
         <!-- Sidebar -->
         @include('main.side-bar')
@@ -266,39 +343,14 @@
             @endif
             <div class="content">
                 @yield('breadcumb')
-                @yield('main')
+                <div class="mt-5">
+                    @yield('main')
+                </div>
+
             </div>
             @if(!isset($showCompact))
-
         </div>
     @endif
-    {{--
-                    <footer class="footer">
-                    <div class="container-fluid">
-                        <nav class="pull-left">
-                            <ul class="nav">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="https://www.themekita.com">
-                                    {{ config('app.name') }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        Help
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        Licenses
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                        <div class="copyright ml-auto">
-                            2018,made with <i class="fa fa-heart heart text-danger"></i> by <a href="http://henryaugusta.feylabs.my.id">Feylaboratiry</a>
-                        </div>
-                    </div>
-                </footer> --}}
 
 </div>
 

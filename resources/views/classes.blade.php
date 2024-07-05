@@ -115,7 +115,7 @@
                 <p><span class="badge badge-primary">{{ $data->course_category }}</span></p>
                 <div class="d-flex">
                     <div class="avatar">
-                        <img src="{{ Storage::url('public/profile/') . $data->profile_url }}" alt="..." class="avatar-img rounded-circle">
+                        <img src="{{ url('/icons/user_lesson_card.png') }}" alt="..." class="avatar-img rounded-circle">
                     </div>
                     <div class="info-post ml-2">
                         <p class="username">{{ $data->mentor_name }}</p>

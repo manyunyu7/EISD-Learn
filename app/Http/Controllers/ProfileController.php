@@ -9,14 +9,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
-
+use DB;
 
 class ProfileController extends Controller
 {
 
     public function index()
     {
-        return view('profile.profile');
+        $fullName = Auth::user()->name;
+        $nameParts = explode(' ', $fullName);
+        $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
+        $end_ofName = implode(' ', array_slice($nameParts, 2));
+        // return $fullName;
+        return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
     }
 
 
@@ -60,7 +65,20 @@ class ProfileController extends Controller
         return password_verify($plainPassword, $hashedPassword);
     }
 
+    // // Contoh di dalam controller
+    // public function showFullName()
+    // {
 
+
+    //     return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
+    // }
+
+
+    /**
+     * update
+     * @param mixed $request
+     * @return void
+     */
     /**
      * update
      * @param mixed $request
@@ -68,53 +86,99 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
+
         MyHelper::addAnalyticEvent(
             "Update Foto Profile","Profile"
         );
 
-        $this->validate($request, [
-            'imagez' => 'image|mimes:png,jpg,jpeg',
-            'name' => 'required',
-            'phone' => 'required',
-            'phone' => 'required',
-//            'jobs'   => 'required',
-//            'motto'   => 'required',
-            'email' => 'required',
-        ]);
+        $user = User::findOrFail(auth()->id());
+        $first_name = $request->input('first_name');
+        $end_name = $request->input('end_name');
+        $complete_name = $first_name.' '.$end_name;
 
-        $user = User::findOrFail(Auth::user()->id);
-        // if ($user) {
-        //     abort(401,$user);
-        // }
-
-        if ($request->file('imagez') == "") {
-            $user->update([
-                'name' => $request->name,
-                'contact' => $request->phone,
-                'institute' => "",
-                'motto' => "",
-                'jobs' => "",
-                'email' => $request->email,
-            ]);
-        } else if ($request->file('imagez') != "") {
-            // Storage::url('public/profile/') . Auth::user()->profile_url;
-            //hapus old image
-            if ($user->profile_url == "error.png") {
-            } else {
-                Storage::disk('local')->delete('public/profile/' . $user->profile_url);
+        if ($request->hasFile('profile_image')) {
+            // Delete old image from S3 if not the default image
+            if ($user->profile_url !== "error.png") {
+                Storage::disk('s3')->delete('profile-s3/' . $user->profile_url);
             }
-            //upload new image
-            $image = $request->file('imagez');
-            $image->storeAs('public/profile/', $image->hashName());
+
+            // Upload new image to S3
+            $image = $request->file('profile_image');
+            $imagePath = 'profile-s3/' . $image->hashName();
+            Storage::disk('s3')->put($imagePath, file_get_contents($image));
+
+            // Update user profile data
             $user->update([
-                'profile_url' => $image->hashName(),
+                'profile_url' => $imagePath,
                 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
                 'jobs' => $request->jobs,
                 'email' => $request->email,
+                'name' => $complete_name,
+            ]);
+        } else {
+            // Update user profile data without changing the image
+            $user->update([
+                'contact' => $request->phone,
+                'institute' => $request->institute,
+                'motto' => $request->motto,
+                'jobs' => $request->jobs,
+                'email' => $request->email,
+                'name' => $complete_name,
             ]);
         }
+
+
+        // Check if user update was successful
+        if ($user->wasChanged()) {
+            // Redirect with success message
+            return redirect('profile')->with(['success' => 'Data Berhasil Diupdate!']);
+        } else {
+            // Redirect with error message
+            return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
+        }
+    }
+
+
+    public function updateSocMed(Request $request)
+    {
+        // return $request->all();
+        MyHelper::addAnalyticEvent(
+            "Update Socieal Media","Profile"
+        );
+
+
+        $user = User::findOrFail(Auth::user()->id);
+        $website = $request->input("website");
+
+
+        $fb = $request->input("facebook");
+        $ig = $request->input("instagram");
+        $li = $request->input("linkedin");
+        $twt = $request->input("twitter");
+        $wa = $request->input("whatsapp");
+        $yt = $request->input("youtube");
+
+        // URL SOCMED
+        if (substr($wa, 0, 1) === '0') {
+            // Jika dimulai dengan 0, ubah format menjadi +62
+            $wa = '+62' . substr($wa, 1);
+        } else {
+            // Jika tidak dimulai dengan 0, tambahkan +62 di depannya
+            $wa = $wa;
+            $user->update([
+                'url_personal_website' => $website,
+                'url_facebook' => $fb,
+                'url_instagram' => $ig,
+                'url_linkedin' => $li,
+                'url_twitter' => $twt,
+                'url_whatsapp' => $wa,
+                'url_youtube' => $yt,
+            ]);
+        }
+
+
         if ($user) {
             //redirect dengan pesan sukses
             return redirect('profile')->with(['success' => 'Data Berhasil Diupdate!']);
@@ -122,5 +186,8 @@ class ProfileController extends Controller
             //redirect dengan pesan error
             return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
         }
+
+
     }
+
 }

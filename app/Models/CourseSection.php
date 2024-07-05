@@ -10,6 +10,8 @@ class CourseSection extends Model
     use HasFactory;
     protected $table = 'course_section';
     protected $fillable = [
+        'id',
+        'enable_absensi',
         'quiz_session_id',
         'lesson_id'	,
         'lessons_title',
@@ -23,6 +25,7 @@ class CourseSection extends Model
         'section_content',
         'created_at',
         'updated_at',
-        'can_be_accessed'
+        'can_be_accessed',
+        'duration_take'
     ];
 }

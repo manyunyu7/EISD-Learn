@@ -119,8 +119,8 @@ class MentorExamSessionController extends Controller
         $examSession->allow_multiple = $request->allow_multiple;
 
         //exam question should be the same with existing
-//        $questionsAnswers = ExamQuestionAnswers::where("exam_id","=",$examSession->exam_id)->get();
-//        $examSession->questions_answers=$questionsAnswers;
+        //        $questionsAnswers = ExamQuestionAnswers::where("exam_id","=",$examSession->exam_id)->get();
+        //        $examSession->questions_answers=$questionsAnswers;
 
         if($examSession->save()){
             return response()->json(["message"=>"success"],200);

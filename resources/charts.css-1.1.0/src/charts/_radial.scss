@@ -1,0 +1,17 @@
+/*
+ * Radial Chart
+ */
+.charts-css {
+
+  &.radial {
+
+    // Layout
+    tbody {
+      @include circle;
+
+      tr {
+        @include visually-hidden;
+      }
+    }
+  }
+}

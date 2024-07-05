@@ -598,7 +598,7 @@
                                                             @foreach ($students as $student)
                                                                 <option value="{{ $student->id }}">{{ $student->name }}
                                                                     - {{ $student->email }}</option>
-                                                            @endforeach
+                                                            @endforeach  
                                                         </select>
                                                     </div>
                                                 </div>

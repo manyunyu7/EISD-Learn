@@ -22,6 +22,7 @@
         "sass-loader": "^8.0.0"
     },
     "dependencies": {
+        "charts.css": "^1.1.0",
         "videojs-youtube": "^2.6.1"
     }
 }

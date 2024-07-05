@@ -9,4 +9,6 @@ class StudentSection extends Model
 {
     use HasFactory;
     protected $table = 'student_section';
+
+    protected $fillable = ['student_id', 'section_id', 'is_finished'];
 }

@@ -2,11 +2,13 @@
     @include('main.home._styling_home_student')
 @endsection
 
+
 @section('script')
-    @include('main.home.script_student')
+    {{-- @include('main.home.script_student') --}}
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    {{-- <script>
         var userScores = @json($userScores);
 
         var sectionTitles = userScores.map(score => score.section_title);
@@ -59,261 +61,508 @@
                 }
             }
         });
+    </script> --}}
+
+    <script>
+        const DISPLAY = true;
+        const BORDER = true;
+        const CHART_AREA = true;
+        const TICKS = true;
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
+                datasets: [
+                    {
+                        label: 'Blue Line',
+                        data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Red Line',
+                        data: [5, 9, 8, 2, 6, 7, 5, 9, 8, 2, 6, 7],
+                        borderColor: 'red',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        window.onload = function () {
+            var jan = <?php echo json_encode($jan); ?>;
+            var feb = <?php echo json_encode($feb); ?>;
+            var mar = <?php echo json_encode($mar); ?>;
+            var apr = <?php echo json_encode($apr); ?>;
+            var mei = <?php echo json_encode($mei); ?>;
+            var jun = <?php echo json_encode($jun); ?>;
+            var jul = <?php echo json_encode($jul); ?>;
+            var agt = <?php echo json_encode($agt); ?>;
+            var sep = <?php echo json_encode($sep); ?>;
+            var okt = <?php echo json_encode($okt); ?>;
+            var nov = <?php echo json_encode($nov); ?>;
+            var des = <?php echo json_encode($des); ?>;
+
+
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+                            animationEnabled: true,
+                            axisX: {
+                                interval: 1,
+                                intervalType: "month",
+                                valueFormatString: "MM",
+                                tickLength: 0,
+                                lineThickness: 0,
+                                gridThickness: 0
+                            },
+                            axisY: {
+                                lineThickness: 0,
+                                tickLength: 0,
+                                gridThickness: 0,
+                                labelFontSize: 0
+                            },
+                            legend: {
+                                reversed: true,
+                                verticalAlign: "center",
+                                horizontalAlign: "right"
+                            },
+                            data: [
+                                {
+                                    type: "stackedColumn100",
+                                    name: "Kelas Yang Selesai",
+                                    showInLegend: false,
+                                    xValueFormatString: "MM",
+                                    markerColor: "#23BD33",
+                                    dataPoints: [
+                                        { label: "Jan", y: jan.completed_count, color:"#23BD33"},
+                                        { label: "Feb", y: feb.completed_count, color:"#23BD33" },
+                                        { label: "Mar", y: mar.completed_count, color:"#23BD33" },
+                                        { label: "Apr", y: apr.completed_count, color:"#23BD33" },
+                                        { label: "May", y: mei.completed_count, color:"#23BD33" },
+                                        { label: "Jun", y: jun.completed_count, color:"#23BD33" },
+                                        { label: "Jul", y: jul.completed_count, color:"#23BD33" },
+                                        { label: "Aug", y: agt.completed_count, color:"#23BD33" },
+                                        { label: "Sep", y: sep.completed_count, color:"#23BD33" },
+                                        { label: "Okt", y: okt.completed_count, color:"#23BD33" },
+                                        { label: "Nov", y: nov.completed_count, color:"#23BD33" },
+                                        { label: "Dec", y: des.completed_count, color:"#23BD33" }
+                                    ],
+                                    indexLabel: "{y}", 
+                                    indexLabelPlacement: "outside", 
+                                    indexLabelFontColor: "#333", 
+                                    indexLabelFontSize: 14 
+                                },
+                                {
+                                    type: "stackedColumn100",
+                                    name: "Kuota Kelas Tersisa",
+                                    showInLegend: false,
+                                    xValueFormatString: "MM",
+                                    markerColor: "#ccf7d1",
+                                    dataPoints: [
+                                        { label: "Jan", y: (5-jan.completed_count), color:"#ccf7d1"},
+                                        { label: "Feb", y: (5-feb.completed_count), color:"#ccf7d1" },
+                                        { label: "Mar", y: (5-mar.completed_count), color:"#ccf7d1" },
+                                        { label: "Apr", y: (5-apr.completed_count), color:"#ccf7d1" },
+                                        { label: "May", y: (5-mei.completed_count), color:"#ccf7d1" },
+                                        { label: "Jun", y: (5-jun.completed_count), color:"#ccf7d1" },
+                                        { label: "Jul", y: (5-jul.completed_count), color:"#ccf7d1" },
+                                        { label: "Aug", y: (5-agt.completed_count), color:"#ccf7d1" },
+                                        { label: "Sep", y: (5-sep.completed_count), color:"#ccf7d1" },
+                                        { label: "Okt", y: (5-okt.completed_count), color:"#ccf7d1" },
+                                        { label: "Nov", y: (5-nov.completed_count), color:"#ccf7d1" },
+                                        { label: "Dec", y: (5-des.completed_count), color:"#ccf7d1" }
+                                    ]
+                                }
+                            ]
+            });
+            chart1.render();
+
+            var resultPostTest = <?php echo json_encode($postTestScore); ?>;
+            var dataPoints = [];
+
+            
+            resultPostTest.forEach(function(item) {
+                var xValue = item.title_exam; 
+                var yValue = parseInt(item.highest_currentScore); 
+
+                dataPoints.push({ label: xValue, y: yValue });
+            });
+
+            console.log(dataPoints);
+            var chart2 = new CanvasJS.Chart("chartContainer2",{
+                axisX: {
+                    interval: 1,
+                    labelAngle: -45 
+                },
+                axisY: {
+                    minimum: 0, 
+                    maximum: 100, 
+                    labelFormatter: function (e) {
+                        return parseInt(e.value);
+                    }
+                },
+                data: [{
+                    type: "line",
+                    dataPoints: dataPoints 
+                }]
+            });
+
+            chart2.render();
+        }
     </script>
 @endsection
 
 @section('main')
-
-    <div class="panel-header bg-primary-gradient">
-        <div class="page-inner py-5">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                <div>
-                    <h2 class="text-white pb-2 fw-bold uppercase">Dashboard {{ ucwords(Auth::user()->role) }}</h2>
-                    <h5 class="text-white op-7 mb-2">Welcome back, {{ Auth::user()->name }} <br>
-                        {{ Auth::user()->motto }}
-                    </h5>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="page-inner mt--5">
-
+    <div class="page-inner mt-5" style="background-color: white!important;">
         <div class="row mt--2 border-primary">
 
-            <div class="col-md-12">
-                <div class="card"> {{-- card --}}
-                    <div class="">{{-- card-header --}}
-                    </div>
+            {{-- PROFILE USER --}}
+            <div class="col-md-4">
+                <div class="card">
                     <div class="card-body">
-                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd d-flex justify-content-center"
-                            id="pills-tab-without-border" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill"
-                                   href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd"
-                                   aria-selected="true">Kelas Yang Sedang Anda Ikuti</a>
-                            </li>
-                            <li class="nav-item d-none">
-                                <a class="nav-link" id="pills-profile-tab-nobd" data-toggle="pill"
-                                   href="#pills-profile-nobd" role="tab" aria-controls="pills-profile-nobd"
-                                   aria-selected="false">Detail Progress Kelas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-contact-tab-nobd" data-toggle="pill"
-                                   href="#pills-contact-nobd" role="tab" aria-controls="pills-contact-nobd"
-                                   aria-selected="false">Cari Kelas Baru</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                        <div class="tab-content mt-2 mb-5" id="pills-without-border-tabContent">
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                  aria-labelledby="pills-home-tab-nobd">
-                                <div class="">
-                                    <div class="">
-                                        <div class="card-head-row card-tools-still-right">
-                                            <h4 class="card-title">Daftar Kelas Yang Sedang Anda Ikuti</h4>
-
-                                        </div>
-                                        <p class="card-category">
-                                            Kelas Yang Saat Ini Anda Pelajari</p>
+                                <div class="d-flex align-items-center"> {{-- Use flexbox for layout --}}
+                                    <div class="mr-3"> {{-- Margin right for spacing --}}
+                                        <img style="width: 130px; height: 130px; object-fit: cover"
+                                             src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
+                                             alt="Profile Image" class="avatar-img rounded-circle"
+                                             onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                     </div>
-                                    <div class="card-body">
-                                        <div class="row row-eq-height">
-                                            @forelse ($classRegistered as $data)
-                                                <div class="col-lg-4 col-sm-6 my-2">
-                                                    <div class="album-poster-parent"
-                                                         style="background-color: white !important">
-                                                        <a href="javascript:void();" class="album-poster"
-                                                           data-switch="0">
-                                                            <img class="fufufu"
-                                                                 onerror="this.onerror=null; this.src='./assets/album/n5'"
-                                                                 src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                                                                 alt="La Noyee">
-                                                        </a>
-                                                        <br>
-                                                        <div class="course-info">
-                                                            <h4>{{ $data->course_title }}</h4>
-
-                                                        </div>
-                                                        <p><span
-                                                                class="badge badge-primary">{{ $data->course_category }}</span>
-                                                        </p>
-
-                                                        <div class="d-flex">
-                                                            <div class="avatar">
-                                                                <img
-                                                                    src="{{ Storage::url('public/profile/') . $data->mentor_profile_url }}"
-                                                                    alt="..." class="avatar-img rounded-circle">
-                                                            </div>
-                                                            <div class="info-post ml-2">
-                                                                <p style="margin-bottom: 1px !important"
-                                                                   class="username">
-                                                                    {{ $data->mentor_name }}</p>
-                                                                {{ $data->created_at }}
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="mt-2">
-                                                            <a href="{{ url("/lesson/$data->id") }}">
-                                                                <button type="submit"
-                                                                        class="btn btn-outline-primary btn-xs btn-block mb-2">
-                                                                    Lanjutkan
-                                                                    Belajar
-                                                                </button>
-                                                            </a>
-                                                            <form action="{{ route('course.drop') }}" method="POST"
-                                                                  enctype="multipart/form-data">
-                                                                @csrf
-                                                                <input class="d-none" type="text" name="course_id"
-                                                                       value="{{ $data->id }}" id="">
-                                                                <button type="submit"
-                                                                        class="btn btn-outline-danger btn-xs">Arsipkan
-                                                                    Kelas
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-
-                                                {{-- <p>{{ $data->mentor_name }}</p> --}}
-                                            @empty
-                                                <div class="w-100 d-flex justify-content-center">
-                                                    <script
-                                                        src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js">
-                                                    </script>
-                                                    <lottie-player
-                                                        src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json"
-                                                        background="transparent" speed="1"
-                                                        style="width: 300px; height: 300px;"
-                                                        loop autoplay></lottie-player>
-                                                </div>
-                                                <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas
-                                                    Manapun</strong>
-                                            @endforelse
+                                    <div>
+                                        <div class="card-head-row card-tools-still-right">
+                                            <h1 style="color: black;"><b>{{ Auth::user()->name }}</b></h1>
+                                            <p class="card-category">Digital Management</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="pills-profile-nobd" role="tabpanel"
-                                 aria-labelledby="pills-profile-tab-nobd">
-                                <h3>1. Bikin Rumah Lucu</h3>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped bg-warning progress-bar-animated"
-                                         role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"
-                                         style="width: 15%"></div>
-                                </div>
-                                <h3>2. Belajar Bikin Rumah</h3>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                         role="progressbar"
-                                         aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
-                                         style="width: 75%"></div>
-                                </div>
+                        </div>
+
+                        <div class="ml-auto mt-5"> 
+                            <div class="portfolio-container">
+                                <img src="{{ url('/home_icons/Portfolio.svg') }}" alt="Portfolio Icon">
+                                <p>{{ Auth::user()->url_personal_website }}</p>
                             </div>
-                            <div class="tab-pane fade" id="pills-contact-nobd" role="tabpanel"
-                                 aria-labelledby="pills-contact-tab-nobd">
-                                <div class="">
-                                    <div class="">
-                                        <div class="card-head-row card-tools-still-right">
-                                            <h4 class="card-title">Daftar Ke Kelas Lain</h4>
-
-                                        </div>
-                                        <p class="card-category">
-                                            Cari Kelas Lain Yang Mungkin Menarik Untuk Dipelajari</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row row-eq-height">
-                                            @forelse ($classes as $data)
-                                                <div class="col-lg-4 col-sm-6 my-2">
-                                                    <div class="album-poster-parent"
-                                                         style="background-color: white !important">
-                                                        <a href="javascript:void();" class="album-poster"
-                                                           data-switch="0">
-                                                            <img class="fufufu"
-                                                                 onerror="this.onerror=null; this.src='./assets/album/n5'"
-                                                                 src="{{ Storage::url('public/class/cover/') . $data->course_cover_image }}"
-                                                                 alt="La Noyee">
-                                                        </a>
-                                                        <br>
-                                                        <div class="course-info">
-                                                            <h4>{{ $data->course_title }}</h4>
-
-                                                        </div>
-                                                        <p><span
-                                                                class="badge badge-primary">{{ $data->course_category }}</span>
-                                                        </p>
-
-                                                        <div class="d-flex">
-                                                            <div class="avatar">
-                                                                <img
-                                                                    src="{{ Storage::url('public/profile/') . $data->profile_url }}"
-                                                                    alt="..." class="avatar-img rounded-circle">
-                                                            </div>
-                                                            <div class="info-post ml-2">
-                                                                <p style="margin-bottom: 1px !important"
-                                                                   class="username">
-                                                                    {{ $data->mentor_name }}</p>
-                                                                {{ $data->created_at }}
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="mt-2">
-                                                            <a href="{{ url("/lesson/$data->id") }}">
-                                                                <button type="submit"
-                                                                        class="btn btn-primary btn-xs btn-block mb-2">
-                                                                    Lihat
-                                                                    Kelas
-                                                                </button>
-                                                            </a>
-                                                            <form action="{{ route('course.register') }}" method="POST"
-                                                                  enctype="multipart/form-data">
-                                                                @csrf
-                                                                <input class="d-none" type="text" name="course_id"
-                                                                       value="{{ $data->id }}" id="">
-                                                                <button type="submit"
-                                                                        class="btn btn-outline-primary btn-xs">Daftar
-                                                                    Kelas
-                                                                    Ini
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-
-                                                {{-- <p>{{ $data->mentor_name }}</p> --}}
-                                            @empty
-                                                <div class="alert alert-primary" role="alert">
-                                                    <strong>Belum Ada Kelas Tersedia</strong>
-                                                </div>
-                                            @endforelse
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="social-icon">
+                                <a href="https://facebook.com/.{{ Auth::user()->url_facebook }}" target="_blank"
+                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    <img src="{{ url('/home_icons/Facebook.svg') }}" alt="Facebook Icon">
+                                </a>
+                                <a href="https://www.linkedin.com/in/{{ Auth::user()->url_linkedin }}" target="_blank"
+                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    <img src="{{ url('/home_icons/linkedin.svg') }}" alt="Instagram Icon">
+                                </a>
+                                <a href="https://instagram.com/#" target="_blank" rel="noopener noreferrer"
+                                   class="btn btnColor btn-icon">
+                                    <img src="{{ url('/home_icons/Twitter.svg') }}" alt="Instagram Icon">
+                                </a>
+                                <a href="https://instagram.com/{{ Auth::user()->url_instagram }}" target="_blank"
+                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    <img src="{{ url('/home_icons/Instagram.svg') }}" alt="Instagram Icon">
+                                </a>
+                                <a href="https://youtube.com/{{ Auth::user()->url_youtube }}" target="_blank"
+                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    <img src="{{ url('/home_icons/Youtube.svg') }}" alt="Instagram Icon">
+                                </a>
+                                <a href="https://wa.me/{{ Auth::user()->url_whatsapp }}" target="_blank"
+                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    <img src="{{ url('/home_icons/Whatsapp.svg') }}" alt="Instagram Icon">
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <div class="col-md-12 col-12">
+            {{-- TRACKING DATA COURSES --}}
+            <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Grafik Skormu</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-sub">
-                            Performa Skor Per Materi
+                        <div class="row">
+                            <div class="col-9">
+                                <h3><strong>Data Completed Courses (Pcs)</strong></h3>
+                            </div>
+                            
+                            <div class="col-3">
+                                <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
+                                    <option>2024</option>
+                                </select>
+                            </div>
                         </div>
+                    </div>
 
-                        <div style="height: 370px">
-                            <canvas id="userScoresChart"></canvas>
+                    <div class="card-body">
+                        <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
+                                aria-labelledby="pills-home-tab-nobd">
+                                <div class="">
+                                    <div id="chartContainer1" style="height: 370px; width: 100%;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-12 col-12">
+            {{-- TRACKING POST TEST SCORE --}}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-9">
+                                <h3><strong>Post Test Score</strong></h3>
+                            </div>
+                            
+                            <div class="col-3">
+                                <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
+                                    <option>Januari</option>
+                                    <option>Februari</option>
+                                    <option>Maret</option>
+                                    <option>April</option>
+                                    <option>Mei</option>
+                                    <option>Juni</option>
+                                    <option>Juli</option>
+                                    <option>Agustus</option>
+                                    <option>September</option>
+                                    <option>Oktober</option>
+                                    <option>November</option>
+                                    <option>Desember</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
+                                aria-labelledby="pills-home-tab-nobd">
+                                <div class="">
+                                    <div id="chartContainer2" style="height: 370px; width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            {{-- DASHBOARD --}}
+            <div class="col-md-12">
+                <h1><strong>Dashboard</strong></h1>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round" style="background-color: #FFEEE8">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center bubble-shadow-small">
+                                    <img src="{{ url('icons/dashboard_icon/enrolled.png') }}" alt="Portfolio Icon">
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <h4 class="card-title">{{ $classRegisteredCount }}</h4>
+                                    <p class="card-category">Enrolled Course</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round" style="background-color: #EBEBFF">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center bubble-shadow-small">
+                                    <img src="{{ url('icons/dashboard_icon/active.png') }}" alt="Portfolio Icon">
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <h4 class="card-title">{{ $activeCourse }}</h4>
+                                    <p class="card-category">Active Course</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <div class="card card-stats card-round" style="background-color: #E1F7E3">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center bubble-shadow-small">
+                                    <img src="{{ url('icons/dashboard_icon/completed.png') }}" alt="Portfolio Icon">
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <h4 class="card-title">{{ $completedCourse }}</h4>
+                                    <p class="card-category">Completed Course</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- @php
+                // Ambil warna kategori jika kategori ada dalam $lessonCategories
+                $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                $numStudents = DB::select(
+                                "SELECT *
+                                    FROM
+                                        student_lesson a
+                                    WHERE a.lesson_id = $data->id");
+                $numStudentsCount = count($numStudents);
+            @endphp --}}
+
+
+
+            {{-- MY CLASS--}}
+            <div class="col-md-12">
+                <h1><strong>My Class</strong></h1>
+            </div>
+
+            <div class="container-fluid mt-3 row">
+                @forelse ($myClasses as $data)
+                    @php
+                    $userID = Auth::id();
+                    $silabusClass = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        course_section a
+                                    WHERE
+                                        a.course_id = $data->id
+                                    ");
+                    $hasTaken  = DB::select("SELECT
+                                    a.*
+                                    FROM
+                                        student_section a
+                                    LEFT JOIN
+                                        course_section b  ON a.section_id = b.id
+                                    WHERE
+                                        a.student_id = $userID AND b.course_id = $data->id;
+                                    "
+                                    );
+                    $totalSections = count($silabusClass);
+                    $total_hasTaken = count($hasTaken);
+                    if($totalSections != null and $total_hasTaken != null){
+                        $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                    }else{
+                        $progressPercentage = 0;
+                    }
+
+                    $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+
+                    @endphp
+
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="card shadow ">
+                            <!-- Image -->
+                            <img class="card-img-top"
+                            style="aspect-ratio: 16 / 9"
+                                 onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
+                                 src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}"
+                                 alt="La Noyee">
+                            {{--                            <img src="assets/images/courses/4by3/08.jpg"  class="card-img-top" alt="course image">--}}
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <!-- Badge and favorite -->
+                                <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+                                    <div class="class-badge"
+                                         style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
+                                        <strong>{{ $data->course_category }}</strong>
+                                    </div>
+                                </div>
+                                <!-- Title -->
+                                <h5 class="card-title"><a href="#">{{$data->course_title}}</a></h5>
+                                <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
+                                    settling.</p>
+
+
+                                <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
+
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <a href="{{ url('course/'.$data->id.'/section/'.$data->first_section) }}"
+                                           class="btn text-white btn-round "
+                                           style="background-color: #208DBB">Check</a>
+                                    </div>
+
+                                    {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span>--}}
+                                    <p id="progressCourse" class="h6 mb-0">{{ $progressPercentage }}%
+                                        Completed</p>
+
+                                </div>
+
+                                <!-- Rating star -->
+                                <ul class="list-inline mb-0 d-none">
+                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                    </li>
+                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                    </li>
+                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                    </li>
+                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
+                                    </li>
+                                    <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i>
+                                    </li>
+                                    <li class="list-inline-item ms-2 h6 fw-light mb-0">4.0/5.0</li>
+                                </ul>
+                            </div>
+                            <!-- Card footer -->
+                            <div class="card-footer pt-0 pb-3">
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <img style="width: 6%; height: auto; margin-top: 12px"
+                                         src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">
+                                    <a style="text-decoration: none;color: BLACK;">
+                                        <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
+                                            <b> {{ $data->num_students_registered }} </b><span style="color: #8C94A3;">students</span>
+                                        </p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                @empty
+                    <div class="w-100 d-flex justify-content-center">
+                        <script
+                            src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js">
+                        </script>
+                        <lottie-player
+                            src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json"
+                            background="transparent" speed="1"
+                            style="width: 300px; height: 300px;"
+                            loop autoplay></lottie-player>
+                    </div>
+                    <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas Manapun</strong>
+                @endforelse
+            </div>
+
+
+            {{-- LEADERBOARD --}}
+            {{-- <div class="col-md-12 col-12">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Leaderboard Score Management Trainee</div>
@@ -341,8 +590,6 @@
                                             <div class="user-profile text-center">
                                                 <div class="name">
                                                     <strong>#{{$index+1}}</strong> {{$student->student_name}}</div>
-                                                {{--                                    <div class="job">Total Skor </div>--}}
-                                                {{--                                    <div class="desc">A man who hates loneliness</div>--}}
                                                 <div class="social-media d-none">
                                                     <a class="btn btn-info btn-twitter btn-sm btn-link" href="#">
                                                         <span class="btn-label just-icon"><i
@@ -369,14 +616,6 @@
                                                     <div class="number">{{$student->total_score}}</div>
                                                     <div class="title">Total Point</div>
                                                 </div>
-                                                {{--                                                <div class="col">--}}
-                                                {{--                                                    <div class="number">{{$student->highest_score}}</div>--}}
-                                                {{--                                                    <div class="title">Nilai Tertinggi</div>--}}
-                                                {{--                                                </div>--}}
-                                                {{--                                                <div class="col">--}}
-                                                {{--                                                    <div class="number">{{$student->lowest_score}}</div>--}}
-                                                {{--                                                    <div class="title">Nilai Terendah</div>--}}
-                                                {{--                                                </div>--}}
                                             </div>
                                         </div>
                                     </div>
@@ -418,7 +657,6 @@
                                 <th>Rank</th>
                                 <th>Name</th>
                                 <th>Total Score</th>
-                                {{--                                <th>Nilai Rata-Rata</th>--}}
                             </tr>
                             </thead>
                             <tbody class="scrollable-table-body">
@@ -441,7 +679,6 @@
                                         @endif
                                     </td>
                                     <td>{{ $student->total_score }}</td>
-                                    {{--                                    <td>{{ $student->average_score }}</td>--}}
                                 </tr>
                             @endforeach
                             </tbody>
@@ -449,9 +686,10 @@
 
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
-            <div class="col-md-6 col-12">
+            {{-- SKORING --}}
+            {{-- <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Skor Per Modul</div>
@@ -483,310 +721,7 @@
 
                     </div>
                 </div>
-            </div>
-
-
-            <div class="row d-none">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Top Products</div>
-                        </div>
-                        <div class="card-body pb-0">
-                            <div class="d-flex">
-                                <div class="avatar">
-                                    <img src="../assets/img/logoproduct.svg" alt="..."
-                                         class="avatar-img rounded-circle">
-                                </div>
-                                <div class="flex-1 pt-1 ml-2">
-                                    <h6 class="fw-bold mb-1">CSS</h6>
-                                    <small class="text-muted">Cascading Style Sheets</small>
-                                </div>
-                                <div class="d-flex ml-auto align-items-center">
-                                    <h3 class="text-info fw-bold">+$17</h3>
-                                </div>
-                            </div>
-                            <div class="separator-dashed"></div>
-                            <div class="d-flex">
-                                <div class="avatar">
-                                    <img src="../assets/img/logoproduct.svg" alt="..."
-                                         class="avatar-img rounded-circle">
-                                </div>
-                                <div class="flex-1 pt-1 ml-2">
-                                    <h6 class="fw-bold mb-1">J.CO Donuts</h6>
-                                    <small class="text-muted">The Best Donuts</small>
-                                </div>
-                                <div class="d-flex ml-auto align-items-center">
-                                    <h3 class="text-info fw-bold">+$300</h3>
-                                </div>
-                            </div>
-                            <div class="separator-dashed"></div>
-                            <div class="d-flex">
-                                <div class="avatar">
-                                    <img src="../assets/img/logoproduct3.svg" alt="..."
-                                         class="avatar-img rounded-circle">
-                                </div>
-                                <div class="flex-1 pt-1 ml-2">
-                                    <h6 class="fw-bold mb-1">Ready Pro</h6>
-                                    <small class="text-muted">Bootstrap 4 Admin Dashboard</small>
-                                </div>
-                                <div class="d-flex ml-auto align-items-center">
-                                    <h3 class="text-info fw-bold">+$350</h3>
-                                </div>
-                            </div>
-                            <div class="separator-dashed"></div>
-                            <div class="pull-in">
-                                <canvas id="topProductsChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-title fw-mediumbold">Suggested People</div>
-                            <div class="card-list">
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="../assets/img/jm_denis.jpg" alt="..."
-                                             class="avatar-img rounded-circle">
-                                    </div>
-                                    <div class="info-user ml-3">
-                                        <div class="username">Jimmy Denis</div>
-                                        <div class="status">Graphic Designer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="../assets/img/chadengle.jpg" alt="..."
-                                             class="avatar-img rounded-circle">
-                                    </div>
-                                    <div class="info-user ml-3">
-                                        <div class="username">Chad</div>
-                                        <div class="status">CEO Zeleaf</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="../assets/img/talha.jpg" alt="..." class="avatar-img rounded-circle">
-                                    </div>
-                                    <div class="info-user ml-3">
-                                        <div class="username">Talha</div>
-                                        <div class="status">Front End Designer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="../assets/img/mlane.jpg" alt="..." class="avatar-img rounded-circle">
-                                    </div>
-                                    <div class="info-user ml-3">
-                                        <div class="username">John Doe</div>
-                                        <div class="status">Back End Developer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="../assets/img/talha.jpg" alt="..." class="avatar-img rounded-circle">
-                                    </div>
-                                    <div class="info-user ml-3">
-                                        <div class="username">Talha</div>
-                                        <div class="status">Front End Designer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="../assets/img/jm_denis.jpg" alt="..."
-                                             class="avatar-img rounded-circle">
-                                    </div>
-                                    <div class="info-user ml-3">
-                                        <div class="username">Jimmy Denis</div>
-                                        <div class="status">Graphic Designer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-primary btn-round btn-xs">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card card-primary bg-primary-gradient">
-                        <div class="card-body">
-                            <h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Active user right now</h4>
-                            <h1 class="mb-4 fw-bold">17</h1>
-                            <h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold">Page view per minutes</h4>
-                            <div id="activeUsersChart"></div>
-                            <h4 class="mt-5 pb-3 mb-0 fw-bold">Top active pages</h4>
-                            <ul class="list-unstyled">
-                                <li class="d-flex justify-content-between pb-1 pt-1">
-                                    <small>/product/readypro/index.html</small>
-                                    <span>7</span>
-                                </li>
-                                <li class="d-flex justify-content-between pb-1 pt-1">
-                                    <small>/product/atlantis/demo.html</small>
-                                    <span>10</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row d-none">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Feed Activity</div>
-                        </div>
-                        <div class="card-body">
-                            <ol class="activity-feed">
-                                <li class="feed-item feed-item-secondary">
-                                    <time class="date" datetime="9-25">Sep 25</time>
-                                    <span class="text">Responded to need <a href="#">"Volunteer opportunity"</a></span>
-                                </li>
-                                <li class="feed-item feed-item-success">
-                                    <time class="date" datetime="9-24">Sep 24</time>
-                                    <span class="text">Added an interest <a href="#">"Volunteer Activities"</a></span>
-                                </li>
-                                <li class="feed-item feed-item-info">
-                                    <time class="date" datetime="9-23">Sep 23</time>
-                                    <span class="text">Joined the group <a href="single-group.php">"Boardsmanship
-                                            Forum"</a></span>
-                                </li>
-                                <li class="feed-item feed-item-warning">
-                                    <time class="date" datetime="9-21">Sep 21</time>
-                                    <span class="text">Responded to need <a href="#">"In-Kind Opportunity"</a></span>
-                                </li>
-                                <li class="feed-item feed-item-danger">
-                                    <time class="date" datetime="9-18">Sep 18</time>
-                                    <span class="text">Created need <a href="#">"Volunteer Opportunity"</a></span>
-                                </li>
-                                <li class="feed-item">
-                                    <time class="date" datetime="9-17">Sep 17</time>
-                                    <span class="text">Attending the event <a href="single-event.php">"Some New
-                                            Event"</a></span>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card full-height">
-                        <div class="card-header">
-                            <div class="card-head-row">
-                                <div class="card-title">Support Tickets</div>
-                                <div class="card-tools">
-                                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd nav-sm" id="pills-tab"
-                                        role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="pills-today" data-toggle="pill" href="#pills-today"
-                                               role="tab" aria-selected="true">Today</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="pills-week" data-toggle="pill"
-                                               href="#pills-week"
-                                               role="tab" aria-selected="false">Week</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="pills-month" data-toggle="pill" href="#pills-month"
-                                               role="tab" aria-selected="false">Month</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <div class="avatar avatar-online">
-                                    <span class="avatar-title rounded-circle border border-white bg-info">J</span>
-                                </div>
-                                <div class="flex-1 ml-3 pt-1">
-                                    <h6 class="text-uppercase fw-bold mb-1">Joko Subianto <span
-                                            class="text-warning pl-3">pending</span></h6>
-                                    <span class="text-muted">I am facing some trouble with my viewport. When i start
-                                        my</span>
-                                </div>
-                                <div class="float-right pt-1">
-                                    <small class="text-muted">8:40 PM</small>
-                                </div>
-                            </div>
-                            <div class="separator-dashed"></div>
-                            <div class="d-flex">
-                                <div class="avatar avatar-offline">
-                                    <span class="avatar-title rounded-circle border border-white bg-secondary">P</span>
-                                </div>
-                                <div class="flex-1 ml-3 pt-1">
-                                    <h6 class="text-uppercase fw-bold mb-1">Prabowo Widodo <span
-                                            class="text-success pl-3">open</span></h6>
-                                    <span class="text-muted">I have some query regarding the license issue.</span>
-                                </div>
-                                <div class="float-right pt-1">
-                                    <small class="text-muted">1 Day Ago</small>
-                                </div>
-                            </div>
-                            <div class="separator-dashed"></div>
-                            <div class="d-flex">
-                                <div class="avatar avatar-away">
-                                    <span class="avatar-title rounded-circle border border-white bg-danger">L</span>
-                                </div>
-                                <div class="flex-1 ml-3 pt-1">
-                                    <h6 class="text-uppercase fw-bold mb-1">Lee Chong Wei <span
-                                            class="text-muted pl-3">closed</span></h6>
-                                    <span
-                                        class="text-muted">Is there any update plan for RTL version near future?</span>
-                                </div>
-                                <div class="float-right pt-1">
-                                    <small class="text-muted">2 Days Ago</small>
-                                </div>
-                            </div>
-                            <div class="separator-dashed"></div>
-                            <div class="d-flex">
-                                <div class="avatar avatar-offline">
-                                    <span class="avatar-title rounded-circle border border-white bg-secondary">P</span>
-                                </div>
-                                <div class="flex-1 ml-3 pt-1">
-                                    <h6 class="text-uppercase fw-bold mb-1">Peter Parker <span
-                                            class="text-success pl-3">open</span></h6>
-                                    <span class="text-muted">I have some query regarding the license issue.</span>
-                                </div>
-                                <div class="float-right pt-1">
-                                    <small class="text-muted">2 Day Ago</small>
-                                </div>
-                            </div>
-                            <div class="separator-dashed"></div>
-                            <div class="d-flex">
-                                <div class="avatar avatar-away">
-                                    <span class="avatar-title rounded-circle border border-white bg-danger">L</span>
-                                </div>
-                                <div class="flex-1 ml-3 pt-1">
-                                    <h6 class="text-uppercase fw-bold mb-1">Logan Paul <span
-                                            class="text-muted pl-3">closed</span></h6>
-                                    <span
-                                        class="text-muted">Is there any update plan for RTL version near future?</span>
-                                </div>
-                                <div class="float-right pt-1">
-                                    <small class="text-muted">2 Days Ago</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </div> --}}
 
 
             @if (session()->has('success'))

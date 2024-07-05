@@ -27,6 +27,13 @@ class User extends Authenticatable
         'institute',
         'jobs',
         'motto',
+        'url_personal_website',
+        'url_facebook',
+        'url_instagram',
+        'url_linkedin',
+        'url_twitter',
+        'url_whatsapp',
+        'url_youtube',
     ];
 
     /**
@@ -47,4 +54,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = [
+        'full_img_path',
+    ];
+
+    // Define an accessor method for full_img_path attribute
+    public function getFullImgPathAttribute()
+    {
+
+        if(str_contains($this->profile_url,"profile-s3")){
+            return "https://lms-modernland.s3.ap-southeast-3.amazonaws.com/".$this->profile_url;
+        }
+        // Assuming you have a column named 'img_filename' that stores the image filename
+        // You can modify this to generate the full image path as per your requirement
+        return asset('storage/profile/' . $this->profile_url);
+    }
 }

@@ -1,0 +1,20 @@
+/*
+ * Chart heading
+ */
+.charts-css {
+
+  &:not(.show-heading) {
+
+    caption {
+      @include visually-hidden;
+    }
+  }
+
+  &.show-heading {
+
+    caption {
+      display: block;
+      width: 100%;
+    }
+  }
+}

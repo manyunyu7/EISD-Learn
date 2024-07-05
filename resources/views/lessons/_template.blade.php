@@ -2,127 +2,12 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>{{ config('app.name') }}</title>
-    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport'/>
-    <link rel="icon" href="{{ asset('atlantis/examples') }}/assets/img/icon.ico" type="image/x-icon"/>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+    <link rel="icon" href="{{ asset('atlantis/examples') }}/assets/img/icon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
-    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
-
-
-    <style>
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999; /* Make sure the loader is above everything else */
-        }
-
-        .hidden-actions {
-            display: none;
-            padding: 10px;
-        }
-
-        .loader {
-            border: 4px solid #f3f3f3; /* Light gray border */
-            border-top: 4px solid #3498db; /* Blue border for loading indicator */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite; /* Spin animation */
-        }
-
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999; /* Make sure the loader is above everything else */
-        }
-
-        .blinking-overlay {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: blink 1s infinite;
-        }
-
-        .centered-image {
-            max-width: 20%; /* Adjust the maximum width of the image */
-            max-height: 20vh; /* Adjust the maximum height of the image */
-        }
-
-        /* CSS for the timer */
-        .timer {
-            font-size: 24px;
-            color: black; /* Initial color */
-            animation: blink 1s step-end infinite; /* Blinking animation */
-        }
-
-        @keyframes blink {
-            50% {
-                color: transparent; /* Blinking color */
-            }
-        }
-
-        /* Floating timer container */
-        .timer-container {
-            position: fixed;
-            top: 10px; /* Adjust the top position as needed */
-            right: 10px; /* Adjust the right position as needed */
-            background-color: white; /* You can adjust the background color as needed */
-            z-index: 9999;
-            padding: 10px;
-            border: 1px solid #ccc; /* Add a border for style */
-            border-radius: 5px;
-        }
-
-        /* Style for the timer */
-        #timer {
-            font-size: 24px;
-            font-weight: bold;
-            color: black; /* You can adjust the text color as needed */
-        }
-
-        /* Define the style for cards outside the specified index range */
-        .outside-index-card {
-            background-color: #ffcccc; /* Change the background color to light red */
-            border: 2px solid #ff0000; /* Add a red border */
-            color: #ff0000; /* Change the text color to red */
-            display: none; /* Hide the card */
-        }
-
-        /* Additional styling for the timer as needed */
-
-        @keyframes blink {
-            0%, 100% {
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
 
 
     <!-- Optional JavaScript -->
@@ -142,8 +27,7 @@
     <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
     <!-- Bootstrap Tagsinput -->
-    <script
-        src="{{ asset('atlantis/examples') }}/assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+    <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
 
 
     <!-- Fonts and icons -->
@@ -159,7 +43,7 @@
                 ],
                 urls: ['{{ asset('atlantis/examples') }}/assets/css/fonts.min.css']
             },
-            active: function () {
+            active: function() {
                 sessionStorage.fonts = true;
             }
         });
@@ -176,43 +60,6 @@
 </head>
 
 <body>
-<div id="loaderOverlay" class="loader-overlay">
-    <div class="blinking-overlay">
-        <img src="{{URL::to('/')}}/mdln_long.png" alt="navbar brand" class="centered-image">
-    </div>
-</div>
-<script>
-    var loaderOverlay = document.getElementById('loaderOverlay');
-
-    // Function to show the loading overlay
-    function showLoaderOverlay() {
-        if (loaderOverlay) {
-            loaderOverlay.style.display = '';
-        }
-    }
-
-    // Function to hide the loading overlay
-    function hideLoaderOverlay() {
-        setTimeout(function () {
-            if (loaderOverlay) {
-                loaderOverlay.style.display = 'none';
-            }
-        }, 1000);
-    }
-
-    function hideLoaderOverlayNow() {
-        setTimeout(function () {
-            if (loaderOverlay) {
-                loaderOverlay.style.display = 'none';
-            }
-        }, 0);
-    }
-</script>
-<script>
-    showLoaderOverlay()
-    hideLoaderOverlay()
-</script>
-
 <div class="wrapper">
     <div class="main-header">
         <!-- Logo Header -->
@@ -288,6 +135,8 @@
 </div>
 
 </div>
+
+
 
 
 <!-- Chart JS -->
