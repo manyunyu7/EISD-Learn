@@ -43,9 +43,35 @@ class ProfileController extends Controller
         } else {
             $jabatan = "Belum Ada Jabatan";
         }
-
         $name_jbtn = $value_jbtn;
-        return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn'));
+
+
+
+        // Read Department
+        $id_dept = Auth::user()->department_id;
+        $query_department = DB::connection('ithub')
+            ->table('m_departments')
+            ->select('name')
+            ->where('id', '=', $id_dept)
+            ->get();
+        $department = "";
+        if ($query_department && count($query_department) > 0) {
+            $department = json_decode($query_department, true);
+            // Periksa apakah hasil decode adalah array dan memiliki key 'name'
+            if (is_array($department) && isset($department)) {
+                $value_dept = $department[0]['name'] ?? null; // Mengembalikan nilai dari key 'name'
+            } else {
+                $value_dept =  "-";
+            }
+        } else {
+            $department = "Belum Ada department";
+        }
+        $name_dept = $value_dept;
+
+
+
+
+        return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn', 'name_dept'));
     }
 
 
