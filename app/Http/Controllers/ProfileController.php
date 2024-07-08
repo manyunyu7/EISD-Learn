@@ -21,7 +21,31 @@ class ProfileController extends Controller
         $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
         $end_ofName = implode(' ', array_slice($nameParts, 2));
         // return $fullName;
-        return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
+
+        // Read Jabatan
+        $id_jbtn = Auth::user()->jabatan;
+
+        $query_jabatan = DB::connection('ithub')
+        ->table('m_group_employees')
+        ->select('name')
+        ->where('id', '=', $id_jbtn)
+        ->get();
+        
+        if ($query_jabatan) {
+            $jabatan = json_decode($query_jabatan->name, true);
+        
+            // Periksa apakah hasil decode adalah array dan memiliki key 'name'
+            if (is_array($jabatan) && isset($jabatan['name'])) {
+                return $jabatan['name']; // Mengembalikan nilai dari key 'name'
+            } else {
+                return "Data jabatan tidak valid";
+            }
+        } else {
+            return "Data jabatan tidak ditemukan";
+        }
+
+
+        return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn'));
     }
 
 

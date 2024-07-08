@@ -64,7 +64,7 @@
                                             <input type="text"
                                                    class="form-control @error('email') is-invalid has-error @enderror"
                                                    name="jabatan" placeholder="Jabatan"
-                                                   value="{{ old('jabatan', Auth::user()->jabatan) }}" readonly>
+                                                   value="{{ $name_jbtn }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -73,7 +73,7 @@
                                             <input type="text"
                                                    class="form-control @error('email') is-invalid has-error @enderror"
                                                    name="department" placeholder="Department"
-                                                   value="{{ old('department', Auth::user()->department) }}" readonly>
+                                                   value="{{ old('department_id', Auth::user()->department_id) }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
