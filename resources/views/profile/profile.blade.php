@@ -82,7 +82,7 @@
                                             <input type="text"
                                                    class="form-control @error('email') is-invalid has-error @enderror"
                                                    name="unit_business" placeholder="Unit Business"
-                                                   value="{{ old('location', Auth::user()->location) }}" readonly>
+                                                   value="{{ $name_sites }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-12">

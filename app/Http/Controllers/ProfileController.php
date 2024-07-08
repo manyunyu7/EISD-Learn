@@ -21,7 +21,6 @@ class ProfileController extends Controller
         $nameParts = explode(' ', $fullName);
         $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
         $end_ofName = implode(' ', array_slice($nameParts, 2));
-        // return $fullName;
 
         // Read Jabatan
         $id_jbtn = Auth::user()->position_id;
@@ -44,7 +43,6 @@ class ProfileController extends Controller
             $jabatan = "Belum Ada Jabatan";
         }
         $name_jbtn = $value_jbtn;
-
 
 
         // Read Department
@@ -70,8 +68,33 @@ class ProfileController extends Controller
 
 
 
+        // Read Business Unit
+        $id_bu = json_decode(Auth::user()->location, true);
 
-        return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn', 'name_dept'));
+        // Pastikan $id_bu tidak null dan merupakan array
+        if ($id_bu && is_array($id_bu)) {
+            // Ambil semua nilai site_id dari array
+            $site_ids = array_map(function($location) {
+                return $location['site_id'];
+            }, $id_bu);
+
+            // Pastikan ada nilai dalam $site_ids
+            if (!empty($site_ids)) {
+                // Query menggunakan whereIn
+                $locations = DB::connection('ithub')
+                                ->table('m_sites')
+                                ->whereIn('id', $site_ids)
+                                ->get();
+                $name_sites = $locations->pluck('code')->implode(', ');
+            } else {
+                return response()->json(['error' => 'Tidak ada site_id yang valid'], 400);
+            }
+        } else {
+            return response()->json(['error' => 'Data lokasi tidak valid'], 400);
+        }
+
+
+        return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn', 'name_dept', 'name_sites'));
     }
 
 
