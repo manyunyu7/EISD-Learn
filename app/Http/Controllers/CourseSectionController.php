@@ -993,10 +993,20 @@ class CourseSectionController extends Controller
         $department = $request->name_of_department;
         $username_id = $request->student_id;
 
-        // Lakukan Select Row User Based On department dan username_id
+        // Check if the student_lesson record already exists
+        $existingRecord = StudentLesson::where('student_id', $username_id)
+            ->where('lesson_id', $lessonId)
+            ->first();
 
+        if ($existingRecord) {
+            // Redirect back with a message indicating duplicate entry
+            return back()->with(['error' => 'Peserta sudah ada dalam kelas ini!']);
+        }
+
+        // Proceed to insert if no duplicate found
         $user_to_insert = User::findOrFail($username_id);
-        // Melakukan INSERT ke dalam Tabel student_lesson
+
+        // Insert into StudentLesson table
         $insert_to_StuLess = new StudentLesson();
         $insert_to_StuLess->student_id = $user_to_insert->id;
         $insert_to_StuLess->lesson_id = $lessonId;
@@ -1005,16 +1015,14 @@ class CourseSectionController extends Controller
         $insert_to_StuLess->certificate_file = '';
         $insert_to_StuLess->save();
 
-
         if ($insert_to_StuLess) {
-            //redirect dengan pesan sukses
-            return redirect("/class/students/$lessonId")->with(['success' => 'Peserta Baru Berhasil Ditambahkan!']);
+            // Redirect back with success message
+            return back()->with(['success' => 'Peserta Baru Berhasil Ditambahkan!']);
         } else {
-            //redirect dengan pesan error
-            return redirect("/class/students/$lessonId")->with(['error' => 'Peserta Baru Gagal Ditambahkan!']);
+            // Redirect back with error message if insertion fails
+            return back()->with(['error' => 'Peserta Baru Gagal Ditambahkan!']);
         }
     }
-
     public function find_student_by_dept(Request $request)
     {
         $department = $request->name_of_department;
