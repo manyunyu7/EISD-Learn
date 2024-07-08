@@ -8,14 +8,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use DB;
 
 class ProfileController extends Controller
 {
 
     public function index()
     {
+
         $fullName = Auth::user()->name;
         $nameParts = explode(' ', $fullName);
         $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
@@ -23,27 +24,29 @@ class ProfileController extends Controller
         // return $fullName;
 
         // Read Jabatan
-        $id_jbtn = Auth::user()->jabatan;
+        $id_jbtn = Auth::user()->position;
 
         $query_jabatan = DB::connection('ithub')
-        ->table('m_group_employees')
-        ->select('name')
-        ->where('id', '=', $id_jbtn)
-        ->get();
-        
-        if ($query_jabatan) {
+            ->table('m_group_employees')
+            ->select('name')
+            ->where('id', '=', $id_jbtn)
+            ->get();
+
+        $jabatan = "";
+        if ($query_jabatan && count($query_jabatan) > 0) {
             $jabatan = json_decode($query_jabatan->name, true);
-        
+
             // Periksa apakah hasil decode adalah array dan memiliki key 'name'
             if (is_array($jabatan) && isset($jabatan['name'])) {
                 return $jabatan['name']; // Mengembalikan nilai dari key 'name'
             } else {
-                return "Data jabatan tidak valid";
+                $jabatan =  "-";
             }
         } else {
-            return "Data jabatan tidak ditemukan";
+            $jabatan = "Belum Ada Jabatan";
         }
 
+        $name_jbtn = $jabatan;
 
         return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn'));
     }
@@ -53,7 +56,8 @@ class ProfileController extends Controller
     {
 
         MyHelper::addAnalyticEvent(
-            "Ganti Password","Profile"
+            "Ganti Password",
+            "Profile"
         );
 
         $request->validate([
@@ -112,13 +116,14 @@ class ProfileController extends Controller
     {
 
         MyHelper::addAnalyticEvent(
-            "Update Foto Profile","Profile"
+            "Update Foto Profile",
+            "Profile"
         );
 
         $user = User::findOrFail(auth()->id());
         $first_name = $request->input('first_name');
         $end_name = $request->input('end_name');
-        $complete_name = $first_name.' '.$end_name;
+        $complete_name = $first_name . ' ' . $end_name;
 
         if ($request->hasFile('profile_image')) {
             // Delete old image from S3 if not the default image
@@ -169,7 +174,8 @@ class ProfileController extends Controller
     {
         // return $request->all();
         MyHelper::addAnalyticEvent(
-            "Update Socieal Media","Profile"
+            "Update Socieal Media",
+            "Profile"
         );
 
 
@@ -210,8 +216,5 @@ class ProfileController extends Controller
             //redirect dengan pesan error
             return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
         }
-
-
     }
-
 }
