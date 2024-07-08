@@ -245,9 +245,9 @@ class MobileHomeController extends Controller
         $department = json_decode($user->department);
 
         $division = json_decode($user->division);
-        $subDepartment = json_decode($user->sub_department);
         $locations = json_decode($user->sites, true);
 
+        $userSavedLocation = null;
         // Periksa jika $locations berhasil di-decode
         if (json_last_error() === JSON_ERROR_NONE) {
             // Array untuk menyimpan data yang akan diubah menjadi JSON
@@ -268,7 +268,7 @@ class MobileHomeController extends Controller
                 ];
             }
             // Encode array output menjadi JSON string
-            $jsonOutput = json_encode($output);
+            $userSavedLocation = json_encode($output);
         } else {
             // Tampilkan pesan error JSON
             // echo "Error decoding JSON: " . json_last_error_msg();
@@ -279,7 +279,6 @@ class MobileHomeController extends Controller
         $divisionId = $division->id;
         $departmentId = $department->id ?? null;
         $departmentName = $department->name ?? null;
-        $subDepartmentId = $subDepartment->id ?? null;
         $positionId = $u_structure_employee->group_user_employee_id ?? null;
         if (is_array($location) && isset($location[0])) {
             // Mengakses site_id dari elemen pertama
@@ -310,7 +309,7 @@ class MobileHomeController extends Controller
             // $account->department = $departmentName;
             $account->position_id = $positionId;
 
-            $account->location = json_decode($jsonOutput);
+            $account->location = json_decode($userSavedLocation);
             // $account->jabatan = $positionId;
             $account->save();
 
