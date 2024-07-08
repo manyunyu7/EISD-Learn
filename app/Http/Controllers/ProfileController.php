@@ -24,8 +24,7 @@ class ProfileController extends Controller
         // return $fullName;
 
         // Read Jabatan
-        $id_jbtn = Auth::user()->position;
-
+        $id_jbtn = Auth::user()->position_id;
         $query_jabatan = DB::connection('ithub')
             ->table('m_group_employees')
             ->select('name')
@@ -34,20 +33,18 @@ class ProfileController extends Controller
 
         $jabatan = "";
         if ($query_jabatan && count($query_jabatan) > 0) {
-            $jabatan = json_decode($query_jabatan->name, true);
-
+            $jabatan = json_decode($query_jabatan, true);
             // Periksa apakah hasil decode adalah array dan memiliki key 'name'
-            if (is_array($jabatan) && isset($jabatan['name'])) {
-                return $jabatan['name']; // Mengembalikan nilai dari key 'name'
+            if (is_array($jabatan) && isset($jabatan)) {
+                $value_jbtn = $jabatan[0]['name'] ?? null; // Mengembalikan nilai dari key 'name'
             } else {
-                $jabatan =  "-";
+                $value_jbtn =  "-";
             }
         } else {
             $jabatan = "Belum Ada Jabatan";
         }
 
-        $name_jbtn = $jabatan;
-
+        $name_jbtn = $value_jbtn;
         return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn'));
     }
 
