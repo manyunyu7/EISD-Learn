@@ -32,7 +32,9 @@ class MobileSeeCourseController extends Controller
 
         if (!Auth::check()) {
             MyHelper::addAnalyticEventMobile(
-                "Mobile Buka Section", "Course Section",$userId
+                "Mobile Buka Section",
+                "Course Section",
+                $userId
             );
             abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
@@ -61,9 +63,11 @@ class MobileSeeCourseController extends Controller
         if (Auth::user()->role == "student") {
             if ($lessonObject->can_be_accessed == "n") {
                 MyHelper::addAnalyticEventMobile(
-                    "Reject Section Diluar Jadwal", "Course Section",$userId
+                    "Reject Section Diluar Jadwal",
+                    "Course Section",
+                    $userId
                 );
-//                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan #922 $lessonObject");
+                //                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan #922 $lessonObject");
             }
         }
 
@@ -157,7 +161,8 @@ class MobileSeeCourseController extends Controller
         // Fetch all sections for the lesson
         $student_sections = DB::select("select * from student_section ");
 
-        $sections = CourseSection::select('lessons.id as lesson_id',
+        $sections = CourseSection::select(
+            'lessons.id as lesson_id',
             'lessons.course_title as lessons_title',
             'lessons.mentor_id',
             'users.name as mentor_name',
@@ -170,7 +175,8 @@ class MobileSeeCourseController extends Controller
             'course_section.section_video',
             'course_section.created_at',
             'course_section.updated_at',
-            'course_section.can_be_accessed')
+            'course_section.can_be_accessed'
+        )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
@@ -234,7 +240,7 @@ class MobileSeeCourseController extends Controller
                 if (!in_array($sectionOrder[$i], $completedSections)) {
                     $isEligibleStudent = false;
                     if ($sectionTakenOnCourseCount != 0) {
-//                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                        //                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
                     }
                 }
             }
@@ -249,11 +255,13 @@ class MobileSeeCourseController extends Controller
         $totalScore = 0;
         $session = null;
 
-        if ($currentSection->quiz_session_id != null &&
+        if (
+            $currentSection->quiz_session_id != null &&
             $currentSection->quiz_session_id != "" &&
             $currentSection->quiz_session_id != "null" &&
             $currentSection->quiz_session_id != "-" &&
-            $currentSection->quiz_session_id != "Tidak Ada Quiz") {
+            $currentSection->quiz_session_id != "Tidak Ada Quiz"
+        ) {
             $isExam = true;
             $examSession = ExamSession::find($currentSection->quiz_session_id);
             $exam = Exam::find($examSession->exam_id);
@@ -278,9 +286,14 @@ class MobileSeeCourseController extends Controller
         //check if student has taken any exam on this session
         $hasTakenAnyExam = false;
         $examResults = ExamTaker::where(
-            "course_flag", "=", $courseId
+            "course_flag",
+            "=",
+            $courseId
         )->where(
-            "course_section_flag", "=", $sectionId)
+            "course_section_flag",
+            "=",
+            $sectionId
+        )
             ->where("user_id", '=', Auth::id())
             ->get();
 
@@ -327,11 +340,39 @@ class MobileSeeCourseController extends Controller
         // all sections $sectionCount;
         $progressPercentage = round(($sectionTakenOnCourseCount / $sectionCount) * 100);
 
-        $compact = compact('isEligibleStudent', 'hasTakenAnyExam', 'examResults', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
-            'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
-            'sectionDetail', 'sections', 'sectionCount', 'questions', 'progressPercentage',
-            'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
-            'sectionOrder', 'lesson', 'section', 'isRegistered', 'classInfo');
+        $compact = compact(
+            'isEligibleStudent',
+            'hasTakenAnyExam',
+            'examResults',
+            'currentSectionId',
+            'courseId',
+            'next_section',
+            'prev_section',
+            'isStudent',
+            'sectionTakenByStudent',
+            'sectionTakenOnCourseCount',
+            'isFirstSection',
+            'isExam',
+            'title',
+            'sectionDetail',
+            'sections',
+            'sectionCount',
+            'questions',
+            'progressPercentage',
+            'firstSectionId',
+            'lastSectionId',
+            'isPrecedingTaken',
+            'examSession',
+            'exam',
+            'session',
+            'question_count',
+            'totalScore',
+            'sectionOrder',
+            'lesson',
+            'section',
+            'isRegistered',
+            'classInfo'
+        );
 
 
         if ($request->dump == true) {
@@ -339,12 +380,13 @@ class MobileSeeCourseController extends Controller
         }
 
         MyHelper::addAnalyticEventMobile(
-            "Buka Section", "Course Section",$userId
+            "Buka Section",
+            "Course Section",
+            $userId
         );
 
 
         return view('lessons.play.course_play_mobile', $compact);
-
     }
 
     function startSection($sectionId)
@@ -375,6 +417,4 @@ class MobileSeeCourseController extends Controller
             // return redirect()->route('success')->with('success', 'Student-section saved successfully.');
         }
     }
-
-
 }
