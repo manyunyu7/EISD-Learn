@@ -10,6 +10,7 @@ use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class AbsensiController extends Controller
 {
@@ -17,7 +18,8 @@ class AbsensiController extends Controller
     // Replace 'your_secret_key' with a strong and secure key
     private $key = 'yepow';
 
-    public function insertAbsensiMobile(Request $request){
+    public function insertAbsensiMobile(Request $request)
+    {
         $userId = $request->lms_user_id;
         $latitude = $request->latitude;
         $longitude = $request->longitude;
@@ -28,7 +30,7 @@ class AbsensiController extends Controller
         $section = CourseSection::findOrFail($sectionId);
 
 
-        if($section==null){
+        if ($section == null) {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
@@ -39,7 +41,7 @@ class AbsensiController extends Controller
             );
         }
 
-        if($section->enable_absensi=="n" || $section->enable_absensi!=null && $section->enable_absensi != "y"){
+        if ($section->enable_absensi == "n" || $section->enable_absensi != null && $section->enable_absensi != "y") {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
@@ -52,9 +54,9 @@ class AbsensiController extends Controller
 
         $absensi = new Absensi();
         $absensi->student_id = $userId;
-        $absensi->latitude=$latitude;
-        $absensi->longitude=$longitude;
-        $absensi->section_id=$sectionId;
+        $absensi->latitude = $latitude;
+        $absensi->longitude = $longitude;
+        $absensi->section_id = $sectionId;
 
         // Check if the combination of student_id and section_id already exists
         $existingAbsensi = Absensi::where('student_id', $userId)
@@ -73,7 +75,7 @@ class AbsensiController extends Controller
         }
 
 
-        if($absensi->save()){
+        if ($absensi->save()) {
             return MyHelper::responseSuccessWithData(
                 200,
                 200,
@@ -82,7 +84,7 @@ class AbsensiController extends Controller
                 "Success",
                 $absensi
             );
-        }else{
+        } else {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
@@ -94,7 +96,8 @@ class AbsensiController extends Controller
         }
     }
 
-    public function updateAbsensi(Request $request){
+    public function updateAbsensi(Request $request)
+    {
         $sectionId = $request->section_id;
         $enabled = $request->enabled;
 
@@ -112,16 +115,33 @@ class AbsensiController extends Controller
         return response()->json(['enabled' => $section->enable_absensi == 'y', 'message' => 'Absensi updated successfully']);
     }
 
-    public function manage($lessonId,$sectionId){
+    public function manage($lessonId, $sectionId)
+    {
         $section = CourseSection::findOrFail($sectionId);
         $enableAbsensi = $section->enable_absensi;
-        $course = Lesson::where("id",'=',$section->course_id)->first();
-        $dayta = User::all();
+        $course = Lesson::where("id", '=', $section->course_id)->first();
+        $students = DB::table('absensis as a')
+            ->select('u.id', 'u.name', 'u.department_id', 'a.created_at', 'u.sub_department', 'u.location', 'u.contact')
+            ->leftJoin('users as u', 'a.student_id', '=', 'u.id')
+            ->get();
+
+        foreach ($students as $item) {
+            $departmentId = $item->department_id;
+            $department =  DB::connection('ithub')->selectOne("SELECT * FROM m_departments where id = '$departmentId'");
+
+            $departmentName = "";
+            if ($department != null) {
+                $departmentName = $department->name;
+            } else {
+                $departmentName = "Tidak Ada Department";
+            }
+            $item->department = $departmentName;
+        }
 
         $courseName = $course->course_title;
         $courseId = $course->id;
         $qrFormula = $this->encryptData($sectionId);
-        return view('lessons.absensi.manage_absensi')->with(compact('dayta','sectionId','enableAbsensi','course','section','qrFormula'));
+        return view('lessons.absensi.manage_absensi')->with(compact('students', 'sectionId', 'enableAbsensi', 'course', 'section', 'qrFormula'));
     }
 
     public function encryptData($data)
@@ -142,13 +162,15 @@ class AbsensiController extends Controller
         return response()->json(['decrypted_data' => $decryptedData]);
     }
 
-    private function encryptAES($data, $key) {
+    private function encryptAES($data, $key)
+    {
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
         $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
         return base64_encode($encrypted . '::' . $iv);
     }
 
-    private function decryptAES($data, $key) {
+    private function decryptAES($data, $key)
+    {
         list($encryptedData, $iv) = explode('::', base64_decode($data), 2);
         return openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
     }

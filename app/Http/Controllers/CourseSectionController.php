@@ -231,7 +231,6 @@ class CourseSectionController extends Controller
         // dd($dayta);
         $compact = compact('dayta', 'lesson_id');
         return view('lessons.manage_materials_order', $compact);
-
     }
 
     public function updateScores(Request $request)
@@ -310,9 +309,17 @@ class CourseSectionController extends Controller
             }
         }
 
-        $compact = compact('isHaveExam','isHaveSession', 'exam',
+        $compact = compact(
+            'isHaveExam',
+            'isHaveSession',
+            'exam',
             'examTitle',
-            'examSession', 'examSessionTitle', 'students', 'lesson','userAttempts');
+            'examSession',
+            'examSessionTitle',
+            'students',
+            'lesson',
+            'userAttempts'
+        );
         if ($request->dump == true) {
             return $compact;
         }
@@ -337,7 +344,8 @@ class CourseSectionController extends Controller
         $title = "";
         if (!Auth::check()) {
             MyHelper::addAnalyticEvent(
-                "Belum Login Buka Section", "Course Section"
+                "Belum Login Buka Section",
+                "Course Section"
             );
             abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
@@ -366,7 +374,8 @@ class CourseSectionController extends Controller
         if (Auth::user()->role == "student") {
             if ($lessonObject->can_be_accessed == "n") {
                 MyHelper::addAnalyticEvent(
-                    "Reject Section Diluar Jadwal", "Course Section"
+                    "Reject Section Diluar Jadwal",
+                    "Course Section"
                 );
                 abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan ");
             }
@@ -473,7 +482,8 @@ class CourseSectionController extends Controller
         // Fetch all sections for the lesson
         $student_sections = DB::select("select * from student_section ");
 
-        $sections = CourseSection::select('lessons.id as lesson_id',
+        $sections = CourseSection::select(
+            'lessons.id as lesson_id',
             'lessons.course_title as lessons_title',
             'lessons.mentor_id',
             'users.name as mentor_name',
@@ -486,7 +496,8 @@ class CourseSectionController extends Controller
             'course_section.section_video',
             'course_section.created_at',
             'course_section.updated_at',
-            'course_section.can_be_accessed')
+            'course_section.can_be_accessed'
+        )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
@@ -567,13 +578,12 @@ class CourseSectionController extends Controller
                     ->where('lessons.id', $lessonId)
                     ->count();
 
-                if($sectionTakenOnCourseCount==$total_section){
-                    if($u_student_lesson->learn_status != 1){
+                if ($sectionTakenOnCourseCount == $total_section) {
+                    if ($u_student_lesson->learn_status != 1) {
                         $u_student_lesson->finished_at = Carbon::now();
                         $u_student_lesson->learn_status = 1;
                         $u_student_lesson->save();
                     }
-
                 }
             }
         }
@@ -584,11 +594,13 @@ class CourseSectionController extends Controller
         $totalScore = 0;
         $session = null;
 
-        if ($currentSection->quiz_session_id != null &&
+        if (
+            $currentSection->quiz_session_id != null &&
             $currentSection->quiz_session_id != "" &&
             $currentSection->quiz_session_id != "null" &&
             $currentSection->quiz_session_id != "-" &&
-            $currentSection->quiz_session_id != "Tidak Ada Quiz") {
+            $currentSection->quiz_session_id != "Tidak Ada Quiz"
+        ) {
             $isExam = true;
             $examSession = ExamSession::find($currentSection->quiz_session_id);
             $exam = Exam::find($examSession->exam_id);
@@ -617,11 +629,17 @@ class CourseSectionController extends Controller
         //check if student has taken any exam on this session
         $hasTakenAnyExam = false;
         $examResults = ExamTaker::where(
-            "course_flag", "=", $courseId
+            "course_flag",
+            "=",
+            $courseId
         )->where(
-            "course_section_flag", "=", $sectionId
+            "course_section_flag",
+            "=",
+            $sectionId
         )->where(
-            "user_id", '=', Auth::id()
+            "user_id",
+            '=',
+            Auth::id()
         )->get();
 
 
@@ -655,23 +673,50 @@ class CourseSectionController extends Controller
         // $section = $sections;
 
 
-        $compact = compact('isEligibleStudent', 'hasTakenAnyExam', 'examResults', 'currentSectionId', 'courseId', 'next_section', 'prev_section',
-            'isStudent', 'sectionTakenByStudent', 'sectionTakenOnCourseCount', 'isFirstSection', 'isExam', 'title',
-            'sectionDetail', 'sections', 'questions',
-            'firstSectionId', 'lastSectionId', 'isPrecedingTaken', 'examSession', 'exam', 'session', 'question_count', 'totalScore',
-            'sectionOrder', 'lesson', 'section', 'isRegistered', 'classInfo', 'currentSection');
+        $compact = compact(
+            'isEligibleStudent',
+            'hasTakenAnyExam',
+            'examResults',
+            'currentSectionId',
+            'courseId',
+            'next_section',
+            'prev_section',
+            'isStudent',
+            'sectionTakenByStudent',
+            'sectionTakenOnCourseCount',
+            'isFirstSection',
+            'isExam',
+            'title',
+            'sectionDetail',
+            'sections',
+            'questions',
+            'firstSectionId',
+            'lastSectionId',
+            'isPrecedingTaken',
+            'examSession',
+            'exam',
+            'session',
+            'question_count',
+            'totalScore',
+            'sectionOrder',
+            'lesson',
+            'section',
+            'isRegistered',
+            'classInfo',
+            'currentSection'
+        );
 
         if ($request->dump == true) {
             return $compact;
         }
 
         MyHelper::addAnalyticEvent(
-            "Buka Section", "Course Section"
+            "Buka Section",
+            "Course Section"
         );
 
         // return $currentSection;
         return view('lessons.play.course_play_new', $compact);
-
     }
 
     public function prewiew_course()
@@ -711,7 +756,8 @@ class CourseSectionController extends Controller
     public function create_section(Lesson $lesson)
     {
         MyHelper::addAnalyticEvent(
-            "Buka Halaman Buat Section", "Create Section"
+            "Buka Halaman Buat Section",
+            "Create Section"
         );
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
@@ -767,7 +813,7 @@ class CourseSectionController extends Controller
 
         // Set common attributes
         $inputDeyta->course_id = $lesson_id ?? '';
-        $inputDeyta->section_content =$request->{'content'} ?? '';
+        $inputDeyta->section_content = $request->{'content'} ?? '';
         $inputDeyta->section_order = $section_order ?? '';
         $inputDeyta->can_be_accessed = $request->access ?? '';
         $inputDeyta->quiz_session_id = $request->quiz_session_id ?? '';
@@ -906,15 +952,32 @@ class CourseSectionController extends Controller
         $lessonId = $request->lessonId;
         $all_students = User::all();
         // Lakukan pengelompokan data berdasarkan departemen dan simpan dalam daftar unik
-        $uniqueDepartments = $all_students->filter(function ($student) {
-            return !empty($student->department); // Filter data yang memiliki departemen yang tidak kosong
-        })->pluck('department')->unique();
+
+        $uniqueDepartments = DB::connection('ithub')
+            ->table('m_departments')
+            // ->where('code', 'LIKE', '%_NEW%')
+            ->orderBy('name')
+            ->get();
 
         $studentsInLesson = User::join('student_lesson', 'users.id', '=', 'student_lesson.student_id')
             ->where('student_lesson.lesson_id', $lessonId)
-            ->select('users.name', 'users.department', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
+            ->select('users.name', 'users.department_id', 'users.id', 'student_lesson.lesson_id') // Pilih kolom yang ingin Anda ambil dari tabel users
             ->orderBy('users.name', $sortBy)
             ->paginate(10);
+
+        foreach ($studentsInLesson as $item) {
+            $departmentId = $item->department_id;
+            $department =  DB::connection('ithub')->selectOne("SELECT * FROM m_departments where id = '$departmentId'");
+
+            $departmentName = "";
+            if ($department != null) {
+                $departmentName = $department->name;
+            } else {
+                $departmentName = "Tidak Ada Department";
+            }
+            $item->department = $departmentName;
+        }
+
 
         return view("lessons.view_students")->with(compact("lessonId", "sortBy", "uniqueDepartments", "studentsInLesson"));
     }
@@ -956,9 +1019,7 @@ class CourseSectionController extends Controller
     {
         $department = $request->name_of_department;
 
-        $student = User::where('department', $department)->get();
+        $student = User::where('department_id', $department)->get();
         return $student;
     }
-
-
 }
