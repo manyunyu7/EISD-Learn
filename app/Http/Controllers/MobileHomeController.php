@@ -136,8 +136,6 @@ class MobileHomeController extends Controller
         );
     }
 
-   
- 
     public function claimAccount(Request $request)
     {
         // Extracting data from the request
@@ -220,15 +218,17 @@ class MobileHomeController extends Controller
             WHERE a.deleted_at IS NULL AND a.id = ?
             LIMIT 1;
         ", [$mdlnUserId]);
- 
+
         $u_structure_employee = DB::connection('ithub')->selectOne(
             "SELECT a.group_user_employee_id, c.name
             FROM u_structure_user a
             JOIN users b ON a.user_employee_id = b.id
             LEFT JOIN m_group_employees c ON a.group_user_employee_id = c.id
             WHERE b.deleted_at IS NULL AND b.id = ?
-            LIMIT 1;", [$mdlnUserId]);
-        
+            LIMIT 1;",
+            [$mdlnUserId]
+        );
+
         // $u_site_employee = DB::connection('ithub')->selectOne(
         //     "SELECT a.
         //     FROM u_site_user a
@@ -239,7 +239,7 @@ class MobileHomeController extends Controller
 
         // return $user;
 
- 
+
         // return $u_structure_employee;
 
         $department = json_decode($user->department);
@@ -247,7 +247,7 @@ class MobileHomeController extends Controller
         $division = json_decode($user->division);
         $subDepartment = json_decode($user->sub_department);
         $locations = json_decode($user->sites, true);
-        
+
         // Periksa jika $locations berhasil di-decode
         if (json_last_error() === JSON_ERROR_NONE) {
             // Array untuk menyimpan data yang akan diubah menjadi JSON
@@ -257,25 +257,23 @@ class MobileHomeController extends Controller
             if (!is_array($locations)) {
                 $locations = [$locations];
             }
-            
+
             // Loop melalui data locations
             foreach ($locations as $location) {
                 $output[] = [
                     // "ID" => $location['id'],
-                    "Site_ID" => $location['site_id'],
+                    "site_id" => $location['site_id'],
                     // "Name" => $location['name'],
                     // "Code" => $location['code']
                 ];
             }
             // Encode array output menjadi JSON string
-            $jsonOutput = json_encode($output, JSON_PRETTY_PRINT);
-
+            $jsonOutput = json_encode($output);
         } else {
             // Tampilkan pesan error JSON
-            echo "Error decoding JSON: " . json_last_error_msg();
+            // echo "Error decoding JSON: " . json_last_error_msg();
         }
 
-        return $jsonOutput;
 
         // Extracting IDs
         $divisionId = $division->id;
@@ -309,11 +307,11 @@ class MobileHomeController extends Controller
             // Updating account details
             $account->mdln_username = $mdlnUserId;
             $account->department_id = $departmentId;
-            $account->department = $departmentName;
+            // $account->department = $departmentName;
             $account->position_id = $positionId;
-            
-            $account->location = $jsonOutput;
-            $account->jabatan = $positionId;
+
+            $account->location = json_decode($jsonOutput);
+            // $account->jabatan = $positionId;
             $account->save();
 
             MyHelper::addAnalyticEventMobile(
