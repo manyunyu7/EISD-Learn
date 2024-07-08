@@ -29,6 +29,21 @@
     </a>
 </li>
 
+{{-- CLASS CATEGORY--}}
+<li class="nav-item {{ Request::is('lesson/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('lesson/category') }}" style="display: flex; align-items: center;">
+        {{-- <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/class.svg"
+             class="nav-ok-logo"
+             style="width: 14%;
+                    height: auto;
+                    margin-top: 5px;
+                    margin-right: 10px;"
+        > --}}
+        <p style="margin: 0; {{ (Request::is('lesson/*')) ? 'color: white !important;' : '' }}"
+           class="{{ (Request::is('lesson/*')) ? 'text-white active' : '' }}">Class Category</p>
+    </a>
+</li>
+
 {{-- EXAM --}}
 <li class="nav-item {{ Request::is('exam/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('exam/manage-exam-v2') }}" style="display: flex; align-items: center;">

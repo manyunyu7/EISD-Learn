@@ -116,11 +116,11 @@ Route::group(['middleware’' => ['auth']], function () {
         });
 
         Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
-        Route::get('/lesson/manage_v2', ['uses' => 'LessonController@manage_v2']);
-        Route::get('/lesson/create_v2', ['uses' => 'LessonController@create_v2']);
-        Route::post('/lesson/create_class', ['uses' => 'LessonController@store_v2']);
-        Route::get('/lesson/edit_class/{lesson}', ['uses' => 'LessonController@edit_class_v2']);
-        Route::post('/update-lesson/{lesson}', ['uses' => 'LessonController@update_class_v2']);
+        Route::get('/lesson/manage_v2', ['uses' => 'LessonController@manageV2']);
+        Route::get('/lesson/create_v2', ['uses' => 'LessonController@createV2']);
+        Route::post('/lesson/create_class', ['uses' => 'LessonController@storeV2']);
+        Route::get('/lesson/edit_class/{lesson}', ['uses' => 'LessonController@editClassV2']);
+        Route::post('/update-lesson/{lesson}', ['uses' => 'LessonController@updateClassV2']);
         Route::get('/lesson/delete_class/{lesson}', ['uses' => 'LessonController@delete_class_v2']);
 
         Route::get('/lesson/store', 'LessonController@add');

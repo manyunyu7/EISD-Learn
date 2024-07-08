@@ -30,7 +30,7 @@ class ProfileController extends Controller
             ->where('id', '=', $id_jbtn)
             ->get();
 
-        $jabatan = "";
+        $value_jbtn = "";
         if ($query_jabatan && count($query_jabatan) > 0) {
             $jabatan = json_decode($query_jabatan, true);
             // Periksa apakah hasil decode adalah array dan memiliki key 'name'
@@ -40,7 +40,7 @@ class ProfileController extends Controller
                 $value_jbtn =  "-";
             }
         } else {
-            $jabatan = "Belum Ada Jabatan";
+            $$value_jbtn = "Belum Ada Jabatan";
         }
         $name_jbtn = $value_jbtn;
 
@@ -52,7 +52,7 @@ class ProfileController extends Controller
             ->select('name')
             ->where('id', '=', $id_dept)
             ->get();
-        $department = "";
+        $value_dept = "";
         if ($query_department && count($query_department) > 0) {
             $department = json_decode($query_department, true);
             // Periksa apakah hasil decode adalah array dan memiliki key 'name'
@@ -62,15 +62,14 @@ class ProfileController extends Controller
                 $value_dept =  "-";
             }
         } else {
-            $department = "Belum Ada department";
+            $$value_dept = "Belum Ada department";
         }
         $name_dept = $value_dept;
-
-
 
         // Read Business Unit
         $id_bu = json_decode(Auth::user()->location, true);
 
+        $name_sites = "-";
         // Pastikan $id_bu tidak null dan merupakan array
         if ($id_bu && is_array($id_bu)) {
             // Ambil semua nilai site_id dari array
@@ -87,10 +86,10 @@ class ProfileController extends Controller
                                 ->get();
                 $name_sites = $locations->pluck('code')->implode(', ');
             } else {
-                return response()->json(['error' => 'Tidak ada site_id yang valid'], 400);
+                $name_sites = "-";
             }
         } else {
-            return response()->json(['error' => 'Data lokasi tidak valid'], 400);
+            $name_sites = "-";
         }
 
 

@@ -3,20 +3,20 @@
 @section('head-section')
     <!-- Datatables -->
 
-    <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     <script>
         ClassicEditor
-            .create( document.querySelector( '#editor' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
     </script>
 @endsection
 
 @section('script')
     <script>
-        $(document).on('click', '.button', function (e) {
+        $(document).on('click', '.button', function(e) {
             e.preventDefault();
             var id = $(this).data('id');
             swal({
@@ -26,36 +26,39 @@
                     confirmButtonText: "Yes!",
                     showCancelButton: true,
                 },
-                function () {
+                function() {
                     $.ajax({
                         type: "POST",
-                        url: "{{url('/destroy')}}",
-                        data: {id: id},
-                        success: function (data) {
+                        url: "{{ url('/destroy') }}",
+                        data: {
+                            id: id
+                        },
+                        success: function(data) {
                             //
                         }
                     });
                 });
         });
-
     </script>
 
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Datatables -->
-    <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#basic-datatables').DataTable({});
 
             $('#multi-filter-select').DataTable({
                 "pageLength": 5,
-                initComplete: function () {
-                    this.api().columns().every(function () {
+                initComplete: function() {
+                    this.api().columns().every(function() {
                         var column = this;
-                        var select = $('<select class="form-control"><option value=""></option></select>')
+                        var select = $(
+                                '<select class="form-control"><option value=""></option></select>'
+                                )
                             .appendTo($(column.footer()).empty())
-                            .on('change', function () {
+                            .on('change', function() {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
                                 );
@@ -65,8 +68,9 @@
                                     .draw();
                             });
 
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>')
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d +
+                                '</option>')
                         });
                     });
                 }
@@ -77,9 +81,10 @@
                 "pageLength": 5,
             });
 
-            var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+            var action =
+                '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-            $('#addRowButton').click(function () {
+            $('#addRowButton').click(function() {
                 $('#add-row').dataTable().fnAddData([
                     $("#addName").val(),
                     $("#addPosition").val(),
@@ -96,37 +101,37 @@
         // Function to fetch positions based on selected type
         function fetchPositions() {
             fetch('/fetch-positions', {
-                method: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(function (response) {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(function (positions) {
-                var positionDropdown = document.getElementById('position_id');
-                // Clear existing options
-                positionDropdown.innerHTML = '<option value="" disabled>Pilih Posisi</option>';
-                // Populate dropdown with fetched positions
-                positions.forEach(function (position) {
-                    var option = document.createElement('option');
-                    option.textContent = position.name;
-                    option.value = position.id;
-                    positionDropdown.appendChild(option);
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(function(positions) {
+                    var positionDropdown = document.getElementById('position_id');
+                    // Clear existing options
+                    positionDropdown.innerHTML = '<option value="" disabled>Pilih Posisi</option>';
+                    // Populate dropdown with fetched positions
+                    positions.forEach(function(position) {
+                        var option = document.createElement('option');
+                        option.textContent = position.name;
+                        option.value = position.id;
+                        positionDropdown.appendChild(option);
+                    });
+                    // Initialize Select2 if needed
+                    $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
+                })
+                .catch(function(error) {
+                    console.error('There was a problem with the fetch operation:', error);
                 });
-                // Initialize Select2 if needed
-                $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
-            })
-            .catch(function (error) {
-                console.error('There was a problem with the fetch operation:', error);
-            });
         }
         // Add event listener to trigger fetchPositions() when the DOM content is loaded
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             fetchPositions(); // Call fetchPositions() when the DOM content is loaded
         });
 
@@ -149,34 +154,34 @@
         // Function to fetch departments based on selected type
         function fetchDepartments() {
             fetch('/fetch-departments', {
-                method: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(function (response) {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(function (departments) {
-                var departmentDropdown = document.getElementById('department_id');
-                // Clear existing options
-                departmentDropdown.innerHTML = '';
-                // Populate dropdown with fetched departments
-                departments.forEach(function (department) {
-                    var option = document.createElement('option');
-                    option.textContent = department.name;
-                    option.value = department.id;
-                    departmentDropdown.appendChild(option);
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(function(departments) {
+                    var departmentDropdown = document.getElementById('department_id');
+                    // Clear existing options
+                    departmentDropdown.innerHTML = '';
+                    // Populate dropdown with fetched departments
+                    departments.forEach(function(department) {
+                        var option = document.createElement('option');
+                        option.textContent = department.name;
+                        option.value = department.id;
+                        departmentDropdown.appendChild(option);
+                    });
+                    // Initialize Select2 if needed
+                    $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
+                })
+                .catch(function(error) {
+                    console.error('There was a problem with the fetch operation:', error);
                 });
-                // Initialize Select2 if needed
-                $('.js-example-basic-multiple').select2(); // Uncomment this line if using Select2
-            })
-            .catch(function (error) {
-                console.error('There was a problem with the fetch operation:', error);
-            });
         }
 
         // Add event listener to radio buttons
@@ -189,19 +194,19 @@
 
     {{-- SETTING PREVIEW INPUT IMAGES --}}
     <script>
-        window.onload = function () {
+        window.onload = function() {
             // jQuery and everything else is loaded
             var el = document.getElementById('input-image');
-            el.onchange = function () {
+            el.onchange = function() {
                 var fileReader = new FileReader();
                 fileReader.readAsDataURL(document.getElementById("input-image").files[0])
-                fileReader.onload = function (oFREvent) {
+                fileReader.onload = function(oFREvent) {
                     document.getElementById("imgPreview").src = oFREvent.target.result;
                 };
             }
 
-            $(document).ready(function () {
-                $.myfunction = function () {
+            $(document).ready(function() {
+                $.myfunction = function() {
                     $("#previewName").text($("#inputTitle").val());
                     var title = $.trim($("#inputTitle").val())
                     if (title == "") {
@@ -209,7 +214,7 @@
                     }
                 };
 
-                $("#inputTitle").keyup(function () {
+                $("#inputTitle").keyup(function() {
                     $.myfunction();
                 });
 
@@ -220,16 +225,16 @@
 
     <script>
         //message with toastr
-        @if(session()-> has('success'))
-        toastr.success('{{ session('success') }}', 'BERHASIL!');
-        @elseif(session()-> has('error'))
-        toastr.error('{{ session('error') }}', 'GAGAL!');
+        @if (session()->has('success'))
+            toastr.success('{{ session('success') }}', 'BERHASIL!');
+        @elseif (session()->has('error'))
+            toastr.error('{{ session('error') }}', 'GAGAL!');
         @endif
     </script>
 
     <script>
         // JavaScript to handle form submission and show loading indicator
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#department_id').select2({
                 placeholder: 'Select students',
                 allowClear: true,
@@ -243,27 +248,26 @@
 
 
 @section('main')
-
-
     <div class="page-inner">
 
-        <div class="col-md-12" >
+        <div class="col-md-12">
             {{-- BREADCRUMB --}}
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
-                    <li class="breadcrumb-item"><a href={{url('/lesson/manage_v2')}}>Class</a></li>
+                    <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
+                    <li class="breadcrumb-item"><a href={{ url('/lesson/manage_v2') }}>Class</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Add Class</li>
                 </ol>
             </nav>
         </div>
 
-        <div class="page-header" >
+        <div class="page-header">
             <h1><b>Tambah Kelas Baru</b></h1>
         </div>
         {{-- SOAL UJIAN --}}
         <div class="container-fluid load-soal">
-            <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST" enctype="multipart/form-data">
+            <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                 <div class="row">
@@ -272,7 +276,8 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Password Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input required name="pass_class" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="pass_class" type="text" class="form-control"
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
 
@@ -280,7 +285,8 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Judul Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input required name="title" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input required name="title" type="text" class="form-control"
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
                             </div>
                         </div>
 
@@ -291,9 +297,8 @@
                                 <select class="form-control" name="category_id" id="">
                                     <option value="" disabled>Pilih Kategori</option>
                                     @forelse($categories as $item)
-                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @empty
-
                                     @endforelse
                                 </select>
                             </div>
@@ -303,13 +308,16 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Tipe<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input type="radio" id="general" name="tipe" value="General" checked style="margin-right: 10px;" onclick="showGeneralInfo()">
+                                <input type="radio" id="general" name="tipe" value="General" checked
+                                    style="margin-right: 10px;" onclick="showGeneralInfo()">
                                 <label for="general" class="mr-3">General</label>
 
-                                <input type="radio" id="specific" name="tipe" value="Specific" style="margin-right: 10px;" onclick="hideGeneralInfo()">
+                                <input type="radio" id="specific" name="tipe" value="Specific"
+                                    style="margin-right: 10px;" onclick="hideGeneralInfo()">
                                 <label for="specific">Specific</label>
                             </div>
-                            <small id="generalInfo"  style="color: red; display: inline;">Tipe General dapat diakses oleh semua department</small>
+                            <small id="generalInfo" style="color: red; display: inline;">Tipe General dapat diakses oleh
+                                semua department</small>
                         </div>
 
                         <script>
@@ -327,7 +335,9 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Departemen<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select id="department_id" name="department_id[]"  class="form-control form-select-lg js-example-basic-multiple" multiple disabled></select>
+                                <select id="department_id" name="department_id[]"
+                                    class="form-control form-select-lg js-example-basic-multiple" multiple
+                                    disabled></select>
                             </div>
                         </div>
 
@@ -337,7 +347,8 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Posisi<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select id="position_id" name="position_id[]" class="form-control form-select-lg js-example-basic-multiple" multiple></select>
+                                <select id="position_id" name="position_id[]"
+                                    class="form-control form-select-lg js-example-basic-multiple" multiple></select>
                             </div>
                         </div>
 
@@ -366,10 +377,10 @@
                             <textarea id="editor" class="form-control" name="content"></textarea>
                             <script>
                                 ClassicEditor
-                                    .create( document.querySelector( '#editor' ) )
-                                    .catch( error => {
-                                        console.error( error );
-                                    } );
+                                    .create(document.querySelector('#editor'))
+                                    .catch(error => {
+                                        console.error(error);
+                                    });
                             </script>
                         </div>
 
@@ -377,23 +388,24 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">New Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input readonly type="text" value="Tidak Aktif" name="new_class" id="btn-new-clas" class="btn btn-danger" style="width: 100%">
+                                <input readonly type="text" value="Tidak Aktif" name="new_class" id="btn-new-clas"
+                                    class="btn btn-danger" style="width: 100%">
                             </div>
                         </div>
 
                         <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                var btn_new_class   = document.getElementById('btn-new-clas');
-                                var isActive_NC     = false;
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var btn_new_class = document.getElementById('btn-new-clas');
+                                var isActive_NC = false;
 
                                 // New Class Setup
-                                btn_new_class.addEventListener('click', function () {
+                                btn_new_class.addEventListener('click', function() {
                                     // Tidak Aktif
                                     if (isActive_NC) {
                                         btn_new_class.classList.remove('btn-success');
                                         btn_new_class.classList.add('btn-danger');
                                         btn_new_class.textContent = 'Tidak Aktif';
-                                        btn_new_class.value ='Tidak Aktif';
+                                        btn_new_class.value = 'Tidak Aktif';
                                         isActive_NC = false;
                                     }
                                     // Aktif
@@ -401,7 +413,7 @@
                                         btn_new_class.classList.remove('btn-danger');
                                         btn_new_class.classList.add('btn-success');
                                         btn_new_class.textContent = 'Aktif';
-                                        btn_new_class.value ='Aktif';
+                                        btn_new_class.value = 'Aktif';
                                         isActive_NC = true;
                                     }
                                 });
@@ -415,18 +427,19 @@
                             <div class="card-body">
                                 <div class="text-center">
                                     <div class="card" style="width: 100%; max-width: 1080px;">
-                                        <img id="imgPreview"
-                                             src="{{ Storage::url('public/class/cover/') }}"
-                                             onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
-                                             class="rounded"
-                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;"
-                                             alt="...">
+                                        <img id="imgPreview" src="{{ Storage::url('public/class/cover/') }}"
+                                            onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
+                                            class="rounded"
+                                            style="max-width:3840px; max-height: 2160px; object-fit: contain;"
+                                            alt="...">
                                     </div>
 
                                     <div class="input-group mb-3">
-                                        <input required type="file" name="image" class="form-control" id="input-image" accept="image/*" onchange="validateImage(this)">
+                                        <input required type="file" name="image" class="form-control"
+                                            id="input-image" accept="image/*" onchange="validateImage(this)">
                                     </div>
-                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>
+                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be
+                                        16:9</small>
                                 </div>
                             </div>
                         </div>
@@ -435,10 +448,10 @@
                             function validateImage(input) {
                                 if (input.files && input.files[0]) {
                                     var reader = new FileReader();
-                                    reader.onload = function (e) {
+                                    reader.onload = function(e) {
                                         var img = new Image();
                                         img.src = e.target.result;
-                                        img.onload = function () {
+                                        img.onload = function() {
                                             var width = this.width;
                                             var height = this.height;
                                             var ratio = width / height;
@@ -467,8 +480,10 @@
                     <div style="flex-grow: 1;"></div>
                     <div style="width: 200px;">
                         <div class="input-group mb-3">
-                            <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
-                            <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
+                            <button type="button" class="btn btn-danger"
+                                style="width: 45%; margin-right: 5px;">Cancel</button>
+                            <button type="submit" id="saveEditBtn" class="btn btn-success"
+                                style="width: 45%; margin-left: 5px;">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -476,7 +491,3 @@
         </div>
     </div>
 @endsection
-
-
-
-

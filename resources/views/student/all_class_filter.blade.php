@@ -5,15 +5,17 @@
             <p>Sort by:</p>
             <div class="btn-group">
                 <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px"
-                        id="sortBtn"><span id="currentSort">{{ request()->query('sort', 'Latest') }}</span></button>
-                <button type="button" class="btn btnSort-custom" style="width: 40px"
-                        id="sortDropdownToggle" onclick="toggleSortDropdown()">
+                    id="sortBtn"><span id="currentSort">{{ request()->query('sort', 'Latest') }}</span></button>
+                <button type="button" class="btn btnSort-custom" style="width: 40px" id="sortDropdownToggle"
+                    onclick="toggleSortDropdown()">
                     <span>&#9662;</span>
                 </button>
                 <ul class="dropdown-menu" style="width: 100%;" id="sortDropdown">
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Latest')">Latest</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Latest')">Latest</a>
+                    </li>
                     {{-- <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Recommend')">Recommend</a></li> --}}
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Most Student')">Most Student</a></li>
+                    <li><a class="dropdown-item text-left" href="#" onclick="changeSortText('Most Student')">Most
+                            Student</a></li>
                 </ul>
             </div>
         </div>
@@ -23,19 +25,23 @@
             <p>Category:</p>
             <div class="btn-group">
                 <button type="button" class="btn btnSort-custom" style="padding-right: 150px; width: 200px"
-                        id="categoryBtn"><span id="currentCategory">{{ request()->query('category', 'All Category') }}</span></button>
-                <button type="button" class="btn btnSort-custom" style="width: 40px"
-                        id="categoryDropdownToggle" onclick="toggleCategoryDropdown()">
+                    id="categoryBtn"><span
+                        id="currentCategory">{{ request()->query('category', 'All Category') }}</span></button>
+                <button type="button" class="btn btnSort-custom" style="width: 40px" id="categoryDropdownToggle"
+                    onclick="toggleCategoryDropdown()">
                     <span>&#9662;</span>
                 </button>
                 <ul class="dropdown-menu" style="width: 100%;" id="categoryDropdown">
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('All Category')">All Category</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Awareness')">Awareness</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Functional')">Functional</a></li>
-                    <li><a class="dropdown-item text-left" href="#" onclick="changeCategoryText('Leadership')">Leadership</a></li>
+                    <li><a class="dropdown-item text-left" href="#"
+                            onclick="changeCategoryText('All Category')">All Category</a></li>
+                    @foreach ($lessonCategories as $category)
+                        <li><a class="dropdown-item text-left" href="#"
+                                onclick="changeCategoryText('{{ $category->name }}')">{{ $category->name }}</a></li>
+                    @endforeach
                 </ul>
             </div>
         </div>
+
     </div>
 </div>
 
