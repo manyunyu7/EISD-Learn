@@ -684,11 +684,15 @@ class LessonController extends Controller
         $myClasses = DB::select("
                         SELECT
                             a.*,
-                            u.name AS mentor_name
+                            u.name AS mentor_name,
+                            lc.color_of_categories as course_category_color,
+                            lc.name as course_category_name
                         FROM
                             lessons a
                         LEFT JOIN
                             users u ON a.mentor_id = u.id AND u.role = 'mentor'
+                        LEFT JOIN
+                            lesson_categories lc on a.category_id = lc.id
                         WHERE
                             a.deleted_at IS NULL
                             AND

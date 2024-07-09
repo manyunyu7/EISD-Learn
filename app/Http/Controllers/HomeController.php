@@ -458,7 +458,6 @@ class HomeController extends Controller
                 "Buka Dashboard Student", "Dashboard"
             );
 
-            // return $lessonCategories;
             return view('main.dashboard')
                 ->with(compact(
                     'classes',

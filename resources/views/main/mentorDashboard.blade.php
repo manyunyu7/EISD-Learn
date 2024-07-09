@@ -113,7 +113,7 @@
                             $numStudentsCount = count($numStudents);
 
                             // Ambil warna kategori jika kategori ada dalam $lessonCategories
-                            $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                            // $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
                         @endphp
 
                         <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
@@ -129,8 +129,8 @@
                                     <div
                                         style="width: 100%; display: flex; justify-content: space-between; margin-bottom: .5rem;">
                                         <div class="class-badge"
-                                            style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
-                                            <strong>{{ $data->course_category }}</strong>
+                                            style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $data->course_category_color }}; padding: 2px 10px;">
+                                            <strong>{{ $data->course_category_name }}</strong>
                                         </div>
                                     </div>
                                     <!-- Title -->
