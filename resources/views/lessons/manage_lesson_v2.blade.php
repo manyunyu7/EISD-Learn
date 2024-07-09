@@ -211,12 +211,7 @@
             $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
 
         @endphp
-        @forelse ($myClasses as $data)
-            @php
-                // Ambil warna kategori jika kategori ada dalam $lessonCategories
-                // $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
-                $numStudents = DB::select(
-                                "SELECT *
+        
         <div class="container-fluid mt-3 row">
             @forelse ($myClasses as $data)
                 @php
@@ -236,32 +231,6 @@
                         <img class="card-img-top" style="aspect-ratio: 16 / 9"
                             onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
                             src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}" alt="La Noyee">
-
-                    <!-- Card body -->
-                    <div class="card-body">
-                        <!-- Badge and favorite -->
-                        <div
-                            style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
-                            @if($data->new_class == 'Aktif')
-                                <div class="class-badge"
-                                     style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
-                                    NEW
-                                </div>
-                            @endif
-                            {{-- <div class="class-badge"
-                                 style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
-                                <strong>{{ $data->course_category }}</strong>
-                            </div> --}}
-                            <div class="class-badge"
-                                 style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
-                                <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
-                                <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
-                            </div>
-                        </div>
-                        <!-- Title -->
-                        <h6 class="card-title"><a href="#">{{$data->course_title}}</a></h6>
-                        <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
-                            settling.</p>
                         <!-- Card body -->
                         <div class="card-body">
                             <!-- Badge and favorite -->
@@ -315,7 +284,7 @@
                                             </a>
                                             {{-- <div class="dropdown-divider"></div> --}}
                                             {{-- <a class="dropdown-item"
-                                           href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
+                                        href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
                                             <span class="link-collapse">Dashboard Post Test</span>
                                         </a> --}}
                                         </li>
@@ -460,7 +429,6 @@
                                 });
                             </script>
                         </div>
-                    </div>
                 </div>
             @empty
                 <div class="w-100 d-flex justify-content-center">
