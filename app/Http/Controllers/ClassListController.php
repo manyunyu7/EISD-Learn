@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
 use Illuminate\Http\Request;
-use Auth;
 use Exception;
 
 use App\Models\Blog;
 use App\Models\Lesson;
 use App\Models\User;
 use App\Models\CourseSection;
-
+use App\Models\LessonCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\Paginator;
-use DB;
 use File;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use LDAP\Result;
 
 class ClassListController extends Controller
@@ -44,7 +43,8 @@ class ClassListController extends Controller
         }
 
         $userID = Auth::id();
-        
+        $lessonCategories = LessonCategory::all();
+
         $sortParam = request('sort' , 'Latest') ;
         $catParam  = request('category', 'All Category');
 
@@ -56,9 +56,12 @@ class ClassListController extends Controller
                 'a.*',
                 'b.name AS mentor_name',
                 'b.profile_url',
+                'lc.name as course_category_name',
+                'lc.color_of_categories as course_category_color',
                 DB::raw('COUNT(c.student_id) AS num_students_registered'),
                 DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered')
             ])
+            ->leftJoin('lesson_categories as lc','lc.id','=','a.category_id')
             ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
             ->leftJoin('student_lesson as c', 'a.id', '=', 'c.lesson_id')
             ->whereNotExists(function ($query) use ($userID) {
@@ -76,12 +79,9 @@ class ClassListController extends Controller
                     return $query->orderBy('num_students_registered', $sortBy);
                 })
             ->when($catParam != 'All Category', function ($query) use ($catParam) {
-                    return $query->where('a.course_category', $catParam);
+                    return $query->where('lc.name', $catParam);
                 })
             ->get();
-
-
-        // return $sortParam;
 
         $classes = [];
         foreach ($classesQuery as $classItem) {
@@ -93,8 +93,7 @@ class ClassListController extends Controller
 
         $view_course = DB::select("select * from view_course");
 
-        // return $classes;
-        return view('student.all_class_new')->with(compact('classes', 'view_course'));
+        return view('student.all_class_new')->with(compact('classes', 'view_course','lessonCategories'));
     }
 
     public function blogs()

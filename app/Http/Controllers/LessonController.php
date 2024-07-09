@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ExamTaker;
 use App\Models\LessonCategory;
-use Auth;
 use Illuminate\Http\Request;
 
 use App\Models\Blog;
@@ -16,14 +15,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\Paginator;
-use DB;
 use App\Models\Exam;
 
 use Alert;
 use App\Models\StudentSection;
 use App\Http\Controllers\ITHubController;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LessonController extends Controller
 {
@@ -34,28 +32,18 @@ class LessonController extends Controller
         $categories = LessonCategory::all();
         $compact = compact('categories');
 
-        if($request->dump==true){
+        if ($request->dump == true) {
             return $compact;
         }
         return view('lessons.create_lesson')->with($compact);
     }
-    public function create_v2(Request $request)
+    public function createV2(Request $request)
     {
         $categories = LessonCategory::all();
-
-        // $Users_ithub = DB::connection('ithub')->table('users')->get();
-        // $Users_ithub = DB::connection('ithub')
-        //                 ->table('users')
-        //                 ->join('u_employees', 'users.id', '=', 'u_employees.user_id')
-        //                 ->where('users.name', '=', 'Kevin Valerian Ninia')
-        //                 ->get();
-
-        // return($Users_ithub);
-
         // return($m_departments_ithub);
         $compact = compact('categories');
 
-        if($request->dump==true){
+        if ($request->dump == true) {
             return $compact;
         }
         return view('lessons.create_lesson_v2')->with($compact);
@@ -161,22 +149,32 @@ class LessonController extends Controller
         // return $dayta;
         return view('lessons.manage_lesson', compact('dayta'));
     }
-    public function manage_v2()
+    public function manageV2()
     {
+
         $user_id = Auth::id();
-        $dayta = DB::select("select * from view_course where mentor_id = $user_id");
+
+        $dayta = DB::select("SELECT
+            a.* , b.name as `mentor_name`, b.profile_url from lessons a
+            LEFT JOIN users b on a.mentor_id=b.id where mentor_id = $user_id");
+
         $myClasses = DB::select("
-                        SELECT
-                            a.*,
-                            u.name AS mentor_name
-                        FROM
-                            lessons a
-                        LEFT JOIN
-                            users u ON a.mentor_id = u.id AND u.role = 'mentor'
+                       SELECT
+                        a.*,
+                        u.name AS mentor_name,
+                        lc.name as course_category_name,lc.color_of_categories as course_category_color
+                    FROM
+                        lessons a
+                    LEFT JOIN
+                    users u ON
+                        a.mentor_id = u.id
+                        AND u.role = 'mentor'
+                    LEFT JOIN lesson_categories lc on lc.id  = a.category_id
                         WHERE
-                            a.deleted_at IS NULL
-                        ORDER BY
-                            a.id DESC
+                        a.deleted_at IS NULL
+                    ORDER BY
+                        a.id DESC
+
                     ");
 
         Paginator::useBootstrap();
@@ -184,32 +182,39 @@ class LessonController extends Controller
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses'));
     }
 
-    public function edit_class_v2($lesson_id){
+    public function editClassV2(Request $request,$lesson_id)
+    {
         $categories = LessonCategory::all();
         $category_selected = Lesson::findOrFail($lesson_id);
         // Get Category ID selected
         $categoryID_selected = DB::table('lesson_categories')
-                                ->select('lesson_categories.id')
-                                ->where('lesson_categories.name', $category_selected->course_category)
-                                ->get();
+            ->select('lesson_categories.id')
+            ->where('lesson_categories.name', $category_selected->course_category)
+            ->get();
+
 
 
         $myClass = DB::table('lessons')
-                    ->select('lessons.*', 'users.name AS mentor_name')
-                    ->leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
-                    ->where('users.role', 'mentor')
-                    ->where('lessons.id', $lesson_id)
-                    ->first(); // Ambil baris pertama dari hasil query
+            ->select('lessons.*', 'users.name AS mentor_name')
+            ->leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
+            ->where('users.role', 'mentor')
+            ->where('lessons.id', $lesson_id)
+            ->first(); // Ambil baris pertama dari hasil query
 
         $deptId = $myClass->department_id;
         $postId = $myClass->position_id;
 
         $compact = compact('deptId', 'postId', 'categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id');
-        // dd($myClass);
+
+        if($request->dump==true){
+            return $compact;
+        }
+
         return view('lessons.edit_lesson_v2', $compact);
     }
 
-    public function update_class_v2(Request $request, $lesson_id){
+    public function updateClassV2(Request $request, $lesson_id)
+    {
         // dd($request->all()) ;
         ini_set('upload_max_filesize', '500M');
         ini_set('post_max_size', '500M');
@@ -224,13 +229,6 @@ class LessonController extends Controller
 
         // $video->storeAs('public/class/trailer', $video->hashName());
         $user_id = Auth::id();
-
-        $cat = LessonCategory::findOrFail($request->category_id);
-        if($cat!=null){
-            $cat = $cat->name;
-        }
-
-
         $update_data_lesson = Lesson::findOrFail($lesson_id);
 
         $image = $request->file('image');
@@ -247,7 +245,6 @@ class LessonController extends Controller
 
         $update_data_lesson->course_title       = $request->title;
         $update_data_lesson->course_trailer     = 'Value';
-        $update_data_lesson->course_category    = $cat;
         $update_data_lesson->category_id        = $request->category_id;
         $update_data_lesson->start_time         = $request->start_time;
         $update_data_lesson->end_time           = $request->end_time;
@@ -263,21 +260,27 @@ class LessonController extends Controller
         $update_data_lesson->department_id      = json_encode($request->department_id);
         $update_data_lesson->position_id        = json_encode($request->position_id);
 
+        if($request->department_id==null || $request->department_id==""){
+            $update_data_lesson->department_id = "[]";
+        }
+
+        if($request->position_id==null || $request->position_id==""){
+            $update_data_lesson->position_id = "[]";
+        }
+
+
 
         if ($update_data_lesson->save()) {
             //redirect dengan pesan sukses
             return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Diperbaharui!']);
-            return back();
         } else {
             //redirect dengan pesan error
             return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Diperbaharui!']);
-            return back();
         }
-
-
     }
 
-    public function delete_class_v2($lessonId){
+    public function delete_class_v2($lessonId)
+    {
         $current_timestamp                              = Carbon::now();
         $update_data_lesson_for_deleted_at              = Lesson::findOrFail($lessonId);
         $update_data_lesson_for_deleted_at->deleted_at  = $current_timestamp;
@@ -314,16 +317,16 @@ class LessonController extends Controller
     }
 
 
-    public function edit(Request $request,Lesson $lesson)
+    public function edit(Request $request, Lesson $lesson)
     {
 
         $categories = LessonCategory::all();
-        $compact = compact('lesson','categories');
+        $compact = compact('lesson', 'categories');
 
-        if($request->dump==true){
+        if ($request->dump == true) {
             return $compact;
         }
-        return view('lessons.edit_lesson', compact('lesson','categories'));
+        return view('lessons.edit_lesson', compact('lesson', 'categories'));
     }
 
 
@@ -373,8 +376,8 @@ class LessonController extends Controller
 
         $sectionTakenByStudent = null;
         $lastSectionTaken = null;
-        if(Auth::check()){
-            if(Auth::user()->role=="student"){
+        if (Auth::check()) {
+            if (Auth::user()->role == "student") {
                 $sectionTakenByStudent = FacadesDB::table('student_section as ss')
                     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
                     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
@@ -391,20 +394,19 @@ class LessonController extends Controller
                     ->where('lessons.id', $lesson_id)
                     ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
                     ->first();
-
             }
         }
 
 
         $section = $sections;
         $firstSectionId = null;
-        if(!empty($section)){
+        if (!empty($section)) {
             $firstSectionId = $section[0]->section_id;
         }
         $nextUrl = "/course/$lesson_id/section/$firstSectionId";
-        $abc = url("/").$nextUrl;
+        $abc = url("/") . $nextUrl;
         //$section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
-        $compact = compact('lesson', 'firstSectionId','nextUrl','abc','section', 'sectionTakenByStudent','lastSectionTaken', 'isRegistered');
+        $compact = compact('lesson', 'firstSectionId', 'nextUrl', 'abc', 'section', 'sectionTakenByStudent', 'lastSectionTaken', 'isRegistered');
         return view('lessons.main_course', $compact);
     }
 
@@ -506,7 +508,7 @@ class LessonController extends Controller
         $user_id = Auth::id();
 
         $cat = LessonCategory::findOrFail($request->category_id);
-        if($cat!=null){
+        if ($cat != null) {
             $cat = $cat->name;
         }
 
@@ -536,7 +538,7 @@ class LessonController extends Controller
             return redirect('lesson/manage')->with(['error' => 'Kelas Gagal Disimpan!']);
         }
     }
-    public function store_v2(Request $request)
+    public function storeV2(Request $request)
     {
         // return $request->all();
         ini_set('upload_max_filesize', '500M');
@@ -558,13 +560,6 @@ class LessonController extends Controller
 
         $user_id = Auth::id();
 
-        // Setting Value Kategori
-        $cat = $request->input('category');
-        $cat = LessonCategory::findOrFail($request->category_id);
-        if($cat!=null){
-            $cat = $cat->name;
-        }
-
         // Setting Value Department
         $department = $request->department_id;
         $json_department = json_encode($department);
@@ -576,7 +571,6 @@ class LessonController extends Controller
         $insert_to_Lesson->course_cover_image = $imagePath;
         $insert_to_Lesson->course_title = $request->title;
         $insert_to_Lesson->course_trailer = 'Value';
-        $insert_to_Lesson->course_category = $cat;
         $insert_to_Lesson->category_id = $request->category_id;
         $insert_to_Lesson->start_time = $request->start_time;
         $insert_to_Lesson->end_time = $request->end_time;
@@ -592,7 +586,14 @@ class LessonController extends Controller
         $insert_to_Lesson->department_id = json_encode($request->department_id);
         $insert_to_Lesson->position_id = json_encode($request->position_id);
 
-        // return($insert_to_Lesson);
+        if($request->department_id==null || $request->department_id==""){
+            $insert_to_Lesson->department_id = "[]";
+        }
+
+        if($request->position_id==null || $request->position_id==""){
+            $insert_to_Lesson->position_id = "[]";
+        }
+
 
         if ($insert_to_Lesson->save()) {
             //redirect dengan pesan sukses
@@ -603,24 +604,27 @@ class LessonController extends Controller
         }
     }
 
-    public function fetchDepartments() {
+    public function fetchDepartments()
+    {
         $departments = DB::connection('ithub')
-                        ->table('m_departments')
-                        ->select('id', 'code', 'name')
-                        ->where('code', 'like', '%_NEW%')
-                        ->get();
+            ->table('m_departments')
+            ->select('id', 'code', 'name')
+            ->where('code', 'like', '%_NEW%')
+            ->get();
         // return response()->json($departments);
         return response()->json($departments);
     }
-    public function fetchPositions() {
+    public function fetchPositions()
+    {
         $positions = DB::connection('ithub')
-                        ->table('m_group_employees')
-                        ->select('id', 'code', 'name')
-                        ->get();
+            ->table('m_group_employees')
+            ->select('id', 'code', 'name')
+            ->get();
         // return response()->json($departments);
         return $positions;
     }
-    public function fetchShowCourse(Request $request) {
+    public function fetchShowCourse(Request $request)
+    {
         // $isVisible = Lesson::findOrFail($lesson->id);
         $lessonId = $request->input('lesson_id');
         $switchStatus = $request->input('switch_status');
@@ -673,7 +677,8 @@ class LessonController extends Controller
         }
     }
 
-    public function viewDashboard(){
+    public function viewDashboard()
+    {
         $user_id = Auth::id();
         $dayta = DB::select("select * from view_course where mentor_id = $user_id");
         $myClasses = DB::select("
@@ -696,10 +701,10 @@ class LessonController extends Controller
 
         // Hitung jumlah student yang telah menyelesaikan setiap course
         $courseCompleteCount = DB::table('student_lesson')
-        ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
-        ->where('learn_status', [0, 1])
-        ->groupBy('lesson_id')
-        ->get();
+            ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
+            ->where('learn_status', [0, 1])
+            ->groupBy('lesson_id')
+            ->get();
 
         // Hitung jumlah total student dalam setiap course
         $totalStudentsCount = DB::table('student_lesson')
@@ -722,12 +727,11 @@ class LessonController extends Controller
             $totalStudents = $totalStudentsCount->where('lesson_id', $lessonId)->first()->total_students;
 
             // Simpan dalam variabel status masing-masing kelas
-            $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 100 : round((($completedStudents/$totalStudents)*100));
+            $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 100 : round((($completedStudents / $totalStudents) * 100));
             $class = DB::select("
                 SELECT
                     lsn.id AS lesson_id,
                     lsn.course_title AS lesson_title,
-                    lsn.course_category AS lesson_category,
                     lsn.course_cover_image AS lesson_cover_img,
                     lsn.department_id AS lesson_dept_id,
                     lsn.position_id AS lesson_posit_id,
@@ -759,7 +763,6 @@ class LessonController extends Controller
                 GROUP BY
                     lsn.id,
                     lsn.course_title,
-                    lsn.course_category,
                     lsn.course_cover_image,
                     lsn.department_id,
                     lsn.position_id,
@@ -776,50 +779,24 @@ class LessonController extends Controller
 
         // dd($class);
         Paginator::useBootstrap();
-        return view('main.mentorDashboard',
-                compact('dayta', 'myClasses', 'courseStatus',
-                        'completedStudents', 'totalStudents'));
+        return view(
+            'main.mentorDashboard',
+            compact(
+                'dayta',
+                'myClasses',
+                'courseStatus',
+                'completedStudents',
+                'totalStudents'
+            )
+        );
     }
 
-    public function view_courseDashboard($lesson_id){
-        // $class = DB::select("
-        //                 SELECT
-        //                     lsn.id AS lesson_id,
-        //                     lsn.course_title AS lesson_title,
-        //                     lsn.course_category AS lesson_category,
-        //                     lsn.course_cover_image AS lesson_cover_img,
-        //                     lsn.department_id AS lesson_dept_id,
-        //                     lsn.position_id AS lesson_posit_id,
-        //                     cs.quiz_session_id AS exam_session_id,
-        //                     cs.section_title AS section_title,
-        //                     cs.id AS section_id,
-        //                     cs.created_at AS date_create,
-        //                     es.exam_type AS exam_type,
-        //                     exm.id AS exam_id
-        //                 FROM
-        //                     lessons lsn
-        //                 LEFT JOIN
-        //                     course_section cs ON lsn.id = cs.course_id
-        //                 LEFT JOIN
-        //                     exam_sessions es ON cs.quiz_session_id = es.id
-        //                 LEFT JOIN
-        //                     exams exm ON es.exam_id = exm.id
-        //                 WHERE
-        //                     lsn.id = $lesson_id
-        //                     AND
-        //                     es.exam_id = exm.id
-        //                     AND
-        //                     es.exam_type = 'Post Test'
-        //                 ORDER BY
-        //                     cs.created_at DESC
-        //                 LIMIT 1
-        // ");
-
+    public function view_courseDashboard($lesson_id)
+    {
         $class = DB::select("
                         SELECT
                             lsn.id AS lesson_id,
                             lsn.course_title AS lesson_title,
-                            lsn.course_category AS lesson_category,
                             lsn.course_cover_image AS lesson_cover_img,
                             lsn.department_id AS lesson_dept_id,
                             lsn.position_id AS lesson_posit_id,
@@ -847,13 +824,13 @@ class LessonController extends Controller
                             cs.created_at DESC
         ");
         $totalStudentsCount = DB::table('student_lesson')
-        ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
-        ->groupBy('lesson_id')
-        ->get();
+            ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
+            ->groupBy('lesson_id')
+            ->get();
         $totalStudents = $totalStudentsCount->where('lesson_id', $lesson_id)->first()->total_students;
 
 
-        if(!empty($class)){
+        if (!empty($class)) {
             // QUERY POST TEST
             $examSessionId = $class[0]->exam_session_id;
             $examSectionId = $class[0]->section_id;
@@ -911,10 +888,10 @@ class LessonController extends Controller
             ");
 
             $list_studentTaken = ExamTaker::join('users', 'exam_takers.user_id', '=', 'users.id')
-                                ->where('exam_takers.session_id', $examSessionId)
-                                ->where('exam_takers.course_section_flag', $examSectionId)
-                                ->select('exam_takers.current_score', 'users.name', 'users.profile_url', 'exam_takers.finished_at' )
-                                ->get();
+                ->where('exam_takers.session_id', $examSessionId)
+                ->where('exam_takers.course_section_flag', $examSectionId)
+                ->select('exam_takers.current_score', 'users.name', 'users.profile_url', 'exam_takers.finished_at')
+                ->get();
             // dd();
 
             // Mengurutkan hasil berdasarkan current_score secara menurun
@@ -928,8 +905,7 @@ class LessonController extends Controller
                 $rank1 = $top_three_students[0]; // Siswa dengan highest score tertinggi
                 $rank2 = $top_three_students[1]; // Siswa dengan score tertinggi kedua
                 $rank3 = $top_three_students[2]; // Siswa dengan score tertinggi ketiga
-            }
-            else {
+            } else {
                 // Jika jumlah siswa kurang dari 3, berikan pesan kesalahan atau lakukan penanganan sesuai kebutuhan
                 // Misalnya:
                 $rank1 = $top_three_students[0]; // Siswa dengan highest score tertinggi
@@ -942,17 +918,25 @@ class LessonController extends Controller
 
             // 3 Data Exam Terbaru
             $latestExams    = Exam::orderBy('created_at', 'desc')->take(3)->get(['title']);
-            return  view('main.course_dashboard',
-                    compact('class', 'totalStudents', 'count_studentsTaken',
-                            'count_studentsUntaken', 'students_notTakenPostTest', 'list_studentTaken',
-                            'rank1', 'rank2', 'rank3',
-                            'students_takePostTest'));
-        }else{
+            return  view(
+                'main.course_dashboard',
+                compact(
+                    'class',
+                    'totalStudents',
+                    'count_studentsTaken',
+                    'count_studentsUntaken',
+                    'students_notTakenPostTest',
+                    'list_studentTaken',
+                    'rank1',
+                    'rank2',
+                    'rank3',
+                    'students_takePostTest'
+                )
+            );
+        } else {
             // Tampilkan pesan SweetAlert jika tidak ada post test dalam kelas
             // Alert::info('Tidak Ada Post Test', 'Tidak ada post test dalam kelas ini.');
             return view('main.course_dashboard');
-
         }
-
     }
 }

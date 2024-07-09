@@ -73,8 +73,7 @@
             type: 'line',
             data: {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
-                datasets: [
-                    {
+                datasets: [{
                         label: 'Blue Line',
                         data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
                         borderColor: 'blue',
@@ -101,7 +100,7 @@
     </script>
 
     <script>
-        window.onload = function () {
+        window.onload = function() {
             var jan = <?php echo json_encode($jan); ?>;
             var feb = <?php echo json_encode($feb); ?>;
             var mar = <?php echo json_encode($mar); ?>;
@@ -117,104 +116,200 @@
 
 
             var chart1 = new CanvasJS.Chart("chartContainer1", {
-                            animationEnabled: true,
-                            axisX: {
-                                interval: 1,
-                                intervalType: "month",
-                                valueFormatString: "MM",
-                                tickLength: 0,
-                                lineThickness: 0,
-                                gridThickness: 0
+                animationEnabled: true,
+                axisX: {
+                    interval: 1,
+                    intervalType: "month",
+                    valueFormatString: "MM",
+                    tickLength: 0,
+                    lineThickness: 0,
+                    gridThickness: 0
+                },
+                axisY: {
+                    lineThickness: 0,
+                    tickLength: 0,
+                    gridThickness: 0,
+                    labelFontSize: 0
+                },
+                legend: {
+                    reversed: true,
+                    verticalAlign: "center",
+                    horizontalAlign: "right"
+                },
+                data: [{
+                        type: "stackedColumn100",
+                        name: "Kelas Yang Selesai",
+                        showInLegend: false,
+                        xValueFormatString: "MM",
+                        markerColor: "#23BD33",
+                        dataPoints: [{
+                                label: "Jan",
+                                y: jan.completed_count,
+                                color: "#23BD33"
                             },
-                            axisY: {
-                                lineThickness: 0,
-                                tickLength: 0,
-                                gridThickness: 0,
-                                labelFontSize: 0
+                            {
+                                label: "Feb",
+                                y: feb.completed_count,
+                                color: "#23BD33"
                             },
-                            legend: {
-                                reversed: true,
-                                verticalAlign: "center",
-                                horizontalAlign: "right"
+                            {
+                                label: "Mar",
+                                y: mar.completed_count,
+                                color: "#23BD33"
                             },
-                            data: [
-                                {
-                                    type: "stackedColumn100",
-                                    name: "Kelas Yang Selesai",
-                                    showInLegend: false,
-                                    xValueFormatString: "MM",
-                                    markerColor: "#23BD33",
-                                    dataPoints: [
-                                        { label: "Jan", y: jan.completed_count, color:"#23BD33"},
-                                        { label: "Feb", y: feb.completed_count, color:"#23BD33" },
-                                        { label: "Mar", y: mar.completed_count, color:"#23BD33" },
-                                        { label: "Apr", y: apr.completed_count, color:"#23BD33" },
-                                        { label: "May", y: mei.completed_count, color:"#23BD33" },
-                                        { label: "Jun", y: jun.completed_count, color:"#23BD33" },
-                                        { label: "Jul", y: jul.completed_count, color:"#23BD33" },
-                                        { label: "Aug", y: agt.completed_count, color:"#23BD33" },
-                                        { label: "Sep", y: sep.completed_count, color:"#23BD33" },
-                                        { label: "Okt", y: okt.completed_count, color:"#23BD33" },
-                                        { label: "Nov", y: nov.completed_count, color:"#23BD33" },
-                                        { label: "Dec", y: des.completed_count, color:"#23BD33" }
-                                    ],
-                                    indexLabel: "{y}", 
-                                    indexLabelPlacement: "outside", 
-                                    indexLabelFontColor: "#333", 
-                                    indexLabelFontSize: 14 
-                                },
-                                {
-                                    type: "stackedColumn100",
-                                    name: "Kuota Kelas Tersisa",
-                                    showInLegend: false,
-                                    xValueFormatString: "MM",
-                                    markerColor: "#ccf7d1",
-                                    dataPoints: [
-                                        { label: "Jan", y: (5-jan.completed_count), color:"#ccf7d1"},
-                                        { label: "Feb", y: (5-feb.completed_count), color:"#ccf7d1" },
-                                        { label: "Mar", y: (5-mar.completed_count), color:"#ccf7d1" },
-                                        { label: "Apr", y: (5-apr.completed_count), color:"#ccf7d1" },
-                                        { label: "May", y: (5-mei.completed_count), color:"#ccf7d1" },
-                                        { label: "Jun", y: (5-jun.completed_count), color:"#ccf7d1" },
-                                        { label: "Jul", y: (5-jul.completed_count), color:"#ccf7d1" },
-                                        { label: "Aug", y: (5-agt.completed_count), color:"#ccf7d1" },
-                                        { label: "Sep", y: (5-sep.completed_count), color:"#ccf7d1" },
-                                        { label: "Okt", y: (5-okt.completed_count), color:"#ccf7d1" },
-                                        { label: "Nov", y: (5-nov.completed_count), color:"#ccf7d1" },
-                                        { label: "Dec", y: (5-des.completed_count), color:"#ccf7d1" }
-                                    ]
-                                }
-                            ]
+                            {
+                                label: "Apr",
+                                y: apr.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "May",
+                                y: mei.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "Jun",
+                                y: jun.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "Jul",
+                                y: jul.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "Aug",
+                                y: agt.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "Sep",
+                                y: sep.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "Okt",
+                                y: okt.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "Nov",
+                                y: nov.completed_count,
+                                color: "#23BD33"
+                            },
+                            {
+                                label: "Dec",
+                                y: des.completed_count,
+                                color: "#23BD33"
+                            }
+                        ],
+                        indexLabel: "{y}",
+                        indexLabelPlacement: "outside",
+                        indexLabelFontColor: "#333",
+                        indexLabelFontSize: 14
+                    },
+                    {
+                        type: "stackedColumn100",
+                        name: "Kuota Kelas Tersisa",
+                        showInLegend: false,
+                        xValueFormatString: "MM",
+                        markerColor: "#ccf7d1",
+                        dataPoints: [{
+                                label: "Jan",
+                                y: (5 - jan.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Feb",
+                                y: (5 - feb.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Mar",
+                                y: (5 - mar.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Apr",
+                                y: (5 - apr.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "May",
+                                y: (5 - mei.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Jun",
+                                y: (5 - jun.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Jul",
+                                y: (5 - jul.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Aug",
+                                y: (5 - agt.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Sep",
+                                y: (5 - sep.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Okt",
+                                y: (5 - okt.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Nov",
+                                y: (5 - nov.completed_count),
+                                color: "#ccf7d1"
+                            },
+                            {
+                                label: "Dec",
+                                y: (5 - des.completed_count),
+                                color: "#ccf7d1"
+                            }
+                        ]
+                    }
+                ]
             });
             chart1.render();
 
             var resultPostTest = <?php echo json_encode($postTestScore); ?>;
             var dataPoints = [];
 
-            
-            resultPostTest.forEach(function(item) {
-                var xValue = item.title_exam; 
-                var yValue = parseInt(item.highest_currentScore); 
 
-                dataPoints.push({ label: xValue, y: yValue });
+            resultPostTest.forEach(function(item) {
+                var xValue = item.title_exam;
+                var yValue = parseInt(item.highest_currentScore);
+
+                dataPoints.push({
+                    label: xValue,
+                    y: yValue
+                });
             });
 
             console.log(dataPoints);
-            var chart2 = new CanvasJS.Chart("chartContainer2",{
+            var chart2 = new CanvasJS.Chart("chartContainer2", {
                 axisX: {
                     interval: 1,
-                    labelAngle: -45 
+                    labelAngle: -45
                 },
                 axisY: {
-                    minimum: 0, 
-                    maximum: 100, 
-                    labelFormatter: function (e) {
+                    minimum: 0,
+                    maximum: 100,
+                    labelFormatter: function(e) {
                         return parseInt(e.value);
                     }
                 },
                 data: [{
                     type: "line",
-                    dataPoints: dataPoints 
+                    dataPoints: dataPoints
                 }]
             });
 
@@ -233,13 +328,13 @@
                     <div class="card-body">
                         <div class="tab-content mt-2 mb-5" id="pills-without-border-tabContent">
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
-                                 aria-labelledby="pills-home-tab-nobd">
+                                aria-labelledby="pills-home-tab-nobd">
                                 <div class="d-flex align-items-center"> {{-- Use flexbox for layout --}}
                                     <div class="mr-3"> {{-- Margin right for spacing --}}
                                         <img style="width: 130px; height: 130px; object-fit: cover"
-                                             src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
-                                             alt="Profile Image" class="avatar-img rounded-circle"
-                                             onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                            src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}" alt="Profile Image"
+                                            class="avatar-img rounded-circle"
+                                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                                     </div>
                                     <div>
                                         <div class="card-head-row card-tools-still-right">
@@ -251,34 +346,34 @@
                             </div>
                         </div>
 
-                        <div class="ml-auto mt-5"> 
+                        <div class="ml-auto mt-5">
                             <div class="portfolio-container">
                                 <img src="{{ url('/home_icons/Portfolio.svg') }}" alt="Portfolio Icon">
                                 <p>{{ Auth::user()->url_personal_website }}</p>
                             </div>
                             <div class="social-icon">
                                 <a href="https://facebook.com/.{{ Auth::user()->url_facebook }}" target="_blank"
-                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/home_icons/Facebook.svg') }}" alt="Facebook Icon">
                                 </a>
                                 <a href="https://www.linkedin.com/in/{{ Auth::user()->url_linkedin }}" target="_blank"
-                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/home_icons/linkedin.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://instagram.com/#" target="_blank" rel="noopener noreferrer"
-                                   class="btn btnColor btn-icon">
+                                    class="btn btnColor btn-icon">
                                     <img src="{{ url('/home_icons/Twitter.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://instagram.com/{{ Auth::user()->url_instagram }}" target="_blank"
-                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/home_icons/Instagram.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://youtube.com/{{ Auth::user()->url_youtube }}" target="_blank"
-                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/home_icons/Youtube.svg') }}" alt="Instagram Icon">
                                 </a>
                                 <a href="https://wa.me/{{ Auth::user()->url_whatsapp }}" target="_blank"
-                                   rel="noopener noreferrer" class="btn btnColor btn-icon">
+                                    rel="noopener noreferrer" class="btn btnColor btn-icon">
                                     <img src="{{ url('/home_icons/Whatsapp.svg') }}" alt="Instagram Icon">
                                 </a>
                             </div>
@@ -295,7 +390,7 @@
                             <div class="col-9">
                                 <h3><strong>Data Completed Courses (Pcs)</strong></h3>
                             </div>
-                            
+
                             <div class="col-3">
                                 <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
                                     <option>2024</option>
@@ -325,7 +420,7 @@
                             <div class="col-9">
                                 <h3><strong>Post Test Score</strong></h3>
                             </div>
-                            
+
                             <div class="col-3">
                                 <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
                                     <option>Januari</option>
@@ -357,7 +452,8 @@
                     </div>
                 </div>
             </div>
-            
+
+
             {{-- DASHBOARD --}}
             <div class="col-md-12">
                 <h1><strong>Dashboard</strong></h1>
@@ -423,20 +519,7 @@
                 </div>
             </div>
 
-            {{-- @php
-                // Ambil warna kategori jika kategori ada dalam $lessonCategories
-                $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
-                $numStudents = DB::select(
-                                "SELECT *
-                                    FROM
-                                        student_lesson a
-                                    WHERE a.lesson_id = $data->id");
-                $numStudentsCount = count($numStudents);
-            @endphp --}}
-
-
-
-            {{-- MY CLASS--}}
+            {{-- MY CLASS --}}
             <div class="col-md-12">
                 <h1><strong>My Class</strong></h1>
             </div>
@@ -444,15 +527,15 @@
             <div class="container-fluid mt-3 row">
                 @forelse ($myClasses as $data)
                     @php
-                    $userID = Auth::id();
-                    $silabusClass = DB::select("SELECT
+                        $userID = Auth::id();
+                        $silabusClass = DB::select("SELECT
                                     a.*
                                     FROM
                                         course_section a
                                     WHERE
                                         a.course_id = $data->id
                                     ");
-                    $hasTaken  = DB::select("SELECT
+                        $hasTaken = DB::select("SELECT
                                     a.*
                                     FROM
                                         student_section a
@@ -460,47 +543,36 @@
                                         course_section b  ON a.section_id = b.id
                                     WHERE
                                         a.student_id = $userID AND b.course_id = $data->id;
-                                    "
-                                    );
-                    $totalSections = count($silabusClass);
-                    $total_hasTaken = count($hasTaken);
-                    if($totalSections != null and $total_hasTaken != null){
-                        $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
-                    }else{
-                        $progressPercentage = 0;
-                    }
-
-                    $selectedCategory = null;
-                    foreach ($lessonCategories as $category) {
-                        if ($category->id == $data->category_id) {
-                            $selectedCategory = $category;
-                            break;
+                                    ");
+                        $totalSections = count($silabusClass);
+                        $total_hasTaken = count($hasTaken);
+                        if ($totalSections != null and $total_hasTaken != null) {
+                            $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                        } else {
+                            $progressPercentage = 0;
                         }
-                    }
-                    $warna = $selectedCategory ? $selectedCategory->color_of_categories : '#007bff';
 
                     @endphp
 
                     <div class="col-sm-6 col-xl-4">
                         <div class="card shadow ">
                             <!-- Image -->
-                            <img class="card-img-top"
-                            style="aspect-ratio: 16 / 9"
-                                 onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-                                 src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}"
-                                 alt="La Noyee">
-                            {{--                            <img src="assets/images/courses/4by3/08.jpg"  class="card-img-top" alt="course image">--}}
+                            <img class="card-img-top" style="aspect-ratio: 16 / 9"
+                                onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
+                                src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}" alt="La Noyee">
+                            {{--                            <img src="assets/images/courses/4by3/08.jpg"  class="card-img-top" alt="course image"> --}}
                             <!-- Card body -->
                             <div class="card-body">
                                 <!-- Badge and favorite -->
-                                <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+                                <div
+                                    style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
                                     <div class="class-badge"
-                                         style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
-                                        <strong>{{ $selectedCategory->name }}</strong>
+                                        style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $data->course_category_color }}; padding: 2px 10px;">
+                                        <strong>{{ $data->course_category_name }}</strong>
                                     </div>
                                 </div>
                                 <!-- Title -->
-                                <h5 class="card-title"><a href="#">{{$data->course_title}}</a></h5>
+                                <h5 class="card-title"><a href="#">{{ $data->course_title }}</a></h5>
                                 <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
                                     settling.</p>
 
@@ -509,12 +581,11 @@
 
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <a href="{{ url('course/'.$data->id.'/section/'.$data->first_section) }}"
-                                           class="btn text-white btn-round "
-                                           style="background-color: #208DBB">Check</a>
+                                        <a href="{{ url('course/' . $data->id . '/section/' . $data->first_section) }}"
+                                            class="btn text-white btn-round " style="background-color: #208DBB">Check</a>
                                     </div>
 
-                                    {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span>--}}
+                                    {{--                                    <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span> --}}
                                     <p id="progressCourse" class="h6 mb-0">{{ $progressPercentage }}%
                                         Completed</p>
 
@@ -539,10 +610,11 @@
                             <div class="card-footer pt-0 pb-3">
                                 <div style="display: flex; justify-content: center; align-items: center;">
                                     <img style="width: 6%; height: auto; margin-top: 12px"
-                                         src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">
+                                        src="{{ url('/icons/user_lesson_card.png') }}" alt="Portfolio Icon">
                                     <a style="text-decoration: none;color: BLACK;">
                                         <p style="font-size: 17px; margin-left: 10px; margin-top:28px;">
-                                            <b> {{ $data->num_students_registered }} </b><span style="color: #8C94A3;">students</span>
+                                            <b> {{ $data->num_students_registered }} </b><span
+                                                style="color: #8C94A3;">students</span>
                                         </p>
                                     </a>
                                 </div>
@@ -552,14 +624,10 @@
 
                 @empty
                     <div class="w-100 d-flex justify-content-center">
-                        <script
-                            src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js">
-                        </script>
-                        <lottie-player
-                            src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json"
-                            background="transparent" speed="1"
-                            style="width: 300px; height: 300px;"
-                            loop autoplay></lottie-player>
+                        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json"
+                            background="transparent" speed="1" style="width: 300px; height: 300px;" loop
+                            autoplay></lottie-player>
                     </div>
                     <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas Manapun</strong>
                 @endforelse
@@ -577,7 +645,7 @@
                         <div class="row justify-content-center">
 
                             @foreach ($topThree as $index => $student)
-                                <div class="col-md-3 my-4 @if($index>2) d-none @endif">
+                                <div class="col-md-3 my-4 @if ($index > 2) d-none @endif">
                                     <div class="card card-profile">
                                         <div class="card-header"
                                              style="background-image: url('../assets/img/blogpost.jpg')">
@@ -731,18 +799,17 @@
 
             @if (session()->has('success'))
                 <script>
-                    toastr.success('{{ session('
-                        success ') }}',
+                    toastr.success(
+                        '{{ session('
+                                                                                                            success ') }}',
                         ' {{ Session::get('success') }}');
-
                 </script>
-            @elseif(session()-> has('error'))
+            @elseif(session()->has('error'))
                 <script>
-                    toastr.error('{{ session('
-                        error ') }}', ' {{ Session::get('error') }}');
-
+                    toastr.error(
+                        '{{ session('
+                                                                                                            error ') }}',
+                        ' {{ Session::get('error') }}');
                 </script>
-
-    @endif
-
-@endsection
+            @endif
+        @endsection

@@ -263,7 +263,7 @@ class HomeController extends Controller
                     'latestExams',
                     'averageScoreArray'
                 ));
-        } 
+        }
         else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
@@ -310,7 +310,7 @@ class HomeController extends Controller
                 ->where('student_lesson.learn_status', 1)
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();
-                        
+
                 $completedCourse_monthly = [];
 
                 // Loop untuk mengisi data per bulan
@@ -337,10 +337,10 @@ class HomeController extends Controller
                         ];
                     }
                 }
-                
+
                 // Sortir array berdasarkan bulan
                 ksort($completedCourse_monthly);
-                
+
                 // Setelah data disiapkan, Anda dapat mengakses properti month dengan benar
                 $jan = $completedCourse_monthly[1];
                 $feb = $completedCourse_monthly[2];
@@ -354,9 +354,9 @@ class HomeController extends Controller
                 $okt = $completedCourse_monthly[10];
                 $nov = $completedCourse_monthly[11];
                 $des = $completedCourse_monthly[12];
-                
-                
-            
+
+
+
             $blogCreatedCount = DB::table('view_blog')
                 ->where('user_id', $userId)
                 ->count();
@@ -370,6 +370,8 @@ class HomeController extends Controller
                     SELECT
                         RANK() OVER (PARTITION BY a.id ORDER BY cs.id ASC) AS ranking,
                         a.*,
+                        lc.color_of_categories as course_category_color,
+                        lc.name as course_category_name,
                         b.name AS mentor_name,
                         b.profile_url,
                         COUNT(c.student_id) AS num_students_registered,
@@ -382,6 +384,8 @@ class HomeController extends Controller
                         student_lesson c ON a.id = c.lesson_id
                     LEFT JOIN
                         course_section cs ON a.id = cs.course_id
+                    LEFT JOIN
+                        lesson_categories lc on a.category_id = lc.id
                     WHERE EXISTS (
                             SELECT 1
                             FROM student_lesson sl
@@ -393,6 +397,7 @@ class HomeController extends Controller
                 ) AS main_table
                 WHERE main_table.ranking = 1;
             ");
+
 
             // Append new attribute to each row
             foreach ($myClasses as &$class) {
@@ -416,7 +421,7 @@ class HomeController extends Controller
 
             // BUILD QUERY POST TEST SCORE
             $postTestScore = DB::select("
-                            SELECT 
+                            SELECT
                                 et.user_id AS userID,
                                 es.id AS exam_SessionId,
                                 es.exam_type AS examType,
@@ -425,7 +430,7 @@ class HomeController extends Controller
                                 MAX(et.current_score) AS highest_currentScore,
                                 et.course_flag AS courseID,
                                 et.course_section_flag AS courseSectionID
-                            FROM 
+                            FROM
                                 exam_takers AS et
                             LEFT JOIN
                                 exam_sessions AS es ON et.session_id = es.id
@@ -468,7 +473,7 @@ class HomeController extends Controller
                     'projectCreatedCount',
                     'classRegisteredCount',
                     'activeCourse',
-                    'completedCourse', 
+                    'completedCourse',
                     'lessonCategories',
                     'jan', 'feb', 'mar', 'apr', 'mei', 'jun',
                     'jul', 'agt', 'sep', 'okt', 'nov', 'des',

@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
 use Illuminate\Http\Request;
-use Auth;
 use Exception;
 
 use App\Models\Blog;
 use App\Models\Lesson;
 use App\Models\User;
 use App\Models\CourseSection;
-
+use App\Models\LessonCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\Paginator;
-use DB;
 use File;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MyClassController extends Controller
 {
@@ -28,6 +27,8 @@ class MyClassController extends Controller
         $sortParam = request('sort' , 'Latest') ;
         $catParam  = request('category', 'All Category');
 
+        $lessonCategories = LessonCategory::all();
+
         $sortBy = ($sortParam == 'Latest') ? 'desc' : 'asc';
         $catBy = ($catParam == 'All Category') ? '*' : $catParam;
 
@@ -36,6 +37,8 @@ class MyClassController extends Controller
         ->select([
             DB::raw('RANK() OVER (PARTITION BY a.id ORDER BY cs.id ASC) AS ranking'),
             'a.*',
+            'lc.color_of_categories as course_category_color',
+            'lc.name as course_category_name',
             'b.name as mentor_name',
             'b.profile_url',
             DB::raw('COUNT(c.student_id) AS num_students_registered'),
@@ -44,6 +47,7 @@ class MyClassController extends Controller
         ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
         ->leftJoin('student_lesson as c', 'a.id', '=', 'c.lesson_id')
         ->leftJoin('course_section as cs', 'a.id', '=', 'cs.course_id')
+        ->leftJoin('lesson_categories as lc', 'a.category_id', '=', 'lc.id')
         ->whereExists(function ($query) use ($userID) {
             $query->select(DB::raw(1))
                 ->from('student_lesson as sl')
@@ -52,13 +56,9 @@ class MyClassController extends Controller
         })
         ->groupBy('a.id', 'b.name', 'b.profile_url', 'cs.id');
 
-        
+
         $myClasses = DB::table(DB::raw("({$subQuery->toSql()}) as main_table"))
         ->mergeBindings($subQuery) // Menggabungkan bindings dari subquery
-        ->select([
-            'main_table.*',
-            DB::raw("'new_attribute_value' AS new_attribute")
-        ])
         ->where('main_table.ranking', 1)
         ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
             return $query->orderBy('main_table.created_at', $sortBy);
@@ -66,12 +66,11 @@ class MyClassController extends Controller
             return $query->orderBy('main_table.num_students_registered', $sortBy);
         })
         ->when($catParam != 'All Category', function ($query) use ($catParam) {
-            return $query->where('main_table.course_category', $catParam);
+            return $query->where('main_table.course_category_name', $catParam);
         })
         ->get();
         // Append new attribute to each row
-        
-        
+
         foreach ($myClasses as &$class) {
             $firstSection = DB::table('course_section')
                 ->where('course_id', '=', $class->id)
@@ -86,7 +85,6 @@ class MyClassController extends Controller
                 $class->first_section = null; // Atau nilai default lainnya sesuai kebutuhan
             }
         }
-        $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
 
 
         // return $class->first_section;
