@@ -358,7 +358,6 @@
                 </div>
             </div>
             
-
             {{-- DASHBOARD --}}
             <div class="col-md-12">
                 <h1><strong>Dashboard</strong></h1>
@@ -383,7 +382,6 @@
                     </div>
                 </div>
             </div>
-
 
             <div class="col-sm-6 col-md-4">
                 <div class="card card-stats card-round" style="background-color: #EBEBFF">
@@ -472,7 +470,14 @@
                         $progressPercentage = 0;
                     }
 
-                    $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                    $selectedCategory = null;
+                    foreach ($lessonCategories as $category) {
+                        if ($category->id == $data->category_id) {
+                            $selectedCategory = $category;
+                            break;
+                        }
+                    }
+                    $warna = $selectedCategory ? $selectedCategory->color_of_categories : '#007bff';
 
                     @endphp
 
@@ -491,7 +496,7 @@
                                 <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
                                     <div class="class-badge"
                                          style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
-                                        <strong>{{ $data->course_category }}</strong>
+                                        <strong>{{ $selectedCategory->name }}</strong>
                                     </div>
                                 </div>
                                 <!-- Title -->

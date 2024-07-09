@@ -409,8 +409,10 @@ class HomeController extends Controller
                 }
             }
 
-            $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
-
+            // $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+            $lessonCategories = DB::table('lesson_categories')
+            ->select('id', 'name', 'color_of_categories')
+            ->get();
 
             // BUILD QUERY POST TEST SCORE
             $postTestScore = DB::select("
@@ -450,6 +452,8 @@ class HomeController extends Controller
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Student", "Dashboard"
             );
+
+            // return $lessonCategories;
             return view('main.dashboard')
                 ->with(compact(
                     'classes',

@@ -200,7 +200,7 @@
         @forelse ($myClasses as $data)
             @php
                 // Ambil warna kategori jika kategori ada dalam $lessonCategories
-                $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
+                // $warna = $lessonCategories[$data->course_category]->color_of_categories ?? '#007bff';
                 $numStudents = DB::select(
                                 "SELECT *
                                     FROM
@@ -230,10 +230,10 @@
                                     NEW
                                 </div>
                             @endif
-                            <div class="class-badge"
+                            {{-- <div class="class-badge"
                                  style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $warna }}; padding: 2px 10px;">
                                 <strong>{{ $data->course_category }}</strong>
-                            </div>
+                            </div> --}}
                             <div class="class-badge"
                                  style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
                                 <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
