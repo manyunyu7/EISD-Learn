@@ -14,8 +14,73 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class MobileSeeCourseController extends Controller
+class MobileLmsContentController extends Controller
 {
+
+
+    public function seeClassProgress(Request $request, $classId){
+
+    }
+    public function seeClassSections(Request $request, Lesson $lesson)
+    {
+        $userId = $request->user_id;
+        Auth::loginUsingId($userId);
+        $user_id = Auth::user()->id;
+        $lessonId = $lesson->id;
+
+        $sections = CourseSection::select(
+            'lessons.id as lesson_id',
+            'lessons.course_title as lessons_title',
+            'lessons.mentor_id',
+            'users.name as mentor_name',
+            'course_section.id as section_id',
+            'course_section.section_order',
+            'course_section.section_title',
+            'course_section.quiz_session_id',
+            'exam_sessions.time_limit_minute', // Include quiz duration
+            'course_section.section_content',
+            'course_section.section_video',
+            'course_section.created_at',
+            'course_section.updated_at',
+            'course_section.can_be_accessed'
+        )
+            ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
+            ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
+            ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
+            ->where('course_section.course_id', $lessonId)
+            ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
+            ->get();
+
+            foreach ($sections as $key => $section) {
+                // Check if the section is already added to the student-section
+                $isTaken = StudentSection::where('section_id', $section->section_id)
+                    ->where('student_id', Auth::id())
+                    ->exists();
+
+                // Add the 'isTaken' attribute to the section object
+                $section->isTaken = $isTaken;
+            }
+
+
+        $compact = compact(
+            'sections',
+        );
+
+        if ($request->dump == true) {
+            return $compact;
+        }
+
+        return MyHelper::responseSuccessWithData(
+            200,
+            200,
+            2,
+            "Berhasil!",
+            "Berhasil",
+            $compact
+        );
+    }
+
+
     public function seeSection(Request $request, Lesson $lesson, CourseSection $section)
     {
         // Find the next and previous sections
@@ -36,12 +101,7 @@ class MobileSeeCourseController extends Controller
                 "Course Section",
                 $userId
             );
-
-            if($userId!=null){
-                Auth::loginUsingId($userId);
-            }else{
-                abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
-            }
+            abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
         }
 
         $user_id = Auth::user()->id;
@@ -75,6 +135,7 @@ class MobileSeeCourseController extends Controller
                 //                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan #922 $lessonObject");
             }
         }
+
 
         // Get the preceding sections
         $precedingSections = DB::table('course_section')
@@ -190,6 +251,10 @@ class MobileSeeCourseController extends Controller
 
 
         $sectionDetail = CourseSection::findOrFail($sectionId);
+
+        if($sectionDetail!=null){
+            $title = $sectionDetail->section_title ?? "";
+        }
         // Iterate over the sections and check if each one is already added to the student-section
         foreach ($sections as $key => $section) {
             // Check if the section is already added to the student-section
@@ -249,7 +314,7 @@ class MobileSeeCourseController extends Controller
                 }
             }
             if ($isEligibleStudent) {
-                $this->startSection($currentSectionId);
+                $this->startSection($currentSectionId,$userId);
             }
         }
 
@@ -345,7 +410,6 @@ class MobileSeeCourseController extends Controller
         $progressPercentage = round(($sectionTakenOnCourseCount / $sectionCount) * 100);
 
         $compact = compact(
-            'userId',
             'isEligibleStudent',
             'hasTakenAnyExam',
             'examResults',
@@ -385,19 +449,26 @@ class MobileSeeCourseController extends Controller
         }
 
         MyHelper::addAnalyticEventMobile(
-            "Buka Section",
+            "Buka Section Mobile",
             "Course Section",
             $userId
         );
 
 
-        return view('lessons.play.course_play_mobile', $compact);
+        return MyHelper::responseSuccessWithData(
+            200,
+            200,
+            2,
+            "Berhasil!",
+            "Berhasil",
+            $compact
+        );
     }
 
-    function startSection($sectionId)
+    function startSection($sectionId, $userId)
     {
         $section = $sectionId;
-        $student = Auth::id();
+        $student = $userId;
 
         $studentSectionValue = "$student" . "-" . "$section";
 

@@ -200,10 +200,10 @@
                             @if(Str::contains(Storage::url('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
 
                                 @if(str_contains($sectionDetail->section_video,'course-s3'))
-                                    <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{"https://lms-modernland.s3.ap-southeast-3.amazonaws.com/"."$sectionDetail->section_video" }}#page=1"
-                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
-                                            webkitallowfullscreen=""></iframe>
+                                   <iframe id="pdfIframe"
+                                           src="{{ url('/') }}/library/viewerjs/src/#{{ env('AWS_BASE_URL') . $sectionDetail->section_video }}#page=1"
+                                           style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                           webkitallowfullscreen=""></iframe>
                                 @else
                                     <iframe id="pdfIframe"
                                             src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"

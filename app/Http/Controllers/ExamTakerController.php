@@ -172,7 +172,7 @@ class ExamTakerController extends Controller
 
         //check if the session allow multiple attempt
         $allowMultipleAttempt = false;
-        if ($session->allow_multiple == "y") {
+        if ($session->allow_multiple == "y" || $session->allow_multiple=="Aktif") {
             $allowMultipleAttempt = true;
         }
 

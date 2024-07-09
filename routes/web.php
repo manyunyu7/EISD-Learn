@@ -20,7 +20,7 @@ use App\Http\Controllers\GraphController;
 */
 
 Route::get('/iseng-iseng-aja', 'AitiHubController@checkAitiHub');
-Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@see_section');
+Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
 
 
 Route::get('/', 'LandingController@landing');
@@ -37,7 +37,7 @@ Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('p
 // Route::post('/class/class-list/check/{lessonId}', 'DetailClassController@viewStudents')->name('view_students.viewStudents')->middleware('auth');
 // Route::post('/class/class-list/students/{lessonId}')->name('view_students.viewStudents')->middleware('auth');
 
-Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
+Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@seeSection')->name('course.see_section');
 
 
 Route::get('/encrypt', [AbsensiController::class, 'encryptData']);

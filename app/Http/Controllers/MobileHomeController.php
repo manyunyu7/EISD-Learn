@@ -463,12 +463,14 @@ class MobileHomeController extends Controller
             ->select(
                 'a.*', // Select all columns from the lessons table
                 'b.name AS mentor_name', // Select mentor's name and alias it as mentor_name
+                'lc.name as course_category',
                 'b.profile_url', // Select mentor's profile URL
                 DB::raw('COUNT(c.student_id) AS num_students_registered'), // Count the number of registered students for each class and alias it as num_students_registered
                 DB::raw('COUNT(DISTINCT d.student_id) AS num_students'), // Count the total number of students for each class (excluding duplicates) and alias it as num_students
                 DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered') // Check if the current user is registered for each class and alias it as is_registered
             )
             ->leftJoin('users AS b', 'a.mentor_id', '=', 'b.id') // Left join the users table to get mentor information
+            ->leftJoin('lesson_categories AS lc', 'lc.id', '=', 'a.category_id') // Left join the users table to get mentor information
             ->leftJoin('student_lesson AS c', function ($join) use ($userID) { // Left join the student_lesson table to check if the user is registered for each class
                 $join->on('a.id', '=', 'c.lesson_id')
                     ->where('c.student_id', '=', $userID); // Filter the join by the current user ID
@@ -480,7 +482,7 @@ class MobileHomeController extends Controller
         if ($request->category != null) {
 
             if ($request->category != "Semua") {
-                $classes = $classes->where("a.course_category", "=", $request->category);
+                $classes = $classes->where("lc.name", "=", $request->category);
             }
         }
 
@@ -494,9 +496,6 @@ class MobileHomeController extends Controller
 
         // Group the results by lesson ID, mentor name, and mentor profile URL// Execute the query and get the result set
         $classes = $classes->groupBy('a.id', 'b.name', 'b.profile_url')->get();
-
-        // Fetching lesson categories if not already available
-        $lessonCategories = LessonCategory::all()->pluck('color_of_categories', 'id')->toArray();
 
         // Adding full image path to each class
         foreach ($classes as $data) {
@@ -543,5 +542,70 @@ class MobileHomeController extends Controller
             "success",
             $shownClass->values()->all()
         );
+    }
+
+    public function registerClass(Request $request)
+    {
+        try {
+            $user_id = $request->lms_user_id;
+
+            $course = Lesson::findOrFail($request->course_id);
+            $coursePassword = $course->pin;
+
+            if ($request->password != $coursePassword) {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Password Kelas Salah",
+                    "Password Kelas Salah",
+                    null
+                );
+            }
+
+            $registerLesson = StudentLesson::create([
+                'student_id' => $user_id,
+                'lesson_id' => $request->course_id,
+                'learn_status' => 0,
+                'certificate_file' => "",
+                'student-lesson' => "$user_id-$request->course_id",
+            ]);
+
+            if ($registerLesson) {
+
+                MyHelper::addAnalyticEventMobile(
+                    "Mendaftar Kelas",
+                    "Course Section",
+                    $user_id
+                );
+
+                return MyHelper::responseSuccessWithData(
+                    200,
+                    200,
+                    2,
+                    "Berhasil Mendaftar Kelas $course->course_title!",
+                    "Berhasil Mendaftar Kelas $course->course_title",
+                    $registerLesson
+                );
+            } else {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Gagal Mendaftar Kelas",
+                    "Gagal Mendaftar Kelas",
+                    null
+                );
+            }
+        } catch (QueryException $e) {
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                0,
+                "Anda Sudah Mendaftar di Kelas $course->course_title",
+                "Anda Sudah Mendaftar di Kelas Ini",
+                null
+            );
+        }
     }
 }

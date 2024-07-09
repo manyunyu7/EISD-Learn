@@ -23,7 +23,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('/course/{lesson}/section/{section}', 'MobileLmsContentController@seeSection');
+Route::get('/course/{lesson}/sections', 'MobileLmsContentController@seeClassSections');
+Route::get('/course/{lesson}/sections', 'MobileLmsContentController@seeClassSections');
 
+
+Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
 Route::get('/lms/users', [ModernlandIntegrationController::class, 'getLearningUsers']);
 Route::post('/lms/user/create', [ModernlandIntegrationController::class, 'createNewLMSUser']);
 Route::post('/lms/user/update', [ModernlandIntegrationController::class, 'updateLMSUser']);

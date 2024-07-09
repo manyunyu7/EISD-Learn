@@ -332,7 +332,7 @@ class CourseSectionController extends Controller
     }
 
     // SEE SECTION
-    public function see_section(Request $request, Lesson $lesson, CourseSection $section)
+    public function seeSection(Request $request, Lesson $lesson, CourseSection $section)
     {
         // Find the next and previous sections
         $nextSectionId = null;
