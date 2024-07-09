@@ -205,13 +205,6 @@
         </button>
 
 
-    <div class="container-fluid mt-3 row">
-        @php
-            // Ambil semua kategori pelajaran sekali
-            $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
-
-        @endphp
-        
         <div class="container-fluid mt-3 row">
             @forelse ($myClasses as $data)
                 @php
@@ -231,6 +224,7 @@
                         <img class="card-img-top" style="aspect-ratio: 16 / 9"
                             onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
                             src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}" alt="La Noyee">
+
                         <!-- Card body -->
                         <div class="card-body">
                             <!-- Badge and favorite -->
@@ -284,7 +278,7 @@
                                             </a>
                                             {{-- <div class="dropdown-divider"></div> --}}
                                             {{-- <a class="dropdown-item"
-                                        href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
+                                           href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
                                             <span class="link-collapse">Dashboard Post Test</span>
                                         </a> --}}
                                         </li>
@@ -429,6 +423,7 @@
                                 });
                             </script>
                         </div>
+                    </div>
                 </div>
             @empty
                 <div class="w-100 d-flex justify-content-center">
