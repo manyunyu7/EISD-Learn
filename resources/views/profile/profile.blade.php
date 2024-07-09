@@ -22,31 +22,31 @@
                             <div class="">
                                 @csrf
                                 <div class="row mt-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Nama Lengkap</label>
                                             <input id="inputTitle" type="text"
                                                    class="form-control @error('first_name') is-invalid has-error @enderror"
-                                                   name="first_name" value="{{ $twoWords_ofName }}"
+                                                   name="first_name" value="{{ $fullName }}"
                                                    placeholder="Nama Anda" readonly>
 
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Nama Belakang</label>
                                             <input type="text" class="form-control-file form-control"
                                                    name="end_name" value="{{ $end_ofName }}"
                                                    id="" placeholder="" aria-describedby="fileHelpId" readonly>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Username</label>
                                             <input type="text"
                                                    class="form-control @error('username') is-invalid has-error @enderror"
-                                                   name="username" placeholder="Username"
-                                                   value="{{ old('email', Auth::user()->username) }}" readonly>
+                                                   name="username" 
+                                                   value="{{ $username }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-12">

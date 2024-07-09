@@ -17,10 +17,25 @@ class ProfileController extends Controller
     public function index()
     {
 
+        // Read Full Name
         $fullName = Auth::user()->name;
         $nameParts = explode(' ', $fullName);
         $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
         $end_ofName = implode(' ', array_slice($nameParts, 2));
+
+        // Read Username
+        $uname = Auth::user()->mdln_username;
+        $username = '';
+        $query_uname = DB::connection('ithub')
+            ->table('users')
+            ->select('username')
+            ->where('id', '=', $uname)
+            ->first();
+        if ($query_uname) {
+            $username = $query_uname->username;
+        } else {
+            $username = '-';
+        }
 
         // Read Jabatan
         $id_jbtn = Auth::user()->position_id;
@@ -40,7 +55,7 @@ class ProfileController extends Controller
                 $value_jbtn =  "-";
             }
         } else {
-            $$value_jbtn = "Belum Ada Jabatan";
+            $value_jbtn = "-";
         }
         $name_jbtn = $value_jbtn;
 
@@ -62,7 +77,7 @@ class ProfileController extends Controller
                 $value_dept =  "-";
             }
         } else {
-            $$value_dept = "Belum Ada department";
+            $value_dept = "-";
         }
         $name_dept = $value_dept;
 
@@ -93,7 +108,7 @@ class ProfileController extends Controller
         }
 
 
-        return view('profile.profile', compact('twoWords_ofName', 'end_ofName', 'name_jbtn', 'name_dept', 'name_sites'));
+        return view('profile.profile', compact( 'fullName', 'twoWords_ofName', 'end_ofName', 'name_jbtn', 'name_dept', 'name_sites', 'username'));
     }
 
 
