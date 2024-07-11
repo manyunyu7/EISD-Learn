@@ -356,9 +356,10 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Departemen<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <select id="department_id" name="department_id[]"  class="form-control form-select-lg js-example-basic-multiple" multiple>
-
+                                <select id="department_id" {{ $myClass->tipe == "Specific" ? '' : 'disabled' }} name="department_id[]" class="form-control form-select-lg js-example-basic-multiple" multiple>
+                                    <!-- Your options here -->
                                 </select>
+
                             </div>
                         </div>
 
