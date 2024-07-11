@@ -21,6 +21,7 @@ use App\Http\Controllers\GraphController;
 
 Route::get('/iseng-iseng-aja', 'AitiHubController@checkAitiHub');
 Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
+Route::get('mobile-api/course/{lesson}/section/{section}', 'MobileLmsContentController@seeSection');
 
 
 Route::get('/', 'LandingController@landing');
