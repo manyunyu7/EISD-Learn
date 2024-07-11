@@ -16,13 +16,9 @@
 
 
                 <div class="error mx-auto" data-text="401">401</div>
-                <strong>
-                    <h4>
-                        <h2>{{ $exception->getMessage() }}</h2>
-                    </h4>
-                </strong>
+                <p class="my-4">{{ $exception->getMessage() }}</p>
                 <p class="lead text-gray-800">Anda Tidak Punya Akses ke Halaman Ini</p>
-                <a href="{{ URL::previous() }}">&larr; Kembali</a>
+                {{-- <a href="{{ URL::previous() }}">&larr; Kembali</a> --}}
             </div>
         </div>
     </div>
