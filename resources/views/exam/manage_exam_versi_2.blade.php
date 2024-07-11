@@ -180,12 +180,23 @@
                                                                     justify-content: center;">
                                                 <img src="{{ url('/icons/Link.svg') }}" style="max-width: 100%; max-height: 100%;">
                                             </button>
+                                            <button class="btn mr-2 d-none" onclick="redirectToSection('{{ url('/exam/' . $data->id.'/edit') }}')" style="background-color: #208DBB;
+                                            border-radius: 15px;
+                                            width:45px;
+                                            height: 40px;
+                                            position: relative;
+                                            padding: 0;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;">
+                                            <img src="{{ url('/icons/edit_quiz_button.png') }}" style="max-width: 100%; max-height: 100%;">
+                                            </button>
                                             <p id="message"></p>
                                             <script>
                                                 function copyLink() {
                                                     // Ambil elemen input yang berisi link
                                                     var copyText = document.querySelector(".copy-text");
-                                                
+
                                                     // copyText.querySelector("button").addEventListener("click", function(){
                                                     //     var input = copyText.querySelector("input.text");
                                                     //     input.select();
@@ -280,6 +291,9 @@
                 </div>
                 <script>
                     function redirectToSection_edit(url) {
+                        window.location.href = url;
+                    }
+                    function redirectToSection_edit_exam(url) {
                         window.location.href = url;
                     }
                     function redirectToSection_download(url) {
