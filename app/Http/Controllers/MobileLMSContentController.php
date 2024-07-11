@@ -10,6 +10,8 @@ use App\Models\ExamTaker;
 use App\Models\Lesson;
 use App\Models\StudentSection;
 use App\Models\User;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +20,11 @@ class MobileLmsContentController extends Controller
 {
 
 
-    public function seeClassProgress(Request $request, $classId){
+    public function seeClassProgress(Request $request, $classId)
+    {
+
+
+        $mentorName = "";
 
     }
     public function seeClassSections(Request $request, Lesson $lesson)
@@ -32,6 +38,7 @@ class MobileLmsContentController extends Controller
             'lessons.id as lesson_id',
             'lessons.course_title as lessons_title',
             'lessons.mentor_id',
+            'lesson_categories.name as category_name',
             'users.name as mentor_name',
             'course_section.id as section_id',
             'course_section.section_order',
@@ -47,19 +54,26 @@ class MobileLmsContentController extends Controller
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
+            ->leftJoin('lesson_categories', 'lesson_categories.id', '=', 'lessons.category_id') // Left join to quiz_session
             ->where('course_section.course_id', $lessonId)
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
-            foreach ($sections as $key => $section) {
-                // Check if the section is already added to the student-section
-                $isTaken = StudentSection::where('section_id', $section->section_id)
-                    ->where('student_id', Auth::id())
-                    ->exists();
-
-                // Add the 'isTaken' attribute to the section object
-                $section->isTaken = $isTaken;
+        foreach ($sections as $key => $section) {
+            // Check if the section is already added to the student-section
+            $isTaken = StudentSection::where('section_id', $section->section_id)
+                ->where('student_id', Auth::id())
+                ->exists();
+            $fullContentUrl = "";
+            if (str_contains($section->section_video, 's3')) {
+                $fullContentUrl = env('AWS_BASE_URL') . $section->section_video;
+            } else {
+                $fullContentUrl = asset('storage/class/content/' . $lessonId . '/' . $section->section_video);
             }
+            // Add the 'isTaken' attribute to the section object
+            $section->isTaken = $isTaken;
+            $section->full_content_url = $fullContentUrl;
+        }
 
 
         $compact = compact(
@@ -87,13 +101,17 @@ class MobileLmsContentController extends Controller
         $nextSectionId = null;
         $prevSectionId = null;
         $currentSectionId = $section->id;
-        $questions = [];
         $currentSection = CourseSection::findOrFail($currentSectionId);
         $isExam = false;
         $title = "";
+        $questions = [];
 
         $userId = $request->user_id;
         Auth::loginUsingId($userId);
+
+        if (Auth::check()) {
+            $userId = Auth::id();
+        }
 
         if (!Auth::check()) {
             MyHelper::addAnalyticEventMobile(
@@ -101,7 +119,14 @@ class MobileLmsContentController extends Controller
                 "Course Section",
                 $userId
             );
-            abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                0,
+                "Section Tidak Ditemukan",
+                "Class Section Not Found",
+                "Anda harus login untuk melanjutkan"
+            );
         }
 
         $user_id = Auth::user()->id;
@@ -132,7 +157,14 @@ class MobileLmsContentController extends Controller
                     "Course Section",
                     $userId
                 );
-                //                abort(401, "Kelas ini hanya bisa diakses pada jadwal yang telah ditentukan #922 $lessonObject");
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Kelas Hanya Bisa Diakses pada jam yang ditentukan",
+                    "Class can be accessed on certain time",
+                    "Kelas Hanya Bisa Diakses pada jam yang ditentukan"
+                );
             }
         }
 
@@ -185,14 +217,21 @@ class MobileLmsContentController extends Controller
             if (Auth::user()->role == "student") {
 
                 if ($section->can_be_accessed == "n") {
-                    abort(401, "Materi baru dapat diakses pada jadwal yang telah ditentukan");
+                    return MyHelper::responseErrorWithData(
+                        400,
+                        400,
+                        0,
+                        "Materi Hanya Bisa Diakses pada jam yang ditentukan",
+                        "Class Section Not Found",
+                        "Materi Hanya Bisa Diakses pada jam yang ditentukan"
+                    );
                 }
                 $sectionTakenByStudent = DB::table('student_section as ss')
                     ->select('section_id')
                     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
                     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('ss.student_id', Auth::user()->id)
                     ->where('lessons.id', $lessonId) // Add the condition lessons.id = 5
                     ->pluck('ss.section_id')
                     ->toArray();
@@ -201,7 +240,7 @@ class MobileLmsContentController extends Controller
                     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
                     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-                    ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
+                    ->where('ss.student_id', Auth::user()->id)
                     ->where('lessons.id', $lessonId)
                     ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
                     ->first();
@@ -252,7 +291,14 @@ class MobileLmsContentController extends Controller
 
         $sectionDetail = CourseSection::findOrFail($sectionId);
 
-        if($sectionDetail!=null){
+        if (str_contains($sectionDetail->section_video, 's3')) {
+            $fullContentUrl = env('AWS_BASE_URL') . $section->section_video;
+        } else {
+            $fullContentUrl = asset('storage/class/content/' . $lessonId . '/' . $section->section_video);
+        }
+        $sectionDetail->section_video = $fullContentUrl;
+
+        if ($sectionDetail != null) {
             $title = $sectionDetail->section_title ?? "";
         }
         // Iterate over the sections and check if each one is already added to the student-section
@@ -309,12 +355,21 @@ class MobileLmsContentController extends Controller
                 if (!in_array($sectionOrder[$i], $completedSections)) {
                     $isEligibleStudent = false;
                     if ($sectionTakenOnCourseCount != 0) {
+
+                        return MyHelper::responseErrorWithData(
+                            400,
+                            400,
+                            0,
+                            "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini",
+                            "Class Section Not Found",
+                            "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini"
+                        );
                         //                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
                     }
                 }
             }
             if ($isEligibleStudent) {
-                $this->startSection($currentSectionId,$userId);
+                $this->startSection($currentSectionId, $userId);
             }
         }
 
@@ -322,7 +377,6 @@ class MobileLmsContentController extends Controller
         $exam = null;
         $question_count = 0;
         $totalScore = 0;
-        $session = null;
 
         if (
             $currentSection->quiz_session_id != null &&
@@ -334,22 +388,51 @@ class MobileLmsContentController extends Controller
             $isExam = true;
             $examSession = ExamSession::find($currentSection->quiz_session_id);
             $exam = Exam::find($examSession->exam_id);
-            $session = $examSession;
-            $questions = json_decode($session->questions_answers);
             $totalScore = 0;
             $title = $exam->title;
+            $questions = json_decode($examSession->questions_answers, true);
+
+
+            // Check if the current date and time is within the start_date and end_date
+            $currentDate = Carbon::now();
+            $startDate = Carbon::parse($examSession->start_date);
+            $endDate = Carbon::parse($examSession->end_date);
+
+            if ($currentDate < $startDate || $endDate < $startDate) {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Ujian hanya bisa diakses antara $startDate hingga $endDate",
+                    "Class Section Not Found",
+                    "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini"
+                );
+            }
+
             foreach ($questions as $question) {
-                if (isset($question->choices)) {
-                    $choices = json_decode($question->choices, true);
+                if (isset($question['choices'])) {
+                    $choices = json_decode($question['choices'], true); // Decode each choice set to an array
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        // Handle JSON decode error for choices
+                        continue; // Skip this question if choices can't be decoded
+                    }
 
                     foreach ($choices as $choice) {
-                        if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
-                            $totalScore += (int)$choice['score'];
+                        if (isset($choice['score']) && is_numeric($choice['score']) && $choice['score'] >= 0) {
+                            $totalScore += (int) $choice['score'];
                         }
                     }
                 }
+
             }
-            $question_count = count($questions);
+
+
+
+            $examSession->questions_answers = json_decode(($examSession->questions_answers));
+            foreach ($examSession->questions_answers as $key) {
+                $key->choices = json_decode($key->choices, true);
+            }
+
         }
 
         //check if student has taken any exam on this session
@@ -359,12 +442,17 @@ class MobileLmsContentController extends Controller
             "=",
             $courseId
         )->where(
-            "course_section_flag",
-            "=",
-            $sectionId
-        )
+                "course_section_flag",
+                "=",
+                $sectionId
+            )
             ->where("user_id", '=', Auth::id())
             ->get();
+
+        foreach ($examResults as $examResultItem) {
+            $examResultItem->user_exam_answers = json_decode($examResultItem->user_answers);
+            unset($examResultItem->user_answers);
+        }
 
 
         if (count($examResults) > 0) {
@@ -433,12 +521,10 @@ class MobileLmsContentController extends Controller
             'isPrecedingTaken',
             'examSession',
             'exam',
-            'session',
             'question_count',
             'totalScore',
             'sectionOrder',
             'lesson',
-            'section',
             'isRegistered',
             'classInfo'
         );

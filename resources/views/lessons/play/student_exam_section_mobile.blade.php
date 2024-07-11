@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="form-group">
-                                <h5>Multiple Attempt: {{$session->allow_multiple === 'y' ? 'Ya' : 'Tidak'}}</h5>
+                                <h5>Multiple Attempt: {{$session->allow_multiple === 'y' || $session->allow_multiple === 'Aktif' ? 'Ya' : 'Tidak'}}</h5>
                             </div>
 
 

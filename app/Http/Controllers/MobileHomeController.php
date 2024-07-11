@@ -67,15 +67,7 @@ class MobileHomeController extends Controller
         // Fetching lesson categories if not already available
         $lessonCategories = LessonCategory::all()->pluck('color_of_categories', 'id')->toArray();
 
-        // Adding full image path to each class
-        $section = CourseSection::where("course_id", "=", $classes->id)
-            ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
-            ->first();
-        if ($section != null) {
-            $classes->first_section = (string)$section->id;
-        } else {
-            $classes->first_section = null;
-        }
+
 
         $sections = CourseSection::select(
             'lessons.id as lesson_id',

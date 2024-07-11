@@ -10,6 +10,8 @@ use App\Models\ExamTaker;
 use App\Models\Lesson;
 use App\Models\StudentSection;
 use App\Models\User;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,9 +39,9 @@ class MobileSeeCourseController extends Controller
                 $userId
             );
 
-            if($userId!=null){
+            if ($userId != null) {
                 Auth::loginUsingId($userId);
-            }else{
+            } else {
                 abort(401, "Anda Harus Login Untuk Melanjutkan " . $lesson->name);
             }
         }
@@ -273,13 +275,28 @@ class MobileSeeCourseController extends Controller
             $questions = json_decode($session->questions_answers);
             $totalScore = 0;
             $title = $exam->title;
+
+
+            $currentDate = new DateTime();
+            $startDate = new DateTime($examSession->start_date);
+            $endDate = new DateTime($examSession->end_date);
+
+            // Check if the current date and time is within the start_date and end_date
+            $currentDate = Carbon::now();
+            $startDate = Carbon::parse($examSession->start_date);
+            $endDate = Carbon::parse($examSession->end_date);
+
+            if ($currentDate->lt($startDate) || $currentDate->gt($endDate)) {
+                abort(401,"Kelas hanya bisa diakses pada $startDate - $endDate");
+            }
+
             foreach ($questions as $question) {
                 if (isset($question->choices)) {
                     $choices = json_decode($question->choices, true);
 
                     foreach ($choices as $choice) {
                         if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
-                            $totalScore += (int)$choice['score'];
+                            $totalScore += (int) $choice['score'];
                         }
                     }
                 }
@@ -294,10 +311,10 @@ class MobileSeeCourseController extends Controller
             "=",
             $courseId
         )->where(
-            "course_section_flag",
-            "=",
-            $sectionId
-        )
+                "course_section_flag",
+                "=",
+                $sectionId
+            )
             ->where("user_id", '=', Auth::id())
             ->get();
 
