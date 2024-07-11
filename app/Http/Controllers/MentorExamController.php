@@ -433,7 +433,7 @@ class MentorExamController extends Controller
 
     public function downloadExam($examId){
         $data_exam = DB::select("
-                        SELECT 
+                        SELECT
                             e.id as exam_id,
                             e.title as exam_title,
                             l.course_title as course,
@@ -444,22 +444,22 @@ class MentorExamController extends Controller
                             cs.section_title as course_section_title,
                             es.id as exam_session_id,
                             cs.id as course_section_id
-                        FROM 
+                        FROM
                             exam_takers et
-                        LEFT JOIN 
+                        LEFT JOIN
                             exam_sessions es ON et.session_id = es.id
-                        LEFT JOIN 
+                        LEFT JOIN
                             course_section cs ON cs.id = et.course_section_flag
-                        LEFT JOIN 
+                        LEFT JOIN
                             exams e ON e.id = es.exam_id
-                        LEFT JOIN 
+                        LEFT JOIN
                             users u ON et.user_id = u.id
-                        LEFT JOIN 
+                        LEFT JOIN
                             lessons l ON l.id = cs.course_id
                         WHERE
                             e.id = $examId
                     ");
-                    
+
         // return $data_exam;
         return view("exam.download_exam_pages", compact('data_exam'));
     }
@@ -498,6 +498,8 @@ class MentorExamController extends Controller
     {
         $user_id = Auth::id();
 
+        return $request->all();
+
         // Insert to Table Exam
         $exam = new Exam();
         $exam->title = $request->title;
@@ -528,14 +530,22 @@ class MentorExamController extends Controller
             $examSession->start_date = $request->start_date;
             $examSession->end_date = $request->end_date;
             $examSession->instruction = $request->instruction;
-            $examSession->description = 'Test';
-            $examSession->can_access = 'Test';
+            $examSession->description = 'n/a';
+            $examSession->can_access = 'n/a';
             $examSession->time_limit_minute = $request->times_limit;
 
-            $examSession->public_access = $request->public_access;
-            $examSession->allow_review = $request->allow_review;
+            //translate user input to y and n for positive and negative case
+            $mapping = [
+                'Aktif' => 'y',
+                'Tidak Aktif' => 'n',
+            ];
+
+            $examSession->public_access = $mapping[$request->public_access] ?? '';
+            $examSession->allow_review = $mapping[$request->allow_review] ?? '';
+            $examSession->show_result_on_end = $mapping[$request->show_result_on_end] ?? '';
+            $examSession->allow_multiple = $mapping[$request->allow_multiple] ?? '';
+
             $examSession->show_score_on_review = 'y/n';
-            $examSession->show_result_on_end = $request->show_result_on_end;
             $examSession->allow_multiple = $request->allow_multiple;
 
             $examSession->exam_id = $exam->id;
