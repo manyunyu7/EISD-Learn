@@ -189,7 +189,7 @@
                             </div>
 
                             {{-- Embedded File --}}
-                            <div class="mb-3">
+                            <div class="mb-3 d-none">
                                 <label for="" class="mb-2">Embeded File<span style="color: red">*</span></label>
                                 <textarea  type='text'  class="form-control" name="embeded_file"></textarea>
                             </div>
