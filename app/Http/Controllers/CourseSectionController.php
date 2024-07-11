@@ -184,6 +184,10 @@ class CourseSectionController extends Controller
         $update_to_CourseSection->can_be_accessed = $request->update_is_access;
         $update_to_CourseSection->quiz_session_id = $request->update_is_examId;
         $update_to_CourseSection->embedded_file = $request->embeded_file;
+
+        if($request->update_content ==""){
+            $update_to_CourseSection->section_content = "";
+        }
         // dd($update_to_CourseSection);
         $update_to_CourseSection->save();
 
