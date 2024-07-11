@@ -333,7 +333,7 @@
 
                         {{-- Departemen --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">Departemen<span style="color: red">*</span></label>
+                            <label for="" class="mb-2">Departemen<span style="color: red"></span></label>
                             <div class="input-group mb-3">
                                 <select id="department_id" name="department_id[]"
                                     class="form-control form-select-lg js-example-basic-multiple" multiple
@@ -345,7 +345,7 @@
 
                         {{-- Posisi --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">Posisi<span style="color: red">*</span></label>
+                            <label for="" class="mb-2">Posisi<span style="color: red"></span></label>
                             <div class="input-group mb-3">
                                 <select id="position_id" name="position_id[]"
                                     class="form-control form-select-lg js-example-basic-multiple" multiple></select>
