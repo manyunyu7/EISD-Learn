@@ -150,8 +150,8 @@
                                     <div class="input-group mb-3">
                                         <select required name="update_is_access" class="form-control form-select-lg" aria-label="Default select example">
                                             <option value="" disabled> </option>
-                                            <option value="Y" {{ $data_course_section_to_edit->can_be_accessed == 'Y' ? 'selected' : '' }}>Ya</option>
-                                            <option value="T" {{ $data_course_section_to_edit->can_be_accessed == 'T' ? 'selected' : '' }}>Tidak</option>
+                                            <option value="y" {{ $data_course_section_to_edit->can_be_accessed == 'y' ? 'selected' : '' }}>Ya</option>
+                                            <option value="n" {{ $data_course_section_to_edit->can_be_accessed == 'n' ? 'selected' : '' }}>Tidak</option>
                                         </select>
                                     </div>
                                 </div>

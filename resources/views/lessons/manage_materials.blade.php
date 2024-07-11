@@ -149,8 +149,8 @@
                                     <div class="input-group mb-3">
                                         <select required name="is_access" class="form-control form-select-lg" aria-label="Default select example">
                                             <option value="" disabled selected> </option>
-                                            <option value="Y">Ya</option>
-                                            <option value="T">Tidak</option>
+                                            <option value="y">Ya</option>
+                                            <option value="n">Tidak</option>
                                         </select>
                                     </div>
                                 </div>

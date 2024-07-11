@@ -218,7 +218,7 @@
                     $numStudentsCount = count($numStudents);
                 @endphp
 
-                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-4">
+                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-3">
                     <div class="card shadow ">
                         <!-- Cover Image Course -->
                         <img class="card-img-top" style="aspect-ratio: 16 / 9"
