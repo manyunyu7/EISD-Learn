@@ -31,7 +31,7 @@ class DetailClassController extends Controller
             ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
             ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
             ->where('a.id', $id)
-            ->orderBy('c.section_order', 'ASC')
+            ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
             ->get();
 
         $jumlahSection = $dayta->count();
@@ -63,7 +63,7 @@ class DetailClassController extends Controller
         ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
         ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
         ->where('a.id', $id)
-        ->orderBy('c.section_order', 'ASC')
+        ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
         ->get();
         $jumlahSection = $dayta->count();
 
