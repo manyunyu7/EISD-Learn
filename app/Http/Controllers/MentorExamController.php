@@ -498,7 +498,6 @@ class MentorExamController extends Controller
     {
         $user_id = Auth::id();
 
-        return $request->all();
 
         // Insert to Table Exam
         $exam = new Exam();
