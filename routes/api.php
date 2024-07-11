@@ -25,7 +25,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::get('/course/{lesson}/section/{section}', 'MobileLmsContentController@seeSection');
 Route::get('/course/{lesson}/sections', 'MobileLmsContentController@seeClassSections');
-Route::get('/course/{lesson}/sections', 'MobileLmsContentController@seeClassSections');
 
 
 Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
