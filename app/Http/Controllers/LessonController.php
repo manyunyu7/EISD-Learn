@@ -255,7 +255,12 @@ class LessonController extends Controller
         $update_data_lesson->pin                = $request->pass_class;
         $update_data_lesson->position           = $request->position;
         $update_data_lesson->target_employee    = '';
-        $update_data_lesson->new_class          = $request->new_class;
+        $newLabelValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+
+        $update_data_lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
         $update_data_lesson->tipe               = $request->tipe;
         $update_data_lesson->department_id      = json_encode($request->department_id);
         $update_data_lesson->position_id        = json_encode($request->position_id);
@@ -570,6 +575,8 @@ class LessonController extends Controller
         $insert_to_Lesson = new Lesson();
         $insert_to_Lesson->course_cover_image = $imagePath;
         $insert_to_Lesson->course_title = $request->title;
+
+
         $insert_to_Lesson->course_trailer = 'Value';
         $insert_to_Lesson->category_id = $request->category_id;
         $insert_to_Lesson->start_time = $request->start_time;
@@ -581,7 +588,12 @@ class LessonController extends Controller
         $insert_to_Lesson->pin = $request->pass_class;
         $insert_to_Lesson->position = $request->position;
         $insert_to_Lesson->target_employee = '';
-        $insert_to_Lesson->new_class = $request->new_class;
+        $newLabelValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+
+        $insert_to_Lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
         $insert_to_Lesson->tipe = $request->tipe;
         $insert_to_Lesson->department_id = json_encode($request->department_id);
         $insert_to_Lesson->position_id = json_encode($request->position_id);

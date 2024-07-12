@@ -56,7 +56,7 @@
                         var column = this;
                         var select = $(
                                 '<select class="form-control"><option value=""></option></select>'
-                                )
+                            )
                             .appendTo($(column.footer()).empty())
                             .on('change', function() {
                                 var val = $.fn.dataTable.util.escapeRegex(
@@ -250,24 +250,21 @@
 @section('main')
     <div class="page-inner">
 
-        <div class="col-md-12">
-            {{-- BREADCRUMB --}}
-            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
-                    <li class="breadcrumb-item"><a href={{ url('/lesson/manage_v2') }}>Class</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Add Class</li>
-                </ol>
-            </nav>
-        </div>
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
+                <li class="breadcrumb-item"><a href={{ url('/lesson/manage_v2') }}>Class</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add Class</li>
+            </ol>
+        </nav>
 
-        <div class="page-header">
+        <div class="container-fluid">
             <h1><b>Tambah Kelas Baru</b></h1>
         </div>
-        {{-- SOAL UJIAN --}}
+
         <div class="container-fluid load-soal">
             <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST"
-                enctype="multipart/form-data">
+                enctype="multipart/form-data" onsubmit="return validateForm()">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                 <div class="row">
@@ -375,6 +372,7 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Deskripsi Kelas</label>
                             <textarea id="editor" class="form-control" name="content"></textarea>
+                            <div id="error-message" style="color: red; display: none; font-size: 0.9em;"></div>
                             <script>
                                 ClassicEditor
                                     .create(document.querySelector('#editor'))
@@ -445,6 +443,20 @@
                         </div>
 
                         <script>
+                            function validateForm() {
+                                const editorContent = document.querySelector('#editor').value.trim();
+                                const errorMessage = document.getElementById('error-message');
+
+                                if (editorContent === '') {
+                                    errorMessage.textContent = 'Deskripsi Kelas tidak boleh kosong.';
+                                    errorMessage.style.display = 'block';
+                                    return false; // Prevent form submission
+                                } else {
+                                    errorMessage.style.display = 'none';
+                                    return true; // Allow form submission
+                                }
+                            }
+
                             function validateImage(input) {
                                 if (input.files && input.files[0]) {
                                     var reader = new FileReader();
