@@ -153,44 +153,46 @@ class HomeController extends Controller
             $departmentId = $request->input('department');
             $month = $request->input('month');
 
-            $results = ExamTaker::selectRaw('
-                    e.title as exam_title,
-                    es.id AS exam_session_id,
-                    AVG(et.current_score) AS avg_score
-                ')
-                ->from('exam_takers as et')
-                ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
-                ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
-                ->leftJoin('users as u', 'et.user_id', '=', 'u.id')
-                ->where(function ($query) {
-                    $query->where('e.is_deleted', '!=', 'y')
-                        ->orWhereNull('e.is_deleted')
-                        ->orWhere('e.is_deleted', '');
-                })
-                ->where(function ($query) use ($month) {
-                    if ($month !== 'all') {
-                        $query->whereRaw('MONTH(es.created_at) = ?', [$month]);
-                    }
-                })
-                ->where(function ($query) use ($departmentId) {
-                    if (!empty($departmentId)) {
-                        if($departmentId!="all"){
-                            $query->where('u.department_id', '=', $departmentId);
-                        }
-                    }
-                })
-                ->where(function ($query) use ($locationId) {
-                    if (!empty($locationId)) {
-                        if ($locationId !== 'all') {
-                            $query->whereJsonContains('u.location', ['site_id' => $locationId]);
-                        }
-                    }
-                })
-                ->groupBy('es.id')
-                ->orderByDesc('es.created_at')
-                ->limit(3)
-                ->get();
+            $results = DB::table('exam_sessions as es')
+            ->selectRaw('
+                e.title as exam_title,
+                es.id AS exam_session_id,
+                AVG(hs.highest_score) AS avg_score,
+                COUNT(DISTINCT hs.user_id) AS student_count
+            ')
+            ->join('exams as e', 'e.id', '=', 'es.exam_id')
+            ->join(DB::raw('(SELECT user_id, session_id, MAX(current_score) AS highest_score FROM exam_takers GROUP BY user_id, session_id) as hs'), function ($join) {
+                $join->on('es.id', '=', 'hs.session_id');
+            })
+            ->where(function ($query) {
+                $query->where('e.is_deleted', '!=', 'y')
+                    ->orWhereNull('e.is_deleted')
+                    ->orWhere('e.is_deleted', '');
+            })
+            ->where(function ($query) use ($month) {
+                if ($month !== 'all') {
+                    $query->whereRaw('MONTH(es.created_at) = ?', [$month]);
+                }
+            })
+            ->where(function ($query) use ($departmentId) {
+                if (!empty($departmentId) && $departmentId !== "all") {
+                    $query->where('u.department_id', '=', $departmentId);
+                }
+            })
+            ->where(function ($query) use ($locationId) {
+                if (!empty($locationId) && $locationId !== 'all') {
+                    $query->whereJsonContains('u.location', ['site_id' => $locationId]);
+                }
+            })
+            ->groupBy('es.id', 'e.title')
+            ->orderByDesc('es.created_at')
+            ->limit(3)
+            ->get();
 
+
+
+
+            return $results;
 
 
 
