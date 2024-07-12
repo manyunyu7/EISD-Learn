@@ -52,7 +52,7 @@ class MobileHomeController extends Controller
         // Add a new attribute to each item in the $classes array
         foreach ($classes as $class) {
 
-            if ($class->new_class == "Aktif") {
+            if ($class->new_class == "Aktif" || $class->new_class == "y") {
                 $class->new_class = true;
             } else {
                 $class->new_class = false;
@@ -468,7 +468,13 @@ class MobileHomeController extends Controller
                     ->where('c.student_id', '=', $userID); // Filter the join by the current user ID
             })
             ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id') // Left join the student_lesson table again to count the total number of students for each class
-            ->whereNull('a.deleted_at'); // Filter out deleted records from the lessons table
+            ->whereNull('a.deleted_at') // Filter out deleted records from the lessons table
+            ->where(function ($query) {
+                $query->where('is_visible', '=', 'y')
+                      ->orWhere('is_visible', '=', 'Aktif')
+                      ->orWhereNull('is_visible')
+                      ->orWhere('is_visible', '=', '');
+            });
 
 
         if ($request->category != null) {
@@ -496,7 +502,7 @@ class MobileHomeController extends Controller
                 ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
                 ->first();
 
-            if ($data->new_class == "Aktif") {
+            if ($data->new_class == "Aktif" || $data->new_class == "y") {
                 $data->new_class = true;
             } else {
                 $data->new_class = false;
