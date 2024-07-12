@@ -407,10 +407,20 @@
                             </div>
                         </div>
 
+                        {{-- Bisa Diakses --}}
+                        <div class="mb-3">
+                            <label for="" class="mb-2">Akses Kelas<span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <input readonly type="text" value="Tidak Aktif" name="akses_kelas" id="btn-akses-kelas"
+                                    class="btn btn-danger" style="width: 100%">
+                            </div>
+                        </div>
+
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 var btn_new_class = document.getElementById('btn-new-clas');
                                 var isActive_NC = false;
+                                var isActiveAksesKelas = false;
 
                                 // New Class Setup
                                 btn_new_class.addEventListener('click', function() {
@@ -431,6 +441,28 @@
                                         isActive_NC = true;
                                     }
                                 });
+
+                                var btnAksesKelas = document.getElementById('btn-akses-kelas');
+                                // New Class Setup
+                                btnAksesKelas.addEventListener('click', function() {
+                                    // Tidak Aktif
+                                    if (isActiveAksesKelas) {
+                                        btnAksesKelas.classList.remove('btn-success');
+                                        btnAksesKelas.classList.add('btn-danger');
+                                        btnAksesKelas.textContent = 'Tidak Aktif';
+                                        btnAksesKelas.value = 'Tidak Aktif';
+                                        isActiveAksesKelas = false;
+                                    }
+                                    // Aktif
+                                    else {
+                                        btnAksesKelas.classList.remove('btn-danger');
+                                        btnAksesKelas.classList.add('btn-success');
+                                        btnAksesKelas.textContent = 'Aktif';
+                                        btnAksesKelas.value = 'Aktif';
+                                        isActiveAksesKelas = true;
+                                    }
+                                });
+
                             });
                         </script>
                     </div>

@@ -215,9 +215,7 @@ class LessonController extends Controller
 
     public function updateClassV2(Request $request, $lesson_id)
     {
-        // dd($request->all()) ;
-        ini_set('upload_max_filesize', '500M');
-        ini_set('post_max_size', '500M');
+
         $this->validate($request, [
             // 'image' => 'required',
             'title' => 'required',
@@ -248,7 +246,11 @@ class LessonController extends Controller
         $update_data_lesson->category_id        = $request->category_id;
         $update_data_lesson->start_time         = $request->start_time;
         $update_data_lesson->end_time           = $request->end_time;
-        $update_data_lesson->can_be_accessed    = $request->access;
+        $canBeAccessValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+        $update_data_lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
         $update_data_lesson->mentor_id          = $user_id;
         $update_data_lesson->course_description = $request->content;
         $update_data_lesson->text_descriptions  = '';
@@ -578,7 +580,11 @@ class LessonController extends Controller
         $insert_to_Lesson->category_id = $request->category_id;
         $insert_to_Lesson->start_time = $request->start_time;
         $insert_to_Lesson->end_time = $request->end_time;
-        $insert_to_Lesson->can_be_accessed = 'n';
+        $canBeAccessValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+        $insert_to_Lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
         $insert_to_Lesson->mentor_id = $user_id;
         $insert_to_Lesson->course_description = $request->content;
         $insert_to_Lesson->text_descriptions = '';

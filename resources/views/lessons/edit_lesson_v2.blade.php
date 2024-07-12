@@ -56,7 +56,7 @@
                         var column = this;
                         var select = $(
                                 '<select class="form-control"><option value=""></option></select>'
-                                )
+                            )
                             .appendTo($(column.footer()).empty())
                             .on('change', function() {
                                 var val = $.fn.dataTable.util.escapeRegex(
@@ -302,7 +302,8 @@
                                 <label for="" class="mb-2">Password Kelas<span style="color: red">*</span></label>
                                 <div class="input-group mb-3">
                                     <input required value="{{ $myClass->pin }}" name="pass_class" type="text"
-                                        class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                        class="form-control" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2">
                                 </div>
                             </div>
 
@@ -311,7 +312,8 @@
                                 <label for="" class="mb-2">Judul Kelas<span style="color: red">*</span></label>
                                 <div class="input-group mb-3">
                                     <input required value="{{ $myClass->course_title }}" name="title" type="text"
-                                        class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                        class="form-control" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2">
                                 </div>
                             </div>
 
@@ -423,17 +425,32 @@
                                 <label for="" class="mb-2">New Kelas<span style="color: red">*</span></label>
                                 <div class="input-group mb-3">
                                     <input readonly type="text"
-                                        value="{{ $myClass->new_class == 'y' ? 'Aktif' : 'Tidak Aktif' }}" name="new_class"
-                                        id="public-access-btn"
+                                        value="{{ $myClass->new_class == 'y' ? 'Aktif' : 'Tidak Aktif' }}"
+                                        name="new_class" id="is_active_btn"
                                         class="btn {{ $myClass->new_class == 'y' ? 'btn-success' : 'btn-danger' }}"
+                                        style="width: 100%">
+                                </div>
+                            </div>
+
+                            {{-- Akses Kelas --}}
+                            <div class="mb-3">
+                                <label for="" class="mb-2">Akses Kelas<span style="color: red">*</span></label>
+                                <div class="input-group mb-3">
+                                    <input readonly type="text"
+                                        value="{{ $myClass->can_be_accessed == 'y' ? 'Aktif' : 'Tidak Aktif' }}"
+                                        name="akses_kelas" id="access_class_btn"
+                                        class="btn {{ $myClass->can_be_accessed == 'y' ? 'btn-success' : 'btn-danger' }}"
                                         style="width: 100%">
                                 </div>
                             </div>
 
                             <script>
                                 document.addEventListener('DOMContentLoaded', function() {
-                                    var btn_new_class = document.getElementById('public-access-btn');
-                                    var isActive_NC = false;
+                                    var btn_new_class = document.getElementById('is_active_btn');
+                                    var isActive_NC = btn_new_class.value === 'Aktif';
+
+                                    var btn_access_class = document.getElementById('access_class_btn');
+                                    var isActive_AC = btn_access_class.value === 'Aktif';
 
                                     // New Class Setup
                                     btn_new_class.addEventListener('click', function() {
@@ -454,8 +471,29 @@
                                             isActive_NC = true;
                                         }
                                     });
+
+                                    // Access Class Setup
+                                    btn_access_class.addEventListener('click', function() {
+                                        // Tidak Aktif
+                                        if (isActive_AC) {
+                                            btn_access_class.classList.remove('btn-success');
+                                            btn_access_class.classList.add('btn-danger');
+                                            btn_access_class.textContent = 'Tidak Aktif';
+                                            btn_access_class.value = 'Tidak Aktif';
+                                            isActive_AC = false;
+                                        }
+                                        // Aktif
+                                        else {
+                                            btn_access_class.classList.remove('btn-danger');
+                                            btn_access_class.classList.add('btn-success');
+                                            btn_access_class.textContent = 'Aktif';
+                                            btn_access_class.value = 'Aktif';
+                                            isActive_AC = true;
+                                        }
+                                    });
                                 });
                             </script>
+
                         </div>
 
 
