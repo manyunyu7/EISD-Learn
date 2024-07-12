@@ -150,23 +150,23 @@ class MobileLmsContentController extends Controller
         $lessonId = $lesson->id;
 
         $lessonObject = Lesson::findOrFail($lessonId);
-        if (Auth::user()->role == "student") {
-            if ($lessonObject->can_be_accessed == "n") {
-                MyHelper::addAnalyticEventMobile(
-                    "Reject Section Diluar Jadwal",
-                    "Course Section",
-                    $userId
-                );
-                return MyHelper::responseErrorWithData(
-                    400,
-                    400,
-                    0,
-                    "Kelas Hanya Bisa Diakses pada jam yang ditentukan",
-                    "Class can be accessed on certain time",
-                    "Kelas Hanya Bisa Diakses pada jam yang ditentukan"
-                );
-            }
-        }
+        // if (Auth::user()->role == "student") {
+        //     if ($lessonObject->can_be_accessed == "n") {
+        //         MyHelper::addAnalyticEventMobile(
+        //             "Reject Section Diluar Jadwal",
+        //             "Course Section",
+        //             $userId
+        //         );
+        //         return MyHelper::responseErrorWithData(
+        //             400,
+        //             400,
+        //             0,
+        //             "Kelas Hanya Bisa Diakses pada jam yang ditentukan",
+        //             "Class can be accessed on certain time",
+        //             "Kelas Hanya Bisa Diakses pada jam yang ditentukan"
+        //         );
+        //     }
+        // }
 
 
         // Get the preceding sections

@@ -7,10 +7,10 @@ use App\Models\ExamSession;
 use App\Models\ExamTaker;
 use App\Models\StudentSection;
 use App\Models\Exam;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use PhpParser\Node\Stmt\Return_;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -29,7 +29,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
 
         if (!Auth::check()) {
@@ -37,10 +37,10 @@ class HomeController extends Controller
         }
 
         $departments = DB::connection('ithub')
-                        ->table('m_departments')
-                        ->select('id', 'code', 'name')
-                        ->where('code', 'like', '%_NEW%')
-                        ->get();
+            ->table('m_departments')
+            ->select('id', 'code', 'name')
+            ->where('code', 'like', '%_NEW%')
+            ->get();
         // return response()->json($departments);
         // return response()->json($departments);
 
@@ -51,7 +51,9 @@ class HomeController extends Controller
 
         $leaderboardQuery = DB::table(DB::raw('student_section ss'))
             ->select(
-                'u.name as student_name', 'u.profile_url', 'u.id',
+                'u.name as student_name',
+                'u.profile_url',
+                'u.id',
                 DB::raw('SUM(ss.score) as total_score'),
                 'avg_subquery.average_score as average_score',
                 DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as highest_score'),
@@ -68,7 +70,8 @@ class HomeController extends Controller
         if ($studentSectionCount > 0) {
             $topThreeQuery = DB::table(DB::raw('student_section ss'))
                 ->select(
-                    'u.name as student_name', 'u.profile_url',
+                    'u.name as student_name',
+                    'u.profile_url',
                     DB::raw('SUM(ss.score) as total_score'),
                     DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as lowest_score'),
                     DB::raw('(SELECT MIN(score) FROM student_section WHERE student_id = u.id) as highest_score')
@@ -93,7 +96,6 @@ class HomeController extends Controller
         if (Auth::check() && Auth::user()->role == 'mentor') {
             $userId = Auth::user()->id;
             $user_name = Auth::user()->name;
-            $blog = DB::select("select * from view_blog where user_id = $userId ");
             $classes = DB::select("select * from view_course where mentor_id = $userId");
             $classRegistered = DB::select("SELECT * from view_student_lesson where student_id=$userId");
             $projectCreatedCount = DB::table('view_project')
@@ -138,7 +140,7 @@ class HomeController extends Controller
                 // Hitung berapa banyak kelas yang sedang dalam status on progress course
                 if ($courseStatus[$lessonId] === 'On Progress Course') {
                     $onProgressCount++;
-                }else{
+                } else {
                     $completedCourseCount++;
                 }
             }
@@ -146,79 +148,51 @@ class HomeController extends Controller
             // Retrieve all records of exams taken by students
             $takenExamCourseSection = ExamTaker::all();
 
-            // Initialize an empty array to store unique exam sessions
-            $takenExamId = [];
-            $eligibleSessionId = [];
 
-            // Loop through each taken exam
-            foreach ($takenExamCourseSection as $mExamSection){
+            $locationId = $request->input('location');
+            $departmentId = $request->input('department');
+            $month = $request->input('month');
 
-                // Find the exam session related to the taken exam
-                $examSession = ExamSession::find($mExamSection->session_id);
-
-                // If the exam session exists
-                if($examSession!=null){
-
-                    // Find the exam related to the session
-                    $exam = Exam::find($examSession->exam_id);
-                    // If the exam exists
-                    if($exam!=null){
-                        // Add the exam ID to the list of taken exam sessions
-                        array_push($takenExamId, $exam->id);
+            $results = ExamTaker::selectRaw('
+                    e.title as exam_title,
+                    es.id AS exam_session_id,
+                    AVG(et.current_score) AS avg_score
+                ')
+                ->from('exam_takers as et')
+                ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
+                ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
+                ->leftJoin('users as u', 'et.user_id', '=', 'u.id')
+                ->where(function ($query) {
+                    $query->where('e.is_deleted', '!=', 'y')
+                        ->orWhereNull('e.is_deleted')
+                        ->orWhere('e.is_deleted', '');
+                })
+                ->where(function ($query) use ($month) {
+                    if ($month !== 'all') {
+                        $query->whereRaw('MONTH(es.created_at) = ?', [$month]);
                     }
-                }
-            }
-
-            // Filter out duplicate exam sessions and convert the array to numerical indexed array
-            $availableExamToFilter = (array_values(array_unique($takenExamId)));
-
-            // Retrieve the latest three exams based on their IDs
-            $latestExams = Exam::whereIn('id', $availableExamToFilter)->latest()->take(3)->get();
-
-            // Initialize an empty array to store average scores
-            $averageScoreArray = [];
-
-            // Retrieve the average scores of exams for the latest three exam sessions
-            $averageScores  = DB::table('exam_sessions')
-                ->rightJoin('exam_takers', 'exam_sessions.id', '=', 'exam_takers.session_id')
-                ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
-                ->select('exams.id', 'exams.title', DB::raw('ROUND(AVG(exam_takers.current_score)) as average_score'))
-                ->where('exam_sessions.exam_type', 'Post Test')
-                ->groupBy('exam_sessions.id')
-                ->take(3)
+                })
+                ->where(function ($query) use ($departmentId) {
+                    if (!empty($departmentId)) {
+                        if($departmentId!="all"){
+                            $query->where('u.department_id', '=', $departmentId);
+                        }
+                    }
+                })
+                ->where(function ($query) use ($locationId) {
+                    if (!empty($locationId)) {
+                        if ($locationId !== 'all') {
+                            $query->whereJsonContains('u.location', ['site_id' => $locationId]);
+                        }
+                    }
+                })
+                ->groupBy('es.id')
+                ->orderByDesc('es.created_at')
+                ->limit(3)
                 ->get();
 
-            $arraySomething = [];
 
 
-
-            $results = DB::select("
-                        SELECT
-                            sub.exam_title,
-                            sub.exam_session_id,
-                            sub.avg_score
-                        FROM
-                            (SELECT
-                                e.title as exam_title,
-                                es.id AS exam_session_id,
-                                AVG(et.current_score) AS avg_score
-                            FROM
-                                exam_takers et
-                            LEFT JOIN
-                                exam_sessions es ON et.session_id = es.id
-                            LEFT JOIN
-                                course_section cs ON cs.id = et.course_section_flag
-                            LEFT JOIN
-                                exams e ON e.id = es.exam_id
-                            LEFT JOIN
-                                users u ON et.user_id = u.id
-                            GROUP BY
-                                es.id
-                            ORDER BY
-                                es.created_at DESC
-                            LIMIT 3)
-                        AS sub
-                    ");
 
             $averageScoreArray = [];
 
@@ -230,41 +204,53 @@ class HomeController extends Controller
                 ];
             }
 
-            // return $averageScoreArray;
+            $departments = DB::connection('ithub')
+                ->table('m_departments')
+                ->select('id', 'code', 'name')
+                ->where('code', 'like', '%_NEW%')
+                ->get();
+
+            $locations = DB::connection('ithub')
+                ->table('m_sites')
+                ->select('id', 'code', 'name')
+                ->get();
 
             $myStudent = DB::select("select * from view_student_lesson where mentor_name = '$user_name' ");
-
-
-            $blogCreatedCount = DB::table('view_blog')
-                ->where('user_id', $userId)
-                ->count();
 
             if (!Auth::check()) {
                 return Redirect::away('/'); // Replace '/login' with the URL of your login page
             }
 
             MyHelper::addAnalyticEvent(
-                "Buka Dashboard Mentor", "Dashboard"
+                "Buka Dashboard Mentor",
+                "Dashboard"
             );
+
+
+            $compact = compact(
+                'classes',
+                'classRegistered',
+                'locations',
+                'departments',
+                'leaderboard',
+                'studentCount',
+                'myStudent',
+                'topThree',
+                'projectCreatedCount',
+                'classRegisteredCount',
+                'onProgressCount',
+                'completedCourseCount',
+                'averageScoreArray'
+            );
+
+            if ($request->dump == true) {
+                return $compact;
+            }
+            ;
+
             return view('main.dashboard')
-                ->with(compact(
-                    'classes',
-                    'classRegistered',
-                    'blog',
-                    'blogCreatedCount',
-                    'leaderboard',
-                    'studentCount',
-                    'myStudent',
-                    'topThree',
-                    'projectCreatedCount',
-                    'classRegisteredCount',
-                    'onProgressCount',
-                    'completedCourseCount',
-                    'latestExams',
-                    'averageScoreArray'
-                ));
-        }
-        else if (Auth::check() && Auth::user()->role == 'student') {
+                ->with($compact);
+        } else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
 
@@ -311,49 +297,49 @@ class HomeController extends Controller
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();
 
-                $completedCourse_monthly = [];
+            $completedCourse_monthly = [];
 
-                // Loop untuk mengisi data per bulan
-                for ($i = 1; $i <= 12; $i++) {
-                    $found = false;
-                    foreach ($monthly_CompletedCourse as $course) {
-                        if ($course->month == $i) {
-                            // Simpan data per bulan sebagai objek
-                            $completedCourse_monthly[$i] = (object) [
-                                "year" => $course->year,
-                                "month" => $course->month,
-                                "completed_count" => $course->completed_count
-                            ];
-                            $found = true;
-                            break;
-                        }
-                    }
-                    // Jika tidak ada data untuk bulan tersebut, definisikan sebagai 0
-                    if (!$found) {
+            // Loop untuk mengisi data per bulan
+            for ($i = 1; $i <= 12; $i++) {
+                $found = false;
+                foreach ($monthly_CompletedCourse as $course) {
+                    if ($course->month == $i) {
+                        // Simpan data per bulan sebagai objek
                         $completedCourse_monthly[$i] = (object) [
-                            "year" => date("Y"),
-                            "month" => $i,
-                            "completed_count" => 0
+                            "year" => $course->year,
+                            "month" => $course->month,
+                            "completed_count" => $course->completed_count
                         ];
+                        $found = true;
+                        break;
                     }
                 }
+                // Jika tidak ada data untuk bulan tersebut, definisikan sebagai 0
+                if (!$found) {
+                    $completedCourse_monthly[$i] = (object) [
+                        "year" => date("Y"),
+                        "month" => $i,
+                        "completed_count" => 0
+                    ];
+                }
+            }
 
-                // Sortir array berdasarkan bulan
-                ksort($completedCourse_monthly);
+            // Sortir array berdasarkan bulan
+            ksort($completedCourse_monthly);
 
-                // Setelah data disiapkan, Anda dapat mengakses properti month dengan benar
-                $jan = $completedCourse_monthly[1];
-                $feb = $completedCourse_monthly[2];
-                $mar = $completedCourse_monthly[3];
-                $apr = $completedCourse_monthly[4];
-                $mei = $completedCourse_monthly[5];
-                $jun = $completedCourse_monthly[6];
-                $jul = $completedCourse_monthly[7];
-                $agt = $completedCourse_monthly[8];
-                $sep = $completedCourse_monthly[9];
-                $okt = $completedCourse_monthly[10];
-                $nov = $completedCourse_monthly[11];
-                $des = $completedCourse_monthly[12];
+            // Setelah data disiapkan, Anda dapat mengakses properti month dengan benar
+            $jan = $completedCourse_monthly[1];
+            $feb = $completedCourse_monthly[2];
+            $mar = $completedCourse_monthly[3];
+            $apr = $completedCourse_monthly[4];
+            $mei = $completedCourse_monthly[5];
+            $jun = $completedCourse_monthly[6];
+            $jul = $completedCourse_monthly[7];
+            $agt = $completedCourse_monthly[8];
+            $sep = $completedCourse_monthly[9];
+            $okt = $completedCourse_monthly[10];
+            $nov = $completedCourse_monthly[11];
+            $des = $completedCourse_monthly[12];
 
 
 
@@ -416,8 +402,8 @@ class HomeController extends Controller
 
             // $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
             $lessonCategories = DB::table('lesson_categories')
-            ->select('id', 'name', 'color_of_categories')
-            ->get();
+                ->select('id', 'name', 'color_of_categories')
+                ->get();
 
             // BUILD QUERY POST TEST SCORE
             $postTestScore = DB::select("
@@ -455,29 +441,42 @@ class HomeController extends Controller
             // return $postTestScore;
 
             MyHelper::addAnalyticEvent(
-                "Buka Dashboard Student", "Dashboard"
+                "Buka Dashboard Student",
+                "Dashboard"
             );
 
             return view('main.dashboard')
-                ->with(compact(
-                    'classes',
-                    'myClasses',
-                    'userID',
-                    'classRegistered',
-                    'blog',
-                    'userScores',
-                    'topThree',
-                    'leaderboard',
-                    'blogCreatedCount',
-                    'projectCreatedCount',
-                    'classRegisteredCount',
-                    'activeCourse',
-                    'completedCourse',
-                    'lessonCategories',
-                    'jan', 'feb', 'mar', 'apr', 'mei', 'jun',
-                    'jul', 'agt', 'sep', 'okt', 'nov', 'des',
-                    'postTestScore'
-                ));
+                ->with(
+                    compact(
+                        'classes',
+                        'myClasses',
+                        'userID',
+                        'classRegistered',
+                        'blog',
+                        'userScores',
+                        'topThree',
+                        'leaderboard',
+                        'blogCreatedCount',
+                        'projectCreatedCount',
+                        'classRegisteredCount',
+                        'activeCourse',
+                        'completedCourse',
+                        'lessonCategories',
+                        'jan',
+                        'feb',
+                        'mar',
+                        'apr',
+                        'mei',
+                        'jun',
+                        'jul',
+                        'agt',
+                        'sep',
+                        'okt',
+                        'nov',
+                        'des',
+                        'postTestScore'
+                    )
+                );
         }
     }
 }
