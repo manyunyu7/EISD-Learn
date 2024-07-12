@@ -120,15 +120,15 @@ class AbsensiController extends Controller
         $section = CourseSection::findOrFail($sectionId);
         $enableAbsensi = $section->enable_absensi;
         $course = Lesson::where("id", '=', $section->course_id)->first();
+
         $students = DB::table('absensis as a')
-            ->select('u.id', 'u.name', 'u.department_id', 'a.created_at', 'u.sub_department', 'u.location', 'u.contact')
+            ->select('u.id', 'u.name', 'u.department_id', 'a.created_at', 'u.location', 'u.contact')
             ->leftJoin('users as u', 'a.student_id', '=', 'u.id')
             ->get();
 
         foreach ($students as $item) {
             $departmentId = $item->department_id;
-            $department =  DB::connection('ithub')->selectOne("SELECT * FROM m_departments where id = '$departmentId'");
-
+            $department = DB::connection('ithub')->selectOne("SELECT * FROM m_departments where id = '$departmentId'");
             $departmentName = "";
             if ($department != null) {
                 $departmentName = $department->name;
@@ -137,6 +137,7 @@ class AbsensiController extends Controller
             }
             $item->department = $departmentName;
         }
+
 
         $courseName = $course->course_title;
         $courseId = $course->id;

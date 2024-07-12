@@ -263,10 +263,6 @@
                     <div class="card-title">Daftar Absensi</div>
                 </div>
                 <div class="card-body">
-                    <a href="{{ url('lesson/create') }}">
-                        <button class="btn btn-primary btn-border btn-round mb-3">Tambah Kelas Baru
-                        </button>
-                    </a>
                     <div class="table-responsive">
                         <table id="basic-datatables" class="table table-bordered  @if (count($students) < 1) d-none @endif">
                             <thead>
