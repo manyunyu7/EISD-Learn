@@ -11,12 +11,18 @@
 
     {{-- canvasJS for Pie Chart --}}
     <script type="text/javascript">
+        // Konversi data departments ke dalam format JSON
+        var departments = @json($departments);
+
+        // Cetak data departments ke konsol
+        console.log(departments);
+
         window.onload = function() {
             // Script untuk Pie Chart
             var chart_pie = new CanvasJS.Chart("chartContainer_pieChart", {
                 theme: "light2",
                 title: {
-                    text: "Title of Pie Chart"
+                    text: "Perscentage of Student in Departments"
                 },
                 legend: {
                     horizontalAlign: "right", // Atur posisi horizontal legend ke kanan
@@ -31,7 +37,7 @@
                     legendText: "{indexLabel}",
                     dataPoints: [{
                             y: 4181563,
-                            indexLabel: "Human Resource",
+                            indexLabel: {{ $dept_HR }},
                             color: "#B63607"
                         }, // Merah
                         {
@@ -43,22 +49,7 @@
                             y: 3125844,
                             indexLabel: "Finance & Accounting",
                             color: "#FF7F00"
-                        }, // Biru
-                        {
-                            y: 1176121,
-                            indexLabel: "Digital Marketing",
-                            color: "#FFA500"
-                        }, // Kuning
-                        {
-                            y: 1727161,
-                            indexLabel: "Legal",
-                            color: "#FFD700"
-                        }, // Magenta
-                        {
-                            y: 4303364,
-                            indexLabel: "Project",
-                            color: "#E2D278"
-                        }, // Cyan
+                        }, 
                     ]
                 }]
 
