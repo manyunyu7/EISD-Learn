@@ -212,6 +212,9 @@ class HomeController extends Controller
                 ->select('id', 'code', 'name')
                 ->get();
 
+
+            $dept_HR = 'Human Resources';
+
             $myStudent = DB::select("select * from view_student_lesson where mentor_name = '$user_name' ");
 
             if (!Auth::check()) {
@@ -225,6 +228,7 @@ class HomeController extends Controller
 
 
             $compact = compact(
+                'dept_HR',
                 'classes',
                 'classRegistered',
                 'locations',
@@ -242,8 +246,7 @@ class HomeController extends Controller
 
             if ($request->dump == true) {
                 return $compact;
-            }
-            ;
+            };
 
             return view('main.dashboard')
                 ->with($compact);
