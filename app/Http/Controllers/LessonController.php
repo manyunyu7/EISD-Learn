@@ -545,9 +545,6 @@ class LessonController extends Controller
     }
     public function storeV2(Request $request)
     {
-        // return $request->all();
-        ini_set('upload_max_filesize', '500M');
-        ini_set('post_max_size', '500M');
         $this->validate($request, [
             'image' => 'required',
             'title' => 'required',
@@ -612,6 +609,7 @@ class LessonController extends Controller
             return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
         } else {
             //redirect dengan pesan error
+            return "error gais";
             return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
         }
     }
