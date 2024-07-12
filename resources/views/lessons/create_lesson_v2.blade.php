@@ -230,6 +230,13 @@
         @elseif (session()->has('error'))
             toastr.error('{{ session('error') }}', 'GAGAL!');
         @endif
+
+        // Validation errors with toastr
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error('{{ $error }}');
+            @endforeach
+        @endif
     </script>
 
     <script>
@@ -264,7 +271,7 @@
 
         <div class="container-fluid load-soal">
             <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST"
-                enctype="multipart/form-data" onsubmit="return validateForm()">
+                enctype="multipart/form-data" onsubmit="">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                 <div class="row">
@@ -274,7 +281,8 @@
                             <label for="" class="mb-2">Password Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
                                 <input required name="pass_class" type="text" class="form-control"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                    value="{{ old('pass_class') }}">
                             </div>
                         </div>
 
@@ -283,7 +291,8 @@
                             <label for="" class="mb-2">Judul Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
                                 <input required name="title" type="text" class="form-control"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                    value="{{ old('title') }}">
                             </div>
                         </div>
 
@@ -294,7 +303,9 @@
                                 <select class="form-control" name="category_id" id="">
                                     <option value="" disabled>Pilih Kategori</option>
                                     @forelse($categories as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}"
+                                            {{ old('category_id') == $item->id ? 'selected' : '' }}>{{ $item->name }}
+                                        </option>
                                     @empty
                                     @endforelse
                                 </select>
@@ -305,12 +316,14 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Tipe<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input type="radio" id="general" name="tipe" value="General" checked
-                                    style="margin-right: 10px;" onclick="showGeneralInfo()">
+                                <input type="radio" id="general" name="tipe" value="General"
+                                    style="margin-right: 10px;" onclick="showGeneralInfo()"
+                                    {{ old('tipe') == 'General' ? 'checked' : '' }}>
                                 <label for="general" class="mr-3">General</label>
 
                                 <input type="radio" id="specific" name="tipe" value="Specific"
-                                    style="margin-right: 10px;" onclick="hideGeneralInfo()">
+                                    style="margin-right: 10px;" onclick="hideGeneralInfo()"
+                                    {{ old('tipe') == 'Specific' ? 'checked' : '' }}>
                                 <label for="specific">Specific</label>
                             </div>
                             <small id="generalInfo" style="color: red; display: inline;">Tipe General dapat diakses oleh
@@ -371,7 +384,7 @@
                         {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Deskripsi Kelas</label>
-                            <textarea id="editor" class="form-control" name="content"></textarea>
+                            <textarea id="editor" class="form-control" name="content">{{ old('content') }}</textarea>
                             <div id="error-message" style="color: red; display: none; font-size: 0.9em;"></div>
                             <script>
                                 ClassicEditor
@@ -380,6 +393,9 @@
                                         console.error(error);
                                     });
                             </script>
+                            @error('content')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- New Kelas --}}
