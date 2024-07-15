@@ -452,7 +452,8 @@
                                         <tbody>
                                             @foreach ($averageScoreArray as $postTest)
                                                 <tr>
-                                                    <th scope="row">{{ $postTest['title_exam'] }}</th>
+                                                    {{-- <th scope="row">{{ $postTest['title_exam'] }}</th> --}}
+                                                    <th scope="row" title="{{ $postTest['title_exam'] }}">{{ \Illuminate\Support\Str::limit($postTest['title_exam'], 15) }}</th>
                                                     <td
                                                         style="--size: calc( {{ $postTest['average_score'] }} ); background-color:#23BD33; color:white">
                                                         <span
