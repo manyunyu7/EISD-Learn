@@ -176,6 +176,11 @@ class ExamTakerController extends Controller
             $allowMultipleAttempt = true;
         }
 
+        $allowPublicAccess = false;
+        if ($session->public_access == "y"|| $session->public_access == "Aktif") {
+            $allowPublicAccess = true;
+        }
+
 
         //if the session is already deleted;
         if ($session->is_deleted == "y") {
@@ -186,7 +191,7 @@ class ExamTakerController extends Controller
             ], 200);
         }
 
-        if (Auth::user() == null)
+        if (Auth::user() == null && !$allowPublicAccess)
             return response()->json([
                 "scores" => 0,
                 "message" => "Anda harus login untuk mengerjakan quiz ini",

@@ -21,6 +21,10 @@ use Carbon\Carbon;
 
 class CourseSectionController extends Controller
 {
+
+
+
+
     public function manage_section(Request $request, Lesson $lesson)
     {
 
@@ -185,7 +189,7 @@ class CourseSectionController extends Controller
         $update_to_CourseSection->quiz_session_id = $request->update_is_examId;
         $update_to_CourseSection->embedded_file = $request->embeded_file;
 
-        if($request->update_content =="" || $request->update_content == null) {
+        if ($request->update_content == "" || $request->update_content == null) {
             $update_to_CourseSection->section_content = "";
         }
         // dd($update_to_CourseSection);
@@ -334,6 +338,78 @@ class CourseSectionController extends Controller
     public function goToNextSection(Lesson $lesson, CourseSection $lesson_id)
     {
     }
+
+    public function publicExam($sessionId, Request $request)
+{
+    $questions = [];
+    $isExam = false;
+    $title = "";
+
+
+    $examSession = null;
+    $exam = null;
+    $question_count = 0;
+    $totalScore = 0;
+    $session = null;
+
+    $isExam = true;
+    $examSession = ExamSession::find($sessionId);
+    $exam = Exam::find($examSession->exam_id);
+    $session = $examSession;
+    $questions = json_decode($session->questions_answers);
+    $totalScore = 0;
+    $title = $exam->title;
+    if ($questions != null) {
+        foreach ($questions as $question) {
+            if (isset($question->choices)) {
+                $choices = json_decode($question->choices, true);
+
+                foreach ($choices as $choice) {
+                    if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
+                        $totalScore += (int) $choice['score'];
+                    }
+                }
+            }
+        }
+    }
+
+    if ($questions != null) {
+        $question_count = count($questions);
+    }
+    // Check if student has taken any exam on this session
+    $hasTakenAnyExam = false;
+    $examResults = ExamTaker::where("session_id", "=", $sessionId)->get();
+
+    if (count($examResults) > 0) {
+        $hasTakenAnyExam = true;
+    }
+
+    $compact = compact(
+        'hasTakenAnyExam',
+        'examResults',
+        'isExam',
+        'title',
+        'questions',
+        'examSession',
+        'exam',
+        'session',
+        'question_count',
+        'totalScore',
+    );
+
+    if ($request->dump == true) {
+        return $compact;
+    }
+
+    MyHelper::addAnalyticEvent(
+        "Mengerjakan Public Exam",
+        "Exam"
+    );
+
+
+    return view('lessons.play.course_play_public_exam', $compact);
+}
+
 
     // SEE SECTION
     public function seeSection(Request $request, Lesson $lesson, CourseSection $section)
@@ -619,7 +695,7 @@ class CourseSectionController extends Controller
 
                         foreach ($choices as $choice) {
                             if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
-                                $totalScore += (int)$choice['score'];
+                                $totalScore += (int) $choice['score'];
                             }
                         }
                     }
@@ -637,14 +713,14 @@ class CourseSectionController extends Controller
             "=",
             $courseId
         )->where(
-            "course_section_flag",
-            "=",
-            $sectionId
-        )->where(
-            "user_id",
-            '=',
-            Auth::id()
-        )->get();
+                "course_section_flag",
+                "=",
+                $sectionId
+            )->where(
+                "user_id",
+                '=',
+                Auth::id()
+            )->get();
 
 
         if (count($examResults) > 0) {
@@ -971,7 +1047,7 @@ class CourseSectionController extends Controller
 
         foreach ($studentsInLesson as $item) {
             $departmentId = $item->department_id;
-            $department =  DB::connection('ithub')->selectOne("SELECT * FROM m_departments where id = '$departmentId'");
+            $department = DB::connection('ithub')->selectOne("SELECT * FROM m_departments where id = '$departmentId'");
 
             $departmentName = "";
             if ($department != null) {
