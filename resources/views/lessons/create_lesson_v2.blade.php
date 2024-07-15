@@ -56,7 +56,7 @@
                         var column = this;
                         var select = $(
                                 '<select class="form-control"><option value=""></option></select>'
-                                )
+                            )
                             .appendTo($(column.footer()).empty())
                             .on('change', function() {
                                 var val = $.fn.dataTable.util.escapeRegex(
@@ -230,6 +230,13 @@
         @elseif (session()->has('error'))
             toastr.error('{{ session('error') }}', 'GAGAL!');
         @endif
+
+        // Validation errors with toastr
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error('{{ $error }}');
+            @endforeach
+        @endif
     </script>
 
     <script>
@@ -250,24 +257,21 @@
 @section('main')
     <div class="page-inner">
 
-        <div class="col-md-12">
-            {{-- BREADCRUMB --}}
-            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
-                    <li class="breadcrumb-item"><a href={{ url('/lesson/manage_v2') }}>Class</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Add Class</li>
-                </ol>
-            </nav>
-        </div>
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
+                <li class="breadcrumb-item"><a href={{ url('/lesson/manage_v2') }}>Class</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add Class</li>
+            </ol>
+        </nav>
 
-        <div class="page-header">
+        <div class="container-fluid">
             <h1><b>Tambah Kelas Baru</b></h1>
         </div>
-        {{-- SOAL UJIAN --}}
+
         <div class="container-fluid load-soal">
             <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST"
-                enctype="multipart/form-data">
+                enctype="multipart/form-data" onsubmit="">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                 <div class="row">
@@ -277,7 +281,8 @@
                             <label for="" class="mb-2">Password Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
                                 <input required name="pass_class" type="text" class="form-control"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                    value="{{ old('pass_class') }}">
                             </div>
                         </div>
 
@@ -286,7 +291,8 @@
                             <label for="" class="mb-2">Judul Kelas<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
                                 <input required name="title" type="text" class="form-control"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                    value="{{ old('title') }}">
                             </div>
                         </div>
 
@@ -297,7 +303,9 @@
                                 <select class="form-control" name="category_id" id="">
                                     <option value="" disabled>Pilih Kategori</option>
                                     @forelse($categories as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}"
+                                            {{ old('category_id') == $item->id ? 'selected' : '' }}>{{ $item->name }}
+                                        </option>
                                     @empty
                                     @endforelse
                                 </select>
@@ -308,12 +316,14 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Tipe<span style="color: red">*</span></label>
                             <div class="input-group mb-3">
-                                <input type="radio" id="general" name="tipe" value="General" checked
-                                    style="margin-right: 10px;" onclick="showGeneralInfo()">
+                                <input type="radio" id="general" name="tipe" value="General"
+                                    style="margin-right: 10px;" onclick="showGeneralInfo()"
+                                    {{ old('tipe') == 'General' ? 'checked' : '' }}>
                                 <label for="general" class="mr-3">General</label>
 
                                 <input type="radio" id="specific" name="tipe" value="Specific"
-                                    style="margin-right: 10px;" onclick="hideGeneralInfo()">
+                                    style="margin-right: 10px;" onclick="hideGeneralInfo()"
+                                    {{ old('tipe') == 'Specific' ? 'checked' : '' }}>
                                 <label for="specific">Specific</label>
                             </div>
                             <small id="generalInfo" style="color: red; display: inline;">Tipe General dapat diakses oleh
@@ -374,7 +384,8 @@
                         {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Deskripsi Kelas</label>
-                            <textarea id="editor" class="form-control" name="content"></textarea>
+                            <textarea id="editor" class="form-control" name="content">{{ old('content') }}</textarea>
+                            <div id="error-message" style="color: red; display: none; font-size: 0.9em;"></div>
                             <script>
                                 ClassicEditor
                                     .create(document.querySelector('#editor'))
@@ -382,6 +393,9 @@
                                         console.error(error);
                                     });
                             </script>
+                            @error('content')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- New Kelas --}}
@@ -393,10 +407,20 @@
                             </div>
                         </div>
 
+                        {{-- Bisa Diakses --}}
+                        <div class="mb-3">
+                            <label for="" class="mb-2">Akses Kelas<span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <input readonly type="text" value="Tidak Aktif" name="akses_kelas" id="btn-akses-kelas"
+                                    class="btn btn-danger" style="width: 100%">
+                            </div>
+                        </div>
+
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 var btn_new_class = document.getElementById('btn-new-clas');
                                 var isActive_NC = false;
+                                var isActiveAksesKelas = false;
 
                                 // New Class Setup
                                 btn_new_class.addEventListener('click', function() {
@@ -417,6 +441,28 @@
                                         isActive_NC = true;
                                     }
                                 });
+
+                                var btnAksesKelas = document.getElementById('btn-akses-kelas');
+                                // New Class Setup
+                                btnAksesKelas.addEventListener('click', function() {
+                                    // Tidak Aktif
+                                    if (isActiveAksesKelas) {
+                                        btnAksesKelas.classList.remove('btn-success');
+                                        btnAksesKelas.classList.add('btn-danger');
+                                        btnAksesKelas.textContent = 'Tidak Aktif';
+                                        btnAksesKelas.value = 'Tidak Aktif';
+                                        isActiveAksesKelas = false;
+                                    }
+                                    // Aktif
+                                    else {
+                                        btnAksesKelas.classList.remove('btn-danger');
+                                        btnAksesKelas.classList.add('btn-success');
+                                        btnAksesKelas.textContent = 'Aktif';
+                                        btnAksesKelas.value = 'Aktif';
+                                        isActiveAksesKelas = true;
+                                    }
+                                });
+
                             });
                         </script>
                     </div>
@@ -445,6 +491,20 @@
                         </div>
 
                         <script>
+                            function validateForm() {
+                                const editorContent = document.querySelector('#editor').value.trim();
+                                const errorMessage = document.getElementById('error-message');
+
+                                if (editorContent === '') {
+                                    errorMessage.textContent = 'Deskripsi Kelas tidak boleh kosong.';
+                                    errorMessage.style.display = 'block';
+                                    return false; // Prevent form submission
+                                } else {
+                                    errorMessage.style.display = 'none';
+                                    return true; // Allow form submission
+                                }
+                            }
+
                             function validateImage(input) {
                                 if (input.files && input.files[0]) {
                                     var reader = new FileReader();

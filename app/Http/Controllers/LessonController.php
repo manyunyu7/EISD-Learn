@@ -215,9 +215,7 @@ class LessonController extends Controller
 
     public function updateClassV2(Request $request, $lesson_id)
     {
-        // dd($request->all()) ;
-        ini_set('upload_max_filesize', '500M');
-        ini_set('post_max_size', '500M');
+
         $this->validate($request, [
             // 'image' => 'required',
             'title' => 'required',
@@ -248,14 +246,23 @@ class LessonController extends Controller
         $update_data_lesson->category_id        = $request->category_id;
         $update_data_lesson->start_time         = $request->start_time;
         $update_data_lesson->end_time           = $request->end_time;
-        $update_data_lesson->can_be_accessed    = $request->access;
+        $canBeAccessValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+        $update_data_lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
         $update_data_lesson->mentor_id          = $user_id;
         $update_data_lesson->course_description = $request->content;
         $update_data_lesson->text_descriptions  = '';
         $update_data_lesson->pin                = $request->pass_class;
         $update_data_lesson->position           = $request->position;
         $update_data_lesson->target_employee    = '';
-        $update_data_lesson->new_class          = $request->new_class;
+        $newLabelValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+
+        $update_data_lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
         $update_data_lesson->tipe               = $request->tipe;
         $update_data_lesson->department_id      = json_encode($request->department_id);
         $update_data_lesson->position_id        = json_encode($request->position_id);
@@ -540,9 +547,6 @@ class LessonController extends Controller
     }
     public function storeV2(Request $request)
     {
-        // return $request->all();
-        ini_set('upload_max_filesize', '500M');
-        ini_set('post_max_size', '500M');
         $this->validate($request, [
             'image' => 'required',
             'title' => 'required',
@@ -570,18 +574,29 @@ class LessonController extends Controller
         $insert_to_Lesson = new Lesson();
         $insert_to_Lesson->course_cover_image = $imagePath;
         $insert_to_Lesson->course_title = $request->title;
+
+
         $insert_to_Lesson->course_trailer = 'Value';
         $insert_to_Lesson->category_id = $request->category_id;
         $insert_to_Lesson->start_time = $request->start_time;
         $insert_to_Lesson->end_time = $request->end_time;
-        $insert_to_Lesson->can_be_accessed = 'n';
+        $canBeAccessValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+        $insert_to_Lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
         $insert_to_Lesson->mentor_id = $user_id;
         $insert_to_Lesson->course_description = $request->content;
         $insert_to_Lesson->text_descriptions = '';
         $insert_to_Lesson->pin = $request->pass_class;
         $insert_to_Lesson->position = $request->position;
         $insert_to_Lesson->target_employee = '';
-        $insert_to_Lesson->new_class = $request->new_class;
+        $newLabelValueMapping = [
+            'Aktif' => 'y',
+            'Tidak Aktif' => 'n',
+        ];
+
+        $insert_to_Lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
         $insert_to_Lesson->tipe = $request->tipe;
         $insert_to_Lesson->department_id = json_encode($request->department_id);
         $insert_to_Lesson->position_id = json_encode($request->position_id);
@@ -600,6 +615,7 @@ class LessonController extends Controller
             return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
         } else {
             //redirect dengan pesan error
+            return "error gais";
             return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
         }
     }

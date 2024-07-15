@@ -178,27 +178,25 @@
 
 
 @section('main')
-    <div class="page-inner">
-        <div class="page-header">
-            <script>
-                function redirectToSection(url) {
-                    window.location.href = url;
-                }
-            </script>
-        </div>
+    <div class="page-inner" style="background: white">
 
-        <div class="col-md-12">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Class</li>
+            </ol>
+        </nav>
+
+        <div class="container-fluid d-none">
             <h1><strong>All Class</strong></h1>
         </div>
 
-        <div class="col-md-12">
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Class</li>
-                </ol>
-            </nav>
-        </div>
+
+        <script>
+            function redirectToSection(url) {
+                window.location.href = url;
+            }
+        </script>
 
         <button type="button" class="btn btn-custom md-col-3" onclick="redirectToSection('{{ url('lesson/create_v2') }}')">
             <div style="margin-right: 10px; margin-left: 10px">Add</div>
