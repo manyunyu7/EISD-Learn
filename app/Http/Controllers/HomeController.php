@@ -149,9 +149,9 @@ class HomeController extends Controller
             $takenExamCourseSection = ExamTaker::all();
 
 
-            $locationId = $request->input('location');
-            $departmentId = $request->input('department');
-            $month = $request->input('month');
+            $locationId = $request->input('location') ?? "all";
+            $departmentId = $request->input('department') ?? "all";
+            $month = $request->input('month') ?? "all";
 
             $results = ExamTaker::selectRaw('
                     e.title as exam_title,

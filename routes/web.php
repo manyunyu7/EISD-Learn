@@ -123,6 +123,8 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::get('/lesson/edit_class/{lesson}', ['uses' => 'LessonController@editClassV2']);
         Route::post('/update-lesson/{lesson}', ['uses' => 'LessonController@updateClassV2']);
         Route::get('/lesson/delete_class/{lesson}', ['uses' => 'LessonController@delete_class_v2']);
+        Route::post('/lesson/search_class', 'LessonController@search')->name('lesson.search')->middleware('auth');
+
 
         Route::get('/lesson/store', 'LessonController@add');
         Route::get('/lesson/{lesson}/students/', 'LessonController@seeStudent');
