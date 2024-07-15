@@ -171,11 +171,17 @@ class HomeController extends Controller
                     if ($month !== 'all') {
                         $query->whereRaw('MONTH(es.created_at) = ?', [$month]);
                     }
+                    else{
+                        return $query;
+                    }
                 })
                 ->where(function ($query) use ($departmentId) {
                     if (!empty($departmentId)) {
                         if($departmentId!="all"){
                             $query->where('u.department_id', '=', $departmentId);
+                        }
+                        else{
+                            return $query;
                         }
                     }
                 })
@@ -183,6 +189,9 @@ class HomeController extends Controller
                     if (!empty($locationId)) {
                         if ($locationId !== 'all') {
                             $query->whereJsonContains('u.location', ['site_id' => $locationId]);
+                        }
+                        else{
+                            return $query;
                         }
                     }
                 })
@@ -200,6 +209,8 @@ class HomeController extends Controller
                     'average_score' => $score->avg_score
                 ];
             }
+
+            // return $averageScoreArray;
 
             $userLMS = DB::connection('mysql')
                 ->table('users')

@@ -43,14 +43,14 @@
                     text: "Percentage of Students in Departments"
                 },
                 legend: {
-                    horizontalAlign: "right",
+                    horizontalAlign: "bottom",
                     verticalAlign: "center",
                     fontSize: 14
                 },
                 data: [{
                     type: "pie",
                     showInLegend: true,
-                    toolTipContent: "{y} - #percent %",
+                    toolTipContent: "{y} Students - #percent %",
                     legendText: "{indexLabel}",
                     dataPoints: pieDataPoints
                 }]
@@ -294,7 +294,7 @@
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
                                 aria-labelledby="pills-home-tab-nobd">
                                 <div class="">
-                                    <div id="chartContainer_pieChart" style="height: 235px; width: 100%;"></div>
+                                    <div id="chartContainer_pieChart" style="height: 275px; width: auto;"></div>
                                 </div>
                             </div>
                         </div>
