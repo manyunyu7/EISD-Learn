@@ -202,6 +202,11 @@ class HomeController extends Controller
                 ];
             }
 
+            $userLMS = DB::connection('mysql')
+                ->table('users')
+                ->select('mdln_username', 'name', 'department_id')
+                ->get();
+
             $departments = DB::connection('ithub')
                 ->table('m_departments')
                 ->select('id', 'code', 'name')
@@ -213,8 +218,20 @@ class HomeController extends Controller
                 ->select('id', 'code', 'name')
                 ->get();
 
-            
-            $dept_HR = 'Human Resources';
+            $users_departments = $userLMS->map(function ($userLMS) use ($departments) {
+                $userLMS->department = $departments->firstWhere('id', $userLMS->department_id);
+                return $userLMS;
+            });
+
+            // Kelompokkan berdasarkan nama departemen
+            $groupedByDepartment = $users_departments->groupBy(function ($userLMS) {
+                return $userLMS->department->name ?? 'Undefined Department';
+            })->map(function ($group) {
+                return $group->count();
+            });
+
+            // return $groupedByDepartment;
+
 
             $myStudent = DB::select("select * from view_student_lesson where mentor_name = '$user_name' ");
 
@@ -229,7 +246,7 @@ class HomeController extends Controller
 
 
             $compact = compact(
-                'dept_HR',
+                'groupedByDepartment',
                 'classes',
                 'classRegistered',
                 'locations',

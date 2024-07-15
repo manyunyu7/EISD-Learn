@@ -11,48 +11,49 @@
 
     {{-- canvasJS for Pie Chart --}}
     <script type="text/javascript">
-        // Konversi data departments ke dalam format JSON
-        var departments = @json($departments);
-
-        // Cetak data departments ke konsol
-        console.log(departments);
 
         window.onload = function() {
+            // Data from controller
+            var groupedByDepartment = @json($groupedByDepartment);
+
+            // Convert data to format needed for CanvasJS
+            var pieDataPoints = [];
+            for (var key in groupedByDepartment) {
+                pieDataPoints.push({
+                    y: groupedByDepartment[key],
+                    indexLabel: key,
+                    color: getRandomColor()
+                });
+            }
+
+            // Function to get a random color
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
             // Script untuk Pie Chart
             var chart_pie = new CanvasJS.Chart("chartContainer_pieChart", {
                 theme: "light2",
                 title: {
-                    text: "Perscentage of Student in Departments"
+                    text: "Percentage of Students in Departments"
                 },
                 legend: {
-                    horizontalAlign: "right", // Atur posisi horizontal legend ke kanan
-                    verticalAlign: "center", // Atur posisi vertikal legend ke tengah
-                    fontSize: 14 // Atur ukuran font untuk legend
+                    horizontalAlign: "right",
+                    verticalAlign: "center",
+                    fontSize: 14
                 },
                 data: [{
                     type: "pie",
                     showInLegend: true,
                     toolTipContent: "{y} - #percent %",
-                    yValueFormatString: "#,##0,,.## Million",
                     legendText: "{indexLabel}",
-                    dataPoints: [{
-                            y: 4181563,
-                            indexLabel: {{ $dept_HR }},
-                            color: "#B63607"
-                        }, // Merah
-                        {
-                            y: 2175498,
-                            indexLabel: "Digital Management",
-                            color: "#E0460C"
-                        }, // Hijau
-                        {
-                            y: 3125844,
-                            indexLabel: "Finance & Accounting",
-                            color: "#FF7F00"
-                        }, 
-                    ]
+                    dataPoints: pieDataPoints
                 }]
-
             });
             chart_pie.render();
 
@@ -179,6 +180,7 @@
             chart_stackedBar.render();
         }
     </script>
+
     <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
     <script>
         const DISPLAY = true;
