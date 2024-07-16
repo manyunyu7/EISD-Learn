@@ -545,7 +545,6 @@ class MentorExamController extends Controller
             $examSession->allow_multiple = $mapping[$request->allow_multiple] ?? '';
 
             $examSession->show_score_on_review = 'y/n';
-            $examSession->allow_multiple = $request->allow_multiple;
 
             $examSession->exam_id = $exam->id;
             $examSession->created_by = $user_id;

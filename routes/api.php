@@ -9,6 +9,7 @@ use App\Http\Controllers\MobileHomeController;
 use App\Http\Controllers\ModernlandIntegrationController;
 use App\Http\Controllers\QRLoginController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MobileLmsContentController; // InvoiceController is controller name
 
 /*
 |--------------------------------------------------------------------------
