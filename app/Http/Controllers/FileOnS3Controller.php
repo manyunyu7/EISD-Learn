@@ -11,7 +11,7 @@ class FileOnS3Controller extends Controller
     public function index()
     {
         // Retrieve files from the database instead of S3 directly
-        $files = FileOnS3::all();
+        $files = FileOnS3::where("user_id", auth()->user()->id)->get();
         return view('filemanager.s3.index', compact('files'));
     }
 

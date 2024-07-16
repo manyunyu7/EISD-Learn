@@ -68,18 +68,21 @@ Route::get('/loginz', function () {
     return view('neo_login');
 });
 
-Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
-Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
-Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
-Route::delete('/files/{fileId}', [GraphController::class, 'deleteFile'])->name('delete-file-graph');
-Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
-Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
-Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
 
 
 
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
+
+
+    Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
+    Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
+    Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
+    Route::delete('/files/{fileId}', [GraphController::class, 'deleteFile'])->name('delete-file-graph');
+    Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
+    Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
+    Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
+
 
     // List all files (index)
     Route::get('/filemanager/s3', [FileOnS3Controller::class, 'index'])->name('filemanager.s3.index');
