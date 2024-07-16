@@ -23,7 +23,7 @@ use App\Http\Controllers\QRLoginController;
 
 Route::get('/iseng-iseng-aja', 'AitiHubController@checkAitiHub');
 Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
-Route::get('mobile-api/course/{lesson}/section/{section}', 'MobileLmsContentController@seeSection');
+Route::get('mobile-api/course/{lesson}/section/{section}', 'MobileLmsViewerController@seeSection');
 
 
 Route::get('public-exam/{sessionId}','CourseSectionController@publicExam');

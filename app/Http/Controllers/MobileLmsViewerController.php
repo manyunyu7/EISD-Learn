@@ -11,21 +11,16 @@ use App\Models\Lesson;
 use App\Models\StudentSection;
 use App\Models\User;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class MobileLmsContentController extends Controller
+class MobileLmsViewerController extends Controller
 {
-
 
     public function seeClassProgress(Request $request, $classId)
     {
-
-
         $mentorName = "";
-
     }
     public function seeClassSections(Request $request, Lesson $lesson)
     {
@@ -394,7 +389,8 @@ class MobileLmsContentController extends Controller
 
 
             // Check if the current date and time is within the start_date and end_date
-            $currentDate = Carbon::now();
+            $currentDate =
+            Carbon::now();
             $startDate = Carbon::parse($examSession->start_date);
             $endDate = Carbon::parse($examSession->end_date);
 
@@ -579,4 +575,5 @@ class MobileLmsContentController extends Controller
             // return redirect()->route('success')->with('success', 'Student-section saved successfully.');
         }
     }
+
 }
