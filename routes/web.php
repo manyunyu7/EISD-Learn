@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropzoneController;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\QRLoginController;
-use App\Http\Controllers\MobileLmsContentController; // InvoiceController is controller name
 
 /*
 |--------------------------------------------------------------------------
