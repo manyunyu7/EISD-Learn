@@ -241,7 +241,7 @@
                                 </div>
                                 <div class="class-badge"
                                     style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
-                                    <img src="{{ url('/Icons/Star.svg') }}" style="margin-right: 4px;">
+                                    <img src="{{ url('/icons/star.svg') }}" style="margin-right: 4px;">
                                     <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
                                 </div>
                             </div>
@@ -436,7 +436,7 @@
                 <h3>{{ $keyword }}</h3>
             @endif
 
-            
+
         </div>
     </div>
 @endsection
