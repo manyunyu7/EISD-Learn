@@ -5,16 +5,7 @@
                 <div class="col-md-12 ">
                     <div class="">
                         <div class="pt-2">
-                            <h1 class="card-title">{{ $currentSection->section_title }}</h1>
-
-
-                            <div class="form-group d-none">
-                                <label for="fullName">Nama Peserta Quiz :</label>
-                                <input type="text" id="fullName" name="fullName" class="form-control"
-                                    placeholder="Enter your full name" required
-                                    @auth
-value="{{ Auth::user()->name }}" @endauth>
-                            </div>
+                            <h1 class="card-title">{{ $exam->title }}</h1>
 
                             <h5 style="font-size: 22px; color: slategray;">
                                 {{ 'Anda Sudah Mengambil Quiz ini : ' . count($examResults) . ' Kali' }}</h5>
@@ -36,11 +27,13 @@ value="{{ Auth::user()->name }}" @endauth>
                                 <span>{{ $question_count }}</span>
                             </div>
 
-
                             <!-- Student Name -->
-                            <div class="form-group d-none">
-                                <label>Student Name:</label>
-                                <span>John Doe</span>
+                            <div class="form-group">
+                                <label for="fullName">Nama Peserta Quiz :</label>
+                                <input type="text" id="fullName" name="fullName" class="form-control"
+                                    placeholder="Enter your full name" required style="max-width: 50%"
+                                    @auth
+value="{{ Auth::user()->name }}" @endauth>
                             </div>
 
                             <!-- Start Exam Button -->
@@ -259,22 +252,21 @@ value="{{ Auth::user()->name }}" @endauth>
     const timeLimit = {{ $session->time_limit_minute }} * 60; // Convert minutes to seconds
     let remainingTime = timeLimit;
     let timerInterval;
+    const fullNameInput = document.getElementById('fullName');
 
     function startTimer() {
+        const fullName = fullNameInput.value.trim();
 
         const payload = {
             userAnswers: {
                 examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
                 sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
-                courseId: {{ $courseId }}, // Use Blade syntax to echo the
                 answers: []
             },
             examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
             sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
-            sectionId: {{ $currentSectionId }}, // Use Blade syntax to echo the
-            courseId: {{ $courseId }},
             isFinished: false,
-            fullName: "{{ Auth::user()->name }}" // Use Blade syntax to echo the variable
+            fullName: fullName // Use the typed name from the input
         };
 
 
@@ -341,24 +333,47 @@ value="{{ Auth::user()->name }}" @endauth>
         return number < 10 ? "0" + number : number;
     }
 
+    function toggleButtonState() {
+        if (fullNameInput.value.trim() === '') {
+            confirmStartButton.disabled = true;
+        } else {
+            confirmStartButton.disabled = false;
+        }
+    }
+
+    fullNameInput.addEventListener('input', toggleButtonState);
+
+    confirmStartButton.addEventListener('click', function(event) {
+        if (fullNameInput.value.trim() === '') {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Nama Peserta Quiz harus diisi sebelum memulai ujian!',
+            });
+        }
+    });
+
+    toggleButtonState();
+
     startExamButton.addEventListener("click", startTimer);
 
     // Function to send all user-filled answers to the API endpoint
     function sendAllUserAnswers(isFinished) {
+
+        const fullName = fullNameInput.value.trim();
+
         // Construct the payload
         const payload = {
             userAnswers: {
                 examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
                 sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
-                courseId: {{ $courseId }}, // Use Blade syntax to echo the
                 answers: []
             },
             examId: {{ $examSession->exam_id }}, // Use Blade syntax to echo the variable
             sessionId: {{ $examSession->id }}, // Use Blade syntax to echo the
-            sectionId: {{ $currentSectionId }}, // Use Blade syntax to echo the
-            courseId: {{ $courseId }},
             isFinished: isFinished,
-            fullName: "{{ Auth::user()->name }}" // Use Blade syntax to echo the variable
+            fullName: fullName // Use Blade syntax to echo the variable
         };
 
         // Retrieve all filled answers

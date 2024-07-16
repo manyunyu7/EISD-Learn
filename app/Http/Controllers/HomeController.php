@@ -171,17 +171,11 @@ class HomeController extends Controller
                     if ($month !== 'all') {
                         $query->whereRaw('MONTH(es.created_at) = ?', [$month]);
                     }
-                    else{
-                        return $query;
-                    }
                 })
                 ->where(function ($query) use ($departmentId) {
                     if (!empty($departmentId)) {
                         if($departmentId!="all"){
                             $query->where('u.department_id', '=', $departmentId);
-                        }
-                        else{
-                            return $query;
                         }
                     }
                 })

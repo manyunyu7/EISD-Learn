@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CourseSectionController;
 use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropzoneController;
 use App\Http\Controllers\GraphController;
+use App\Http\Controllers\QRLoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +25,8 @@ Route::get('/iseng-iseng-aja', 'AitiHubController@checkAitiHub');
 Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
 Route::get('mobile-api/course/{lesson}/section/{section}', 'MobileLmsContentController@seeSection');
 
+
+Route::get('public-exam/{sessionId}','CourseSectionController@publicExam');
 
 Route::get('/', 'LandingController@landing');
 Route::get('/classes', 'LandingController@classes');
@@ -258,6 +262,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 
+Route::post('/qr-login', [QRLoginController::class, 'processQRCodeLogin'])->name('qr.login');
 
 Route::resource('blog', BlogController::class);
 Route::get('/blog/{blog}', 'BlogController@show')->name('blog.read');
@@ -269,5 +274,9 @@ Route::group(['prefix' => 'filemanager'], function () {
 
 
 
+Route::get('/generate-qr-code', [QRLoginController::class, 'generateQRCode'])->name('generate.qrcode');
+Route::post('/check-qr-jwt','QRLoginController@checkToken')->name('checkQrLoginJWT');
+
 
 Auth::routes();
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');

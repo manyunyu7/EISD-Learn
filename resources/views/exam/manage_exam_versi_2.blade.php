@@ -3,12 +3,12 @@
 @section('head-section')
     <!-- Datatables -->
 
-    <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
 @endsection
 
 @section('script')
     <script>
-        $(document).on('click', '.button', function (e) {
+        $(document).on('click', '.button', function(e) {
             e.preventDefault();
             var id = $(this).data('id');
             swal({
@@ -18,35 +18,38 @@
                     confirmButtonText: "Yes!",
                     showCancelButton: true,
                 },
-                function () {
+                function() {
                     $.ajax({
                         type: "POST",
-                        url: "{{url('/destroy')}}",
-                        data: {id: id},
-                        success: function (data) {
+                        url: "{{ url('/destroy') }}",
+                        data: {
+                            id: id
+                        },
+                        success: function(data) {
                             //
                         }
                     });
                 });
         });
-
     </script>
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Datatables -->
-    <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#basic-datatables').DataTable({});
 
             $('#multi-filter-select').DataTable({
                 "pageLength": 5,
-                initComplete: function () {
-                    this.api().columns().every(function () {
+                initComplete: function() {
+                    this.api().columns().every(function() {
                         var column = this;
-                        var select = $('<select class="form-control"><option value=""></option></select>')
+                        var select = $(
+                                '<select class="form-control"><option value=""></option></select>'
+                            )
                             .appendTo($(column.footer()).empty())
-                            .on('change', function () {
+                            .on('change', function() {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
                                 );
@@ -56,8 +59,9 @@
                                     .draw();
                             });
 
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>')
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d +
+                                '</option>')
                         });
                     });
                 }
@@ -68,9 +72,10 @@
                 "pageLength": 5,
             });
 
-            var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+            var action =
+                '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-            $('#addRowButton').click(function () {
+            $('#addRowButton').click(function() {
                 $('#add-row').dataTable().fnAddData([
                     $("#addName").val(),
                     $("#addPosition").val(),
@@ -86,25 +91,22 @@
 
     <script>
         //message with toastr
-        @if(session()-> has('success'))
-        toastr.success('{{ session('success') }}', 'BERHASIL!');
-        @elseif(session()-> has('error'))
-        toastr.error('{{ session('error') }}', 'GAGAL!');
+        @if (session()->has('success'))
+            toastr.success('{{ session('success') }}', 'BERHASIL!');
+        @elseif (session()->has('error'))
+            toastr.error('{{ session('error') }}', 'GAGAL!');
         @endif
     </script>
-
 @endsection
 
 
 @section('main')
-
-
     <div class="page-inner bg-white">
         <div class="col-md-12 mt-2">
             {{-- BREADCRUMB --}}
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
+                    <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Exam</li>
                 </ol>
             </nav>
@@ -118,7 +120,7 @@
                         <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3 px-4">
                             <!-- Atur ukuran kolom sesuai kebutuhan Anda -->
                             <button type="button" class="btn btn-custom" style="width: 75%;"
-                                    onclick="redirectToSection('{{ url('/exam/manage-exam-v2/create-exam') }}')">
+                                onclick="redirectToSection('{{ url('/exam/manage-exam-v2/create-exam') }}')">
                                 <span>Add</span>
                             </button>
                         </div>
@@ -140,21 +142,26 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead style="background-color: #ebebeb; text-align: center;">
-                            <th><h3><b>Judul</b></h3></th>
-                            <th><h3><b>Manage</b></h3></th>
+                                <th>
+                                    <h3><b>Judul</b></h3>
+                                </th>
+                                <th>
+                                    <h3><b>Manage</b></h3>
+                                </th>
                             </thead>
                             <tbody>
-                            @forelse ($dayta as $data)
-                                <tr>
-                                    <td style="overflow: hidden; white-space: nowrap;">
-                                        {{ $data->title }}
-                                    </td>
+                                @forelse ($dayta as $data)
+                                    <tr>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->title }}
+                                        </td>
 
-                                    <td style="text-align: center;">
-                                        <div class="d-flex justify-content-center">
-                                            <!-- Tombol-tombol di dalam baris yang responsif -->
-                                            {{-- BTN DOWNLOAD --}}
-                                            <button class="btn mr-2" style="background-color: #4BC9FF;
+                                        <td style="text-align: center;">
+                                            <div class="d-flex justify-content-center">
+                                                <!-- Tombol-tombol di dalam baris yang responsif -->
+                                                {{-- BTN DOWNLOAD --}}
+                                                <button class="btn mr-2"
+                                                    style="background-color: #4BC9FF;
                                                                     border-radius: 15px;
                                                                     width:45px;
                                                                     height: 40px;
@@ -164,12 +171,15 @@
                                                                     align-items: center;
                                                                     justify-content: center;"
                                                     onclick="redirectToSection_download('{{ url('/exam/download-exam/' . $data->id) }}')">
-                                                <img src="{{ url('/icons/Download.svg') }}"
-                                                     style="max-width: 100%; max-height: 100%;">
-                                            </button>
-                                            {{-- BTN COPY LINK --}}
-                                            <input type="text" class="text" value="sample copy text{{ $loop->index+1 }}" readonly hidden>
-                                            <button class="btn mr-2" onclick="copyLink()" style="background-color: #6DCBA8;
+                                                    <img src="{{ url('/icons/Download.svg') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
+                                                {{-- BTN COPY LINK --}}
+                                                <input type="text" class="text"
+                                                    value="sample copy text{{ $loop->index + 1 }}" readonly hidden>
+                                                <button class="btn mr-2" onclick="copyLink(this)"
+                                                    data-link="{{ url('/public-exam/' . $data->id) }}"
+                                                    style="background-color: #6DCBA8;
                                                                     border-radius: 15px;
                                                                     width:45px;
                                                                     height: 40px;
@@ -178,9 +188,12 @@
                                                                     display: flex;
                                                                     align-items: center;
                                                                     justify-content: center;">
-                                                <img src="{{ url('/icons/Link.svg') }}" style="max-width: 100%; max-height: 100%;">
-                                            </button>
-                                            <button class="btn mr-2 d-none" onclick="redirectToSection('{{ url('/exam/' . $data->id.'/edit') }}')" style="background-color: #208DBB;
+                                                    <img src="{{ url('/icons/Link.svg') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
+                                                <button class="btn mr-2 d-none"
+                                                    onclick="redirectToSection('{{ url('/exam/' . $data->id . '/edit') }}')"
+                                                    style="background-color: #208DBB;
                                             border-radius: 15px;
                                             width:45px;
                                             height: 40px;
@@ -189,34 +202,43 @@
                                             display: flex;
                                             align-items: center;
                                             justify-content: center;">
-                                            <img src="{{ url('/icons/edit_quiz_button.png') }}" style="max-width: 100%; max-height: 100%;">
-                                            </button>
-                                            <p id="message"></p>
-                                            <script>
-                                                function copyLink() {
-                                                    // Ambil elemen input yang berisi link
-                                                    var copyText = document.querySelector(".copy-text");
+                                                    <img src="{{ url('/icons/edit_quiz_button.png') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
+                                                <p id="message"></p>
+                                                <script>
+                                                    function copyLink(button) {
+                                                        // Get the link from the data-link attribute
+                                                        const link = button.getAttribute('data-link');
 
-                                                    // copyText.querySelector("button").addEventListener("click", function(){
-                                                    //     var input = copyText.querySelector("input.text");
-                                                    //     input.select();
-                                                    //     document.execCommand("copy");
-                                                    //     copyText.classList.add("active");
+                                                        // Create a temporary input element
+                                                        const tempInput = document.createElement('input');
+                                                        tempInput.value = link;
+                                                        document.body.appendChild(tempInput);
 
-                                                    //     window.getSelection().removeAllRanges();
-                                                    //     setTimeout(function(){
-                                                    //         copyText.classList.remove("active");
-                                                    //     }, 2500);
-                                                    // });
+                                                        // Select the text field
+                                                        tempInput.select();
+                                                        tempInput.setSelectionRange(0, 99999); // For mobile devices
 
-                                                    copyText.querySelector("button").addEventListener("click", function(){
-                                                        var input = copyText.querySelector("input.text");
-                                                        console.log(input);
-                                                    });
-                                                }
-                                            </script>
-                                            {{-- BTN EDIT EXAM --}}
-                                            <button class="btn mr-2" style="background-color: #208DBB;
+                                                        // Copy the text inside the text field
+                                                        document.execCommand('copy');
+
+                                                        // Remove the temporary input element
+                                                        document.body.removeChild(tempInput);
+
+                                                        // Show a success message using SweetAlert
+                                                        Swal.fire({
+                                                            title: 'Link Berhasil Dicopy!',
+                                                            text: 'Link: ' + link,
+                                                            icon: 'success',
+                                                            showConfirmButton: false,
+                                                            timer: 1500 // Automatically close after 1.5 seconds
+                                                        });
+                                                    }
+                                                </script>
+                                                {{-- BTN EDIT EXAM --}}
+                                                <button class="btn mr-2"
+                                                    style="background-color: #208DBB;
                                                                     border-radius: 15px;
                                                                     width:45px;
                                                                     height: 40px;
@@ -226,14 +248,15 @@
                                                                     align-items: center;
                                                                     justify-content: center;"
                                                     onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">
-                                                <img src="{{ url('icons/Edit.svg') }}"
-                                                     style="max-width: 100%; max-height: 100%;">
-                                            </button>
-                                            {{-- BTN DELETE --}}
-                                            <form id="deleteForm_{{ $data->id }}" action="{{ route('exam.delete', $data->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn delete-btn"
+                                                    <img src="{{ url('icons/Edit.svg') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
+                                                {{-- BTN DELETE --}}
+                                                <form id="deleteForm_{{ $data->id }}"
+                                                    action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn delete-btn"
                                                         style="background-color: #FC1E01;
                                                                border-radius: 15px;
                                                                width:45px;
@@ -244,47 +267,47 @@
                                                                align-items: center;
                                                                justify-content: center;"
                                                         data-id="{{ $data->id }}">
-                                                    <img src="{{ url('/icons/Delete.svg') }}"
-                                                         style="max-width: 100%; max-height: 100%;">
-                                                </button>
-                                            </form>
+                                                        <img src="{{ url('/icons/Delete.svg') }}"
+                                                            style="max-width: 100%; max-height: 100%;">
+                                                    </button>
+                                                </form>
 
-                                            <!-- SweetAlert Library -->
-                                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-                                            <script>
-                                                // Setiap tombol hapus memiliki kelas .delete-btn
-                                                document.querySelectorAll('.delete-btn').forEach(item => {
-                                                    item.addEventListener('click', function(event) {
-                                                        event.preventDefault(); // Prevent the default form submission
+                                                <!-- SweetAlert Library -->
+                                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                                                <script>
+                                                    // Setiap tombol hapus memiliki kelas .delete-btn
+                                                    document.querySelectorAll('.delete-btn').forEach(item => {
+                                                        item.addEventListener('click', function(event) {
+                                                            event.preventDefault(); // Prevent the default form submission
 
-                                                        const sectionId = this.getAttribute('data-id');
+                                                            const sectionId = this.getAttribute('data-id');
 
-                                                        Swal.fire({
-                                                            title: 'Are you sure?',
-                                                            text: "You won't be able to revert this!",
-                                                            icon: 'warning',
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: '#3085d6',
-                                                            cancelButtonColor: '#d33',
-                                                            confirmButtonText: 'Yes, delete it!'
-                                                        }).then((result) => {
-                                                            if (result.isConfirmed) {
-                                                                // Submit the form programmatically
-                                                                document.getElementById('deleteForm_' + sectionId).submit();
-                                                            }
+                                                            Swal.fire({
+                                                                title: 'Are you sure?',
+                                                                text: "You won't be able to revert this!",
+                                                                icon: 'warning',
+                                                                showCancelButton: true,
+                                                                confirmButtonColor: '#3085d6',
+                                                                cancelButtonColor: '#d33',
+                                                                confirmButtonText: 'Yes, delete it!'
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    // Submit the form programmatically
+                                                                    document.getElementById('deleteForm_' + sectionId).submit();
+                                                                }
+                                                            });
                                                         });
                                                     });
-                                                });
-                                            </script>
+                                                </script>
 
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="2" style="text-align: center;">No data available</td>
-                                </tr>
-                            @endforelse
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="2" style="text-align: center;">No data available</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -293,9 +316,11 @@
                     function redirectToSection_edit(url) {
                         window.location.href = url;
                     }
+
                     function redirectToSection_edit_exam(url) {
                         window.location.href = url;
                     }
+
                     function redirectToSection_download(url) {
                         window.location.href = url;
                     }
@@ -304,9 +329,4 @@
         </div>
 
     </div>
-
 @endsection
-
-
-
-

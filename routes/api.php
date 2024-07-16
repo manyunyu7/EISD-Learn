@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\MobileUploaderController;
 use App\Http\Controllers\MobileHomeController;
 use App\Http\Controllers\ModernlandIntegrationController;
+use App\Http\Controllers\QRLoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +26,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::get('/course/{lesson}/section/{section}', 'MobileLmsContentController@seeSection');
 Route::get('/course/{lesson}/sections', 'MobileLmsContentController@seeClassSections');
+
+
+Route::any('/check-qrcode-authentication', [QRLoginController::class, 'checkQRCodeAuthentication'])->name('check.qrcode.authentication');
+Route::post('/generate-qr-code', [QRLoginController::class, 'generateQRCode'])->name('generate.qrcode');
 
 
 Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
