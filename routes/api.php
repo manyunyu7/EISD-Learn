@@ -9,7 +9,6 @@ use App\Http\Controllers\MobileHomeController;
 use App\Http\Controllers\ModernlandIntegrationController;
 use App\Http\Controllers\QRLoginController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MobileLmsContentController; // InvoiceController is controller name
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +24,8 @@ use App\Http\Controllers\MobileLmsContentController; // InvoiceController is con
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/course/{lesson}/section/{section}', 'MobileLmsContentController@seeSection');
-Route::get('/course/{lesson}/sections', 'MobileLmsContentController@seeClassSections');
+Route::get('/course/{lesson}/section/{section}', 'MobileLmsViewerController@seeSection');
+Route::get('/course/{lesson}/sections', 'MobileLmsViewerController@seeClassSections');
 
 
 Route::any('/check-qrcode-authentication', [QRLoginController::class, 'checkQRCodeAuthentication'])->name('check.qrcode.authentication');
