@@ -204,7 +204,8 @@
 
 
         <div class="container-fluid mt-3 row">
-            @forelse ($myClasses as $data)
+            @if($keyword == NULL)
+                @forelse ($myClasses as $data)
                 @php
 
                     $numStudents = DB::select(
@@ -276,7 +277,7 @@
                                             </a>
                                             {{-- <div class="dropdown-divider"></div> --}}
                                             {{-- <a class="dropdown-item"
-                                           href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
+                                        href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
                                             <span class="link-collapse">Dashboard Post Test</span>
                                         </a> --}}
                                         </li>
@@ -423,14 +424,19 @@
                         </div>
                     </div>
                 </div>
-            @empty
-                <div class="w-100 d-flex justify-content-center">
-                    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-                    <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json" background="transparent"
-                        speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
-                </div>
-                <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas Manapun</strong>
-            @endforelse
+                @empty
+                    <div class="w-100 d-flex justify-content-center">
+                        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_cy82iv.json" background="transparent"
+                            speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+                    </div>
+                    <strong class="w-100 text-center">Anda Belum Terdaftar di Kelas Manapun</strong>
+                @endforelse
+            @else
+                <h3>{{ $keyword }}</h3>
+            @endif
+
+            
         </div>
     </div>
 @endsection

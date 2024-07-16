@@ -1,14 +1,15 @@
 <nav class="navbar navbar-header navbar-expand-lg" style="background-color: #1D2026">
     <div class="container-fluid">
         <div class="collapse" id="search-nav" style="">
-            <form class="navbar-left navbar-form nav-search mr-md-3">
+            <form class="navbar-left navbar-form nav-search mr-md-3" method="POST" action="{{ route('lesson.search') }}" enctype="multipart/form-data">
+                @csrf
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <button type="submit" class="btn btn-search pr-1">
                             <i class="fa fa-search search-icon"></i>
                         </button>
                     </div>
-                    <input type="text" placeholder="Search ..." class="form-control">
+                    <input type="text" name="search_keyword" placeholder="Search Class..." class="form-control">
                 </div>
             </form>
         </div>
