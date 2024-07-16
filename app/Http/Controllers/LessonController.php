@@ -153,6 +153,7 @@ class LessonController extends Controller
     {
 
         $keyword = NULL;
+        $myClasses_searchKeyword = NULL;
         $user_id = Auth::id();
 
         $dayta = DB::select("SELECT
@@ -179,8 +180,7 @@ class LessonController extends Controller
                     ");
 
         Paginator::useBootstrap();
-        // dd($myClasses) ;
-        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses', 'keyword'));
+        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses', 'keyword', 'myClasses_searchKeyword'));
     }
 
     public function search(Request $request)
@@ -194,38 +194,37 @@ class LessonController extends Controller
 
         // Buat query dasar
         $query = "
-        SELECT
-            a.*,
-            u.name AS mentor_name,
-            lc.name as course_category_name,
-            lc.color_of_categories as course_category_color
-        FROM
-            lessons a
-        LEFT JOIN
-            users u ON a.mentor_id = u.id AND u.role = 'mentor'
-        LEFT JOIN
-            lesson_categories lc on lc.id = a.category_id
-        WHERE
-            a.deleted_at IS NULL
-    ";
+            SELECT
+                a.*,
+                u.name AS mentor_name,
+                lc.name as course_category_name,
+                lc.color_of_categories as course_category_color
+            FROM
+                lessons a
+            LEFT JOIN
+                users u ON a.mentor_id = u.id AND u.role = 'mentor'
+            LEFT JOIN
+                lesson_categories lc on lc.id = a.category_id
+            WHERE
+                a.deleted_at IS NULL
+        ";
 
-    // Tambahkan kondisi pencarian jika ada kata kunci
-    $bindings = [];
-    if (!empty($keyword)) {
-        $query .= " AND (a.course_title LIKE :keyword)";
-        $bindings['keyword'] = '%' . $keyword . '%';
-    }
+        // Tambahkan kondisi pencarian jika ada kata kunci
+        $bindings = [];
+        if (!empty($keyword)) {
+            $query .= " AND (a.course_title LIKE :keyword)";
+            $bindings['keyword'] = '%' . $keyword . '%';
+        }
 
-    $query .= " ORDER BY a.id DESC";
+        $query .= " ORDER BY a.id DESC";
 
-    // Jalankan query dengan parameter pencarian
-    $myClasses = DB::select($query, $bindings);
+        // Jalankan query dengan parameter pencarian
+        $myClasses_searchKeyword = DB::select($query, $bindings);
 
-
-        return $myClasses;
+        // return $myClasses;
         
         Paginator::useBootstrap();
-        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses', 'keyword'));
+        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses_searchKeyword', 'keyword'));
 
         // return $keyword;
     }
