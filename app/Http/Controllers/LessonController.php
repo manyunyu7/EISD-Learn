@@ -152,41 +152,65 @@ class LessonController extends Controller
     public function manageV2()
     {
 
+        $userID = Auth::id();
         $keyword = NULL;
         $myClasses_searchKeyword = NULL;
         $user_id = Auth::id();
+        $lessonCategories = LessonCategory::all();
 
         $dayta = DB::select("SELECT
             a.* , b.name as `mentor_name`, b.profile_url from lessons a
             LEFT JOIN users b on a.mentor_id=b.id where mentor_id = $user_id");
 
-        $myClasses = DB::select("
-                       SELECT
-                        a.*,
-                        u.name AS mentor_name,
-                        lc.name as course_category_name,lc.color_of_categories as course_category_color
-                    FROM
-                        lessons a
-                    LEFT JOIN
-                    users u ON
-                        a.mentor_id = u.id
-                        AND u.role = 'mentor'
-                    LEFT JOIN lesson_categories lc on lc.id  = a.category_id
-                        WHERE
-                        a.deleted_at IS NULL
-                    ORDER BY
-                        a.id DESC
+        $sortParam = request('sort' , 'Latest') ;
+        $catParam  = request('category', 'All Category');
 
-                    ");
+        $sortBy = ($sortParam == 'Latest') ? 'desc' : 'asc';
+        $catBy = ($catParam == 'All Category') ? '*' : $catParam;
+
+
+        $myClasses = DB::table('lessons as a')
+        ->select([
+            'a.*',
+            'b.name AS mentor_name',
+            'b.profile_url',
+            'lc.name as course_category_name',
+            'lc.color_of_categories as course_category_color',
+            DB::raw('COUNT(c.student_id) AS num_students_registered'),
+            DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered')
+        ])
+        ->leftJoin('lesson_categories as lc','lc.id','=','a.category_id')
+        ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
+        ->leftJoin('student_lesson as c', 'a.id', '=', 'c.lesson_id')
+        ->where('b.role', 'mentor')
+        ->whereNull('a.deleted_at')
+        ->groupBy('a.id', 'b.name', 'b.profile_url')
+        ->orderBy('a.created_at', $sortBy)
+        ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
+                return $query->orderBy('a.created_at', $sortBy);
+            }, function ($query) use ($sortBy) {
+                return $query->orderBy('num_students_registered', $sortBy);
+            })
+        ->when($catParam != 'All Category', function ($query) use ($catParam) {
+                return $query->where('lc.name', $catParam);
+            })
+        ->get();
+
+        // return $myClasses;
+
+        
 
         Paginator::useBootstrap();
-        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses', 'keyword', 'myClasses_searchKeyword'));
+        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses', 'keyword', 'myClasses_searchKeyword', 'lessonCategories'));
     }
 
     public function search(Request $request)
     {
+        $lessonCategories = LessonCategory::all();
+
         $keyword = $request->input('search_keyword');
         $user_id = Auth::id();
+
 
         $dayta = DB::select("SELECT
             a.* , b.name as `mentor_name`, b.profile_url from lessons a
@@ -224,7 +248,7 @@ class LessonController extends Controller
         // return $myClasses;
         
         Paginator::useBootstrap();
-        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses_searchKeyword', 'keyword'));
+        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses_searchKeyword', 'keyword', 'lessonCategories'));
 
         // return $keyword;
     }
