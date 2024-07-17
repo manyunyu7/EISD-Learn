@@ -15,7 +15,7 @@
 </li>
 
 {{-- CLASS --}}
-<li class="nav-item {{ Request::is('lesson/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+<li class="nav-item {{ Request::is('lesson/manage_v2') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('lesson/manage_v2') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/class.svg"
              class="nav-ok-logo"
@@ -24,23 +24,23 @@
                     margin-top: 5px;
                     margin-right: 10px;"
         >
-        <p style="margin: 0; {{ (Request::is('lesson/*')) ? 'color: white !important;' : '' }}"
-           class="{{ (Request::is('lesson/*')) ? 'text-white active' : '' }}">Class</p>
+        <p style="margin: 0; {{ (Request::is('lesson/manage_v2')) ? 'color: white !important;' : '' }}"
+           class="{{ (Request::is('lesson/manage_v2')) ? 'text-white active' : '' }}">Class</p>
     </a>
 </li>
 
 {{-- CLASS CATEGORY--}}
-<li class="nav-item {{ Request::is('lesson/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+<li class="nav-item {{ Request::is('lesson/category') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('lesson/category') }}" style="display: flex; align-items: center;">
-        {{-- <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/class.svg"
+        <img src="{{URL::to('/')}}/home_assets/img/ic-category.svg"
              class="nav-ok-logo"
              style="width: 14%;
                     height: auto;
                     margin-top: 5px;
                     margin-right: 10px;"
-        > --}}
-        <p style="margin: 0; {{ (Request::is('lesson/*')) ? 'color: white !important;' : '' }}"
-           class="{{ (Request::is('lesson/*')) ? 'text-white active' : '' }}">Class Category</p>
+        >
+        <p style="margin: 0; {{ (Request::is('lesson/category')) ? 'color: white !important;' : '' }}"
+           class="{{ (Request::is('lesson/category')) ? 'text-white active' : '' }}">Class Category</p>
     </a>
 </li>
 
