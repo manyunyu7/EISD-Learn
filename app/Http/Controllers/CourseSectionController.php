@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class CourseSectionController extends Controller
 {
@@ -340,76 +341,85 @@ class CourseSectionController extends Controller
     }
 
     public function publicExam($examId, Request $request)
-{
-    $questions = [];
-    $isExam = false;
-    $title = "";
+    {
+        $questions = [];
+        $isExam = false;
+        $title = "";
 
 
-    $examSession = null;
-    $exam = null;
-    $question_count = 0;
-    $totalScore = 0;
-    $session = null;
+        $examSession = null;
+        $exam = null;
+        $question_count = 0;
+        $totalScore = 0;
+        $session = null;
 
-    $isExam = true;
-    $exam = Exam::find($examId);
-    $examSession = ExamSession::where('exam_id','=',$examId)->first();
-    $session = $examSession;
-    $sessionId = $session->id;
-    $questions = json_decode($session->questions_answers);
-    $totalScore = 0;
-    $title = $exam->title;
-    if ($questions != null) {
-        foreach ($questions as $question) {
-            if (isset($question->choices)) {
-                $choices = json_decode($question->choices, true);
+        $isExam = true;
+        $exam = Exam::find($examId);
+        $examSession = ExamSession::where('exam_id','=',$examId)->first();
+        $session = $examSession;
+        $sessionId = $session->id;
+        $questions = json_decode($session->questions_answers);
+        $totalScore = 0;
+        $title = $exam->title;
+        if ($questions != null) {
+            foreach ($questions as $question) {
+                if (isset($question->choices)) {
+                    $choices = json_decode($question->choices, true);
 
-                foreach ($choices as $choice) {
-                    if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
-                        $totalScore += (int) $choice['score'];
+                    foreach ($choices as $choice) {
+                        if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
+                            $totalScore += (int) $choice['score'];
+                        }
                     }
                 }
             }
         }
+
+        if ($questions != null) {
+            $question_count = count($questions);
+        }
+        // Check if student has taken any exam on this session
+        $hasTakenAnyExam = false;
+        $examResults = ExamTaker::where("session_id", "=", $sessionId)->get();
+
+        if (count($examResults) > 0) {
+            $hasTakenAnyExam = true;
+        }
+
+        $examId_PA = $exam->id;
+        $examTokenKey = 'exam_token_' . $examId;
+
+        if (!session()->has($examTokenKey)) {
+            session([$examTokenKey => Str::uuid()->toString()]);
+        }
+        $examToken = session($examTokenKey);
+        return $examToken;
+
+        $compact = compact(
+            'hasTakenAnyExam',
+            'examResults',
+            'isExam',
+            'title',
+            'questions',
+            'examSession',
+            'exam',
+            'session',
+            'question_count',
+            'totalScore',
+        );
+
+        if ($request->dump == true) {
+            return $compact;
+        }
+
+        MyHelper::addAnalyticEvent(
+            "Mengerjakan Public Exam",
+            "Exam"
+        );
+
+
+        return view('lessons.play.course_play_public_exam', $compact);
     }
-
-    if ($questions != null) {
-        $question_count = count($questions);
-    }
-    // Check if student has taken any exam on this session
-    $hasTakenAnyExam = false;
-    $examResults = ExamTaker::where("session_id", "=", $sessionId)->get();
-
-    if (count($examResults) > 0) {
-        $hasTakenAnyExam = true;
-    }
-
-    $compact = compact(
-        'hasTakenAnyExam',
-        'examResults',
-        'isExam',
-        'title',
-        'questions',
-        'examSession',
-        'exam',
-        'session',
-        'question_count',
-        'totalScore',
-    );
-
-    if ($request->dump == true) {
-        return $compact;
-    }
-
-    MyHelper::addAnalyticEvent(
-        "Mengerjakan Public Exam",
-        "Exam"
-    );
-
-
-    return view('lessons.play.course_play_public_exam', $compact);
-}
 
 
     // SEE SECTION
