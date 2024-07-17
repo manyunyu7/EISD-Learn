@@ -7,6 +7,7 @@ use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropzoneController;
+use App\Http\Controllers\FileOnS3Controller;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\QRLoginController;
 
@@ -26,7 +27,7 @@ Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseControlle
 Route::get('mobile-api/course/{lesson}/section/{section}', 'MobileLmsViewerController@seeSection');
 
 
-Route::get('public-exam/{sessionId}','CourseSectionController@publicExam');
+Route::get('public-exam/{sessionId}', 'CourseSectionController@publicExam');
 
 Route::get('/', 'LandingController@landing');
 Route::get('/classes', 'LandingController@classes');
@@ -67,16 +68,33 @@ Route::get('/loginz', function () {
     return view('neo_login');
 });
 
-Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
-Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
-Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
-Route::delete('/files/{fileId}', [GraphController::class, 'deleteFile'])->name('delete-file-graph');
-Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
-Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
-Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
+
+
 
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
+
+
+    Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
+    Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
+    Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
+    Route::delete('/files/{fileId}', [GraphController::class, 'deleteFile'])->name('delete-file-graph');
+    Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
+    Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
+    Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
+
+
+    // List all files (index)
+    Route::get('/filemanager/s3', [FileOnS3Controller::class, 'index'])->name('filemanager.s3.index');
+
+    // Show form to upload a file (create)
+    Route::get('/filemanager/s3/create', [FileOnS3Controller::class, 'create'])->name('filemanager.s3.create');
+
+    // Handle file upload (store)
+    Route::post('/filemanager/s3', [FileOnS3Controller::class, 'store'])->name('filemanager.s3.store');
+    // Delete file (destroy)
+    Route::delete('/filemanager/s3/{file}', [FileOnS3Controller::class, 'destroy'])->name('filemanager.s3.destroy');
+
 
     Route::any('/exam/save-user-answer', 'ExamTakerController@submitQuiz');
     Route::any('/exam/fetch-result-on-section', 'ExamTakerController@fetchResultByStudentOnSection');
@@ -275,7 +293,7 @@ Route::group(['prefix' => 'filemanager'], function () {
 
 
 Route::get('/generate-qr-code', [QRLoginController::class, 'generateQRCode'])->name('generate.qrcode');
-Route::post('/check-qr-jwt','QRLoginController@checkToken')->name('checkQrLoginJWT');
+Route::post('/check-qr-jwt', 'QRLoginController@checkToken')->name('checkQrLoginJWT');
 
 
 Auth::routes();
