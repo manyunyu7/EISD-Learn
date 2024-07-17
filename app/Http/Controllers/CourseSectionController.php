@@ -339,7 +339,7 @@ class CourseSectionController extends Controller
     {
     }
 
-    public function publicExam($sessionId, Request $request)
+    public function publicExam($examId, Request $request)
 {
     $questions = [];
     $isExam = false;
@@ -353,9 +353,10 @@ class CourseSectionController extends Controller
     $session = null;
 
     $isExam = true;
-    $examSession = ExamSession::find($sessionId);
-    $exam = Exam::find($examSession->exam_id);
+    $exam = Exam::find($examId);
+    $examSession = ExamSession::where('exam_id','=',$examId)->first();
     $session = $examSession;
+    $sessionId = $session->id;
     $questions = json_decode($session->questions_answers);
     $totalScore = 0;
     $title = $exam->title;

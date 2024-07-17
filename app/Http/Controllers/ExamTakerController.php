@@ -345,8 +345,8 @@ class ExamTakerController extends Controller
                 "is_finished" => $request->isFinished,
                 "attempt_count" => $unfinishedAttemptCount,
                 "scores" => $userScore,
-                "answer" => $answers,
-                "session" => $session,
+                // "answer" => $answers,
+                // "session" => $session,
                 "message" => "Sukses",
                 "showError" => false
             ]);
@@ -358,8 +358,8 @@ class ExamTakerController extends Controller
                 "is_first_attempt" => $isFirstUnfinishedAttempt,
                 "scores" => 168,
                 "attempt_count" => $unfinishedAttemptCount,
-                "answer" => $answers,
-                "session" => $session,
+                // "answer" => $answers,
+                // "session" => $session,
                 "message" => "Sukses",
                 "showError" => false
             ]);
