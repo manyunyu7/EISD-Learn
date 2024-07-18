@@ -9,7 +9,7 @@ use App\Models\ExamTaker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Str;
 class ExamTakerController extends Controller
 {
     public function viewInitialTakeSession(Request $request, $id)
