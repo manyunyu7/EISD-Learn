@@ -145,98 +145,100 @@ value="{{ Auth::user()->name }}" @endauth>
         </section>
 
         @if ($examSession->show_result == 'y' || $examSession->show_result == '')
-            <div class="mt-4">
-                <hr>
-                <h4>Riwayat Hasil Ujian : </h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
+        <div class="mt-4">
+            <hr>
+            <h4>Riwayat Hasil Ujian : </h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Guest Name</th>
+                            <th>Current Score</th>
+                            <th>Finished At</th>
+                            @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
+                                <th>Actions</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($examResults->reverse() as $result)
+                            @if($result->token_exam == $examToken)
                             <tr>
-                                <th>Guest Name</th>
-                                <th>Current Score</th>
-                                <th>Finished At</th>
+                                <td>{{ $result['guest_name'] }}</td>
+                                <td>{{ $result['current_score'] }}</td>
+                                <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}
+                                </td>
                                 @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
-                                    <th>Actions</th>
-                                @endif
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($examResults->reverse() as $result)
-                                <tr>
-                                    <td>{{ $result['guest_name'] }}</td>
-                                    <td>{{ $result['current_score'] }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}
+                                    <td>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#exampleModal{{ $result['id'] }}">
+                                            Show Answers
+                                        </button>
                                     </td>
-                                    @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#exampleModal{{ $result['id'] }}">
-                                                Show Answers
-                                            </button>
-                                        </td>
 
-                                        <!-- Modal -->
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1"
-                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">User Answers</h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        @foreach (json_decode($result['user_answers'], true) as $answer)
-                                                            <div>
-                                                                <strong>Question:</strong>
-                                                                {{ $answer['question_text'] ?? '' }}
-                                                            </div>
-                                                            <div>
-                                                                <strong>Answer:</strong><br>
-                                                                @if (isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
-                                                                    Multiple Choice: {{ $answer['values'][0] ?? '' }}
-                                                                @else
-                                                                    Single Choice: {{ $answer['values'][0] ?? '' }}
-                                                                @endif
-                                                            </div>
-                                                            <div>
-                                                                <strong>Jawaban
-                                                                    Pengguna:</strong><br>{{ $answer['correct_answer'] ?? '' }}
-                                                            </div>
-                                                            {{--                                                <div> --}}
-                                                            {{--                                                    <strong>Jawaban Benar:</strong><br>{{ $answer['correct_score'] ?? '' }} --}}
-                                                            {{--                                                </div> --}}
-                                                            {{--                                                <div> --}}
-                                                            {{--                                                    <strong>Descriptive Score:</strong> {{ $answer['descriptive_score'] ?? '' }} --}}
-                                                            {{--                                                </div> --}}
-                                                            {{--                                                <div> --}}
-                                                            {{--                                                    <strong>User Choice Score:</strong> {{ $answer['user_choice_score'] ?? '' }} --}}
-                                                            {{--                                                </div> --}}
-                                                            <hr> <!-- Add a horizontal line between each answer -->
-                                                        @endforeach
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-dismiss="modal">Close</button>
-                                                    </div>
+                                    <!-- Modal -->
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">User Answers</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @foreach (json_decode($result['user_answers'], true) as $answer)
+                                                        <div>
+                                                            <strong>Question:</strong>
+                                                            {{ $answer['question_text'] ?? '' }}
+                                                        </div>
+                                                        <div>
+                                                            <strong>Answer:</strong><br>
+                                                            @if (isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
+                                                                Multiple Choice: {{ $answer['values'][0] ?? '' }}
+                                                            @else
+                                                                Single Choice: {{ $answer['values'][0] ?? '' }}
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <strong>Jawaban
+                                                                Pengguna:</strong><br>{{ $answer['correct_answer'] ?? '' }}
+                                                        </div>
+                                                        {{--                                                <div> --}}
+                                                        {{--                                                    <strong>Jawaban Benar:</strong><br>{{ $answer['correct_score'] ?? '' }} --}}
+                                                        {{--                                                </div> --}}
+                                                        {{--                                                <div> --}}
+                                                        {{--                                                    <strong>Descriptive Score:</strong> {{ $answer['descriptive_score'] ?? '' }} --}}
+                                                        {{--                                                </div> --}}
+                                                        {{--                                                <div> --}}
+                                                        {{--                                                    <strong>User Choice Score:</strong> {{ $answer['user_choice_score'] ?? '' }} --}}
+                                                        {{--                                                </div> --}}
+                                                        <hr> <!-- Add a horizontal line between each answer -->
+                                                    @endforeach
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
                                         </div>
-                                    @endif
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5">No exam results found.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
+                                    </div>
+                                @endif
+                            </tr>
+                            @endif
+                        @empty
+                            <tr>
+                                <td colspan="5">No exam results found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+        </div>
         @endif
     </div>
 

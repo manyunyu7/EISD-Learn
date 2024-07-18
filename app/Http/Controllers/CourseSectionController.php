@@ -386,18 +386,19 @@ class CourseSectionController extends Controller
             $hasTakenAnyExam = true;
         }
 
-        $examId_PA = $exam->id;
         $examTokenKey = 'exam_token_' . $examId;
 
         if (!session()->has($examTokenKey)) {
             session([$examTokenKey => Str::uuid()->toString()]);
         }
         $examToken = session($examTokenKey);
-        return $examToken;
+        
+        // return $examResults;
 
         $compact = compact(
             'hasTakenAnyExam',
             'examResults',
+            'examToken',
             'isExam',
             'title',
             'questions',

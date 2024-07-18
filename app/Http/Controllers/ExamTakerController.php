@@ -109,6 +109,13 @@ class ExamTakerController extends Controller
         $courseId = $request->courseId;
         $sectionId = $request->sectionId;
 
+        $examTokenKey = 'exam_token_' . $examId;
+
+        if (!session()->has($examTokenKey)) {
+            session([$examTokenKey => Str::uuid()->toString()]);
+        }
+        $examToken = session($examTokenKey);
+
         // Load the exam session
         $session = ExamSession::findOrFail($sessionId);
 
@@ -265,12 +272,13 @@ class ExamTakerController extends Controller
             $examResult->course_section_flag = $sectionId;
             $examResult->current_score = $userScore;
             $examResult->guest_name = $name;
+            $examResult->token_exam = $examToken;
             $examResult->save();
             $dimanaYa = "yessy";
         }
 
 
-//        if(!$allowMultipleAttempt && !$isFirstAttempt)
+        //        if(!$allowMultipleAttempt && !$isFirstAttempt)
 
         //if not finished and not first attempt
         if ($request->isFinished != true && $isFirstUnfinishedAttempt != true) {
