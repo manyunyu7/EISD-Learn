@@ -36,7 +36,7 @@ class ClassListController extends Controller
         return view('classes')->with('dayta', $dayta);
     }
 
-    public function classList()
+    public function classList(Request $request)
     {
         if (!Auth::check()) {
             abort(401, "Anda Harus Login Untuk Melanjutkan ");
@@ -70,7 +70,12 @@ class ClassListController extends Controller
                     ->whereRaw('sl.lesson_id = a.id')
                     ->where('sl.student_id', $userID);
             })
-            ->where('a.is_visible', 'y')
+            ->where('a.is_visible', 'y');
+            if ($request->q != '') {
+                $keyword = '%' . $request->q . '%';
+                $classesQuery->where('a.course_title', 'LIKE', $keyword);
+            }
+            $classesQuery = $classesQuery
             ->groupBy('a.id', 'b.name', 'b.profile_url')
             ->orderBy('a.created_at', $sortBy)
             ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
@@ -138,6 +143,12 @@ class ClassListController extends Controller
         $myClasses_searchKeyword = DB::select($query, $bindings);
 
         // return $myClasses;
+        if(Auth::user()->role == 'mentor'){
+            return redirect()->to('/lesson/manage_v2?q='.$keyword);
+        }
+        else if(Auth::user()->role == 'student'){
+            return redirect()->to('/class/class-list?q='.$keyword);
+        }
         
         Paginator::useBootstrap();
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses_searchKeyword', 'keyword', 'lessonCategories'));

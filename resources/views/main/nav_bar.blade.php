@@ -14,7 +14,7 @@
                     </div>
                 </form>
             @elseif(Auth::user()->role == 'student')
-                <form class="navbar-left navbar-form nav-search mr-md-3" method="POST" action="{{ route('lessonStudent.search') }}" enctype="multipart/form-data">
+                <form class="navbar-left navbar-form nav-search mr-md-3" method="POST" action="{{ route('lesson.search') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="input-group">
                         <div class="input-group-prepend">

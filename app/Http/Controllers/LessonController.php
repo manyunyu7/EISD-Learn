@@ -149,7 +149,7 @@ class LessonController extends Controller
         // return $dayta;
         return view('lessons.manage_lesson', compact('dayta'));
     }
-    public function manageV2()
+    public function manageV2(Request $request)
     {
 
         $userID = Auth::id();
@@ -183,7 +183,13 @@ class LessonController extends Controller
         ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
         ->leftJoin('student_lesson as c', 'a.id', '=', 'c.lesson_id')
         ->where('b.role', 'mentor')
-        ->whereNull('a.deleted_at')
+        ->whereNull('a.deleted_at');
+
+        if ($request->q != '') {
+            $keyword = '%' . $request->q . '%';
+            $myClasses->where('a.course_title', 'LIKE', $keyword);
+        }
+        $myClasses = $myClasses
         ->groupBy('a.id', 'b.name', 'b.profile_url')
         ->orderBy('a.created_at', $sortBy)
         ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
@@ -246,6 +252,12 @@ class LessonController extends Controller
         $myClasses_searchKeyword = DB::select($query, $bindings);
 
         // return $myClasses;
+        if(Auth::user()->role == 'mentor'){
+            return redirect()->to('/lesson/manage_v2?q='.$keyword);
+        }
+        else if(Auth::user()->role == 'student'){
+            return redirect()->to('/class/class-list?q='.$keyword);
+        }
         
         Paginator::useBootstrap();
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses_searchKeyword', 'keyword', 'lessonCategories'));

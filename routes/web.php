@@ -121,6 +121,7 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('fetch-positions', 'LessonController@fetchPositions');
     Route::post('fetch-show', 'LessonController@fetchShowCourse');
     Route::post('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
+    Route::post('/lesson/search_class', 'LessonController@search')->name('lesson.search')->middleware('auth');
 
     // ROUTING KHUSUS MENTOR
     Route::group(['middleware' => ['mentor']], function () {
@@ -145,7 +146,6 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::get('/lesson/edit_class/{lesson}', ['uses' => 'LessonController@editClassV2']);
         Route::post('/update-lesson/{lesson}', ['uses' => 'LessonController@updateClassV2']);
         Route::get('/lesson/delete_class/{lesson}', ['uses' => 'LessonController@delete_class_v2']);
-        Route::post('/lesson/search_class', 'LessonController@search')->name('lesson.search')->middleware('auth');
 
 
         Route::get('/lesson/store', 'LessonController@add');
@@ -265,7 +265,7 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::get('/course/{lesson}/submission', 'FinalProjectController@submit_page')->name('course.submission');
         Route::get('/course/{lesson}/certificate', 'FinalProjectController@certificate')->name('course.certificate');
         Route::post('/course/submission/store', 'FinalProjectController@store')->name('course.submission.store');
-        Route::post('/lesson/student/search_class', 'ClassListController@search')->name('lessonStudent.search')->middleware('auth');
+        // Route::post('/lesson/student/search_class', 'ClassListController@search')->name('lessonStudent.search')->middleware('auth');
 
     });
 });
