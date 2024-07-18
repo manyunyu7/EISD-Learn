@@ -96,6 +96,55 @@ class ClassListController extends Controller
         return view('student.all_class_new')->with(compact('classes', 'view_course','lessonCategories'));
     }
 
+    public function search(Request $request)
+    {
+        $lessonCategories = LessonCategory::all();
+
+        $keyword = $request->input('search_keyword');
+        $user_id = Auth::id();
+
+
+        $dayta = DB::select("SELECT
+            a.* , b.name as `mentor_name`, b.profile_url from lessons a
+            LEFT JOIN users b on a.mentor_id=b.id where mentor_id = $user_id");
+
+        // Buat query dasar
+        $query = "
+            SELECT
+                a.*,
+                u.name AS mentor_name,
+                lc.name as course_category_name,
+                lc.color_of_categories as course_category_color
+            FROM
+                lessons a
+            LEFT JOIN
+                users u ON a.mentor_id = u.id AND u.role = 'mentor'
+            LEFT JOIN
+                lesson_categories lc on lc.id = a.category_id
+            WHERE
+                a.deleted_at IS NULL
+        ";
+
+        // Tambahkan kondisi pencarian jika ada kata kunci
+        $bindings = [];
+        if (!empty($keyword)) {
+            $query .= " AND (a.course_title LIKE :keyword)";
+            $bindings['keyword'] = '%' . $keyword . '%';
+        }
+
+        $query .= " ORDER BY a.id DESC";
+
+        // Jalankan query dengan parameter pencarian
+        $myClasses_searchKeyword = DB::select($query, $bindings);
+
+        // return $myClasses;
+        
+        Paginator::useBootstrap();
+        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses_searchKeyword', 'keyword', 'lessonCategories'));
+
+        // return $keyword;
+    }
+
     public function blogs()
     {
         $dayta = DB::select("select * from view_blog");

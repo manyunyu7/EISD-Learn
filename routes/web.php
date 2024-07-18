@@ -265,6 +265,8 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::get('/course/{lesson}/submission', 'FinalProjectController@submit_page')->name('course.submission');
         Route::get('/course/{lesson}/certificate', 'FinalProjectController@certificate')->name('course.certificate');
         Route::post('/course/submission/store', 'FinalProjectController@store')->name('course.submission.store');
+        Route::post('/lesson/student/search_class', 'ClassListController@search')->name('lessonStudent.search')->middleware('auth');
+
     });
 });
 
