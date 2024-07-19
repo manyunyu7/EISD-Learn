@@ -19,15 +19,22 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name',
-        'id',
         'email',
+        'email_verified_at',
         'password',
-        'role',
         'profile_url',
+        'role',
         'contact',
-        'institute',
         'jobs',
+        'institute',
+        'mdln_username',
         'motto',
+        'university',
+        'major',
+        'interest',
+        'cv',
+        'sub_department',
+        'location',
         'url_personal_website',
         'url_facebook',
         'url_instagram',
@@ -35,7 +42,10 @@ class User extends Authenticatable implements JWTSubject
         'url_twitter',
         'url_whatsapp',
         'url_youtube',
+        'department_id',
+        'position_id',
     ];
+
 
         // Other model properties and methods
 
