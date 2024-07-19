@@ -49,6 +49,8 @@
     // Initialize current selected filters
     var currentSort = '{{ request()->query('sort', 'Latest') }}';
     var currentCategory = '{{ request()->query('category', 'All Category') }}';
+    var query = '{{ request()->query('q', '') }}';
+
 
     // Update the button text with current selected filters
     document.getElementById('currentSort').innerText = currentSort;
@@ -99,7 +101,7 @@
     // Function to reload the page with selected filters
     function reloadPageWithFilters() {
         // Construct the URL with the selected filters
-        var newUrl = window.location.pathname + '?sort=' + currentSort + '&category=' + currentCategory;
+        var newUrl = window.location.pathname + '?sort=' + currentSort + '&category=' + currentCategory + '&q=' + query;
         window.location.href = newUrl;
     }
 </script>
