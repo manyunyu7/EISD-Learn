@@ -139,9 +139,16 @@ class ExamTakerController extends Controller
 
                 // Loop through the choices to find the correct answer and its score
                 foreach ($choices as $choice) {
-                    if ($choice['score'] > $correctScore) {
-                        $correctAnswer = $choice['text'];
-                        $correctScore = $choice['score'];
+                    if($question->question_type=="Single Multiple Choice"){
+                        if ($choice['score'] > $correctScore) {
+                            $correctAnswer = $choice['text'];
+                            $correctScore = $choice['score'];
+                        }
+                    } elseif ($question->question_type == "Multiple Choice") {
+                        // Add the choice if its score is greater than 0
+                        if ($choice['score'] > 0) {
+                            $correctAnswer[] = $choice['text'];
+                        }
                     }
                 }
 

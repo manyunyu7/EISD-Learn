@@ -322,7 +322,7 @@
                                             src="{{$sectionDetail->section_video}}">
                                     </video>
                                 @else
-                                    <h1>Unsupported file format</h1>
+                                    {{-- <h1>Unsupported file format</h1> --}}
                                 @endif
                             @endif
                         </div>
@@ -331,8 +331,8 @@
                     <script>
                     function nextCuy() {
                         var videoPlayer = document.getElementById("myVideo");
+                        var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
                         if (videoPlayer) {
-                            var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
                             var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
                             if (progress >= 90) {
