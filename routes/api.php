@@ -34,7 +34,8 @@ Route::post('/generate-qr-code', [QRLoginController::class, 'generateQRCode'])->
 
 Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
 Route::get('/lms/users', [ModernlandIntegrationController::class, 'getLearningUsers']);
-Route::post('/lms/user/create', [ModernlandIntegrationController::class, 'createNewLMSUser']);
+Route::get('/lms/user/{username}/check', [ModernlandIntegrationController::class, 'isUserExist']);
+Route::post('/lms/user/create', [ModernlandIntegrationController::class, 'createOrUpdateLMSUser']);
 Route::post('/lms/user/update', [ModernlandIntegrationController::class, 'updateLMSUser']);
 
 

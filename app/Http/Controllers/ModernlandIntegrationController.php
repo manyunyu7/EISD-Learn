@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Google\Service\CloudSourceRepositories\Repo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ModernlandIntegrationController extends Controller
@@ -77,28 +78,107 @@ class ModernlandIntegrationController extends Controller
     /*
      * this function will check if the MDLN userId is already registered on Learning
      */
-    public function checkUsername(Request $request)
+    protected function isUserExist(Request $request, $mdln_username)
     {
-        $mdlnUserId = $request->mdlnUserId;
-    }
-
-
-    public function createNewLMSUser(Request $request)
-    {
-
         // Get the API credentials header
         $apiCredentials = $request->header('lms');
         if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
-            $response = [
+            return response()->json([
                 'meta' => [
                     'success' => false,
                     'status' => 403,
                     'message' => 'Invalid API Key'
-                ],
-            ];
-
-            return response()->json($response);
+                ]
+            ], 403);
         }
+
+        $user = User::where('mdln_username', $mdln_username)->first();
+        if (!$user) {
+            return response()->json([
+                'meta' => [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => 'User doesnt exist'
+                ]
+            ], 403);
+        }
+
+        return response()->json([
+            'meta' => [
+                'success' => true,
+                'status' => 200,
+                'message' => 'User exists'
+            ],
+            'data' => $user
+        ], 200);
+    }
+
+
+    public function createOrUpdateLMSUser(Request $request)
+    {
+        // Get the API credentials header
+        $apiCredentials = $request->header('lms');
+        if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
+            return response()->json([
+                'meta' => [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => 'Invalid API Key'
+                ]
+            ], 403);
+        }
+
+        $departmentExists = DB::connection('ithub')
+            ->table('m_departments')
+            ->where('id', '=', $request->department_id)
+            ->whereNull('deleted_at')
+            ->where('code', 'like', '%_NEW%')
+            ->exists();
+
+        $positionExists = DB::connection('ithub')
+            ->table('m_positions')
+            ->where('id', '=', $request->position_id)
+            ->exists();
+
+
+        $departments = DB::connection('ithub')
+            ->table('m_departments')
+            ->whereNull('deleted_at')
+            ->where('code', 'like', '%_NEW%')
+            ->get();
+
+        $positions = DB::connection('ithub')
+            ->table('m_positions')
+            ->whereNull('deleted_at')
+            ->where('code', 'like', '%_NEW%')
+            ->get();
+
+        if (!$departmentExists) {
+            return response()->json([
+                'meta' => [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => "Department Id $request->department_id doesnt exist"
+                ],
+                'data' => [
+                    $departments
+                ]
+            ], 403);
+        }
+
+        if (!$positionExists) {
+            return response()->json([
+                'meta' => [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => "Position Id $request->position_id doesnt exist"
+                ],
+                'data' => [
+                    $positions
+                ]
+            ], 403);
+        }
+
         // Validate incoming request data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -109,9 +189,9 @@ class ModernlandIntegrationController extends Controller
             'department_id' => 'nullable|string|max:255',
             'sub_department' => 'nullable|string|max:255',
             'position_id' => 'nullable|string|max:255',
+            'email' => 'nullable|string|email|max:255', // Ensure email is validated
         ]);
 
-        // If validation fails, return error response
         if ($validator->fails()) {
             return response()->json([
                 'meta' => [
@@ -123,112 +203,36 @@ class ModernlandIntegrationController extends Controller
             ], 422);
         }
 
-        // Create a new User instance
-        $user = new User();
+        // Find existing user or create a new instance
+        $user = User::firstOrNew(['mdln_username' => $request->input('mdln_username')]);
 
-        // Set each attribute on the user instance
+        // Set user attributes
         $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = bcrypt("modern888");
-        $user->role = $request->input('role');
-        $user->contact = $request->input('contact');
-        $user->mdln_username = $request->input('mdln_username');
-        $user->department = $request->input('department_name');
-        $user->sub_department = $request->input('sub_department');
-        $user->department_id = $request->input('department_id');
-        $user->position_id = $request->input('position_id');
-        // Save the user instance
+        $user->email = $request->input('email', $user->email);
+        $user->password = $user->exists ? $user->password : bcrypt($request->password);
+        $user->role = $request->input('role', $user->role);
+        $user->contact = $request->input('contact', $user->contact);
+        $user->sub_department = $request->input('sub_department', $user->sub_department);
+        $user->department_id = $request->input('department_id', $user->department_id);
+        $user->position_id = $request->input('position_id', $user->position_id);
+        $user->location = json_encode($request->input('location', $user->location));
+
+        // Save user
         $user->save();
 
-        // Return success response
+        $user->location = json_decode($user->location);
+
+        // Specify the attributes you want to return
+        $attributesToReturn = ['name', 'email', 'role', 'contact', 'department_id', 'position_id', 'location','mdln_username'];
+
         return response()->json([
             'meta' => [
                 'success' => true,
                 'status' => 200,
-                'message' => 'User created successfully',
+                'message' => $user->wasRecentlyCreated ? 'User created successfully' : 'User updated successfully',
             ],
             'result' => [
-                'data' => $user,
-            ],
-        ], 200);
-    }
-
-
-    public function updateLMSUser(Request $request)
-    {
-
-        // Get the API credentials header
-        $apiCredentials = $request->header('lms');
-        if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
-            $response = [
-                'meta' => [
-                    'success' => false,
-                    'status' => 403,
-                    'message' => 'Invalid API Key'
-                ],
-            ];
-
-            return response()->json($response);
-        }
-
-        $mdln_username = $request->mdln_username;
-        // Find the user by mdln_username
-        $user = User::where('mdln_username', $mdln_username)->first();
-
-        // If user not found, return error response
-        if (!$user) {
-            return response()->json([
-                'meta' => [
-                    'success' => false,
-                    'status' => 404,
-                    'message' => 'User not found',
-                ],
-            ], 404);
-        }
-
-        // Validate incoming request data
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
-            'contact' => 'nullable|string|max:20',
-            'department_name' => 'nullable|string|max:255',
-            'department_id' => 'nullable|string|max:255',
-            'sub_department' => 'nullable|string|max:255',
-            'position_id' => 'nullable|string|max:255',
-        ]);
-
-        // If validation fails, return error response
-        if ($validator->fails()) {
-            return response()->json([
-                'meta' => [
-                    'success' => false,
-                    'status' => 422,
-                    'message' => 'Validation errors',
-                ],
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Set each attribute on the user instance
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->contact = $request->input('contact');
-        $user->department = $request->input('department_name');
-        $user->sub_department = $request->input('sub_department');
-        $user->department_id = $request->input('department_id');
-        $user->position_id = $request->input('position_id');
-        // Save the user instance
-        $user->save();
-
-        // Return success response
-        return response()->json([
-            'meta' => [
-                'success' => true,
-                'status' => 200,
-                'message' => 'User updated successfully',
-            ],
-            'result' => [
-                'data' => $user,
+                'user' => $user->only($attributesToReturn),
             ],
         ], 200);
     }
