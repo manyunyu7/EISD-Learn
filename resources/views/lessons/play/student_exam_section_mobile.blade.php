@@ -151,7 +151,7 @@
             @endif
         </section>
 
-        @if ($examSession->show_result == 'y' || $examSession->show_result == '')
+        @if ($examSession->show_result == 'y' || $examSession->show_result != 'n')
         <div class="mt-4">
             <hr>
             <h4>Riwayat Hasil Ujian : </h4>
@@ -183,7 +183,6 @@
                                     </td>
 
                                     <!-- Modal -->
-                                    <!-- Modal -->
                                     <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1"
                                         role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
@@ -197,32 +196,39 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     @foreach (json_decode($result['user_answers'], true) as $answer)
-                                                        <div>
-                                                            <strong>Question:</strong>
+                                                        <div style="margin-top: 20px">
+                                                            <strong>Question:</strong><br>
                                                             {{ $answer['question_text'] ?? '' }}
                                                         </div>
                                                         <div>
-                                                            <strong>Answer:</strong><br>
+                                                            <strong>Jawaban Pengguna:</strong><br>
                                                             @if (isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
-                                                                Multiple Choice: {{ $answer['values'][0] ?? '' }}
+                                                                Multiple Choice:
+                                                                @if (is_array($answer['values']))
+                                                                    <ul>
+                                                                        @foreach ($answer['values'] as $value)
+                                                                            <li>{{ $value }}</li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @else
+                                                                    {{ $answer['values'] ?? '' }}
+                                                                @endif
                                                             @else
                                                                 Single Choice: {{ $answer['values'][0] ?? '' }}
                                                             @endif
                                                         </div>
                                                         <div>
-                                                            <strong>Jawaban
-                                                                Pengguna:</strong><br>{{ $answer['correct_answer'] ?? '' }}
+                                                            <strong>Jawaban Benar:</strong><br>
+                                                            @if(is_array($answer['correct_answer']))
+                                                                <ul>
+                                                                    @foreach($answer['correct_answer'] as $item)
+                                                                        <li>{{ $item }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @else
+                                                                {{ $answer['correct_answer'] ?? '' }}
+                                                            @endif
                                                         </div>
-                                                        {{--                                                <div> --}}
-                                                        {{--                                                    <strong>Jawaban Benar:</strong><br>{{ $answer['correct_score'] ?? '' }} --}}
-                                                        {{--                                                </div> --}}
-                                                        {{--                                                <div> --}}
-                                                        {{--                                                    <strong>Descriptive Score:</strong> {{ $answer['descriptive_score'] ?? '' }} --}}
-                                                        {{--                                                </div> --}}
-                                                        {{--                                                <div> --}}
-                                                        {{--                                                    <strong>User Choice Score:</strong> {{ $answer['user_choice_score'] ?? '' }} --}}
-                                                        {{--                                                </div> --}}
-                                                        <hr> <!-- Add a horizontal line between each answer -->
                                                     @endforeach
                                                 </div>
                                                 <div class="modal-footer">

@@ -322,31 +322,24 @@
                                             src="{{$sectionDetail->section_video}}">
                                     </video>
                                 @else
-                                    <h1>Unsupported file format</h1>
+                                    {{-- <h1>Unsupported file format</h1> --}}
                                 @endif
                             @endif
                         </div>
                     @endif
 
                     <script>
-                        function nextCuy() {
-                            var loaderContainer = document.querySelector('.loader-container');
-                            loaderContainer.style.display = 'flex'; // or 'flex' if it's a flex container
-                            var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
-                            window.location.href = nextUrl;
-                            return;
-                            var videoPlayer = document.getElementById("myVideo");
-                            var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                    function nextCuy() {
+                        var videoPlayer = document.getElementById("myVideo");
+                        var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                        if (videoPlayer) {
                             var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
                             if (progress >= 90) {
+                                document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
                                 window.location.href = nextUrl;
-                                return;
                             } else {
-
-                                // Prevent the default behavior of the button
                                 event.preventDefault();
-                                // Show a SweetAlert alert informing the user to complete the video first
                                 Swal.fire({
                                     title: "Video Progress",
                                     text: "Pengguna harus menyelesaikan video terlebih dahulu.",
@@ -354,7 +347,13 @@
                                     confirmButtonText: "OK",
                                 });
                             }
+                        } else {
+                            // Handle case where videoPlayer element does not exist
+                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            window.location.href = nextUrl;
+                            console.error("Video player element not found.");
                         }
+                    }
                     </script>
 
 
@@ -376,7 +375,7 @@
                                 @if ($next_section != null)
                                     <button style="background-color: #39AA81" id="nextLessonButton"
                                             class="btn btn-primary" onclick="nextCuy();">
-                                        Next Lesson
+                                        Next Section
                                     </button>
 
                                     <!--<a href="{{ url('/') . "/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
@@ -442,6 +441,32 @@
                 </div>
 
 
+
+                <script>
+                    function openSection(nextUrl) {
+                        var videoPlayer = document.getElementById("myVideo");
+                        if (videoPlayer) {
+                            var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+
+                            if (progress >= 90) {
+                                document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                window.location.href = nextUrl;
+                            } else {
+                                Swal.fire({
+                                    title: "Video Progress",
+                                    text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+                                });
+                            }
+                        } else {
+                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            window.location.href = nextUrl;
+                            // Handle case where videoPlayer element does not exist
+                            console.error("Video player element not found.");
+                        }
+                    }
+                </script>
                 @forelse ($sections as $item)
 
                     <!--- Item Course Section Item -->
@@ -454,9 +479,10 @@
                                     $isCurrent = $item->isCurrent ?? false; // Check if $item->isCurrent is set, if not, set it to false
                                 @endphp
 
-                                <a href="{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}"
-                                   class="loader-link"
-                                   style="text-decoration: none; color: inherit;">
+                                    <a href="javascript:void(0)"
+                                    class=""
+                                    style="text-decoration: none; color: inherit;"
+                                    onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')">
                                     @if (Auth::user()->role!='mentor')
                                         {{-- Check if the item is marked as taken --}}
                                         @if ($item->isTaken)

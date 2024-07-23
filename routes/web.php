@@ -127,6 +127,8 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::group(['middleware' => ['mentor']], function () {
 
 
+        Route::resource('users', UserManagementController::class);
+
         Route::prefix("lesson")->group(function () {
 
             Route::get('/{id}/dashboard', 'ClassDashboardController@viewClassDashboard');

@@ -360,7 +360,7 @@
                                                 src="{{$sectionDetail->section_video}}">
                                         </video>
                                     @else
-                                        <h1>Unsupported file format</h1>
+                                        {{-- <h1>Unsupported file format</h1> --}}
                                     @endif
                                 @endif
                             </div>
@@ -368,29 +368,28 @@
 
                         <script>
                             function nextCuy() {
-                                var loaderContainer = document.querySelector('.loader-container');
-                                loaderContainer.style.display = 'flex'; // or 'flex' if it's a flex container
-                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
-                                window.location.href = nextUrl;
-                                return;
                                 var videoPlayer = document.getElementById("myVideo");
-                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
-                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+                                var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                                if (videoPlayer) {
+                                    var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
-                                if (progress >= 90) {
-                                    window.location.href = nextUrl;
-                                    return;
+                                    if (progress >= 90) {
+                                        document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                        window.location.href = nextUrl;
+                                    } else {
+                                        event.preventDefault();
+                                        Swal.fire({
+                                            title: "Video Progress",
+                                            text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                            icon: "warning",
+                                            confirmButtonText: "OK",
+                                        });
+                                    }
                                 } else {
-
-                                    // Prevent the default behavior of the button
-                                    event.preventDefault();
-                                    // Show a SweetAlert alert informing the user to complete the video first
-                                    Swal.fire({
-                                        title: "Video Progress",
-                                        text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                        icon: "warning",
-                                        confirmButtonText: "OK",
-                                    });
+                                    // Handle case where videoPlayer element does not exist
+                                    document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                    window.location.href = nextUrl;
+                                    console.error("Video player element not found.");
                                 }
                             }
                         </script>
