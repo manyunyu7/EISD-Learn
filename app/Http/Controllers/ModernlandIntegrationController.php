@@ -128,56 +128,61 @@ class ModernlandIntegrationController extends Controller
             ], 403);
         }
 
-        $departmentExists = DB::connection('ithub')
-            ->table('m_departments')
-            ->where('id', '=', $request->department_id)
-            ->whereNull('deleted_at')
-            ->where('code', 'like', '%_NEW%')
-            ->exists();
+        if ($request->department_id)
+            $departmentExists = DB::connection('ithub')
+                ->table('m_departments')
+                ->where('id', '=', $request->department_id)
+                ->whereNull('deleted_at')
+                ->where('code', 'like', '%_NEW%')
+                ->exists();
 
-        $positionExists = DB::connection('ithub')
-            ->table('m_positions')
-            ->where('id', '=', $request->position_id)
-            ->exists();
+        if ($request->position_id)
+            $positionExists = DB::connection('ithub')
+                ->table('m_positions')
+                ->where('id', '=', $request->position_id)
+                ->exists();
 
+        if ($request->department_id)
+            $departments = DB::connection('ithub')
+                ->table('m_departments')
+                ->whereNull('deleted_at')
+                ->where('code', 'like', '%_NEW%')
+                ->get();
 
-        $departments = DB::connection('ithub')
-            ->table('m_departments')
-            ->whereNull('deleted_at')
-            ->where('code', 'like', '%_NEW%')
-            ->get();
+        if ($request->position_id)
+            $positions = DB::connection('ithub')
+                ->table('m_positions')
+                ->whereNull('deleted_at')
+                ->where('code', 'like', '%_NEW%')
+                ->get();
 
-        $positions = DB::connection('ithub')
-            ->table('m_positions')
-            ->whereNull('deleted_at')
-            ->where('code', 'like', '%_NEW%')
-            ->get();
+        if ($request->department_id)
+            if (!$departmentExists) {
+                return response()->json([
+                    'meta' => [
+                        'success' => false,
+                        'status' => 403,
+                        'message' => "Department Id $request->department_id doesnt exist"
+                    ],
+                    'data' => [
+                        $departments
+                    ]
+                ], 403);
+            }
 
-        if (!$departmentExists) {
-            return response()->json([
-                'meta' => [
-                    'success' => false,
-                    'status' => 403,
-                    'message' => "Department Id $request->department_id doesnt exist"
-                ],
-                'data' => [
-                    $departments
-                ]
-            ], 403);
-        }
-
-        if (!$positionExists) {
-            return response()->json([
-                'meta' => [
-                    'success' => false,
-                    'status' => 403,
-                    'message' => "Position Id $request->position_id doesnt exist"
-                ],
-                'data' => [
-                    $positions
-                ]
-            ], 403);
-        }
+        if ($request->position_id)
+            if (!$positionExists) {
+                return response()->json([
+                    'meta' => [
+                        'success' => false,
+                        'status' => 403,
+                        'message' => "Position Id $request->position_id doesnt exist"
+                    ],
+                    'data' => [
+                        $positions
+                    ]
+                ], 403);
+            }
 
         // Validate incoming request data
         $validator = Validator::make($request->all(), [
@@ -223,7 +228,7 @@ class ModernlandIntegrationController extends Controller
         $user->location = json_decode($user->location);
 
         // Specify the attributes you want to return
-        $attributesToReturn = ['name', 'email', 'role', 'contact', 'department_id', 'position_id', 'location','mdln_username'];
+        $attributesToReturn = ['name', 'email', 'role', 'contact', 'department_id', 'position_id', 'location', 'mdln_username'];
 
         return response()->json([
             'meta' => [
