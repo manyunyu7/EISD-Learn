@@ -376,6 +376,7 @@
                                     });
                                 });
                             </script>
+
                             <script>
                                 // Wait for the DOM to fully load
                                 document.addEventListener('DOMContentLoaded', function() {
@@ -422,6 +423,7 @@
                                     });
                                 });
                             </script>
+                            
                         </div>
                     </div>
                 </div>

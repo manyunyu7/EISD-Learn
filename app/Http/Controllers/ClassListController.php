@@ -214,11 +214,15 @@ class ClassListController extends Controller
             // Melakukan penambahan data ke tabel lain (contoh: lessons)
             DB::table('student_lesson')->insert($dataToInsert);
 
-            return redirect('/class/my-class')->with('success', 'Berhasil bergabung dalam kelas!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Anda berhasil bergabung dalam kelas!'
+            ]);
         } else {
-            // Jika PIN atau ID Kelas tidak valid, memberikan respons dengan status 422 (Unprocessable Entity)
-            // return response()->json(['message' => 'PIN atau ID Kelas tidak valid'], 422);
-            return redirect('/class/class-list')->with('error', 'PIN kelas tidak valid');
+            return response()->json([
+                'success' => false,
+                'message' => 'PIN kelas tidak valid'
+            ]);
         }
 
     }

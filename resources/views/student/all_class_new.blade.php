@@ -4,6 +4,8 @@
     <!-- Datatables -->
 
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
 
 @section('script')
@@ -31,6 +33,58 @@
         });
 
     </script>
+
+    <script>
+        $(document).ready(function() {
+            // Menangani submit form dalam modal yang aktif
+            $(document).on('submit', 'form[id^="submitPinForm"]', function(e) {
+                e.preventDefault(); // Prevent form submission
+
+                var form = $(this);
+                var pin = form.find('#pin').val();
+                var idClass = form.find('#hiddenField').val();
+
+                $.ajax({
+                    url: '{{ url('/input-pin') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        pin: pin,
+                        idClass: idClass
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message,
+                                showCancelButton: false,
+                                confirmButtonText: 'Pergi ke kelas saya'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/class/my-class';
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan, silakan coba lagi nanti.'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Datatables -->

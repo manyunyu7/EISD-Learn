@@ -86,12 +86,13 @@
                                 <div class="mb-3 ">
                                     <button type="submit" class="btn btn-danger btn-block ">Submit</button>
                                 </div>
-                                <div class="mb-3 d-flex justify-content-end">
+                                {{-- FORGOT PASSWORD DISABLED --}}
+                                {{-- <div class="mb-3 d-flex justify-content-end">
                                     <a class="btn btn-link link_forgotPwd" href="{{ url('forgotpass') }}"
                                         style="color: #FF1D01;">
                                         {{ __('Forgot Password?') }}
                                     </a>
-                                </div>
+                                </div> --}}
                             </form>
                         </div>
                     </div>

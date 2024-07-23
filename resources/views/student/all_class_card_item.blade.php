@@ -58,7 +58,7 @@
                     <!-- Modal -->
                     <div class="modal fade" id="inputPinModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
-                            <form method="POST" action="{{ url('/input-pin') }}">
+                            <form id="submitPinForm{{ $data->id }}" method="POST" action="{{ url('/input-pin') }}">
                                 {{-- cek Token CSRF --}}
                                 @csrf
                                 <div class="modal-content">
@@ -111,8 +111,7 @@
                     </ul>
                 </div>
                 <!-- Modal -->
-                <form method="POST" action="{{ url('/input-pin') }}" style="order: 0;">
-                    {{-- cek Token CSRF --}}
+                {{-- <form id="submitPinForm" method="POST" action="{{ url('/input-pin') }}" style="order: 0;">
                     @csrf
                     <div class="modal fade" id="joinClassModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -126,10 +125,8 @@
                                 <div class="modal-body center" style="justify-content: center">
                                     <p>Untuk masuk ke dalam kelas, silakan masukan PIN terlebih dahulu</p>
                                     <div class="mb-3">
-                                        <!-- Hidden Input -->
                                         <input type="hidden" id="hiddenField" name="idClass"
                                             value='{{ $data->id }}'>
-                                        <!-- PIN Input -->
                                         <input name="pin" style="border: 1px solid #ced4da;" class="form-control"
                                             type="text" id="pin" required placeholder="Masukan PIN disini">
                                     </div>
@@ -143,7 +140,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </form> --}}
             </li>
 
             <!-- Rating star -->
