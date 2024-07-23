@@ -17,11 +17,10 @@ class UserManagementController extends Controller
     public function create()
     {
 
-        $deparments = DB::connection('ithub')
+        $departments = DB::connection('ithub')
         ->table('m_departments')
-        ->select('name')
         ->whereNull('deleted_at')
-        ->where('name', 'like', '%NEW%')
+        ->where('code', 'like', '%_NEW%')
         ->get();
 
         return view('users.create')->with(compact('departments'));
@@ -71,7 +70,13 @@ class UserManagementController extends Controller
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        $departments = DB::connection('ithub')
+        ->table('m_departments')
+        ->whereNull('deleted_at')
+        ->where('code', 'like', '%_NEW%')
+        ->get();
+
+        return view('users.edit', compact('user','departments'));
     }
 
     public function update(Request $request, User $user)

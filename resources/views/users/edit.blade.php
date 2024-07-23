@@ -104,8 +104,17 @@
             <input type="text" class="form-control" id="url_youtube" name="url_youtube" value="{{ $user->url_youtube }}">
         </div>
         <div class="form-group">
-            <label for="department_id">Department ID:</label>
-            <input type="number" class="form-control" id="department_id" name="department_id" value="{{ $user->department_id }}">
+            <label for="department_name">Department Name:</label>
+            <select class="form-control" id="department_id" name="department_id">
+                @forelse ($departments as $department)
+                    <option value="{{ $department->id }}"
+                        @if ($user->department_id == $department->id) selected @endif>
+                        {{ $department->name }}
+                    </option>
+                @empty
+                    <option value="">No departments found</option>
+                @endforelse
+            </select>
         </div>
         <div class="form-group">
             <label for="position_id">Position ID:</label>
