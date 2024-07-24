@@ -94,6 +94,7 @@ class MyClassController extends Controller
             $class->first_section = $sections ? $sections->section_id : null;
         }
 
+        
         $compact = compact('myClasses', 'userID', 'lessonCategories');
 
         if ($request->dump == true) {

@@ -7,6 +7,7 @@ use App\Models\ExamSession;
 use App\Models\ExamTaker;
 use App\Models\StudentSection;
 use App\Models\Exam;
+use App\Models\StudentLesson;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -102,48 +103,68 @@ class HomeController extends Controller
                 ->where('user_id', $userId)
                 ->count();
 
-            $classRegisteredCount = DB::table('view_course')
+            $classRegisteredCount = DB::table('lessons')
                 ->where('mentor_id', $userId)
+                ->whereNull('deleted_at')
                 ->count();
+            
 
-            $studentCount = DB::table('view_student_lesson')
-                ->where('mentor_name', $user_name)
+            // $studentCount = DB::table('view_student_lesson')
+            //     ->where('mentor_name', $user_name)
+            //     ->count();
+
+            $studentLessonsWithMentor = DB::table('student_lesson')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->select('student_lesson.*', 'lessons.mentor_id')
+                ->where('lessons.mentor_id', $userId)
+                ->whereNull('lessons.deleted_at')
                 ->count();
-
-            // Hitung jumlah student yang telah menyelesaikan setiap course
-            $courseCompleteCount = DB::table('student_lesson')
-                ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
-                ->where('learn_status', [0, 1])
-                ->groupBy('lesson_id')
-                ->get();
+            // return $studentLessonsWithMentor;
 
 
-            // Hitung jumlah total student dalam setiap course
-            $totalStudentsCount = DB::table('student_lesson')
-                ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
-                ->groupBy('lesson_id')
-                ->get();
+            $data_studentProgress = [];
 
-            // Inisialisasi variabel untuk menghitung jumlah kelas yang sedang dalam status "On Progress Course"
-            $onProgressCount = 0;
-            $completedCourseCount = 0;
-            // Gabungkan kedua hasil perhitungan sebelumnya untuk menentukan apakah suatu course telah selesai
-            $courseStatus = [];
-            foreach ($courseCompleteCount as $course) {
-                $lessonId = $course->lesson_id;
-                $completedStudents = $course->completed_students;
-                $totalStudents = $totalStudentsCount->where('lesson_id', $lessonId)->first()->total_students;
+            $tabel_lesson = DB::table('lessons')
+            ->whereNull('lessons.deleted_at')
+            ->where('lessons.mentor_id', $userId)
+            ->get();
 
-                // Simpan dalam variabel status masing-masing kelas
-                $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 'Completed Course' : 'On Progress Course';
 
-                // Hitung berapa banyak kelas yang sedang dalam status on progress course
-                if ($courseStatus[$lessonId] === 'On Progress Course') {
-                    $onProgressCount++;
-                } else {
-                    $completedCourseCount++;
-                }
+            foreach ($tabel_lesson as $data_lesson) {
+                $obj_class = new \stdClass();;
+
+                $obj_class->naxme =$data_lesson->course_title;
+                $obj_class->completedCount = 0;
+                $obj_class->incompleteCount=0;
+
+                $studentCountInClass = StudentLesson::where('lesson_id','=',$data_lesson->id)->count();
+                $obj_class->studentCount = $studentCountInClass;
+
+                $completedCount = StudentLesson::where('learn_status','=','1')
+                ->where('lesson_id','=', $data_lesson->id)->count();
+
+                $obj_class->completedCount = $completedCount;
+                $obj_class->unfinishedCount = $studentCountInClass-$completedCount;
+                array_push($data_studentProgress, $obj_class);
             }
+
+            $countCourseInProgress = 0;
+            $countCourseCompleted = 0;
+
+            foreach ($data_studentProgress as $studentProgress) {
+
+                if($studentProgress->studentCount==$studentProgress->completedCount){
+                    $countCourseCompleted++;
+                }else{
+                    $countCourseInProgress++;
+                }
+                
+            }
+
+            $obj_dataProgress = new \stdClass();
+            $obj_dataProgress->completedClass = $countCourseCompleted;
+            $obj_dataProgress->inprogress = $countCourseInProgress;
+
 
             // Retrieve all records of exams taken by students
             $takenExamCourseSection = ExamTaker::all();
@@ -256,13 +277,13 @@ class HomeController extends Controller
                 'locations',
                 'departments',
                 'leaderboard',
-                'studentCount',
+                'studentLessonsWithMentor',
                 'myStudent',
                 'topThree',
+                'countCourseInProgress',
+                'countCourseCompleted',
                 'projectCreatedCount',
                 'classRegisteredCount',
-                'onProgressCount',
-                'completedCourseCount',
                 'averageScoreArray'
             );
 
@@ -272,7 +293,8 @@ class HomeController extends Controller
 
             return view('main.dashboard')
                 ->with($compact);
-        } else if (Auth::check() && Auth::user()->role == 'student') {
+        } 
+        else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
 
