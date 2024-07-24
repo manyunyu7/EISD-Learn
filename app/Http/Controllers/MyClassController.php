@@ -46,6 +46,7 @@ class MyClassController extends Controller
             ->leftJoin('student_lesson as c', 'a.id', '=', 'c.lesson_id')
             ->leftJoin('course_section as cs', 'a.id', '=', 'cs.course_id')
             ->leftJoin('lesson_categories as lc', 'a.category_id', '=', 'lc.id')
+            ->whereNull('a.deleted_at')
             ->whereExists(function ($query) use ($userID) {
                 $query->select(DB::raw(1))
                     ->from('student_lesson as sl')
