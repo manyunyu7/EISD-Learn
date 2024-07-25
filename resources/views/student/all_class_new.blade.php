@@ -189,8 +189,14 @@
                 $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
 
             @endphp
+       
+        
             @forelse ($classes as $data)
                 @include('student.all_class_card_item')
+                @if($data->is_registered_by_student == true)
+                    <strong class="w-100 text-center">Anda Telah Terdaftar Dalam Kelas Ini</strong>
+                    @break
+                @endif
             @empty
                 <div class="w-100 d-flex justify-content-center">
                     <script

@@ -250,7 +250,7 @@ class LessonController extends Controller
         // Jalankan query dengan parameter pencarian
         $myClasses_searchKeyword = DB::select($query, $bindings);
 
-        return $myClasses_searchKeyword;
+
         // return $myClasses;
         if(Auth::user()->role == 'mentor'){
             return redirect()->to('/lesson/manage_v2?q='.$keyword);

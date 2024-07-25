@@ -51,6 +51,12 @@ class ClassListController extends Controller
         $sortBy = ($sortParam == 'Latest') ? 'desc' : 'asc';
         $catBy = ($catParam == 'All Category') ? '*' : $catParam;
 
+        $registeredLessons = DB::table('student_lesson')
+            ->select('lesson_id')
+            ->where('student_id', $userID)
+            ->pluck('lesson_id')
+            ->toArray();
+
         $classesQuery = DB::table('lessons as a')
             ->select([
                 'a.*',
@@ -90,12 +96,16 @@ class ClassListController extends Controller
 
         $classes = [];
         foreach ($classesQuery as $classItem) {
+            // Tambahkan flag 'is_registered_by_student' untuk menandai apakah kelas telah didaftarkan oleh student
+            $classItem->is_registered_by_student = in_array($classItem->id, $registeredLessons);
+    
             if ($classItem->deleted_at === null || $classItem->deleted_at === '') {
                 $classes[] = $classItem;
             }
         }
 
 
+        // return $classes;
         $view_course = DB::select("select * from view_course");
 
         return view('student.all_class_new')->with(compact('classes', 'view_course','lessonCategories'));
@@ -141,6 +151,7 @@ class ClassListController extends Controller
 
         // Jalankan query dengan parameter pencarian
         $myClasses_searchKeyword = DB::select($query, $bindings);
+        // return $myClasses_searchKeyword;
 
         // return $myClasses;
         if(Auth::user()->role == 'mentor'){
