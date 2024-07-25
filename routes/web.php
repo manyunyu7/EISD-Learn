@@ -236,7 +236,6 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/progress', 'StudentProgressController@startSection');
 
     Route::prefix("quiz")->group(function () {
-
         Route::prefix("session")->group(function () {
             Route::get('{id}/initial', 'ExamTakerController@viewInitialTakeSession');
             Route::get('{id}/take-play', 'ExamTakerController@viewInitialTakeSession');
@@ -245,8 +244,6 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::any('{id}/mquestions', 'ExamTakerController@fetchQuestions');
             Route::any('save-answers', 'ExamTakerController@saveAnswers');
         });
-
-
         Route::any('{id}/mquestions', 'MentorExamSessionController@fetchQuestions');
     });
 
@@ -275,17 +272,13 @@ Route::group(['middleware’' => ['auth']], function () {
 Route::get('/lesson/{lesson}', 'LessonController@show')->name('lesson.show');
 
 Route::group(['middleware' => ['auth']], function () {
-
     Route::get('/blog/create', ['uses' => 'BlogController@create'])->middleware('auth');
     Route::get('/blog/manage', ['uses' => 'BlogController@index'])->middleware('auth');
     Route::get('/blog/store', 'BlogController@add')->middleware('auth');
 });
 
 
-
-
 Route::post('/qr-login', [QRLoginController::class, 'processQRCodeLogin'])->name('qr.login');
-
 Route::resource('blog', BlogController::class);
 Route::get('/blog/{blog}', 'BlogController@show')->name('blog.read');
 

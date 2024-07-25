@@ -423,7 +423,7 @@ value="{{ Auth::user()->name }}" @endauth>
                     // Show Sweet Alert with score
                     Swal.fire({
                         title: 'Exam Finished!',
-                        text: `Your score is ${data.scores}%.`,
+                        text: `Your score is ${data.scores}.`,
                         icon: 'success',
                         confirmButtonText: 'Next Page'
                     }).then((result) => {
