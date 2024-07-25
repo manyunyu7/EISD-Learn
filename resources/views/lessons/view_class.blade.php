@@ -157,18 +157,18 @@
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title" id="exampleModalLabel"><b>Masukan PIN</b></h1>
+                            <h1 class="modal-title" id="exampleModalLabel"><b>Masukan Password</b></h1>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body center" style="justify-content: center">
-                            <p>Untuk masuk ke dalam kelas, silakan masukan PIN terlebih dahulu</p>
+                            <p>Untuk masuk ke dalam kelas, silakan masukan Password terlebih dahulu</p>
                             <div class="mb-3">
                                 <!-- Hidden Input -->
                                 <input type="hidden" id="hiddenField" name="idClass" value='{{ $data->id }}'>
                                 <!-- PIN Input -->
-                                <input name="pin" style="border: 1px solid #ced4da;" class="form-control" type="text" id="pin" required placeholder="Masukan PIN disini">
+                                <input name="pin" style="border: 1px solid #ced4da;" class="form-control" type="text" id="pin" required placeholder="Masukan Password disini">
                             </div>
                         </div>
                         <div class="modal-footer">
