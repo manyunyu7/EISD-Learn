@@ -199,7 +199,7 @@ class ProfileController extends Controller
             // Update user profile data
             $user->update([
                 'profile_url' => $imagePath,
-                'contact' => $request->phone,
+                // 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
                 'jobs' => $request->jobs,
@@ -209,7 +209,7 @@ class ProfileController extends Controller
         } else {
             // Update user profile data without changing the image
             $user->update([
-                'contact' => $request->phone,
+                // 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
                 'jobs' => $request->jobs,
@@ -251,22 +251,15 @@ class ProfileController extends Controller
         $yt = $request->input("youtube");
 
         // URL SOCMED
-        if (substr($wa, 0, 1) === '0') {
-            // Jika dimulai dengan 0, ubah format menjadi +62
-            $wa = '+62' . substr($wa, 1);
-        } else {
-            // Jika tidak dimulai dengan 0, tambahkan +62 di depannya
-            $wa = $wa;
-            $user->update([
-                'url_personal_website' => $website,
-                'url_facebook' => $fb,
-                'url_instagram' => $ig,
-                'url_linkedin' => $li,
-                'url_twitter' => $twt,
-                'url_whatsapp' => $wa,
-                'url_youtube' => $yt,
-            ]);
-        }
+        $user->update([
+            'url_personal_website' => $website,
+            'url_facebook' => $fb,
+            'url_instagram' => $ig,
+            'url_linkedin' => $li,
+            'url_twitter' => $twt,
+            'url_whatsapp' => $wa,
+            'url_youtube' => $yt,
+        ]);
 
 
         if ($user) {

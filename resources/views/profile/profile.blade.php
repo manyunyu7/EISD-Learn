@@ -85,7 +85,7 @@
                                                    value="{{ $name_sites }}" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 d-none">
                                         <div class="form-group">
                                             <label>No Telepon</label>
                                             <input type="text"
@@ -96,8 +96,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                         {{-- SECTION PROFILE PICTURE --}}
                         <div class="col-md-4">
@@ -106,7 +104,7 @@
                                     <div class="text-center">
                                         <div class="card">
                                             <img id="profileImage"
-                                                 src="{{Auth::user()->full_img_path }}"
+                                                 src="{{ Auth::user()->full_img_path }}"
                                                  onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
                                                  class="rounded"
                                                  alt="...">
@@ -115,13 +113,17 @@
                                             <input type="file" name="profile_image" class="form-control"
                                                    id="inputGroupFile02" accept="image/*" onchange="previewImage()">
                                         </div>
-                                        {{-- <p style="color: red">{{ Auth::user()->profile_url }}</p> --}}
-                                        <small width="100%">Image size should be under 1 MB and image ratio needs to be
-                                            1:1</small>
+                                        <small width="100%">Image size should be under 1 MB and image ratio needs to be 1:1</small>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-center mt-3 mb-3">
+                                        <button class="btn btn-custom w-100">Save Changes</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
 
                         <script>
                             function previewImage() {
@@ -151,11 +153,7 @@
                             }
                         </script>
 
-                        <div class="col-md-12">
-                            <div class="text-right mt-3 mb-3">
-                                <button class="btn btn-custom">Save Changes</button>
-                            </div>
-                        </div>
+                        
                     </div>
                 </form>
             </div>
@@ -227,7 +225,7 @@
                                             <label>Whatsapp</label>
                                             <input type="text"
                                                    class="form-control  @error('phone') is-invalid has-error @enderror"
-                                                   name="whatsapp" placeholder="Phone Number"
+                                                   name="whatsapp" placeholder="+62XXXXXXXXXX"
                                                    value="{{ old('url_whatsapp', Auth::user()->url_whatsapp) }}"
                                             >
                                         </div>
@@ -275,7 +273,6 @@
 
 
     <div class="container-fluid">
-
         <div class="container mt-5">
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -293,8 +290,6 @@
                     </ul>
                 </div>
             @endif
-
-
         </div>
     </div>
 
@@ -303,16 +298,12 @@
         <script>
             toastr.success('{{ session('
                 success ') }}', '{{ session('success') }}');
-
         </script>
     @elseif(session()-> has('error'))
         <script>
             toastr.error('{{ session('
                 error ') }}', '{{ session('
                 error ') }}');
-
         </script>
-
     @endif
-
 @endsection
