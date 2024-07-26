@@ -82,28 +82,37 @@ class ClassListController extends Controller
                 $classesQuery->where('a.course_title', 'LIKE', $keyword);
             }
             $classesQuery = $classesQuery
-            ->groupBy('a.id', 'b.name', 'b.profile_url')
-            ->orderBy('a.created_at', $sortBy)
-            ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
-                    return $query->orderBy('a.created_at', $sortBy);
-                }, function ($query) use ($sortBy) {
-                    return $query->orderBy('num_students_registered', $sortBy);
-                })
-            ->when($catParam != 'All Category', function ($query) use ($catParam) {
-                    return $query->where('lc.name', $catParam);
-                })
-            ->get();
-
-        $classes = [];
-        foreach ($classesQuery as $classItem) {
-            // Tambahkan flag 'is_registered_by_student' untuk menandai apakah kelas telah didaftarkan oleh student
-            $classItem->is_registered_by_student = in_array($classItem->id, $registeredLessons);
-    
-            if ($classItem->deleted_at === null || $classItem->deleted_at === '') {
-                $classes[] = $classItem;
+            ->groupBy('a.id', 'b.name', 'b.profile_url');
+            // ->orderBy('a.created_at', $sortBy)
+            // ->when($sortParam == 'Latest', function ($query) use ($sortBy) {
+            //         return $query->orderBy('a.created_at', $sortBy);
+            //     }, function ($query) use ($sortBy) {
+            //         return $query->orderBy('num_students_registered', $sortBy);
+            //     })
+            // ->when($catParam != 'All Category', function ($query) use ($catParam) {
+            //         return $query->where('lc.name', $catParam);
+            //     })
+            // ->get();
+            // Atur pengurutan berdasarkan sortParam
+            if ($sortParam == 'Latest') {
+                $classesQuery->orderBy('a.created_at', 'desc');
+            } else {
+                $classesQuery->orderBy('num_students_registered', 'desc')
+                            ->orderBy('a.created_at', 'desc');
             }
-        }
 
+            // Filter berdasarkan kategori jika dipilih
+            if ($catParam != 'All Category') {
+                $classesQuery->where('lc.name', $catParam);
+            }
+
+            // Dapatkan hasil query
+            $classes = $classesQuery->get();
+
+            // Tambahkan flag 'is_registered_by_student' untuk setiap kelas
+            foreach ($classes as $classItem) {
+                $classItem->is_registered_by_student = in_array($classItem->id, $registeredLessons);
+            }
 
         // return $classes;
         $view_course = DB::select("select * from view_course");

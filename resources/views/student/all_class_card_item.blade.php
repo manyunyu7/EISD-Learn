@@ -38,6 +38,7 @@
 
             <!-- Title -->
             <h6 class="card-title"><a href="#">{{ $data->course_title }}</a></h6>
+            <p>Dibuat pada: {{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('j F, Y') }}</p>
             <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
                 settling.</p>
 
