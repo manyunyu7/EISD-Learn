@@ -138,7 +138,7 @@
     <div class="container-fluid navbar-fixed-top large-nav-bar" style="background-color: #F5F7FA; padding: 10px 20px;">
         <div class="row">
             <div class="col-xs-1 back-button">
-                <a href="{{ url()->previous() }}" class="btn btn-link">
+                <a href="{{ url('/class/my-class') }}" class="btn btn-link">
                     <img src="{{ asset('lesson_template/img/back_button.svg') }}" alt="Back"
                          style="width: 57px; height: 57px;">
                 </a>
