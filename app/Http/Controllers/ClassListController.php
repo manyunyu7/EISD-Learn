@@ -70,6 +70,7 @@ class ClassListController extends Controller
             ->leftJoin('lesson_categories as lc','lc.id','=','a.category_id')
             ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
             ->leftJoin('student_lesson as c', 'a.id', '=', 'c.lesson_id')
+            ->whereNull('a.deleted_at')
             ->whereNotExists(function ($query) use ($userID) {
                 $query->select(DB::raw(1))
                     ->from('student_lesson as sl')

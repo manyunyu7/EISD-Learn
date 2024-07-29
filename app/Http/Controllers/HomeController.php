@@ -318,7 +318,9 @@ class HomeController extends Controller
                 ->count();
 
             $classRegisteredCount = DB::table('view_student_lesson')
-                ->where('student_id', $userId)
+                ->leftJoin('lessons', 'view_student_lesson.id', '=', 'lessons.id')
+                ->where('view_student_lesson.student_id', $userId)
+                ->whereNull('lessons.deleted_at')
                 ->count();
 
             $activeCourse = DB::table('student_lesson')
@@ -327,6 +329,7 @@ class HomeController extends Controller
                 ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
                 ->where('student_id', $userId)
                 ->where('learn_status', 0)
+                ->whereNull('lessons.deleted_at')
                 ->count();
 
             $completedCourse = DB::table('student_lesson')
@@ -335,6 +338,7 @@ class HomeController extends Controller
                 ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
                 ->where('student_id', $userId)
                 ->where('learn_status', 1)
+                ->whereNull('lessons.deleted_at')
                 ->count();
 
             $monthly_CompletedCourse = DB::table('student_lesson')
@@ -343,8 +347,13 @@ class HomeController extends Controller
                 ->select(DB::raw('YEAR(student_lesson.finished_at) as year, MONTH(student_lesson.finished_at) as month, COUNT(*) as completed_count'))
                 ->where('student_lesson.student_id', $userId)
                 ->where('student_lesson.learn_status', 1)
+                ->where('lessons.is_visible', 'y')
+                ->whereNull('lessons.deleted_at')
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();
+
+            // return $completedCourse;
+
 
             $completedCourse_monthly = [];
 
@@ -427,6 +436,7 @@ class HomeController extends Controller
                             WHERE sl.lesson_id = a.id
                             AND sl.student_id = $userID
                         )
+                    AND  a.deleted_at IS  NULL
                     GROUP BY
                         a.id, b.name, b.profile_url, cs.id
                 ) AS main_table
