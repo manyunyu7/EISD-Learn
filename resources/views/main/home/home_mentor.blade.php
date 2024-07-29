@@ -397,7 +397,6 @@
                 <div class="card">
                     <div class="card-header">
                         <form action="{{ url()->current() }}" method="GET" id="filterForm">
-
                             <div class="row">
                                 <div class="col-4">
                                     <h3><strong>Average Score Post Test</strong></h3>

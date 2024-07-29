@@ -285,12 +285,22 @@
 
 
             resultPostTest.forEach(function(item) {
-                var xValue = item.title_exam;
+                function formatDate(dateStr) {
+                    var date = new Date(dateStr);
+                    var day = date.getDate().toString().padStart(2, '0');
+                    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+                    var year = date.getFullYear().toString().slice(-2); // Get last two digits of year
+
+                    return `${day}-${month}-${year}`;
+                }
+
+                var xValue = formatDate(item.time_finish);
                 var yValue = parseInt(item.highest_currentScore);
 
                 dataPoints.push({
                     label: xValue,
-                    y: yValue
+                    y: yValue,
+                    examTitle: item.title_exam
                 });
             });
 
@@ -303,13 +313,12 @@
                 axisY: {
                     minimum: 0,
                     maximum: 100,
-                    labelFormatter: function(e) {
-                        return parseInt(e.value);
-                    }
+                    title: "Score"
                 },
                 data: [{
                     type: "line",
-                    dataPoints: dataPoints
+                    dataPoints: dataPoints,
+                    toolTipContent: "{examTitle} : {y}"
                 }]
             });
 
@@ -416,28 +425,33 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row">
-                            <div class="col-9">
-                                <h3><strong>Post Test Score</strong></h3>
+                        <form action="{{ url()->current() }}" method="GET" id="filterForm">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h3><strong>Post Test Score</strong></h3>
+                                </div>
+                                <div class="col-2">
+                                    <select class="form-control" name="month" id="monthDropdown" style="border: none;" onchange="document.getElementById('filterForm').submit();">
+                                        <option value="all">All Months</option>
+                                        @foreach (range(1, 12) as $month)
+                                            <option value="{{ $month }}" {{ request('month', date('n')) == $month ? 'selected' : '' }}>
+                                                {{ date('F', mktime(0, 0, 0, $month, 1)) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <select class="form-control" name="year" id="yearDropdown" style="border: none;" onchange="document.getElementById('filterForm').submit();">
+                                        <option value="all">All Years</option>
+                                        @foreach (range(date('Y') - 1, date('Y')) as $year)  <!-- Adjust the range as needed -->
+                                            <option value="{{ $year }}" {{ request('year', date('Y')) == $year ? 'selected' : '' }}>
+                                                {{ $year }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-
-                            <div class="col-3">
-                                <select class="form-control" id="exampleFormControlSelect3" style="border: none;">
-                                    <option>Januari</option>
-                                    <option>Februari</option>
-                                    <option>Maret</option>
-                                    <option>April</option>
-                                    <option>Mei</option>
-                                    <option>Juni</option>
-                                    <option>Juli</option>
-                                    <option>Agustus</option>
-                                    <option>September</option>
-                                    <option>Oktober</option>
-                                    <option>November</option>
-                                    <option>Desember</option>
-                                </select>
-                            </div>
-                        </div>
+                        </form>
                     </div>
 
                     <div class="card-body">
