@@ -10,7 +10,7 @@
                                 <i class="fa fa-search search-icon"></i>
                             </button>
                         </div>
-                        <input type="text" name="search_keyword" placeholder="Search Class Mentor..." class="form-control" required>
+                        <input type="text" name="search_keyword" placeholder="Search Class..." class="form-control" required>
                     </div>
                 </form>
             @elseif(Auth::user()->role == 'student')
@@ -22,7 +22,7 @@
                                 <i class="fa fa-search search-icon"></i>
                             </button>
                         </div>
-                        <input type="text" name="search_keyword" placeholder="Search Class Student..." class="form-control">
+                        <input type="text" name="search_keyword" placeholder="Search Class List..." class="form-control">
                     </div>
                 </form>
             @endif
