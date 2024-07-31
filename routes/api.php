@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\MobileProfileController;
 use App\Http\Controllers\MobileVizController;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/course/{lesson}/section/{section}', 'MobileLmsViewerController@seeSection');
 Route::get('/course/{lesson}/sections', 'MobileLmsViewerController@seeClassSections');
 
+Route::get('/backup-database', [DatabaseBackupController::class, 'backup']);
 
 Route::any('/check-qrcode-authentication', [QRLoginController::class, 'checkQRCodeAuthentication'])->name('check.qrcode.authentication');
 Route::post('/generate-qr-code', [QRLoginController::class, 'generateQRCode'])->name('generate.qrcode');
@@ -62,7 +64,8 @@ Route::get("/viz/ais", [MobileVizController::class, 'ais']);
 Route::get("/viz/quiz", [MobileVizController::class, 'getQuizResult']);
 Route::get("/viz/completed-class", [MobileVizController::class, 'getCompletedClass']);
 Route::get("/viz/incompleted-class", [MobileVizController::class, 'getCompletedClass']);
-Route::get("/viz/enrolled", [MobileVizController::class, 'getCompletedClass']);
+Route::get("/viz/section-count", [MobileVizController::class, 'sectionCount']);
+Route::get("/viz/enrolled", [MobileVizController::class, 'getEnrolledClass']);
 Route::get("/viz/main-chart", [MobileVizController::class, 'mainChart']);
 
 
