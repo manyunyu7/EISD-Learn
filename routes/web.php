@@ -5,12 +5,15 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CourseSectionController;
 use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\SendEmailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropzoneController;
 use App\Http\Controllers\FileOnS3Controller;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\QRLoginController;
-
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\TestEmailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,7 +37,16 @@ Route::get('/classes', 'LandingController@classes');
 Route::get('/blogs', 'LandingController@blogs');
 Route::get('/home', 'HomeController@index');
 
-Route::view('forgotpass', 'auth.forgotpass');
+// Route::view('forgotpass', 'auth.forgotpass');
+
+// HANDLING RESET PASSWORD
+Route::get('forgotpass', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('forgotpass');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+Route::get('/password/sent', function () {
+    return view('auth.alert_emailSent');
+})->name('password.sent');
 
 Route::get('/profile', 'ProfileController@index')->middleware('auth');
 Route::post('/profile/update', 'ProfileController@update')->name('profile.update')->middleware('auth');
