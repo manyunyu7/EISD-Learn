@@ -115,6 +115,15 @@
             z-index: 9999; /* ensure the loader is on top of other content */
         }
 
+        .disable-interaction {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .no-scroll {
+            overflow: hidden;
+        }
+
     </style>
 
 </head>
@@ -167,11 +176,66 @@
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
+        
 
+        {{-- JIKA KONTEN ADALAH EXAM --}}
         @if($isExam)
             @include('lessons.play.student_exam_section')
+            <script>
+                function nextCuy() {
+                    var videoPlayer = document.getElementById("myVideo");
+                    var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                    if (videoPlayer) {
+                        var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+
+                        if (progress >= 90) {
+                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            window.location.href = nextUrl;
+                        } else {
+                            event.preventDefault();
+                            Swal.fire({
+                                title: "Video Progress",
+                                text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+                            });
+                        }
+                    } else {
+                        // Handle case where videoPlayer element does not exist
+                        document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                        window.location.href = nextUrl;
+                        console.error("Video player element not found.");
+                    }
+                }
+            </script>
+            <div class="container-fluid">
+                <div class="main-content-container container-fluid px-4 mt-5">
+                    <section id="exam-information">
+                        <div class="row">
+                            <div class="col-md-12 ">
+                                <div class="">
+                                    <div class="pt-2">
+                                        @if ($prev_section != null)
+                                                <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}"
+                                                class="btn btn-primary hidden">Previous Lesson</a>
+                                            @endif
+                                            @if ($next_section != null)
+                                                <button style="background-color: #39AA81" id="nextLessonButton" class="btn btn-primary" onclick="nextCuy();">
+                                                    Next Section
+                                                </button>
+                                            @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
         @endif
 
+
+        {{-- JIKA KONTEN BUKAN EXAM --}}
         @if(!$isExam)
             <div class="container-fluid">
                 <div class="main-content-container container-fluid px-4 mt-5">
@@ -329,31 +393,31 @@
                     @endif
 
                     <script>
-                    function nextCuy() {
-                        var videoPlayer = document.getElementById("myVideo");
-                        var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
-                        if (videoPlayer) {
-                            var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+                        function nextCuy() {
+                            var videoPlayer = document.getElementById("myVideo");
+                            var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                            if (videoPlayer) {
+                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
-                            if (progress >= 90) {
+                                if (progress >= 90) {
+                                    document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                    window.location.href = nextUrl;
+                                } else {
+                                    event.preventDefault();
+                                    Swal.fire({
+                                        title: "Video Progress",
+                                        text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                        icon: "warning",
+                                        confirmButtonText: "OK",
+                                    });
+                                }
+                            } else {
+                                // Handle case where videoPlayer element does not exist
                                 document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
                                 window.location.href = nextUrl;
-                            } else {
-                                event.preventDefault();
-                                Swal.fire({
-                                    title: "Video Progress",
-                                    text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                    icon: "warning",
-                                    confirmButtonText: "OK",
-                                });
+                                console.error("Video player element not found.");
                             }
-                        } else {
-                            // Handle case where videoPlayer element does not exist
-                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
-                            window.location.href = nextUrl;
-                            console.error("Video player element not found.");
                         }
-                    }
                     </script>
 
 
