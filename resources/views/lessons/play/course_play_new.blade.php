@@ -176,8 +176,6 @@
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
-        
-
         {{-- JIKA KONTEN ADALAH EXAM --}}
         @if($isExam)
             @include('lessons.play.student_exam_section')
@@ -216,14 +214,17 @@
                                 <div class="">
                                     <div class="pt-2">
                                         @if ($prev_section != null)
-                                                <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}"
-                                                class="btn btn-primary hidden">Previous Lesson</a>
-                                            @endif
-                                            @if ($next_section != null)
-                                                <button style="background-color: #39AA81" id="nextLessonButton" class="btn btn-primary" onclick="nextCuy();">
-                                                    Next Section
-                                                </button>
-                                            @endif
+                                            <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}" class="btn btn-primary hidden">
+                                                Previous Lesson
+                                            </a>
+                                        @endif
+                                        @if ($next_section != null)
+                                            <button style="background-color: #39AA81" id="nextLessonButton" class="btn btn-primary" onclick="nextCuy();">
+                                                Next Section
+                                            </button>
+                                        @else
+                                            <a href="{{ url('/home') }}" class="btn btn-primary">Go to Home</a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +232,6 @@
                     </section>
                 </div>
             </div>
-            
         @endif
 
 
@@ -433,18 +433,16 @@
 
                             <div class="d-flex justify-content-between mt-2 mb-4">
                                 @if ($prev_section != null)
-                                    <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}"
-                                       class="btn btn-primary hidden">Previous Lesson</a>
+                                    <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}" class="btn btn-primary hidden">
+                                        Previous Lesson
+                                    </a>
                                 @endif
                                 @if ($next_section != null)
-                                    <button style="background-color: #39AA81" id="nextLessonButton"
-                                            class="btn btn-primary" onclick="nextCuy();">
+                                    <button style="background-color: #39AA81" id="nextLessonButton" class="btn btn-primary" onclick="nextCuy();">
                                         Next Section
                                     </button>
-
-                                    <!--<a href="{{ url('/') . "/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
-                                    <!--    class="btn btn-primary ">Next-->
-                                    <!--    Lesson</a>-->
+                                @else
+                                    <a href="{{ url('/home') }}" class="btn btn-primary">Go to Home</a>
                                 @endif
 
                             </div>
@@ -454,9 +452,7 @@
                 </div>
             </div>
         @endif
-
     </div>
-    <!-- /#page-content-wrapper -->
 
     <!-- Sidebar -->
     <div id="sidebar-wrapper" style="background-color: whitesmoke">
