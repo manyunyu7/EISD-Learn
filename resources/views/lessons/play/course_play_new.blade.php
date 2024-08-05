@@ -462,15 +462,13 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
                         <div style="flex: 1; flex-shrink: 1;">
-                            <div class="category-label-container"
-                                 style=" background-color: red; color: white"
-                            >Management Trainee
+                            <div class="category-label-container" style=" background-color: red; color: white">
+                                Management Trainee
                             </div>
                         </div>
                         <div style="flex-shrink: 1;">
-                            <img style="width: 12%; height: auto;"
-                                 src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
-                            Modernland Training
+                            <img style="width: 12%; height: auto;" src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
+                                Modernland Training
                         </div>
                     </div>
                 </div>
@@ -486,7 +484,7 @@
                         <span>
                             <img
                                 src="{{asset('lesson_template/img/')}}/section_folders_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">This is the middle section.</p>
+                            <p style="display: inline;">$0 Sections</p>
                         </span>
                     </div>
 
@@ -495,7 +493,7 @@
                         <span>
                             <img
                                 src="{{asset('lesson_template/img/')}}/section_finished_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">This is the middle section.</p>
+                            <p style="display: inline;">$0% finish ($0/$0)</p>
                         </span>
                     </div>
                 </div>
