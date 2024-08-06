@@ -105,6 +105,8 @@
             eyeIcon.classList.toggle('bi-eye');
             eyeIcon.classList.toggle('bi-eye-slash');
         });
+
+       
     </script>
 
 </body>

@@ -89,7 +89,7 @@
 
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus disabled>
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus readonly>
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -99,7 +99,12 @@
 
                                 <div class="mb-3">
                                     <label for="password" class="form-label">New Password</label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password">
+                                    <div class="input-group">
+                                        <input type="password" class="password form-control @error('password') is-invalid @enderror" id="input_pass1" name="password" required autocomplete="new-password">
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword1">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </div>
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -109,8 +114,14 @@
 
                                 <div class="mb-3">
                                     <label for="password-confirm" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="password-confirm" name="password_confirmation" required autocomplete="new-password">
+                                    <div class="input-group">
+                                        <input type="password" class="password form-control" id="input_pass2" name="password_confirmation" required autocomplete="new-password">
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword2">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
+
 
                                 <div class="mb-3">
                                     <button type="submit" class="btn btn-danger btn-block">Reset Password</button>
@@ -132,12 +143,31 @@
         </div>
     </div>
     <script>
+        document.getElementById('togglePassword1').addEventListener('click', function () {
+            var passwordInput = document.getElementById('input_pass1');
+            var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            var eyeIcon = document.querySelector('#togglePassword1 i');
+            eyeIcon.classList.toggle('bi-eye');
+            eyeIcon.classList.toggle('bi-eye-slash');
+        });
+
+        document.getElementById('togglePassword2').addEventListener('click', function () {
+            var passwordInput = document.getElementById('input_pass2');
+            var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            var eyeIcon = document.querySelector('#togglePassword2 i');
+            eyeIcon.classList.toggle('bi-eye');
+            eyeIcon.classList.toggle('bi-eye-slash');
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('reset-password-form');
 
             form.addEventListener('submit', function(event) {
-                const password = document.getElementById('password').value;
-                const passwordConfirm = document.getElementById('password-confirm').value;
+                const password = document.getElementById('input_pass1').value;
+                const passwordConfirm = document.getElementById('input_pass2').value;
 
                 if (password !== passwordConfirm) {
                     event.preventDefault(); // Prevent form submission
