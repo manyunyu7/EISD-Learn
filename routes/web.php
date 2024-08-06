@@ -40,23 +40,13 @@ Route::get('/home', 'HomeController@index');
 // Route::view('forgotpass', 'auth.forgotpass');
 
 // HANDLING RESET PASSWORD
-// Route untuk forgot password form
 Route::get('forgotpass', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('forgotpass');
-
-// Route untuk mengirim email reset password
-Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-
-// Route untuk reset password form
-Route::get('reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-
-// Route untuk handle reset password
-Route::post('reset', [ResetPasswordController::class, 'reset'])->name('password.update');
-
-// Route::get('/send-test-email', [TestEmailController::class, 'sendTestEmail']);
-Route::post('/send-email', [SendEmailController::class, 'index'])->name('toEmail.linkForm');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 Route::get('/password/sent', function () {
-            return view('auth.password-sent');
-        })->name('password.sent');
+    return view('auth.password-sent');
+})->name('password.sent');
 
 Route::get('/profile', 'ProfileController@index')->middleware('auth');
 Route::post('/profile/update', 'ProfileController@update')->name('profile.update')->middleware('auth');

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
@@ -26,17 +27,28 @@ class ResetPasswordController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->password = Hash::make($password);
-                $user->setRememberToken(Str::random(60));
-                $user->save();
-            }
-        );
+        $passwordReset = DB::table('password_resets')->where([
+            ['token', $request->token],
+            ['email', $request->email],
+        ])->first();
 
-        return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withErrors(['email' => [__($status)]]);
+
+        if (!$passwordReset) {
+            return back()->withErrors(['email' => 'Invalid token!']);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email not found!']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->setRememberToken(Str::random(60));
+        $user->save();
+
+        DB::table('password_resets')->where(['email' => $request->email])->delete();
+
+        return redirect()->route('login')->with('status', 'Password has been reset!');
     }
 }

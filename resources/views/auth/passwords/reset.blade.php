@@ -122,7 +122,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="mb-3">
                                     <button type="submit" class="btn btn-danger btn-block">Reset Password</button>
                                 </div>
@@ -177,5 +176,6 @@
         });
     </script>
 @endsection
+
 
 

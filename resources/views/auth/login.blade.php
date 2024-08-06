@@ -1,4 +1,21 @@
 @extends('auth.template')
+
+@if (session('status'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Success!',
+                text: "{{ session('status') }}",
+                icon: 'success',
+                confirmButtonText: 'OK',
+                onClose: () => {
+                    window.location.href = "{{ route('login') }}";
+                }
+            });
+        });
+    </script>
+@endif
+
 @section('body')
     <div class="row h-100">
         <div class="col-sm-12 my-auto">
@@ -101,6 +118,8 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/dist/qrcode.min.js"></script>
+    {{-- @extends('layouts.app') --}}
+    
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var myQrToken = '';

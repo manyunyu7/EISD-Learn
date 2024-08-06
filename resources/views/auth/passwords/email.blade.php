@@ -63,7 +63,7 @@
                         </div>
 
                         <div class="card-body d-flex justify-content-center align-items-center mb-5">
-                            <form method="POST" action="{{ route('toEmail.linkForm') }}">
+                            <form method="POST" action="{{ route('password.email') }}">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email Address</label>
