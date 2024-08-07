@@ -1,19 +1,30 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\CourseSectionController;
-use App\Http\Controllers\LaravelEstriController;
-use App\Http\Controllers\LessonController;
-use App\Http\Controllers\SendEmailController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DropzoneController;
 use App\Http\Controllers\FileOnS3Controller;
 use App\Http\Controllers\GraphController;
+use App\Http\Controllers\LaravelEstriController;
+use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QRLoginController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TestEmailController;
+use App\Http\Controllers\UserManagementController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use UniSharp\LaravelFilemanager\Lfm;
+
+
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,7 +59,14 @@ Route::get('/password/sent', function () {
     return view('auth.alert_emailSent');
 })->name('password.sent');
 
-Route::get('/profile', 'ProfileController@index')->middleware('auth');
+
+// HANDLING CHANGE PASSWORD
+Route::get('password/change', [ChangePasswordController::class, 'showChangeForm'])->name('password.change');
+Route::post('password/change-pass', [ChangePasswordController::class, 'change'])->name('password.updateChange');
+
+
+
+Route::get('/profile', 'ProfileController@index')->middleware('auth')->name('profile');
 Route::post('/profile/update', 'ProfileController@update')->name('profile.update')->middleware('auth');
 Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('profile.updateSocMed')->middleware('auth');
 
