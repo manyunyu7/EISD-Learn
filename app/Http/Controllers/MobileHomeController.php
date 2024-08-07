@@ -471,9 +471,9 @@ class MobileHomeController extends Controller
             ->whereNull('a.deleted_at') // Filter out deleted records from the lessons table
             ->where(function ($query) {
                 $query->where('is_visible', '=', 'y')
-                      ->orWhere('is_visible', '=', 'Aktif')
-                      ->orWhereNull('is_visible')
-                      ->orWhere('is_visible', '=', '');
+                    ->orWhere('is_visible', '=', 'Aktif')
+                    ->orWhereNull('is_visible')
+                    ->orWhere('is_visible', '=', '');
             });
 
 
@@ -523,13 +523,26 @@ class MobileHomeController extends Controller
             }
         }
 
-        // Filter classes based on user's registration status
-        $shownClass = $classes->filter(function ($data) use ($isMyClass, $userID) {
-            $checkCount = StudentLesson::where("student_id", $userID)
-                ->where("lesson_id", $data->id)
+
+        // Filter classes based on whether the user is registered for them
+        $shownClass = $classes->filter(function ($class) use ($isMyClass, $userID) {
+            // Count how many times the user is registered for this class
+            $registrationCount = StudentLesson::where('student_id', $userID)
+                ->where('lesson_id', $class->id)
                 ->count();
-            return ($isMyClass == "true" && $checkCount > 0) || ($isMyClass != "true" && $checkCount == 0);
+
+            // If $isMyClass is 'true', show classes the user is registered for
+            // Otherwise, show classes the user is not registered for
+            $shouldShow = ($isMyClass === 'true' && $registrationCount > 0) ||
+                ($isMyClass !== 'true' && $registrationCount === 0);
+
+            return $shouldShow;
         });
+
+
+        if($request->search_query!=""){
+            $shownClass = $classes;
+        }
 
         // Return success response with filtered classes
         return MyHelper::responseSuccessWithData(
