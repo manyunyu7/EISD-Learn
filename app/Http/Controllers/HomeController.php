@@ -107,7 +107,7 @@ class HomeController extends Controller
                 ->where('mentor_id', $userId)
                 ->whereNull('deleted_at')
                 ->count();
-            
+
 
             // $studentCount = DB::table('view_student_lesson')
             //     ->where('mentor_name', $user_name)
@@ -158,7 +158,7 @@ class HomeController extends Controller
                 }else{
                     $countCourseInProgress++;
                 }
-                
+
             }
 
             $obj_dataProgress = new \stdClass();
@@ -230,12 +230,13 @@ class HomeController extends Controller
             $userLMS = DB::connection('mysql')
                 ->table('users')
                 ->select('mdln_username', 'name', 'department_id')
+                ->where('role','=','student')
                 ->get();
 
             $departments = DB::connection('ithub')
                 ->table('m_departments')
                 ->select('id', 'code', 'name')
-                ->where('code', 'like', '%_NEW%')
+                // ->where('code', 'like', '%_NEW%')
                 ->get();
 
             $locations = DB::connection('ithub')
@@ -293,7 +294,7 @@ class HomeController extends Controller
 
             return view('main.dashboard')
                 ->with($compact);
-        } 
+        }
         else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
@@ -499,7 +500,7 @@ class HomeController extends Controller
 
             // return $postTestScore;
 
-            
+
             $postTestScore = DB::table('exam_takers as et')
                     ->select(
                         'et.user_id as userID',

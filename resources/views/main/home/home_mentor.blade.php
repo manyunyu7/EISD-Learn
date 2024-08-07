@@ -38,7 +38,7 @@
 
             // Script untuk Pie Chart
             var chart_pie = new CanvasJS.Chart("chartContainer_pieChart", {
-                theme: "light2",
+                theme: "light3",
                 title: {
                     text: "Percentage of Students in Departments"
                 },
