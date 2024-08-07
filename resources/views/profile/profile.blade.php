@@ -9,8 +9,6 @@
             </ol>
         </nav>
 
-
-
         <h4 class="page-title">Akun Saya</h4>
 
         <div class="card">
@@ -256,7 +254,7 @@
         <h4 class="page-title">Ubah Password</h4>
         <div class="card">
             <div class="card-body">
-                <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                <form method="get" action="{{ route('password.change') }}" enctype="multipart/form-data">
                     <div class="row">
                         @csrf
                         <div class="col-md-2">
@@ -306,4 +304,33 @@
                 error ') }}');
         </script>
     @endif
+
+    {{-- @if (session()->has('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Password berhasil diubah!',
+                confirmButtonText: 'OK'
+            }).then(function() {
+                window.location.href = '{{ route("profile") }}';
+            });
+        </script>
+    @endif --}}
+
+    @if (session('status'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Success!',
+                text: "{{ session('status') }}",
+                icon: 'success',
+                confirmButtonText: 'OK',
+                onClose: () => {
+                    window.location.href = "{{ route('profile') }}";
+                }
+            });
+        });
+    </script>
+@endif
 @endsection

@@ -53,15 +53,12 @@
         /* CSS Loader */
         /* HTML: <div class="loader"></div> */
         .loader {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            color: #FC3A51;
-            --c: #0000 calc(100% - 20px), currentColor calc(100% - 19px) 98%, #0000;
-            background: radial-gradient(farthest-side at left, var(--c)) right /50% 100%,
-            radial-gradient(farthest-side at top, var(--c)) bottom/100% 50%;
-            background-repeat: no-repeat;
-            animation: l18-0 2s infinite linear .25s;
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
         }
 
         .loader::before {
@@ -102,18 +99,24 @@
             }
         }
 
+
         .loader-container {
+            display: none; /* Hidden by default */
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
             justify-content: center;
             align-items: center;
-            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white background */
-            z-index: 9999; /* ensure the loader is on top of other content */
+            z-index: 1000; /* Make sure it covers everything else */
         }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
 
         .disable-interaction {
             pointer-events: none;
@@ -357,7 +360,7 @@
 
                                 @if (in_array($fileExtension, $videoFormats) || str_contains($sectionDetail->section_video,".mp4"))
                                     @if(str_contains($sectionDetail->section_video,'course-s3'))
-                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                        <video crossorigin controls playsinline id="myVideo" data-video-id="uniqueVideoID" autoplay="autoplay"
                                                width="100%"
                                                class="video-mask" disablePictureInPicture
                                                controlsList="nodownload">
@@ -501,30 +504,67 @@
 
 
                 <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var videoPlayer = document.getElementById("myVideo");
+                        if (videoPlayer) {
+                            var videoKey = "videoCompleted_" + videoPlayer.getAttribute('data-video-id');
+
+                            if (localStorage.getItem(videoKey) === "true") {
+                                enableSectionNavigation(); // Allow section navigation immediately
+                            }
+
+                            videoPlayer.addEventListener('timeupdate', function() {
+                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+
+                                if (progress >= 90) {
+                                    localStorage.setItem(videoKey, "true");
+                                    enableSectionNavigation();
+                                }
+                            });
+                        }
+                    });
+
+                    function enableSectionNavigation() {
+                        var nextButton = document.querySelector('button');
+                        nextButton.disabled = false; // Enable the button or allow navigation
+                    }
+
                     function openSection(nextUrl) {
                         var videoPlayer = document.getElementById("myVideo");
                         if (videoPlayer) {
-                            var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+                            var videoKey = "videoCompleted_" + videoPlayer.getAttribute('data-video-id');
 
-                            if (progress >= 90) {
-                                document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            if (localStorage.getItem(videoKey) === "true") {
+                                showLoader();
                                 window.location.href = nextUrl;
                             } else {
-                                Swal.fire({
-                                    title: "Video Progress",
-                                    text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                    icon: "warning",
-                                    confirmButtonText: "OK",
-                                });
+                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+
+                                if (progress >= 90) {
+                                    localStorage.setItem(videoKey, "true");
+                                    showLoader();
+                                    window.location.href = nextUrl;
+                                } else {
+                                    Swal.fire({
+                                        title: "Video Progress",
+                                        text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                        icon: "warning",
+                                        confirmButtonText: "OK",
+                                    });
+                                }
                             }
                         } else {
-                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            showLoader();
                             window.location.href = nextUrl;
-                            // Handle case where videoPlayer element does not exist
                             console.error("Video player element not found.");
                         }
                     }
+
+                    function showLoader() {
+                        document.querySelector('.loader-container').style.display = 'flex';
+                    }
                 </script>
+
                 @forelse ($sections as $item)
 
                     <!--- Item Course Section Item -->
