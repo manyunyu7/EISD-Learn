@@ -417,7 +417,7 @@
                                     <select class="form-control" name="department" id="exampleFormControlSelect2"
                                         style="border: none;" onchange="document.getElementById('filterForm').submit();">
                                         <option value="all">All Departments</option>
-                                        @foreach ($departments as $department)
+                                        @foreach ($departmentsForFilter as $department)
                                             <option value="{{ $department->id }}"
                                                 {{ request('department') == $department->id ? 'selected' : '' }}>
                                                 {{ $department->name }}

@@ -124,6 +124,7 @@ class AbsensiController extends Controller
         $students = DB::table('absensis as a')
             ->select('u.id', 'u.name', 'u.department_id', 'a.created_at', 'u.location', 'u.contact')
             ->leftJoin('users as u', 'a.student_id', '=', 'u.id')
+            ->where('a.section_id', '=', $sectionId)
             ->get();
 
         foreach ($students as $item) {

@@ -283,7 +283,7 @@
                                 </tr>
                                 @empty
                                 <div class="alert alert-danger">
-                                    Anda Belum Memiliki Kelas
+                                    Belum ada siswa yang absensi
                                 </div>
                                 @endforelse
                             </tbody>
