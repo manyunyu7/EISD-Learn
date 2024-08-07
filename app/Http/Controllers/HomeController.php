@@ -125,26 +125,26 @@ class HomeController extends Controller
             $data_studentProgress = [];
 
             $tabel_lesson = DB::table('lessons')
-            ->whereNull('lessons.deleted_at')
-            ->where('lessons.mentor_id', $userId)
-            ->get();
+                ->whereNull('lessons.deleted_at')
+                ->where('lessons.mentor_id', $userId)
+                ->get();
 
 
             foreach ($tabel_lesson as $data_lesson) {
                 $obj_class = new \stdClass();;
 
-                $obj_class->naxme =$data_lesson->course_title;
+                $obj_class->naxme = $data_lesson->course_title;
                 $obj_class->completedCount = 0;
-                $obj_class->incompleteCount=0;
+                $obj_class->incompleteCount = 0;
 
-                $studentCountInClass = StudentLesson::where('lesson_id','=',$data_lesson->id)->count();
+                $studentCountInClass = StudentLesson::where('lesson_id', '=', $data_lesson->id)->count();
                 $obj_class->studentCount = $studentCountInClass;
 
-                $completedCount = StudentLesson::where('learn_status','=','1')
-                ->where('lesson_id','=', $data_lesson->id)->count();
+                $completedCount = StudentLesson::where('learn_status', '=', '1')
+                    ->where('lesson_id', '=', $data_lesson->id)->count();
 
                 $obj_class->completedCount = $completedCount;
-                $obj_class->unfinishedCount = $studentCountInClass-$completedCount;
+                $obj_class->unfinishedCount = $studentCountInClass - $completedCount;
                 array_push($data_studentProgress, $obj_class);
             }
 
@@ -153,12 +153,11 @@ class HomeController extends Controller
 
             foreach ($data_studentProgress as $studentProgress) {
 
-                if($studentProgress->studentCount==$studentProgress->completedCount){
+                if ($studentProgress->studentCount == $studentProgress->completedCount) {
                     $countCourseCompleted++;
-                }else{
+                } else {
                     $countCourseInProgress++;
                 }
-
             }
 
             $obj_dataProgress = new \stdClass();
@@ -195,7 +194,7 @@ class HomeController extends Controller
                 })
                 ->where(function ($query) use ($departmentId) {
                     if (!empty($departmentId)) {
-                        if($departmentId!="all"){
+                        if ($departmentId != "all") {
                             $query->where('u.department_id', '=', $departmentId);
                         }
                     }
@@ -204,8 +203,7 @@ class HomeController extends Controller
                     if (!empty($locationId)) {
                         if ($locationId !== 'all') {
                             $query->whereJsonContains('u.location', ['site_id' => $locationId]);
-                        }
-                        else{
+                        } else {
                             return $query;
                         }
                     }
@@ -230,13 +228,21 @@ class HomeController extends Controller
             $userLMS = DB::connection('mysql')
                 ->table('users')
                 ->select('mdln_username', 'name', 'department_id')
-                ->where('role','=','student')
+                ->where('role', '=', 'student')
                 ->get();
 
+                // department for pie chart
             $departments = DB::connection('ithub')
                 ->table('m_departments')
                 ->select('id', 'code', 'name')
                 // ->where('code', 'like', '%_NEW%')
+                ->get();
+
+                //Department for filter latest post test
+            $departmentsForFilter = DB::connection('ithub')
+                ->table('m_departments')
+                ->select('id', 'code', 'name')
+                ->where('code', 'like', '%_NEW%')
                 ->get();
 
             $locations = DB::connection('ithub')
@@ -277,6 +283,7 @@ class HomeController extends Controller
                 'classRegistered',
                 'locations',
                 'departments',
+                'departmentsForFilter',
                 'leaderboard',
                 'studentLessonsWithMentor',
                 'myStudent',
@@ -294,8 +301,7 @@ class HomeController extends Controller
 
             return view('main.dashboard')
                 ->with($compact);
-        }
-        else if (Auth::check() && Auth::user()->role == 'student') {
+        } else if (Auth::check() && Auth::user()->role == 'student') {
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
             $month = $request->input('month') ?? "all";
@@ -502,41 +508,41 @@ class HomeController extends Controller
 
 
             $postTestScore = DB::table('exam_takers as et')
-                    ->select(
-                        'et.user_id as userID',
-                        'et.finished_at as time_finish',
-                        'es.id as exam_SessionId',
-                        'es.exam_type as examType',
-                        'cs.section_title as title_exam',
-                        'exm.title as materiExam',
-                        DB::raw('MAX(et.current_score) as highest_currentScore'),
-                        'et.course_flag as courseID',
-                        'et.course_section_flag as courseSectionID'
-                    )
-                    ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
-                    ->leftJoin('course_section as cs', 'es.id', '=', 'cs.quiz_session_id')
-                    ->leftJoin('exams as exm', 'es.exam_id', '=', 'exm.id')
-                    ->where('et.user_id', $userID)
-                    ->where('es.exam_type', 'Post Test');
+                ->select(
+                    'et.user_id as userID',
+                    'et.finished_at as time_finish',
+                    'es.id as exam_SessionId',
+                    'es.exam_type as examType',
+                    'cs.section_title as title_exam',
+                    'exm.title as materiExam',
+                    DB::raw('MAX(et.current_score) as highest_currentScore'),
+                    'et.course_flag as courseID',
+                    'et.course_section_flag as courseSectionID'
+                )
+                ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
+                ->leftJoin('course_section as cs', 'es.id', '=', 'cs.quiz_session_id')
+                ->leftJoin('exams as exm', 'es.exam_id', '=', 'exm.id')
+                ->where('et.user_id', $userID)
+                ->where('es.exam_type', 'Post Test');
 
-                    // Tambahkan filter bulan jika diperlukan
-                    if ($month !== 'all') {
-                        $postTestScore->whereRaw('MONTH(es.created_at) = ?', [$month]);
-                    }
-                    if ($year !== 'all') {
-                        $postTestScore->whereRaw('YEAR(es.created_at) = ?', [$year]);
-                    }
+            // Tambahkan filter bulan jika diperlukan
+            if ($month !== 'all') {
+                $postTestScore->whereRaw('MONTH(es.created_at) = ?', [$month]);
+            }
+            if ($year !== 'all') {
+                $postTestScore->whereRaw('YEAR(es.created_at) = ?', [$year]);
+            }
 
             // Tambahkan grup by clause
             $postTestScore->groupBy(
-            'et.user_id',
-            'et.finished_at',
-            'es.exam_type',
-            'es.id',
-            'cs.section_title',
-            'exm.title',
-            'et.course_flag',
-            'et.course_section_flag'
+                'et.user_id',
+                'et.finished_at',
+                'es.exam_type',
+                'es.id',
+                'cs.section_title',
+                'exm.title',
+                'et.course_flag',
+                'et.course_section_flag'
             );
             // Dapatkan hasil query
             $postTestScore = $postTestScore->get();
