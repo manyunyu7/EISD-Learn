@@ -45,7 +45,7 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 Route::get('/password/sent', function () {
-    return view('auth.password-sent');
+    return view('auth.alert_emailSent');
 })->name('password.sent');
 
 Route::get('/profile', 'ProfileController@index')->middleware('auth');

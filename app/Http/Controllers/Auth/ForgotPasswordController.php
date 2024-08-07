@@ -13,7 +13,7 @@ class ForgotPasswordController extends Controller
 {
     public function showLinkRequestForm()
     {
-        return view('auth.passwords.email');
+        return view('auth.forgotpass');
     }
 
     public function sendResetLinkEmail(Request $request)
@@ -32,7 +32,7 @@ class ForgotPasswordController extends Controller
         $resetLink = url('/password/reset/'.$token.'?email='.urlencode($email));
 
         // Send email with reset link
-        Mail::send('emails.test-mail', ['resetLink' => $resetLink], function ($message) use ($email) {
+        Mail::send('emails.emailMessages_toResetPass', ['resetLink' => $resetLink], function ($message) use ($email) {
             $message->to($email);
             $message->subject('Reset Password');
         });
