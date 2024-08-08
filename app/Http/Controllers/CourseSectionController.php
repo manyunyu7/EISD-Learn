@@ -355,7 +355,7 @@ class CourseSectionController extends Controller
 
         $isExam = true;
         $exam = Exam::find($examId);
-        $examSession = ExamSession::where('exam_id','=',$examId)->first();
+        $examSession = ExamSession::where('exam_id', '=', $examId)->first();
         $session = $examSession;
         $sessionId = $session->id;
         $questions = json_decode($session->questions_answers);
@@ -392,7 +392,7 @@ class CourseSectionController extends Controller
             session([$examTokenKey => Str::uuid()->toString()]);
         }
         $examToken = session($examTokenKey);
-        
+
         // return $examResults;
 
         $compact = compact(
@@ -506,6 +506,10 @@ class CourseSectionController extends Controller
         $studentTakenSectionIds = array_map(function ($section) {
             return $section->section_id;
         }, $studentTakenSections);
+
+
+        // Variable to check is student already take the section by checking studentTakenSectionId
+        $isSectionTaken = in_array($sectionId, $studentTakenSectionIds);
 
         $currentSectionIndex = array_search($sectionId, $precedingSectionIds);
         if ($currentSectionIndex !== false) {
@@ -779,6 +783,7 @@ class CourseSectionController extends Controller
             'isFirstSection',
             'isExam',
             'title',
+            'isSectionTaken',
             'sectionDetail',
             'sections',
             'questions',

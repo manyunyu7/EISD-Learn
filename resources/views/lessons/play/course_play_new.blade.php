@@ -53,12 +53,15 @@
         /* CSS Loader */
         /* HTML: <div class="loader"></div> */
         .loader {
-            border: 16px solid #f3f3f3; /* Light grey */
-            border-top: 16px solid #3498db; /* Blue */
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            color: #FC3A51;
+            --c: #0000 calc(100% - 20px), currentColor calc(100% - 19px) 98%, #0000;
+            background: radial-gradient(farthest-side at left, var(--c)) right /50% 100%,
+            radial-gradient(farthest-side at top, var(--c)) bottom/100% 50%;
+            background-repeat: no-repeat;
+            animation: l18-0 2s infinite linear .25s;
         }
 
         .loader::before {
@@ -99,32 +102,17 @@
             }
         }
 
-
         .loader-container {
-            display: none; /* Hidden by default */
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.8);
+            width: 100%;
+            height: 100%;
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* Make sure it covers everything else */
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-
-        .disable-interaction {
-            pointer-events: none;
-            cursor: not-allowed;
-        }
-
-        .no-scroll {
-            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white background */
+            z-index: 9999; /* ensure the loader is on top of other content */
         }
 
     </style>
@@ -150,7 +138,7 @@
     <div class="container-fluid navbar-fixed-top large-nav-bar" style="background-color: #F5F7FA; padding: 10px 20px;">
         <div class="row">
             <div class="col-xs-1 back-button">
-                <a href="{{ url('/class/my-class') }}" class="btn btn-link">
+                <a href="{{ url()->previous() }}" class="btn btn-link">
                     <img src="{{ asset('lesson_template/img/back_button.svg') }}" alt="Back"
                          style="width: 57px; height: 57px;">
                 </a>
@@ -179,66 +167,11 @@
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
-        {{-- JIKA KONTEN ADALAH EXAM --}}
+
         @if($isExam)
             @include('lessons.play.student_exam_section')
-            <script>
-                function nextCuy() {
-                    var videoPlayer = document.getElementById("myVideo");
-                    var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
-                    if (videoPlayer) {
-                        var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
-
-                        if (progress >= 90) {
-                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
-                            window.location.href = nextUrl;
-                        } else {
-                            event.preventDefault();
-                            Swal.fire({
-                                title: "Video Progress",
-                                text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                icon: "warning",
-                                confirmButtonText: "OK",
-                            });
-                        }
-                    } else {
-                        // Handle case where videoPlayer element does not exist
-                        document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
-                        window.location.href = nextUrl;
-                        console.error("Video player element not found.");
-                    }
-                }
-            </script>
-            <div class="container-fluid">
-                <div class="main-content-container container-fluid px-4 mt-5">
-                    <section id="exam-information">
-                        <div class="row">
-                            <div class="col-md-12 ">
-                                <div class="">
-                                    <div class="pt-2">
-                                        @if ($prev_section != null)
-                                            <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}" class="btn btn-primary hidden">
-                                                Previous Lesson
-                                            </a>
-                                        @endif
-                                        @if ($next_section != null)
-                                            <button style="background-color: #39AA81" id="nextLessonButton" class="btn btn-primary" onclick="nextCuy();">
-                                                Next Section
-                                            </button>
-                                        @else
-                                            <a href="{{ url('/home') }}" class="btn btn-primary">Go to Home</a>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
         @endif
 
-
-        {{-- JIKA KONTEN BUKAN EXAM --}}
         @if(!$isExam)
             <div class="container-fluid">
                 <div class="main-content-container container-fluid px-4 mt-5">
@@ -360,7 +293,7 @@
 
                                 @if (in_array($fileExtension, $videoFormats) || str_contains($sectionDetail->section_video,".mp4"))
                                     @if(str_contains($sectionDetail->section_video,'course-s3'))
-                                        <video crossorigin controls playsinline id="myVideo" data-video-id="uniqueVideoID" autoplay="autoplay"
+                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
                                                width="100%"
                                                class="video-mask" disablePictureInPicture
                                                controlsList="nodownload">
@@ -395,6 +328,19 @@
                         </div>
                     @endif
 
+
+                    @if($isSectionTaken == true)
+                    <script>
+                        function nextCuy() {
+                            var videoPlayer = document.getElementById("myVideo");
+                            var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                            // Handle case where videoPlayer element does not exist
+                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                window.location.href = nextUrl;
+                                console.error("Video player element not found.");
+                            }
+                    </script>
+                    @else
                     <script>
                         function nextCuy() {
                             var videoPlayer = document.getElementById("myVideo");
@@ -422,6 +368,8 @@
                             }
                         }
                     </script>
+                    @endif
+                    
 
 
                     <div class="card mt-5">
@@ -436,16 +384,18 @@
 
                             <div class="d-flex justify-content-between mt-2 mb-4">
                                 @if ($prev_section != null)
-                                    <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}" class="btn btn-primary hidden">
-                                        Previous Lesson
-                                    </a>
+                                    <a href="{{ url('/') . "/course/$courseId/section/$prev_section" }}"
+                                       class="btn btn-primary hidden">Previous Lesson</a>
                                 @endif
                                 @if ($next_section != null)
-                                    <button style="background-color: #39AA81" id="nextLessonButton" class="btn btn-primary" onclick="nextCuy();">
+                                    <button style="background-color: #39AA81" id="nextLessonButton"
+                                            class="btn btn-primary" onclick="nextCuy();">
                                         Next Section
                                     </button>
-                                @else
-                                    <a href="{{ url('/home') }}" class="btn btn-primary">Go to Home</a>
+
+                                    <!--<a href="{{ url('/') . "/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
+                                    <!--    class="btn btn-primary ">Next-->
+                                    <!--    Lesson</a>-->
                                 @endif
 
                             </div>
@@ -455,7 +405,9 @@
                 </div>
             </div>
         @endif
+
     </div>
+    <!-- /#page-content-wrapper -->
 
     <!-- Sidebar -->
     <div id="sidebar-wrapper" style="background-color: whitesmoke">
@@ -465,13 +417,15 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
                         <div style="flex: 1; flex-shrink: 1;">
-                            <div class="category-label-container" style=" background-color: red; color: white">
-                                Management Trainee
+                            <div class="category-label-container"
+                                 style=" background-color: red; color: white"
+                            >Management Trainee
                             </div>
                         </div>
                         <div style="flex-shrink: 1;">
-                            <img style="width: 12%; height: auto;" src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
-                                Modernland Training
+                            <img style="width: 12%; height: auto;"
+                                 src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
+                            Modernland Training
                         </div>
                     </div>
                 </div>
@@ -487,7 +441,7 @@
                         <span>
                             <img
                                 src="{{asset('lesson_template/img/')}}/section_folders_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">$0 Sections</p>
+                            <p style="display: inline;">This is the middle section.</p>
                         </span>
                     </div>
 
@@ -496,75 +450,50 @@
                         <span>
                             <img
                                 src="{{asset('lesson_template/img/')}}/section_finished_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">$0% finish ($0/$0)</p>
+                            <p style="display: inline;">This is the middle section.</p>
                         </span>
                     </div>
                 </div>
 
 
 
+                @if ($isSectionTaken == true)
                 <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        var videoPlayer = document.getElementById("myVideo");
-                        if (videoPlayer) {
-                            var videoKey = "videoCompleted_" + videoPlayer.getAttribute('data-video-id');
-
-                            if (localStorage.getItem(videoKey) === "true") {
-                                enableSectionNavigation(); // Allow section navigation immediately
-                            }
-
-                            videoPlayer.addEventListener('timeupdate', function() {
-                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
-
-                                if (progress >= 90) {
-                                    localStorage.setItem(videoKey, "true");
-                                    enableSectionNavigation();
-                                }
-                            });
+                    function openSection(nextUrl) {
+                        document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            window.location.href = nextUrl;
+                            // Handle case where videoPlayer element does not exist
+                            console.error("Video player element not found.");
                         }
-                    });
-
-                    function enableSectionNavigation() {
-                        var nextButton = document.querySelector('button');
-                        nextButton.disabled = false; // Enable the button or allow navigation
-                    }
-
+                </script>
+                @else
+                <script>
                     function openSection(nextUrl) {
                         var videoPlayer = document.getElementById("myVideo");
                         if (videoPlayer) {
-                            var videoKey = "videoCompleted_" + videoPlayer.getAttribute('data-video-id');
+                            var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
-                            if (localStorage.getItem(videoKey) === "true") {
-                                showLoader();
+                            if (progress >= 90) {
+                                document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
                                 window.location.href = nextUrl;
                             } else {
-                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
-
-                                if (progress >= 90) {
-                                    localStorage.setItem(videoKey, "true");
-                                    showLoader();
-                                    window.location.href = nextUrl;
-                                } else {
-                                    Swal.fire({
-                                        title: "Video Progress",
-                                        text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                        icon: "warning",
-                                        confirmButtonText: "OK",
-                                    });
-                                }
+                                Swal.fire({
+                                    title: "Video Progress",
+                                    text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+                                });
                             }
                         } else {
-                            showLoader();
+                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
                             window.location.href = nextUrl;
+                            // Handle case where videoPlayer element does not exist
                             console.error("Video player element not found.");
                         }
                     }
-
-                    function showLoader() {
-                        document.querySelector('.loader-container').style.display = 'flex';
-                    }
                 </script>
-
+                @endif
+                
                 @forelse ($sections as $item)
 
                     <!--- Item Course Section Item -->
@@ -608,6 +537,7 @@
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
+                                
                                 var loaderLinks = document.querySelectorAll('.loader-link');
                                 loaderLinks.forEach(function (link) {
                                     link.addEventListener('click', function (event) {
@@ -616,6 +546,7 @@
                                         window.location.href = event.currentTarget.href;
                                     });
                                 });
+                                document.querySelector('.loader-container').style.display = 'none'; // or 'flex'
                             });
                         </script>
 
