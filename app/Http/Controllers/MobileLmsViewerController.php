@@ -489,6 +489,10 @@ class MobileLmsViewerController extends Controller
         $mentor = User::where("id", '=', "");
         $sectionCount = count($sections);
 
+
+
+        $isSectionTaken = in_array($sectionId, $sectionTakenByStudent);
+
         // taken $sectionTakenOnCourseCount;
         // all sections $sectionCount;
         $progressPercentage = round(($sectionTakenOnCourseCount / $sectionCount) * 100);
@@ -506,6 +510,7 @@ class MobileLmsViewerController extends Controller
             'sectionTakenOnCourseCount',
             'isFirstSection',
             'isExam',
+            'isSectionTaken',
             'title',
             'sectionDetail',
             'sections',
