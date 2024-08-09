@@ -228,11 +228,9 @@
                         <!-- Card body -->
                         <div class="card-body">
                             <!-- Badge and favorite -->
-                            <div
-                                style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
-                                @if ($data->new_class == 'Aktif')
-                                    <div class="class-badge"
-                                        style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
+                            <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+                                @if ($data->new_class == 'y')
+                                    <div class="class-badge" style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
                                         NEW
                                     </div>
                                 @endif
@@ -248,8 +246,7 @@
                             </div>
                             <!-- Title -->
                             <h6 class="card-title"><a href="#">{{ $data->course_title }}</a></h6>
-                            <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing
-                                settling.</p>
+                            <p class="mb-2 text-truncate-2 d-none">Proposal indulged no do sociable he throwing settling.</p>
 
                             <hr style="margin-left: -20px; margin-right: -20px" class="mb-3 mt-2">
                             <li class="toga-container dropdown hidden-caret"
@@ -263,8 +260,7 @@
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
                                     <div class="dropdown-user-scroll scrollbar-outer">
                                         <li>
-                                            <a class="dropdown-item"
-                                                href="{{ url('/lesson/manage-materials/' . $data->id) }}">
+                                            <a class="dropdown-item" href="{{ url('/lesson/manage-materials/' . $data->id) }}">
                                                 Manage Materials
                                             </a>
                                             <div class="dropdown-divider"></div>
@@ -276,11 +272,6 @@
                                                 href="{{ url('/class/class-list/mentor-view-class/' . $data->id) }}">
                                                 <span class="link-collapse">View Class</span>
                                             </a>
-                                            {{-- <div class="dropdown-divider"></div> --}}
-                                            {{-- <a class="dropdown-item"
-                                        href="{{ url('/lesson/'.$data->id.'/dashboard/') }}">
-                                            <span class="link-collapse">Dashboard Post Test</span>
-                                        </a> --}}
                                         </li>
                                     </div>
                                 </ul>
@@ -297,8 +288,7 @@
                                 <li style="margin-right: 15px; margin-bottom:5px; display: flex; align-items: center;">
                                     <a href="#" style="text-decoration: none; color: black;">
                                         <p style="font-size: 15px; margin-top: 25px; width:max-content">
-                                            <b>{{ $numStudentsCount }}</b><span
-                                                style="color: #8C94A3; margin-left: 5px;"></span>
+                                            <b>{{ $numStudentsCount }}</b><span style="color: #8C94A3; margin-left: 5px;"></span>
                                         </p>
                                     </a>
                                 </li>
@@ -307,24 +297,46 @@
                                         style="width: 25px; height: auto; cursor: pointer;"
                                         src="{{ url('/icons/btn_edit.svg') }}" alt="Edit Icon">
                                 </li>
-                                <li style="margin-right: 20px;">
-                                    <img class="deleteButton" id="{{ $data->id }}"
-                                        style="width: 25px; height: auto; cursor: pointer;"
-                                        src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
-                                </li>
+                                @if ($numStudentsCount == 0 )
+                                    <li style="margin-right: 20px;">
+                                        <img class="deleteButton" id="{{ $data->id }}"
+                                            style="width: 25px; height: auto; cursor: pointer;"
+                                            src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                                    </li>
+                                @else
+                                    <li style="margin-right: 20px;" class="d-none">
+                                        <img class="deleteButton" id="{{ $data->id }}"
+                                            style="width: 25px; height: auto; cursor: pointer;"
+                                            src="{{ url('/icons/btn_delete.svg') }}" alt="Delete Icon">
+                                    </li>
+                                @endif
                                 <br>
-                                <li>
-                                    <div style="display: flex; align-items: center; width: max-content; ">
-                                        <p style="margin-left: -20px; margin-bottom:0; padding: 5px 10px; font-size: 12px">
-                                            Show</p>
-                                        <label class="switch" style="margin-left: -2px;">
-                                            <input type="checkbox" id="{{ $data->id }}"
-                                                class="switchButton{{ $data->id }}"
-                                                {{ $data->is_visible == 'y' ? 'checked' : '' }}>
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </li>
+                                @if ($numStudentsCount == 0 )
+                                    <li>
+                                        <div style="display: flex; align-items: center; width: max-content; ">
+                                            <p style="margin-left: -20px; margin-bottom:0; padding: 5px 10px; font-size: 12px">Show</p>
+                                            <label class="switch" style="margin-left: -2px;">
+                                                <input type="checkbox" id="{{ $data->id }}"
+                                                    class="switchButton{{ $data->id }}"
+                                                    {{ $data->is_visible == 'y' ? 'checked' : '' }}>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                @else
+                                    <li>
+                                        <div style="display: flex; align-items: center; width: max-content; ">
+                                            <p style="margin-left: -10px; margin-bottom:0; padding: 5px 10px; font-size: 12px">Show</p>
+                                            <label class="switch" style="margin-left: -2px;">
+                                                <input type="checkbox" id="{{ $data->id }}"
+                                                    class="switchButton{{ $data->id }}"
+                                                    {{ $data->is_visible == 'y' ? 'checked' : '' }}>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                @endif
+                                
                             </ul>
 
 

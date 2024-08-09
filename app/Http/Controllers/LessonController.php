@@ -205,6 +205,7 @@ class LessonController extends Controller
 
 
 
+        // return $myClasses;
         Paginator::useBootstrap();
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses', 'keyword', 'myClasses_searchKeyword', 'lessonCategories'));
     }
