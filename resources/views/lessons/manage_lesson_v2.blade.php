@@ -238,7 +238,7 @@
                                     style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $data->course_category_color }}; padding: 2px 10px;">
                                     <strong>{{ $data->course_category_name }}</strong>
                                 </div>
-                                <div class="class-badge"
+                                <div class="class-badge d-none"
                                     style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
                                     <img src="{{ url('/icons/rating_class.svg') }}" style="margin-right: 4px;">
                                     <p style="font-size: 15px; margin-bottom: 0;"><strong>5.0</strong></p>
