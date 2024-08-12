@@ -133,7 +133,7 @@ class ModernlandIntegrationController extends Controller
                 ->table('m_departments')
                 ->where('id', '=', $request->department_id)
                 ->whereNull('deleted_at')
-                ->where('code', 'like', '%_NEW%')
+                // ->where('code', 'like', '%_NEW%')
                 ->exists();
 
         if ($request->position_id)
@@ -146,14 +146,14 @@ class ModernlandIntegrationController extends Controller
             $departments = DB::connection('ithub')
                 ->table('m_departments')
                 ->whereNull('deleted_at')
-                ->where('code', 'like', '%_NEW%')
+                // ->where('code', 'like', '%_NEW%')
                 ->get();
 
         if ($request->position_id)
             $positions = DB::connection('ithub')
                 ->table('m_positions')
                 ->whereNull('deleted_at')
-                ->where('code', 'like', '%_NEW%')
+                // ->where('code', 'like', '%_NEW%')
                 ->get();
 
         if ($request->department_id)
