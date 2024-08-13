@@ -794,6 +794,8 @@ class LessonController extends Controller
                         LEFT JOIN
                             lesson_categories lc on a.category_id = lc.id
                         WHERE
+                            a.mentor_id = $user_id
+                            AND
                             a.deleted_at IS NULL
                             AND
                             a.is_visible = 'y'

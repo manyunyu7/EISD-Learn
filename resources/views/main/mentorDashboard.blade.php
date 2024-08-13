@@ -106,9 +106,9 @@
                             $userID = Auth::id();
                             $numStudents = DB::select(
                                 "SELECT *
-                FROM
-                student_lesson a
-                WHERE a.lesson_id = $data->id",
+                                FROM
+                                student_lesson a
+                                WHERE a.lesson_id = $data->id",
                             );
                             $numStudentsCount = count($numStudents);
 
@@ -145,35 +145,35 @@
                                         {{-- href="{{ url('course/'.$data->id.'/section/'.$data->first_section) }}" --}}
                                         @php
                                             $class = DB::select("
-                                SELECT
-                                lsn.id AS lesson_id,
-                                lsn.course_title AS lesson_title,
-                                lsn.course_cover_image AS lesson_cover_img,
-                                lsn.department_id AS lesson_dept_id,
-                                lsn.position_id AS lesson_posit_id,
-                                cs.quiz_session_id AS exam_session_id,
-                                cs.section_title AS section_title,
-                                cs.id AS section_id,
-                                cs.created_at AS date_create,
-                                es.exam_type AS exam_type,
-                                exm.id AS exam_id
-                                FROM
-                                lessons lsn
-                                LEFT JOIN
-                                course_section cs ON lsn.id = cs.course_id
-                                LEFT JOIN
-                                exam_sessions es ON cs.quiz_session_id = es.id
-                                LEFT JOIN
-                                exams exm ON es.exam_id = exm.id
-                                WHERE
-                                lsn.id = $data->id
-                                AND
-                                es.exam_id = exm.id
-                                AND
-                                es.exam_type = 'Post Test'
-                                ORDER BY
-                                cs.created_at DESC
-                                ");
+                                                        SELECT
+                                                        lsn.id AS lesson_id,
+                                                        lsn.course_title AS lesson_title,
+                                                        lsn.course_cover_image AS lesson_cover_img,
+                                                        lsn.department_id AS lesson_dept_id,
+                                                        lsn.position_id AS lesson_posit_id,
+                                                        cs.quiz_session_id AS exam_session_id,
+                                                        cs.section_title AS section_title,
+                                                        cs.id AS section_id,
+                                                        cs.created_at AS date_create,
+                                                        es.exam_type AS exam_type,
+                                                        exm.id AS exam_id
+                                                        FROM
+                                                        lessons lsn
+                                                        LEFT JOIN
+                                                        course_section cs ON lsn.id = cs.course_id
+                                                        LEFT JOIN
+                                                        exam_sessions es ON cs.quiz_session_id = es.id
+                                                        LEFT JOIN
+                                                        exams exm ON es.exam_id = exm.id
+                                                        WHERE
+                                                        lsn.id = $data->id
+                                                        AND
+                                                        es.exam_id = exm.id
+                                                        AND
+                                                        es.exam_type = 'Post Test'
+                                                        ORDER BY
+                                                        cs.created_at DESC
+                                                        ");
                                         @endphp
                                         <div>
                                             {{-- href="{{ url('/lesson/'.$data->id.'/dashboard/') }}" --}}
