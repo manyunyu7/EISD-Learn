@@ -99,6 +99,7 @@ class CourseSectionController extends Controller
 
         $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
             ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
+            ->where("exams.created_by",Auth::id())
             ->where(function ($query) {
                 $query->where('exams.is_deleted', '!=', 'y')
                     ->orWhereNull('exams.is_deleted');
