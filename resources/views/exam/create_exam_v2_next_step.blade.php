@@ -114,10 +114,11 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
                     <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Exam</li>
                 </ol>
             </nav>
         </div>
+
 
         {{-- SOAL UJIAN --}}
         <div class="col-12 ">
@@ -158,16 +159,6 @@
                         <button type="button" id="addOptionAnswers" class="btn btn-outline-primary " style="width: 12%; margin-left: 5px;">+ Add</button>
                     </div>
                     <div class="card-body row " id="segment_multipleChoices">
-{{--                        <div class="input-group mb-3">--}}
-{{--                            <input required name="stm_1" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
-{{--                            <input required name="scr_1" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
-{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
-{{--                        </div>--}}
-{{--                        <div class="input-group mb-3">--}}
-{{--                            <input required name="stm_2" placeholder="Masukkan Opsi Jawaban" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
-{{--                            <input required name="scr_2" placeholder="Masukkan Poin" width="35%" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">--}}
-{{--                            <button type="button" class="btn btn-danger ml-2"><img src="{{ url('/I=icons/Delete.svg') }}"  alt="Instagram Icon"></button>--}}
-{{--                        </div>--}}
                     </div>
                 </div>
                 <script>

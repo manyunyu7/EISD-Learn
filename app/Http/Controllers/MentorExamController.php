@@ -387,27 +387,29 @@ class MentorExamController extends Controller
     }
     public function viewManageExam_v2(Request $request)
     {
-        $dayta = Exam::where("created_by", '=', Auth::id())
-            ->where("is_deleted", "<>", "y")
-            ->orWhereNull("is_deleted")
-            ->get();
+
+        $dayta =Exam::where("created_by",Auth::id())
+        ->where(function ($query) {
+                $query->where("is_deleted","<>","y")
+                    ->orWhereNull("is_deleted");
+            })
+        ->get();
         $compact = compact('dayta');
 
         if ($request->dump == true) {
             return $compact;
         }
-        // dd($dayta);
-        // return $dayta;
-
         return view("exam.manage_exam_versi_2")->with($compact);
     }
 
     public function viewCreateExam_v2(Request $request)
     {
-        $dayta = Exam::where("created_by", '=', Auth::id())
-            ->where("is_deleted", "<>", "y")
-            ->orWhereNull("is_deleted")
-            ->get();
+        $dayta =Exam::where("created_by",Auth::id())
+        ->where(function ($query) {
+                $query->where("is_deleted","<>","y")
+                    ->orWhereNull("is_deleted");
+            })
+        ->get();
         $compact = compact('dayta');
 
         if ($request->dump == true) {
@@ -418,13 +420,17 @@ class MentorExamController extends Controller
     }
     public function viewLoadExam_v2(Request $request, $examId)
     {
-        $dayta = Exam::where("created_by", '=', Auth::id())
-            ->where("is_deleted", "<>", "y")
-            ->orWhereNull("is_deleted")
-            ->get();
+        $dayta =Exam::where("created_by",Auth::id())
+        ->where(function ($query) {
+                $query->where("is_deleted","<>","y")
+                    ->orWhereNull("is_deleted");
+            })
+        ->get();
+        $examSession_data = ExamSession::where("exam_id", $examId)->get();
         $questionAnswer = ExamQuestionAnswers::all();
-        $compact = compact('dayta', 'examId', 'questionAnswer');
+        $compact = compact('dayta', 'examId', 'questionAnswer', 'examSession_data');
 
+        // return $examSession_data;
         if ($request->dump == true) {
             return $compact;
         }
