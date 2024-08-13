@@ -26,16 +26,22 @@ class DetailClassController extends Controller
                 'c.section_video',
                 'c.created_at',
                 'c.updated_at',
-                'c.can_be_accessed'
+                'c.can_be_accessed',
+                'd.time_limit_minute'
             )
             ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
             ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
+            ->leftJoin('exam_sessions as d', 'c.quiz_session_id', '=', 'd.exam_id')
             ->where('a.id', $id)
             ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
             ->get();
 
+
         $jumlahSection = $dayta->count();
-        $compact = compact("data","dayta", "jumlahSection");
+        $jumlahDuration = $dayta->sum('time_limit_minute');
+
+
+        $compact = compact("data","dayta", "jumlahSection", "jumlahDuration");
         if($request->dump==true){
             return $compact;
         }

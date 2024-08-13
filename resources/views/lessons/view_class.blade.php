@@ -116,7 +116,7 @@
                             <div class="mb-3" style="margin-left: 5px;">
                                 <div style="padding: 10px; display: flex; align-items: center;">
                                     <img style="max-width: 24px; max-height: 24px; margin-right: 12px;" src="{{ url('/icons/Clock.svg') }}" alt="Clock Icon">
-                                    <p style="font-size: 1rem; margin: 0; margin-right: 6px">30m</p>
+                                    <p style="font-size: 1rem; margin: 0; margin-right: 6px">{{ $jumlahDuration }}m</p>
                                 </div>
                             </div>
                         </div>
@@ -127,8 +127,10 @@
                                 <p style="margin: 0; margin-right: 10px; font-size: 16px">
                                     {{ $item->section_title }}
                                 </p>
-                                <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;" src="{{ url('/icons/Clock.svg') }}" alt="Clock Icon">
-                                <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:1px">30m</p>
+                                @if($item->time_limit_minute != null)
+                                    <img style="max-width: 24px; max-height: 24px; margin-right: 12px; margin-left: auto;" src="{{ url('/icons/Clock.svg') }}" alt="Clock Icon">
+                                    <p style="font-size: 14px; margin: 0; margin-top: -6px; margin-right: 8px; margin-top:1px">{{ $item->time_limit_minute }}m</p>
+                                @endif
                             </div>
                         </div>
                         @empty
