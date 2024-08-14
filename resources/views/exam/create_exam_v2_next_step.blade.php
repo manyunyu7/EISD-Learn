@@ -221,6 +221,7 @@
             </form>
         </div>
 
+        
         <div class="col-12">
             {{-- MENAMPILKAN SOAL --}}
             @forelse ($questionAnswer as $data)
@@ -248,6 +249,7 @@
                             @foreach ($examQuestionAnswers as $answer)
                                 <li class="list-group-item">{{ $answer['text'] }}  (Score: {{ $answer['score'] }})</li>
                             @endforeach
+
                             <li class="list-group-item">
                                 <div class="mb-3" style="">
                                     <div ></div>
@@ -280,6 +282,7 @@
                                     </div>
                                 </div>
                             </li>
+                            
                         </ul>
                     </div>
                 @else

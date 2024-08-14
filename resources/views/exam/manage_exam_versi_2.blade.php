@@ -148,6 +148,9 @@
                                 <th>
                                     <h3><b>Manage</b></h3>
                                 </th>
+                                <th>
+                                    <h3><b>Status</b></h3>
+                                </th>
                             </thead>
                             <tbody>
                                 @forelse ($dayta as $data)
@@ -194,14 +197,14 @@
                                                 <button class="btn mr-2 d-none"
                                                     onclick="redirectToSection('{{ url('/exam/' . $data->id . '/edit') }}')"
                                                     style="background-color: #208DBB;
-                                            border-radius: 15px;
-                                            width:45px;
-                                            height: 40px;
-                                            position: relative;
-                                            padding: 0;
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: center;">
+                                                    border-radius: 15px;
+                                                    width:45px;
+                                                    height: 40px;
+                                                    position: relative;
+                                                    padding: 0;
+                                                    display: flex;
+                                                    align-items: center;
+                                                    justify-content: center;">
                                                     <img src="{{ url('/icons/edit_quiz_button.png') }}"
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
@@ -301,6 +304,10 @@
                                                 </script>
 
                                             </div>
+                                        </td>
+
+                                        <td style="text-align: center;">
+                                            <h4><b>{{ $data->status }}</b></h4>
                                         </td>
                                     </tr>
                                 @empty

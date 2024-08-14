@@ -370,6 +370,7 @@
       </div>
     </div>
   </div>
+
   @empty
         {{-- Handle case where $myClasses is empty --}}
   @endforelse

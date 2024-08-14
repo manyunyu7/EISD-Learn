@@ -476,14 +476,11 @@
 
             @if (session()->has('success'))
                 <script>
-                    toastr.success('{{ session('
-                                        success ') }}',
-                        ' {{ Session::get('success') }}');
+                    toastr.success('{{ session('success ') }}', ' {{ Session::get('success') }}');
                 </script>
             @elseif(session()->has('error'))
                 <script>
-                    toastr.error('{{ session('
-                                        error ') }}', ' {{ Session::get('error') }}');
+                    toastr.error('{{ session('error ') }}', ' {{ Session::get('error') }}');
                 </script>
             @endif
         </div>

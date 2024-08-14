@@ -388,13 +388,31 @@ class MentorExamController extends Controller
     public function viewManageExam_v2(Request $request)
     {
 
-        $dayta =Exam::where("created_by",Auth::id())
+        // $dayta =Exam::where("created_by",Auth::id())
+        // ->where(function ($query) {
+        //         $query->where("is_deleted","<>","y")
+        //             ->orWhereNull("is_deleted");
+        //     })
+        // ->get();
+
+
+        $dayta = DB::table('exams as e')->select(
+            'e.*', 
+            'es.start_date', 
+            'es.end_date',
+            DB::raw('CASE WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing" ELSE "Finish" END as status'))
+        ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
+        ->where("e.created_by",Auth::id())
         ->where(function ($query) {
-                $query->where("is_deleted","<>","y")
-                    ->orWhereNull("is_deleted");
-            })
+            $query->where("is_deleted","<>","y")
+                ->orWhereNull("is_deleted");
+        })
         ->get();
+
         $compact = compact('dayta');
+
+
+        return $dayta;
 
         if ($request->dump == true) {
             return $compact;
@@ -420,12 +438,26 @@ class MentorExamController extends Controller
     }
     public function viewLoadExam_v2(Request $request, $examId)
     {
-        $dayta =Exam::where("created_by",Auth::id())
+        $dayta = DB::table('exams as e')->select(
+            'e.*', 
+            'es.start_date', 
+            'es.end_date',
+            DB::raw('CASE 
+                        WHEN es.start_date > NOW() AND es.end_date <= NOW() THEN "Waiting to Start"
+                        WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing" 
+                        ELSE "Finish" END as status'),
+            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status'))
+            
+        ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
+        ->leftJoin('exam_takers as et', 'es.id', '=', 'et.session_id')
+        ->where("e.created_by",Auth::id())
         ->where(function ($query) {
-                $query->where("is_deleted","<>","y")
-                    ->orWhereNull("is_deleted");
-            })
+            $query->where("is_deleted","<>","y")
+                ->orWhereNull("is_deleted");
+        })
         ->get();
+
+        // return $dayta;
         $examSession_data = ExamSession::where("exam_id", $examId)->get();
         $questionAnswer = ExamQuestionAnswers::all();
         $compact = compact('dayta', 'examId', 'questionAnswer', 'examSession_data');
