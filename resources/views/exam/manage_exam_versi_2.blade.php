@@ -250,30 +250,53 @@
                                                                     display: flex;
                                                                     align-items: center;
                                                                     justify-content: center;"
-                                                    onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/load-exam') }}')">
+                                                    onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/edit-question') }}')">
                                                     <img src="{{ url('icons/Edit.svg') }}"
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
                                                 {{-- BTN DELETE --}}
-                                                <form id="deleteForm_{{ $data->id }}"
-                                                    action="{{ route('exam.delete', $data->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn delete-btn"
-                                                        style="background-color: #FC1E01;
-                                                               border-radius: 15px;
-                                                               width:45px;
-                                                               height: 40px;
-                                                               position: relative;
-                                                               padding: 0;
-                                                               display: flex;
-                                                               align-items: center;
-                                                               justify-content: center;"
-                                                        data-id="{{ $data->id }}">
-                                                        <img src="{{ url('/icons/Delete.svg') }}"
-                                                            style="max-width: 100%; max-height: 100%;">
-                                                    </button>
-                                                </form>
+                                                @if($isExamUsed != 'Exam Used')
+                                                    <form id="deleteForm_{{ $data->id }}"
+                                                        action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="btn delete-btn"
+                                                            style="background-color: #FC1E01;
+                                                                border-radius: 15px;
+                                                                width:45px;
+                                                                height: 40px;
+                                                                position: relative;
+                                                                padding: 0;
+                                                                display: flex;
+                                                                align-items: center;
+                                                                justify-content: center;"
+                                                            data-id="{{ $data->id }}" >
+                                                            <img src="{{ url('/icons/Delete.svg') }}"
+                                                                style="max-width: 100%; max-height: 100%;">
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form id="deleteForm_{{ $data->id }}"
+                                                        action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="btn delete-btn"
+                                                            style="background-color: #FC1E01;
+                                                                border-radius: 15px;
+                                                                width:45px;
+                                                                height: 40px;
+                                                                position: relative;
+                                                                padding: 0;
+                                                                display: flex;
+                                                                align-items: center;
+                                                                justify-content: center;"
+                                                            data-id="{{ $data->id }}" disabled>
+                                                            <img src="{{ url('/icons/Delete.svg') }}"
+                                                                style="max-width: 100%; max-height: 100%;">
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                
 
                                                 <!-- SweetAlert Library -->
                                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

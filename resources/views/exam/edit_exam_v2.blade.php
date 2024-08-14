@@ -114,7 +114,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
                     <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Create Question</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Question</li>
                 </ol>
             </nav>
         </div>
@@ -250,6 +250,7 @@
                                 <li class="list-group-item">{{ $answer['text'] }}  (Score: {{ $answer['score'] }})</li>
                             @endforeach
 
+                            @if($status == 'Waiting to Start')
                             <li class="list-group-item">
                                 <div class="mb-3" style="">
                                     <div ></div>
@@ -282,6 +283,7 @@
                                     </div>
                                 </div>
                             </li>
+                            @endif
                             
                         </ul>
                     </div>

@@ -387,32 +387,39 @@ class MentorExamController extends Controller
     }
     public function viewManageExam_v2(Request $request)
     {
+        $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
+        $currentDateTime = Carbon::now($timezone)->toDateTimeString();
+        $dayta = DB::table('exams as e')
+                ->select(
+                    'e.*', 
+                    'es.start_date', 
+                    'es.end_date',
+                    DB::raw('CASE
+                                WHEN cs.quiz_session_id = es.id THEN "Exam Used"
+                                ELSE "Exam Not Used"
+                            END as is_examUsed'),
+                    DB::raw('CASE 
+                                WHEN es.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
+                                WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing" 
+                                ELSE "Finish" 
+                            END as status')
+                )
+                ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
+                ->leftJoin('course_section as cs', 'es.id', '=', 'cs.quiz_session_id')
+                ->where("e.created_by", Auth::id())
+                ->where(function ($query) {
+                    $query->where("is_deleted", "<>", "y")
+                        ->orWhereNull("is_deleted");
+                })
+                ->get();
 
-        // $dayta =Exam::where("created_by",Auth::id())
-        // ->where(function ($query) {
-        //         $query->where("is_deleted","<>","y")
-        //             ->orWhereNull("is_deleted");
-        //     })
-        // ->get();
-
-
-        $dayta = DB::table('exams as e')->select(
-            'e.*', 
-            'es.start_date', 
-            'es.end_date',
-            DB::raw('CASE WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing" ELSE "Finish" END as status'))
-        ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
-        ->where("e.created_by",Auth::id())
-        ->where(function ($query) {
-            $query->where("is_deleted","<>","y")
-                ->orWhereNull("is_deleted");
-        })
-        ->get();
-
-        $compact = compact('dayta');
-
-
-        return $dayta;
+        foreach($dayta as $data){
+            $status         = $data->status;
+            // $scoreStatus    = $data->score_status;
+            $isExamUsed     = $data->is_examUsed;
+        }
+        // return $dayta;
+        $compact = compact('dayta', 'status', 'isExamUsed');
 
         if ($request->dump == true) {
             return $compact;
@@ -436,7 +443,7 @@ class MentorExamController extends Controller
         // dd($dayta);
         return view("exam.create_exam_versi_2")->with($compact);
     }
-    public function viewLoadExam_v2(Request $request, $examId)
+    public function viewCreateQuest_v2(Request $request, $examId)
     {
         $dayta = DB::table('exams as e')->select(
             'e.*', 
@@ -469,6 +476,43 @@ class MentorExamController extends Controller
         return view("exam.create_exam_v2_next_step")->with($compact);
     }
 
+    public function viewEditQuest_v2(Request $request, $examId)
+    {
+        $dayta = DB::table('exams as e')->select(
+            'e.*', 
+            'es.start_date', 
+            'es.end_date',
+            DB::raw('CASE 
+                        WHEN es.start_date > NOW() AND es.end_date <= NOW() THEN "Waiting to Start"
+                        WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing" 
+                        ELSE "Finish" END as status'),
+            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status'))
+            
+        ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
+        ->leftJoin('exam_takers as et', 'es.id', '=', 'et.session_id')
+        ->where("e.created_by",Auth::id())
+        ->where(function ($query) {
+            $query->where("is_deleted","<>","y")
+                ->orWhereNull("is_deleted");
+        })
+        ->get();
+
+    
+        foreach($dayta as $data){
+            $status         = $data->status;
+            $scoreStatus    = $data->score_status;
+        }
+        // return $dayta;
+        $examSession_data = ExamSession::where("exam_id", $examId)->get();
+        $questionAnswer = ExamQuestionAnswers::all();
+        $compact = compact('dayta', 'examId', 'questionAnswer', 'examSession_data', 'status', 'scoreStatus');
+
+        // return $examSession_data;
+        if ($request->dump == true) {
+            return $compact;
+        }
+        return view("exam.edit_exam_v2")->with($compact);
+    }
     public function downloadExam($examId){
         $data_exam = DB::select("
                         SELECT
@@ -596,7 +640,7 @@ class MentorExamController extends Controller
 
 
             // return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
-            return redirect(url("/exam/manage-exam-v2/$examId/load-exam"))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+            return redirect(url("/exam/manage-exam-v2/$examId/create-question"))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
 
         } else {
             //redirect dengan pesan error
