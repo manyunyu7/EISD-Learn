@@ -264,9 +264,9 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button 
-                                                        class="btn delete-btn" 
+                                                        class="btn delete-btn " 
                                                         data-id="{{ $data->id }}" 
-                                                        @if($data->is_examUsed !== 'Exam Not Used' AND $data->status === 'Finish') disabled @endif
+                                                        {{ ($data->status === 'Ongoing' OR $data->status === 'Finish' OR $data->is_examUsed === 'Scored') ? 'disabled' : '' }}
                                                         style="background-color: #FC1E01;
                                                             border-radius: 15px;
                                                             width:45px;
