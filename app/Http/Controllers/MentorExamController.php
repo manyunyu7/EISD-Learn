@@ -394,6 +394,7 @@ class MentorExamController extends Controller
                     'e.*', 
                     'es.start_date', 
                     'es.end_date',
+                    'cs.quiz_session_id as examSessionID_onCourseSection',
                     DB::raw('CASE
                                 WHEN cs.quiz_session_id = es.id THEN "Exam Used"
                                 ELSE "Exam Not Used"
@@ -413,13 +414,7 @@ class MentorExamController extends Controller
                 })
                 ->get();
 
-        foreach($dayta as $data){
-            $status         = $data->status;
-            // $scoreStatus    = $data->score_status;
-            $isExamUsed     = $data->is_examUsed;
-        }
-        // return $dayta;
-        $compact = compact('dayta', 'status', 'isExamUsed');
+        $compact = compact('dayta');
 
         if ($request->dump == true) {
             return $compact;
