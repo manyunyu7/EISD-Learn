@@ -254,48 +254,33 @@
                                                     <img src="{{ url('icons/Edit.svg') }}"
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
+
+
+
+
                                                 {{-- BTN DELETE --}}
-                                                @if($isExamUsed != 'Exam Used')
-                                                    <form id="deleteForm_{{ $data->id }}"
-                                                        action="{{ route('exam.delete', $data->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn delete-btn"
-                                                            style="background-color: #FC1E01;
-                                                                border-radius: 15px;
-                                                                width:45px;
-                                                                height: 40px;
-                                                                position: relative;
-                                                                padding: 0;
-                                                                display: flex;
-                                                                align-items: center;
-                                                                justify-content: center;"
-                                                            data-id="{{ $data->id }}" >
-                                                            <img src="{{ url('/icons/Delete.svg') }}"
-                                                                style="max-width: 100%; max-height: 100%;">
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <form id="deleteForm_{{ $data->id }}"
-                                                        action="{{ route('exam.delete', $data->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn delete-btn"
-                                                            style="background-color: #FC1E01;
-                                                                border-radius: 15px;
-                                                                width:45px;
-                                                                height: 40px;
-                                                                position: relative;
-                                                                padding: 0;
-                                                                display: flex;
-                                                                align-items: center;
-                                                                justify-content: center;"
-                                                            data-id="{{ $data->id }}" disabled>
-                                                            <img src="{{ url('/icons/Delete.svg') }}"
-                                                                style="max-width: 100%; max-height: 100%;">
-                                                        </button>
-                                                    </form>
-                                                @endif
+                                                <form id="deleteForm_{{ $data->id }}"
+                                                    action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button 
+                                                        class="btn delete-btn" 
+                                                        data-id="{{ $data->id }}" 
+                                                        @if($data->is_examUsed !== 'Exam Not Used' AND $data->status === 'Finish') disabled @endif
+                                                        style="background-color: #FC1E01;
+                                                            border-radius: 15px;
+                                                            width:45px;
+                                                            height: 40px;
+                                                            position: relative;
+                                                            padding: 0;
+                                                            display: flex;
+                                                            align-items: center;
+                                                            justify-content: center;"
+                                                        >
+                                                        <img src="{{ url('/icons/Delete.svg') }}"
+                                                            style="max-width: 100%; max-height: 100%;">
+                                                    </button>
+                                                </form>
                                                 
 
                                                 <!-- SweetAlert Library -->
