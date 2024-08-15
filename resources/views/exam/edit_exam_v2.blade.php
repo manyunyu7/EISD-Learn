@@ -121,7 +121,7 @@
 
 
         {{-- SOAL UJIAN --}}
-        <div class="col-12 ">
+        <div class="col-12 {{ ($status_exam === 'Ongoing' OR ($status_exam === 'Finish' AND ($examScore_status === 'Scored' OR $examScore_status === 'Not Scored'))) ? 'd-none' : '' }}">
             <div class="page-header">
                 <h2><b>Soal Ujian</b></h2>
             </div>
@@ -250,12 +250,14 @@
                                 <li class="list-group-item">{{ $answer['text'] }}  (Score: {{ $answer['score'] }})</li>
                             @endforeach
 
-                            @if($status == 'Waiting to Start')
-                            <li class="list-group-item">
+
+
+
+                           <li class="list-group-item {{ ($status_exam === 'Ongoing' OR ($status_exam === 'Finish' AND ($examScore_status === 'Scored' OR $examScore_status === 'Not Scored'))) ? 'd-none' : '' }}">
                                 <div class="mb-3" style="">
-                                    <div ></div>
+                                    <div></div>
                                     <div style="width: 200px;">
-                                        <div class="input-group ">
+                                        <div class="input-group">
                                             {{-- BUTTON MODALS FOR EDIT --}}
                                             <button type="button"
                                                     class="btn btn-primary"
@@ -276,15 +278,13 @@
                                                         class="btn btn-danger pull-left"
                                                         style="width: auto; margin-left: 5px;"
                                                         onclick="return confirm('Are you sure?')">
-                                                        <img src="{{ url('/icons/Delete.svg') }}">
+                                                    <img src="{{ url('/icons/Delete.svg') }}">
                                                 </button>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                             </li>
-                            @endif
-                            
                         </ul>
                     </div>
                 @else

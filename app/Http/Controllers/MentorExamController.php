@@ -473,36 +473,31 @@ class MentorExamController extends Controller
 
     public function viewEditQuest_v2(Request $request, $examId)
     {
-        $dayta = DB::table('exams as e')->select(
-            'e.*', 
-            'es.start_date', 
-            'es.end_date',
-            DB::raw('CASE 
-                        WHEN es.start_date > NOW() AND es.end_date <= NOW() THEN "Waiting to Start"
-                        WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing" 
-                        ELSE "Finish" END as status'),
-            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status'))
-            
-        ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
-        ->leftJoin('exam_takers as et', 'es.id', '=', 'et.session_id')
-        ->where("e.created_by",Auth::id())
-        ->where(function ($query) {
-            $query->where("is_deleted","<>","y")
-                ->orWhereNull("is_deleted");
-        })
-        ->get();
+        
+        $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
+        $currentDateTime = Carbon::now($timezone)->toDateTimeString();
+        $data_examSession = DB::table('exam_sessions as es')->select(
+                                'es.*',
+                                DB::raw('CASE 
+                                            WHEN es.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
+                                            WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing" 
+                                            ELSE "Finish" 
+                                        END as status'),
+                                DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status')
+                            )
+                            ->where("es.exam_id", $examId)
+                            ->leftJoin("exam_takers as et","es.id","=","et.session_id")
+                            ->first();
 
-    
-        foreach($dayta as $data){
-            $status         = $data->status;
-            $scoreStatus    = $data->score_status;
-        }
-        // return $dayta;
-        $examSession_data = ExamSession::where("exam_id", $examId)->get();
+        $status_exam =  $data_examSession->status;
+        $examScore_status=  $data_examSession->score_status;
+
         $questionAnswer = ExamQuestionAnswers::all();
-        $compact = compact('dayta', 'examId', 'questionAnswer', 'examSession_data', 'status', 'scoreStatus');
+        // return $status_exam;
 
-        // return $examSession_data;
+
+        $compact = compact('examId', 'questionAnswer', 'data_examSession', 'status_exam', 'examScore_status');
+
         if ($request->dump == true) {
             return $compact;
         }
