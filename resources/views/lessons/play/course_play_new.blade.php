@@ -497,34 +497,30 @@
                 @forelse ($sections as $item)
 
                     <!--- Item Course Section Item -->
-                    <div
-                        style="padding: 20px;  background-color: #FFFFFF; max-width: 560px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.2px solid black;">
+                    <div style="padding: 20px;  background-color: #FFFFFF; max-width: 560px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.2px solid black;">
                         <!-- First Section -->
-                        <div style="flex: 1; flex-shrink: 1;">
+                        <div style="flex: 1; flex-shrink: 1;" class="{{ $item->is_deleted === 'y' ? 'd-none' : '' }}" >
                             @if (isset($item) && isset($item->isTaken))
                                 @php
                                     $isCurrent = $item->isCurrent ?? false; // Check if $item->isCurrent is set, if not, set it to false
                                 @endphp
 
-                                    <a href="javascript:void(0)"
-                                    class=""
-                                    style="text-decoration: none; color: inherit;"
-                                    onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')">
+                                <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; {{ $item->status === 'Waiting to Start' ? 'pointer-events: none' : '' }}" onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" >
                                     @if (Auth::user()->role!='mentor')
                                         {{-- Check if the item is marked as taken --}}
                                         @if ($item->isTaken)
                                             {{-- Display a checked checkbox icon indicating completion --}}
                                             <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                 alt="Completed"/>
+                                                alt="Completed"/>
                                             {{-- Check if it's the current section --}}
                                         @elseif ($item->section_id == $currentSectionId)
                                             {{-- Display a checked checkbox icon indicating completion --}}
                                             <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                 alt="Completed"/>
+                                                alt="Completed"/>
                                         @else
                                             {{-- Display an empty checkbox icon indicating incomplete --}}
                                             <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}"
-                                                 alt="Incomplete"/>
+                                                alt="Incomplete"/>
                                         @endif
                                         {{-- Display the section title --}}
                                     @endif
@@ -551,7 +547,7 @@
                         </script>
 
                         <!-- Third Section -->
-                        <div style="flex-shrink: 1; margin-left: 20px">
+                        <div style="flex-shrink: 1; margin-left: 20px" class="{{ $item->is_deleted === 'y' ? 'd-none' : '' }}">
                                 <span>
                                     @if($item->quiz_session_id!="-"&&$item->quiz_session_id!="")
                                         <img src="{{asset('lesson_template/img/')}}/timer_icon.svg"

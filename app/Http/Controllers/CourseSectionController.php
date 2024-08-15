@@ -579,6 +579,8 @@ class CourseSectionController extends Controller
         // Fetch all sections for the lesson
         $student_sections = DB::select("select * from student_section ");
 
+        $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
+        $currentDateTime = Carbon::now($timezone)->toDateTimeString();
         $sections = CourseSection::select(
             'lessons.id as lesson_id',
             'lessons.course_title as lessons_title',
@@ -593,15 +595,23 @@ class CourseSectionController extends Controller
             'course_section.section_video',
             'course_section.created_at',
             'course_section.updated_at',
-            'course_section.can_be_accessed'
+            'course_section.can_be_accessed',
+            'exams.is_deleted',
+            DB::raw('CASE 
+                                WHEN exam_sessions.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
+                                WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing" 
+                                ELSE "Finish" 
+                            END as status')
         )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
+            ->leftJoin('exams', 'exam_sessions.exam_id','=','exams.id')
             ->where('course_section.course_id', $lessonId)
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
+        // return $sections;
 
         $sectionDetail = CourseSection::findOrFail($sectionId);
         // Iterate over the sections and check if each one is already added to the student-section
@@ -766,9 +776,6 @@ class CourseSectionController extends Controller
                         GROUP BY
                             a.id, b.name, b.profile_url;
                         ");
-        // $sections = DB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
-        // $section = $sections;
-
 
         $compact = compact(
             'isEligibleStudent',
