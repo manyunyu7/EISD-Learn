@@ -5,6 +5,7 @@
 
     <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         ClassicEditor
             .create(document.querySelector('#editor'))
@@ -467,71 +468,95 @@
                         </script>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4" id="uploadForm">
                         {{-- Cover Class --}}
                         <div class="card mt-5">
                             <div class="card-body">
                                 <div class="text-center">
                                     <div class="card" style="width: 100%; max-width: 1080px;">
                                         <img id="imgPreview" src="{{ Storage::url('public/class/cover/') }}"
-                                            onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
-                                            class="rounded"
-                                            style="max-width:3840px; max-height: 2160px; object-fit: contain;"
-                                            alt="...">
+                                             onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
+                                             class="rounded"
+                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;"
+                                             alt="...">
                                     </div>
-
+                        
                                     <div class="input-group mb-3">
-                                        <input required type="file" name="image" class="form-control"
-                                            id="input-image" accept="image/*" onchange="validateImage(this)">
+                                        <input required type="file"  name="image" class="form-control" id="inFile_coverCourse" accept="image/*" onchange="validateImage()">
                                     </div>
-                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be
-                                        16:9</small>
+                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>
                                 </div>
                             </div>
                         </div>
-
-                        <script>
-                            function validateForm() {
-                                const editorContent = document.querySelector('#editor').value.trim();
-                                const errorMessage = document.getElementById('error-message');
-
-                                if (editorContent === '') {
-                                    errorMessage.textContent = 'Deskripsi Kelas tidak boleh kosong.';
-                                    errorMessage.style.display = 'block';
-                                    return false; // Prevent form submission
-                                } else {
-                                    errorMessage.style.display = 'none';
-                                    return true; // Allow form submission
-                                }
-                            }
-
-                            function validateImage(input) {
-                                if (input.files && input.files[0]) {
-                                    var reader = new FileReader();
-                                    reader.onload = function(e) {
-                                        var img = new Image();
-                                        img.src = e.target.result;
-                                        img.onload = function() {
-                                            var width = this.width;
-                                            var height = this.height;
-                                            var ratio = width / height;
-                                            if (Math.abs(ratio - 16 / 9) > 0.01) { // Check if ratio is approximately 16:9
-                                                alert("Image ratio must be 16:9");
-                                                input.value = ""; // Clear the input file
-                                            } else {
-                                                // Display preview of the image
-                                                document.getElementById('imgPreview').src = e.target.result;
-                                            }
-                                        };
-                                    };
-                                    reader.readAsDataURL(input.files[0]);
-                                }
-                            }
-                        </script>
-
                     </div>
                 </div>
+                <script>
+                    function validateForm() {
+                        const editorContent = document.querySelector('#editor').value.trim();
+                        const errorMessage = document.getElementById('error-message');
 
+                        if (editorContent === '') {
+                            errorMessage.textContent = 'Deskripsi Kelas tidak boleh kosong.';
+                            errorMessage.style.display = 'block';
+                            return false; // Prevent form submission
+                        } else {
+                            errorMessage.style.display = 'none';
+                            return true; // Allow form submission
+                        }
+                    }
+
+                    function validateImage() {
+                        var input = document.getElementById('inFile_coverCourse');
+                        var image = document.getElementById('imgPreview');
+                        var reader = new FileReader();
+
+                        // Cek apakah ada file yang dipilih
+                        if (input.files && input.files[0]) {
+                            var file = input.files[0];
+
+                            // Cek ukuran file sebelum membaca data
+                            if (file.size > 1048576) { // 1 MB = 1048576 bytes
+                                // alert("Image size should be under 1 MB and image ratio needs to be 16:9");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Image size should be under 1 MB',
+                                });
+                                input.value = ""; // Menghapus file yang dipilih
+                                return; // Hentikan eksekusi lebih lanjut
+                            }
+
+                            reader.onload = function (e) {
+                                var img = new Image();
+                                img.src = e.target.result;
+
+                                img.onload = function () {
+                                    var width = this.width;
+                                    var height = this.height;
+                                    var ratio = width / height;
+
+                                    // Cek apakah gambar memiliki rasio 1:1
+                                    if (Math.abs(ratio - 16 / 9) > 0.01) {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: ' Image ratio needs to be 16:9',
+                                        });
+                                        input.value = ""; // Menghapus file yang dipilih
+                                    } else {
+                                        var preview = document.getElementById('imgPreview');
+                                        preview.src = e.target.result;
+                                        preview.style.display = 'block';
+                                    }
+                                };
+                            };
+
+                            reader.readAsDataURL(file);
+                        }
+                    }
+
+
+                </script>
 
 
 

@@ -633,77 +633,91 @@ class LessonController extends Controller
     }
     public function storeV2(Request $request)
     {
-        $this->validate($request, [
-            'image' => 'required',
-            'title' => 'required',
-            'content' => 'required',
-        ]);
 
-        //upload image
-        $image = $request->file('image');
-        $imagePath = "";
-        if ($image != null) {
+        $totalsize = $request->image->getsize();
+
+
+        if($totalsize <= 1048576){
+            $this->validate($request, [
+                'image' => 'required|max_uploaded_file_size:3000',
+                'title' => 'required',
+                'content' => 'required',
+            ]);
+    
+            //upload image
             $image = $request->file('image');
-            $imagePath = "lesson-s3/" . $image->hashName();
-            Storage::disk('s3')->put($imagePath, file_get_contents($image));
+            $imagePath = "";
+            if ($image != null) {
+                $image = $request->file('image');
+                $imagePath = "lesson-s3/" . $image->hashName();
+                Storage::disk('s3')->put($imagePath, file_get_contents($image));
+            }
+    
+            $user_id = Auth::id();
+    
+            // Setting Value Department
+            $department = $request->department_id;
+            $json_department = json_encode($department);
+            // return $json_department;
+            // Setting Value Position
+            $position = $request->position_id;
+    
+            $insert_to_Lesson = new Lesson();
+            $insert_to_Lesson->course_cover_image = $imagePath;
+            $insert_to_Lesson->course_title = $request->title;
+    
+    
+            $insert_to_Lesson->course_trailer = 'Value';
+            $insert_to_Lesson->category_id = $request->category_id;
+            $insert_to_Lesson->start_time = $request->start_time;
+            $insert_to_Lesson->end_time = $request->end_time;
+            $canBeAccessValueMapping = [
+                'Aktif' => 'y',
+                'Tidak Aktif' => 'n',
+            ];
+            $insert_to_Lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
+            $insert_to_Lesson->mentor_id = $user_id;
+            $insert_to_Lesson->course_description = $request->content;
+            $insert_to_Lesson->text_descriptions = '';
+            $insert_to_Lesson->pin = $request->pass_class;
+            $insert_to_Lesson->position = $request->position;
+            $insert_to_Lesson->target_employee = '';
+            $newLabelValueMapping = [
+                'Aktif' => 'y',
+                'Tidak Aktif' => 'n',
+            ];
+    
+            $insert_to_Lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
+            $insert_to_Lesson->tipe = $request->tipe;
+            $insert_to_Lesson->department_id = json_encode($request->department_id);
+            $insert_to_Lesson->position_id = json_encode($request->position_id);
+    
+            if($request->department_id==null || $request->department_id==""){
+                $insert_to_Lesson->department_id = "[]";
+            }
+    
+            if($request->position_id==null || $request->position_id==""){
+                $insert_to_Lesson->position_id = "[]";
+            }
+    
+    
+            if ($insert_to_Lesson->save()) {
+                //redirect dengan pesan sukses
+                return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
+            } else {
+                //redirect dengan pesan error
+                return "error gais";
+                return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
+            }
+        }else{
+            return redirect('/lesson/create_v2')->with(['error' => 'Ukuran file terlalu besar! Program hanya menerima ukuran file di bawah 1 MB.']);
         }
 
-        $user_id = Auth::id();
-
-        // Setting Value Department
-        $department = $request->department_id;
-        $json_department = json_encode($department);
-        // return $json_department;
-        // Setting Value Position
-        $position = $request->position_id;
-
-        $insert_to_Lesson = new Lesson();
-        $insert_to_Lesson->course_cover_image = $imagePath;
-        $insert_to_Lesson->course_title = $request->title;
 
 
-        $insert_to_Lesson->course_trailer = 'Value';
-        $insert_to_Lesson->category_id = $request->category_id;
-        $insert_to_Lesson->start_time = $request->start_time;
-        $insert_to_Lesson->end_time = $request->end_time;
-        $canBeAccessValueMapping = [
-            'Aktif' => 'y',
-            'Tidak Aktif' => 'n',
-        ];
-        $insert_to_Lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
-        $insert_to_Lesson->mentor_id = $user_id;
-        $insert_to_Lesson->course_description = $request->content;
-        $insert_to_Lesson->text_descriptions = '';
-        $insert_to_Lesson->pin = $request->pass_class;
-        $insert_to_Lesson->position = $request->position;
-        $insert_to_Lesson->target_employee = '';
-        $newLabelValueMapping = [
-            'Aktif' => 'y',
-            'Tidak Aktif' => 'n',
-        ];
+        // return $totalsize;
 
-        $insert_to_Lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
-        $insert_to_Lesson->tipe = $request->tipe;
-        $insert_to_Lesson->department_id = json_encode($request->department_id);
-        $insert_to_Lesson->position_id = json_encode($request->position_id);
-
-        if($request->department_id==null || $request->department_id==""){
-            $insert_to_Lesson->department_id = "[]";
-        }
-
-        if($request->position_id==null || $request->position_id==""){
-            $insert_to_Lesson->position_id = "[]";
-        }
-
-
-        if ($insert_to_Lesson->save()) {
-            //redirect dengan pesan sukses
-            return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
-        } else {
-            //redirect dengan pesan error
-            return "error gais";
-            return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
-        }
+        
     }
 
     public function fetchDepartments()
