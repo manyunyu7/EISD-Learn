@@ -100,7 +100,7 @@ class CourseSectionController extends Controller
 
         $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
             ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
-            ->where("exams.created_by", Auth::id())
+            ->where("exams.created_by",Auth::id())
             ->where(function ($query) {
                 $query->where('exams.is_deleted', '!=', 'y')
                     ->orWhereNull('exams.is_deleted');
@@ -597,15 +597,15 @@ class CourseSectionController extends Controller
             'course_section.can_be_accessed',
             'exams.is_deleted',
             DB::raw('CASE
-                                WHEN exam_sessions.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
-                                WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
-                                ELSE "Finish"
-                            END as status')
+                        WHEN exam_sessions.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
+                        WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
+                        ELSE "Finish"
+                    END as status')
         )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
-            ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
+            ->leftJoin('exams', 'exam_sessions.exam_id','=','exams.id')
             ->where('course_section.course_id', $lessonId)
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
