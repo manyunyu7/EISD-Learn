@@ -30,7 +30,7 @@
 </li>
 
 {{-- CLASS CATEGORY--}}
-<li class="nav-item {{ Request::is('lesson/category') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+{{-- <li class="nav-item {{ Request::is('lesson/category') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('lesson/category') }}" style="display: flex; align-items: center;">
         <img src="{{URL::to('/')}}/home_assets/img/ic-category.svg"
              class="nav-ok-logo"
@@ -42,7 +42,7 @@
         <p style="margin: 0; {{ (Request::is('lesson/category')) ? 'color: white !important;' : '' }}"
            class="{{ (Request::is('lesson/category')) ? 'text-white active' : '' }}">Class Category</p>
     </a>
-</li>
+</li> --}}
 
 {{-- EXAM --}}
 <li class="nav-item {{ Request::is('exam/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
