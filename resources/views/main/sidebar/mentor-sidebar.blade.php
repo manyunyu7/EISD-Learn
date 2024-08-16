@@ -56,7 +56,7 @@
                 "
         >
         <p class="{{ Request::is('exam/*') ? 'text-white' : ''}}"
-           style="margin-left: 10px; {{ (Request::is('exam/*')) ? 'color: white !important;' : '' }}">Exam New</p>
+           style="margin-left: 10px; {{ (Request::is('exam/*')) ? 'color: white !important;' : '' }}">Exam</p>
     </a>
 </li>
 

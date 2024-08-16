@@ -8,6 +8,38 @@
 
 @section('script')
     <script>
+        function copyLink(button) {
+            // Get the link from the data-link attribute
+            const link = button.getAttribute('data-link');
+
+            // Create a temporary input element to hold the link
+            const tempInput = document.createElement('input');
+            tempInput.value = link;
+            document.body.appendChild(tempInput);
+
+            // Select the text inside the temporary input element
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the selected text to the clipboard
+            document.execCommand('copy');
+
+            // Remove the temporary input element
+            document.body.removeChild(tempInput);
+
+            // Show a SweetAlert notification
+            Swal.fire({
+                title: 'Link Copied!',
+                text: 'The link has been copied to your clipboard.',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500 // Auto-close after 1.5 seconds
+            });
+        }
+    </script>
+
+
+    <script>
         $(document).on('click', '.button', function(e) {
             e.preventDefault();
             var id = $(this).data('id');
@@ -161,158 +193,81 @@
 
                                         <td style="text-align: center;">
                                             <div class="d-flex justify-content-center">
-                                                <!-- Tombol-tombol di dalam baris yang responsif -->
-                                                {{-- BTN DOWNLOAD --}}
+                                                <!-- BTN DOWNLOAD -->
                                                 <button class="btn mr-2"
                                                     style="background-color: #4BC9FF;
-                                                                    border-radius: 15px;
-                                                                    width:45px;
-                                                                    height: 40px;
-                                                                    position: relative;
-                                                                    padding: 0;
-                                                                    display: flex;
-                                                                    align-items: center;
-                                                                    justify-content: center;"
-                                                    onclick="redirectToSection_download('{{ url('/exam/download-exam/' . $data->id) }}')">
+                                                           border-radius: 15px;
+                                                           width:45px;
+                                                           height: 40px;
+                                                           position: relative;
+                                                           padding: 0;
+                                                           display: flex;
+                                                           align-items: center;
+                                                           justify-content: center;"
+                                                    onclick="redirectToSection_download('{{ url('/exam/download-exam/' . $data->id) }}')"
+                                                    data-toggle="tooltip" title="Download Exam">
                                                     <img src="{{ url('/icons/Download.svg') }}"
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
-                                                {{-- BTN COPY LINK --}}
-                                                <input type="text" class="text"
-                                                    value="sample copy text{{ $loop->index + 1 }}" readonly hidden>
+
+                                                <!-- BTN COPY LINK -->
                                                 <button class="btn mr-2" onclick="copyLink(this)"
                                                     data-link="{{ url('/public-exam/' . $data->id) }}"
                                                     style="background-color: #6DCBA8;
-                                                                    border-radius: 15px;
-                                                                    width:45px;
-                                                                    height: 40px;
-                                                                    position: relative;
-                                                                    padding: 0;
-                                                                    display: flex;
-                                                                    align-items: center;
-                                                                    justify-content: center;">
+                                                           border-radius: 15px;
+                                                           width:45px;
+                                                           height: 40px;
+                                                           position: relative;
+                                                           padding: 0;
+                                                           display: flex;
+                                                           align-items: center;
+                                                           justify-content: center;"
+                                                    data-toggle="tooltip" title="Copy Link">
                                                     <img src="{{ url('/icons/Link.svg') }}"
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
-                                                <button class="btn mr-2 d-none"
-                                                    onclick="redirectToSection('{{ url('/exam/' . $data->id . '/edit') }}')"
-                                                    style="background-color: #208DBB;
-                                                    border-radius: 15px;
-                                                    width:45px;
-                                                    height: 40px;
-                                                    position: relative;
-                                                    padding: 0;
-                                                    display: flex;
-                                                    align-items: center;
-                                                    justify-content: center;">
-                                                    <img src="{{ url('/icons/edit_quiz_button.png') }}"
-                                                        style="max-width: 100%; max-height: 100%;">
-                                                </button>
-                                                <p id="message"></p>
-                                                <script>
-                                                    function copyLink(button) {
-                                                        // Get the link from the data-link attribute
-                                                        const link = button.getAttribute('data-link');
 
-                                                        // Create a temporary input element
-                                                        const tempInput = document.createElement('input');
-                                                        tempInput.value = link;
-                                                        document.body.appendChild(tempInput);
-
-                                                        // Select the text field
-                                                        tempInput.select();
-                                                        tempInput.setSelectionRange(0, 99999); // For mobile devices
-
-                                                        // Copy the text inside the text field
-                                                        document.execCommand('copy');
-
-                                                        // Remove the temporary input element
-                                                        document.body.removeChild(tempInput);
-
-                                                        // Show a success message using SweetAlert
-                                                        Swal.fire({
-                                                            title: 'Link Berhasil Dicopy!',
-                                                            text: 'Link: ' + link,
-                                                            icon: 'success',
-                                                            showConfirmButton: false,
-                                                            timer: 1500 // Automatically close after 1.5 seconds
-                                                        });
-                                                    }
-                                                </script>
-                                                {{-- BTN EDIT EXAM --}}
+                                                <!-- BTN EDIT EXAM -->
                                                 <button class="btn mr-2"
                                                     style="background-color: #208DBB;
-                                                                    border-radius: 15px;
-                                                                    width:45px;
-                                                                    height: 40px;
-                                                                    position: relative;
-                                                                    padding: 0;
-                                                                    display: flex;
-                                                                    align-items: center;
-                                                                    justify-content: center;"
-                                                    onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/edit-question') }}')">
+                                                           border-radius: 15px;
+                                                           width:45px;
+                                                           height: 40px;
+                                                           position: relative;
+                                                           padding: 0;
+                                                           display: flex;
+                                                           align-items: center;
+                                                           justify-content: center;"
+                                                    onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/edit-question') }}')"
+                                                    data-toggle="tooltip" title="Edit Pertanyaan dan Jawaban">
                                                     <img src="{{ url('icons/Edit.svg') }}"
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
 
-
-
-
-                                                {{-- BTN DELETE --}}
+                                                <!-- BTN DELETE -->
                                                 <form id="deleteForm_{{ $data->id }}"
                                                     action="{{ route('exam.delete', $data->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button 
-                                                        class="btn delete-btn " 
-                                                        data-id="{{ $data->id }}" 
-                                                        {{ ($data->status === 'Ongoing' OR $data->status === 'Finish' OR $data->is_examUsed === 'Scored') ? 'disabled' : '' }}
+                                                    <button class="btn delete-btn" data-id="{{ $data->id }}"
+                                                        {{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Scored') ? 'disabled' : '' }}
                                                         style="background-color: #FC1E01;
-                                                            border-radius: 15px;
-                                                            width:45px;
-                                                            height: 40px;
-                                                            position: relative;
-                                                            padding: 0;
-                                                            display: flex;
-                                                            align-items: center;
-                                                            justify-content: center;"
-                                                        >
+                                                               border-radius: 15px;
+                                                               width:45px;
+                                                               height: 40px;
+                                                               position: relative;
+                                                               padding: 0;
+                                                               display: flex;
+                                                               align-items: center;
+                                                               justify-content: center;"
+                                                        data-toggle="tooltip" title="Delete Exam">
                                                         <img src="{{ url('/icons/Delete.svg') }}"
                                                             style="max-width: 100%; max-height: 100%;">
                                                     </button>
                                                 </form>
-                                                
-
-                                                <!-- SweetAlert Library -->
-                                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-                                                <script>
-                                                    // Setiap tombol hapus memiliki kelas .delete-btn
-                                                    document.querySelectorAll('.delete-btn').forEach(item => {
-                                                        item.addEventListener('click', function(event) {
-                                                            event.preventDefault(); // Prevent the default form submission
-
-                                                            const sectionId = this.getAttribute('data-id');
-
-                                                            Swal.fire({
-                                                                title: 'Are you sure?',
-                                                                text: "You won't be able to revert this!",
-                                                                icon: 'warning',
-                                                                showCancelButton: true,
-                                                                confirmButtonColor: '#3085d6',
-                                                                cancelButtonColor: '#d33',
-                                                                confirmButtonText: 'Yes, delete it!'
-                                                            }).then((result) => {
-                                                                if (result.isConfirmed) {
-                                                                    // Submit the form programmatically
-                                                                    document.getElementById('deleteForm_' + sectionId).submit();
-                                                                }
-                                                            });
-                                                        });
-                                                    });
-                                                </script>
-
                                             </div>
                                         </td>
+
 
                                         <td style="text-align: center;">
                                             <h4><b>{{ $data->status }}</b></h4>

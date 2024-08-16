@@ -8,6 +8,7 @@ use App\Models\Exam;
 use App\Models\ExamSession;
 use App\Models\ExamTaker;
 use App\Models\Lesson;
+use App\Models\LessonCategory;
 use App\Models\StudentLesson;
 use App\Models\StudentSection;
 use App\Models\User;
@@ -99,7 +100,7 @@ class CourseSectionController extends Controller
 
         $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
             ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
-            ->where("exams.created_by",Auth::id())
+            ->where("exams.created_by", Auth::id())
             ->where(function ($query) {
                 $query->where('exams.is_deleted', '!=', 'y')
                     ->orWhereNull('exams.is_deleted');
@@ -337,9 +338,7 @@ class CourseSectionController extends Controller
     }
 
 
-    public function goToNextSection(Lesson $lesson, CourseSection $lesson_id)
-    {
-    }
+    public function goToNextSection(Lesson $lesson, CourseSection $lesson_id) {}
 
     public function publicExam($examId, Request $request)
     {
@@ -597,16 +596,16 @@ class CourseSectionController extends Controller
             'course_section.updated_at',
             'course_section.can_be_accessed',
             'exams.is_deleted',
-            DB::raw('CASE 
+            DB::raw('CASE
                                 WHEN exam_sessions.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
-                                WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing" 
-                                ELSE "Finish" 
+                                WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
+                                ELSE "Finish"
                             END as status')
         )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
-            ->leftJoin('exams', 'exam_sessions.exam_id','=','exams.id')
+            ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
             ->where('course_section.course_id', $lessonId)
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
@@ -740,14 +739,14 @@ class CourseSectionController extends Controller
             "=",
             $courseId
         )->where(
-                "course_section_flag",
-                "=",
-                $sectionId
-            )->where(
-                "user_id",
-                '=',
-                Auth::id()
-            )->get();
+            "course_section_flag",
+            "=",
+            $sectionId
+        )->where(
+            "user_id",
+            '=',
+            Auth::id()
+        )->get();
 
 
         if (count($examResults) > 0) {
@@ -776,10 +775,22 @@ class CourseSectionController extends Controller
                         GROUP BY
                             a.id, b.name, b.profile_url;
                         ");
+        $courseCategory = "";
+        $courseCategoryColor = "#000000";
+
+        if ($lesson != null) {
+            $category = LessonCategory::where('id', $lesson->category_id)->first();
+            if ($category) {
+                $courseCategory = $category->name;
+                $courseCategoryColor = $category->color_of_categories;
+            }
+        }
 
         $compact = compact(
             'isEligibleStudent',
             'hasTakenAnyExam',
+            'courseCategory',
+            'courseCategoryColor',
             'examResults',
             'currentSectionId',
             'courseId',

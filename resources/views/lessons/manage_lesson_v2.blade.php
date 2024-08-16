@@ -206,7 +206,7 @@
 
 
         <div class="container-fluid mt-3 row">
-            @forelse ($myClasses as $data)  
+            @forelse ($myClasses as $data)
                     @php
 
                         $numStudents = DB::select(
@@ -336,7 +336,7 @@
                                         </div>
                                     </li>
                                 @endif
-                                
+
                             </ul>
 
 
@@ -435,7 +435,7 @@
                                     });
                                 });
                             </script>
-                            
+
                         </div>
                     </div>
                 </div>

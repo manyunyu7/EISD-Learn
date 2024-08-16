@@ -137,11 +137,27 @@
 
     <div class="container-fluid navbar-fixed-top large-nav-bar" style="background-color: #F5F7FA; padding: 10px 20px;">
         <div class="row">
-            <div class="col-xs-1 back-button">
-                <a href="{{ url()->previous() }}" class="btn btn-link">
-                    <img src="{{ asset('lesson_template/img/back_button.svg') }}" alt="Back"
-                         style="width: 57px; height: 57px;">
-                </a>
+            <div class="col-xs-1">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a href="{{ url()->previous() }}">
+                            <img src="{{  asset('lesson_template/img/back_button_course_play.svg') }}" alt="Home" style="width:68px;height:68px;">
+                        </a>
+                    </div>
+                    <div class="col-xs-6">
+                        @php
+                            $url = '/'; // Default URL
+                            if (Auth::user()->role == "student") {
+                                $url = '/class/my-class';
+                            } elseif (Auth::user()->role == "mentor") {
+                                $url = '/lesson/manage_v2';
+                            }
+                        @endphp
+                        <a href="{{ url($url) }}">
+                            <img src="{{ asset('lesson_template/img/home_button_course_play.svg') }}" alt="Home" style="width:68px;height:68px;">
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="col-xs-10 text-center title-top">
                 <h3>{{ $lesson->course_title }}
@@ -369,7 +385,7 @@
                         }
                     </script>
                     @endif
-                    
+
 
 
                     <div class="card mt-5">
@@ -412,14 +428,14 @@
     <!-- Sidebar -->
     <div id="sidebar-wrapper" style="background-color: whitesmoke">
         <ul class="sidebar-nav">
-            <div class="container content-container">
+            <div class="container content-container" style="margin-bottom: 200px">
                 <div class="" style="max-width: 560px">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
                         <div style="flex: 1; flex-shrink: 1;">
                             <div class="category-label-container"
-                                 style=" background-color: red; color: white"
-                            >Management Trainee
+                                 style=" background-color: {{$courseCategoryColor}}; color: white"
+                            >{{$courseCategory}}
                             </div>
                         </div>
                         <div style="flex-shrink: 1;">
@@ -434,23 +450,40 @@
                     style="padding: 30px;  background-color: #F5F7FA; max-width: 560px; display: flex; justify-content: space-between; align-items: center;">
                     <!-- First Section -->
                     <div style="flex: 1; flex-shrink: 1;">
-                        <h4 style="color: #FE1D04">Getting Started</h4>
+                        <h4 style="color: #000000">Learning Path</h4>
                     </div>
 
                     <div style="flex-shrink: 1;">
                         <span>
                             <img
-                                src="{{asset('lesson_template/img/')}}/section_folders_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">This is the middle section.</p>
+                                src="{{ asset('lesson_template/img/section_folders_icon.svg') }}" alt="Toggle Menu"/>
+                            <p style="display: inline;">
+                                {{ count($sections) }} section{{ count($sections) !== 1 ? 's' : '' }}
+                            </p>
                         </span>
                     </div>
+
+
 
                     <!-- Third Section -->
                     <div style="flex-shrink: 1; margin-left: 20px">
                         <span>
                             <img
                                 src="{{asset('lesson_template/img/')}}/section_finished_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">This is the middle section.</p>
+                                <p style="display: inline;">
+                                    @php
+                                        $totalSections = count($sections);
+                                        $sectionsTaken = count($sectionTakenByStudent);
+                                        $percentage = round(($sectionsTaken / $totalSections) * 100);
+                                        $finished = $sectionsTaken >= $totalSections;
+                                    @endphp
+                                    <span>
+                                        {{ $percentage }}% finish (
+                                        <span style="color: {{ $finished ? 'green' : 'grey' }};">
+                                            {{ $sectionsTaken }}/{{ $totalSections }}
+                                        </span>)
+                                    </span>
+                                </p>
                         </span>
                     </div>
                 </div>
@@ -493,7 +526,7 @@
                     }
                 </script>
                 @endif
-                
+
                 @forelse ($sections as $item)
 
                     <!--- Item Course Section Item -->
@@ -533,7 +566,7 @@
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
-                                
+
                                 var loaderLinks = document.querySelectorAll('.loader-link');
                                 loaderLinks.forEach(function (link) {
                                     link.addEventListener('click', function (event) {
