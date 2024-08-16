@@ -205,6 +205,23 @@ class ExamTakerController extends Controller
             ], 200);
         }
 
+           // Checking is Exam
+           if ($session != null) {
+            $startDate_exam = $session->start_date;
+            $endDate_exam   = $session->end_date;
+        
+            $now = Carbon::now();
+        
+            if ($now->between($startDate_exam, $endDate_exam)) {
+            } else {
+                return response()->json([
+                    "scores" => 0,
+                    "message" => "Quiz hanya bisa dikerjakan pada $startDate_exam hingga $endDate_exam",
+                    "showError" => true
+                ], 200);
+            }
+        }
+
         if (Auth::user() == null && !$allowPublicAccess)
             return response()->json([
                 "scores" => 0,
