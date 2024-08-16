@@ -446,6 +446,8 @@
                     </div>
                 </div>
 
+
+
                 <div
                     style="padding: 30px;  background-color: #F5F7FA; max-width: 560px; display: flex; justify-content: space-between; align-items: center;">
                     <!-- First Section -->
@@ -463,10 +465,9 @@
                         </span>
                     </div>
 
-
-
-                    <!-- Third Section -->
-                    <div style="flex-shrink: 1; margin-left: 20px">
+                    @if (Auth::user()->role=="student")
+                      <!-- Third Section -->
+                      <div style="flex-shrink: 1; margin-left: 20px">
                         <span>
                             <img
                                 src="{{asset('lesson_template/img/')}}/section_finished_icon.svg" alt="Toggle Menu"/>
@@ -486,6 +487,9 @@
                                 </p>
                         </span>
                     </div>
+                    @endif
+
+
                 </div>
 
 
@@ -537,8 +541,8 @@
                                 @php
                                     $isCurrent = $item->isCurrent ?? false; // Check if $item->isCurrent is set, if not, set it to false
                                 @endphp
-                                
-                                
+
+
                                 {{-- <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; {{ $item->status === 'Waiting to Start' ? 'pointer-events: none' : '' }}" onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" > --}}
 
                                 <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; " onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" >
