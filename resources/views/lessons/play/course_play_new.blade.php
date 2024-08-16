@@ -197,7 +197,7 @@
                     <div class="page-header row no-gutters mb-4">
                         <div class="col-12 col-sm-12 text-center text-sm-left mb-0">
                             <h2 class="text-uppercase">Kelas {{ $lesson->course_title }} </h2>
-                            <h3 class="page-title">Materi Ke : {{ $sectionDetail->section_order }}</h3>
+                            {{-- <h3 class="page-title">Materi Ke : {{ $sectionDetail->section_order }}</h3> --}}
                             <h4 class="page-title">{{ $sectionDetail->section_title }}</h4>
                         </div>
                     </div>
@@ -395,7 +395,7 @@
 
                             <h4 class="card-title">{{ $lesson->course_title }}</h4>
 
-                            <p class="card-text">Materi Ke : {{ $sectionDetail->section_order }}</p>
+                            {{-- <p class="card-text">Materi Ke : {{ $sectionDetail->section_order }}</p> --}}
                             {!! $sectionDetail->section_content !!}
 
                             <div class="d-flex justify-content-between mt-2 mb-4">
@@ -426,10 +426,11 @@
     <!-- /#page-content-wrapper -->
 
     <!-- Sidebar -->
-    <div id="sidebar-wrapper" style="background-color: whitesmoke">
+    <div id="sidebar-wrapper" style="background-color: rgb(255, 255, 255)">
         <ul class="sidebar-nav">
             <div class="container content-container" style="margin-bottom: 200px">
                 <div class="" style="max-width: 560px">
+
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
                         <div style="flex: 1; flex-shrink: 1;">
@@ -444,7 +445,59 @@
                             Modernland Training
                         </div>
                     </div>
+
                 </div>
+
+
+
+
+                @if (Auth::user()->role=="student")
+                    @php
+                        $totalSections = count($sections);
+                        $sectionsTaken = count($sectionTakenByStudent);
+                        $percentage = $totalSections > 0 ? round(($sectionsTaken / $totalSections) * 100) : 0;
+
+                        // Determine progress bar color based on percentage
+                        if ($percentage > 50) {
+                            $progressBarColor = '#28a745'; // Green
+                        } elseif ($percentage >= 50) {
+                            $progressBarColor = '#ffc107'; // Yellow
+                        } else {
+                            $progressBarColor = '#007bff'; // Regular (Blue)
+                        }
+                        $finished = $sectionsTaken >= $totalSections;
+                    @endphp
+
+
+                <div class="" style="max-width: 560px">
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+                        <div style="flex: 1; flex-shrink: 1;">
+                            <h4 style="color: #000000">Learning Path</h4>
+                        </div>
+                        <div style="flex-shrink: 1;">
+                            <img style="width: 12%; height: auto;"
+                                src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
+                            {{$percentage}}% Completed
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="max-width: 560px;">
+                    <div class="progress" style="height: 20px; background-color: #e9ecef;">
+                        <div class="progress-bar" role="progressbar"
+                            style="width: {{ $percentage }}%; background-color: {{ $progressBarColor }};"
+                            aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
+
+                @endif
+
+
+
 
 
 
@@ -452,7 +505,7 @@
                     style="padding: 30px;  background-color: #F5F7FA; max-width: 560px; display: flex; justify-content: space-between; align-items: center;">
                     <!-- First Section -->
                     <div style="flex: 1; flex-shrink: 1;">
-                        <h4 style="color: #000000">Learning Path</h4>
+                        <h4 style="color: #000000">Getting Started</h4>
                     </div>
 
                     <div style="flex-shrink: 1;">

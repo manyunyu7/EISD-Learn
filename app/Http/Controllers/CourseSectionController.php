@@ -473,7 +473,6 @@ class CourseSectionController extends Controller
             }
         }
 
-
         // Get the preceding sections
         $precedingSections = DB::table('course_section')
             ->where('course_id', $lessonId)
@@ -484,6 +483,7 @@ class CourseSectionController extends Controller
         $precedingSectionIds = array_map(function ($section) {
             return $section->id;
         }, $precedingSections);
+
 
         $studentTakenSections = DB::select("
         SELECT
@@ -666,9 +666,10 @@ class CourseSectionController extends Controller
             for ($i = 0; $i < $currentSectionIndex; $i++) {
                 // Check if the section from sectionOrder exists in completedSections
                 if (!in_array($sectionOrder[$i], $completedSections)) {
-                    $isEligibleStudent = false;
                     if ($sectionTakenOnCourseCount != 0) {
                         abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                    }else{
+                        $isEligibleStudent = false;
                     }
                 }
             }
@@ -713,31 +714,38 @@ class CourseSectionController extends Controller
         }
 
 
-        $isExam_inTime = true;
+        $isExamInTime = true;
         // Checking is Exam
-        if($isExam){
+        if($isExam == true){
+
             if ($examSession != null) {
                 $startDate_exam = $examSession->start_date;
                 $endDate_exam   = $examSession->end_date;
-            
+
                 $now = Carbon::now();
-            
+
                 if ($now->between($startDate_exam, $endDate_exam)) {
                     // Jika waktu sekarang berada di antara start_date dan end_date
                     // Tambahkan logika di sini
+                    $isExamInTime = true;
                 } else {
                     // Jika waktu sekarang berada di luar rentang start_date dan end_date
                     // Tambahkan logika di sini
-                    $isExam_inTime = false;
-                    $isEligibleStudent=false;
+                    $isExamInTime = false;
                 }
             }
         }
-    
+
 
         if(Auth::user()->role=="student"){
+
             if ($isEligibleStudent) {
-                $this->startSection($currentSectionId);//168
+
+                if($isExamInTime){
+                    $this->startSection($currentSectionId);//168
+                }
+
+
                 $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
 
                 $sectionTakenOnCourseCount = DB::table('student_section as ss')
