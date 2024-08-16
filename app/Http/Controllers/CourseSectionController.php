@@ -611,7 +611,7 @@ class CourseSectionController extends Controller
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
-        // return $sections;
+        return $sections;
 
         $sectionDetail = CourseSection::findOrFail($sectionId);
         // Iterate over the sections and check if each one is already added to the student-section
