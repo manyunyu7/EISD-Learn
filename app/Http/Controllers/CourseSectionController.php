@@ -597,10 +597,10 @@ class CourseSectionController extends Controller
             'course_section.updated_at',
             'course_section.can_be_accessed',
             'exams.is_deleted',
-            DB::raw('CASE 
+            DB::raw('CASE
                         WHEN exam_sessions.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
-                        WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing" 
-                        ELSE "Finish" 
+                        WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
+                        ELSE "Finish"
                     END as status')
         )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
