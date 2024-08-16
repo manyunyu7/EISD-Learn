@@ -672,26 +672,6 @@ class CourseSectionController extends Controller
                     }
                 }
             }
-            if ($isEligibleStudent) {
-                $this->startSection($currentSectionId);
-                $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
-
-                $sectionTakenOnCourseCount = DB::table('student_section as ss')
-                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
-                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
-                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-                    ->where('ss.student_id', Auth::id())
-                    ->where('lessons.id', $lessonId)
-                    ->count();
-
-                if ($sectionTakenOnCourseCount == $total_section) {
-                    if ($u_student_lesson->learn_status != 1) {
-                        $u_student_lesson->finished_at = Carbon::now();
-                        $u_student_lesson->learn_status = 1;
-                        $u_student_lesson->save();
-                    }
-                }
-            }
         }
 
         $examSession = null;
@@ -731,6 +711,53 @@ class CourseSectionController extends Controller
                 $question_count = count($questions);
             }
         }
+
+
+        $isExam_inTime = true;
+        // Checking is Exam
+        if($isExam){
+            if ($examSession != null) {
+                $startDate_exam = $examSession->start_date;
+                $endDate_exam   = $examSession->end_date;
+            
+                $now = Carbon::now();
+            
+                if ($now->between($startDate_exam, $endDate_exam)) {
+                    // Jika waktu sekarang berada di antara start_date dan end_date
+                    // Tambahkan logika di sini
+                } else {
+                    // Jika waktu sekarang berada di luar rentang start_date dan end_date
+                    // Tambahkan logika di sini
+                    $isExam_inTime = false;
+                    $isEligibleStudent=false;
+                }
+            }
+        }
+    
+
+        if(Auth::user()->role=="student"){
+            if ($isEligibleStudent) {
+                $this->startSection($currentSectionId);//168
+                $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
+
+                $sectionTakenOnCourseCount = DB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', Auth::id())
+                    ->where('lessons.id', $lessonId)
+                    ->count();
+
+                if ($sectionTakenOnCourseCount == $total_section) {
+                    if ($u_student_lesson->learn_status != 1) {
+                        $u_student_lesson->finished_at = Carbon::now();
+                        $u_student_lesson->learn_status = 1;
+                        $u_student_lesson->save();
+                    }
+                }
+            }
+        }
+
 
         //check if student has taken any exam on this session
         $hasTakenAnyExam = false;
