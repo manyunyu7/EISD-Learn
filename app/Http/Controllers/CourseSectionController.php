@@ -117,7 +117,7 @@ class CourseSectionController extends Controller
 
         $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
             ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
-            ->where("exams.created_by",Auth::id())
+            ->where("exams.created_by", Auth::id())
             ->where(function ($query) {
                 $query->where('exams.is_deleted', '!=', 'y')
                     ->orWhereNull('exams.is_deleted');
@@ -622,7 +622,7 @@ class CourseSectionController extends Controller
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
-            ->leftJoin('exams', 'exam_sessions.exam_id','=','exams.id')
+            ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
             ->where('course_section.course_id', $lessonId)
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
@@ -671,6 +671,7 @@ class CourseSectionController extends Controller
         $isStudent = false;
 
 
+        $alreadyTakeNeededExam = true; // if student has taken the needed exam
         $isEligibleStudent = true; //eligible to open the section
         if (Auth::user()->role == "student") {
             $isStudent = true;
@@ -681,16 +682,55 @@ class CourseSectionController extends Controller
 
             // Loop through the sectionOrder array from the beginning until the current section index
             for ($i = 0; $i < $currentSectionIndex; $i++) {
+
+
+                $currentIndexedSection = CourseSection::find($sectionOrder[$i]);
+
+                if ($currentIndexedSection && $currentIndexedSection->quiz_session_id) {
+                    $quizSession = ExamSession::find($currentIndexedSection->quiz_session_id);
+
+                    if ($quizSession) {
+                        $now = Carbon::now($timezone)->toDateTimeString();
+
+                        $checkIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
+                            ->where('course_section_flag', $sectionOrder[$i])
+                            ->where('is_finished', 'y')
+                            ->count();
+
+                        $exam = Exam::find("$quizSession->exam_id");
+                        $sectionTitle = $currentIndexedSection->section_title;
+                        $sectionId = $currentIndexedSection->id;
+                        $examTitle = "";
+                        if ($exam != null) {
+                            $examTitle = $exam->title;
+                        }
+
+                        // Abort if the student has not taken the quiz and it's not the first section
+                        if ($checkIfStudentAlreadyTake == 0) {
+                            $alreadyTakeNeededExam = false;
+                            $link = url()->to("/course/$lessonId/section/$sectionId");
+                            $message = "Terdapat Quiz pada Bagian $sectionTitle  yang Belum Anda Kerjakan.";
+                            return response()->view('errors.sesval', [
+                                'sectionTitle' => $sectionTitle,
+                                'message' => $message,
+                                'link' => $link
+                            ], 401);
+                        }
+                    }
+                }
+
+
                 // Check if the section from sectionOrder exists in completedSections
                 if (!in_array($sectionOrder[$i], $completedSections)) {
                     if ($sectionTakenOnCourseCount != 0) {
                         abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
-                    }else{
+                    } else {
                         $isEligibleStudent = false;
                     }
                 }
             }
         }
+
 
         $examSession = null;
         $exam = null;
@@ -731,16 +771,15 @@ class CourseSectionController extends Controller
         }
 
 
+
+        // ================CHECK IF EXAM IS IN TIME =========================
         $isExamInTime = true;
         // Checking is Exam
-        if($isExam == true){
-
+        if ($isExam == true) {
             if ($examSession != null) {
                 $startDate_exam = $examSession->start_date;
                 $endDate_exam   = $examSession->end_date;
-
                 $now = Carbon::now();
-
                 if ($now->between($startDate_exam, $endDate_exam)) {
                     // Jika waktu sekarang berada di antara start_date dan end_date
                     // Tambahkan logika di sini
@@ -754,12 +793,33 @@ class CourseSectionController extends Controller
         }
 
 
-        if(Auth::user()->role=="student"){
+        // ========== CHECK IF EXAM ON FIRST SECTION IS ALREADY FINISHED =========================
+        $isFirstExamTaken = true;
+        $quizSession = ExamSession::find($currentSection->quiz_session_id);
+        if ($quizSession!=null) {
+            $now = Carbon::now($timezone)->toDateTimeString();
 
-            if ($isEligibleStudent) {
+            $checkIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
+                ->where('course_section_flag', $sectionOrder[$i])
+                ->where('is_finished', 'y')
+                ->count();
 
-                if($isExamInTime){
-                    $this->startSection($currentSectionId);//168
+            if($checkIfStudentAlreadyTake!=0){
+                $isFirstExamTaken = true;
+            }else{
+                $isFirstExamTaken = false;
+            }
+        }else{
+            $isFirstExamTaken = true;
+        }
+
+
+        if (Auth::user()->role == "student") {
+
+            if ($isEligibleStudent && $alreadyTakeNeededExam && $isFirstExamTaken) {
+
+                if ($isExamInTime) {
+                    $this->startSection($currentSectionId); //168
                 }
 
 
