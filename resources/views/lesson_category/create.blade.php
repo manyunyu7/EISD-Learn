@@ -122,7 +122,7 @@
                                         <div class="card-body">
 
                                             <div class="form-group">
-                                                <label class="font-weight-bold">GAMBAR</label>
+                                                <span style="color: red"><label class="font-weight-bold">GAMBAR</label>*</span>
                                                 <input id="input-image" accept="image/png, image/gif, image/jpeg"
                                                     type="file" onchange="previewPhoto()"
                                                     class="form-control @error('image') is-invalid @enderror"
