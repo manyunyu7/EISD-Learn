@@ -537,8 +537,11 @@
                                 @php
                                     $isCurrent = $item->isCurrent ?? false; // Check if $item->isCurrent is set, if not, set it to false
                                 @endphp
+                                
+                                
+                                {{-- <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; {{ $item->status === 'Waiting to Start' ? 'pointer-events: none' : '' }}" onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" > --}}
 
-                                <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; {{ $item->status === 'Waiting to Start' ? 'pointer-events: none' : '' }}" onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" >
+                                <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; " onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" >
                                     @if (Auth::user()->role!='mentor')
                                         {{-- Check if the item is marked as taken --}}
                                         @if ($item->isTaken)
@@ -547,14 +550,14 @@
                                             {{-- Check if it's the current section --}}
                                         @elseif ($item->section_id == $currentSectionId)
                                             {{-- Display a checked checkbox icon indicating completion --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}" alt="Completed"/>
+                                            <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}" alt="Completed"/>
                                         @else
                                             {{-- Display an empty checkbox icon indicating incomplete --}}
                                             <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}" alt="Incomplete"/>
                                         @endif
                                         {{-- Display the section title --}}
                                     @endif
-                                    <span style="display: inline-block;">
+                                    <span style="display: inline-block; @if($item->section_id == $currentSectionId) font-weight: bold; @endif">
                                         {{ $item->section_title }}
                                     </span>
                                 </a>
