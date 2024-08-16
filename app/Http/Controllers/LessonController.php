@@ -203,11 +203,13 @@ class LessonController extends Controller
             })
         ->get();
 
-
-
+        $compact = compact('dayta', 'myClasses', 'keyword', 'myClasses_searchKeyword', 'lessonCategories');
+        if($request->dump==true){
+            return $compact;
+        }
         // return $myClasses;
         Paginator::useBootstrap();
-        return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses', 'keyword', 'myClasses_searchKeyword', 'lessonCategories'));
+        return view('lessons.manage_lesson_v2', $compact);
     }
 
     public function search(Request $request)
@@ -259,7 +261,7 @@ class LessonController extends Controller
         else if(Auth::user()->role == 'student'){
             return redirect()->to('/class/class-list?q='.$keyword);
         }
-        
+
         Paginator::useBootstrap();
         return view('lessons.manage_lesson_v2', compact('dayta', 'myClasses_searchKeyword', 'keyword', 'lessonCategories'));
 

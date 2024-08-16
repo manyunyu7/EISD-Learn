@@ -8,6 +8,7 @@ use App\Models\Exam;
 use App\Models\ExamSession;
 use App\Models\ExamTaker;
 use App\Models\Lesson;
+use App\Models\LessonCategory;
 use App\Models\StudentLesson;
 use App\Models\StudentSection;
 use App\Models\User;
@@ -337,9 +338,7 @@ class CourseSectionController extends Controller
     }
 
 
-    public function goToNextSection(Lesson $lesson, CourseSection $lesson_id)
-    {
-    }
+    public function goToNextSection(Lesson $lesson, CourseSection $lesson_id) {}
 
     public function publicExam($examId, Request $request)
     {
@@ -611,7 +610,7 @@ class CourseSectionController extends Controller
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
-        return $sections;
+        // return $sections;
 
         $sectionDetail = CourseSection::findOrFail($sectionId);
         // Iterate over the sections and check if each one is already added to the student-section
@@ -740,14 +739,14 @@ class CourseSectionController extends Controller
             "=",
             $courseId
         )->where(
-                "course_section_flag",
-                "=",
-                $sectionId
-            )->where(
-                "user_id",
-                '=',
-                Auth::id()
-            )->get();
+            "course_section_flag",
+            "=",
+            $sectionId
+        )->where(
+            "user_id",
+            '=',
+            Auth::id()
+        )->get();
 
 
         if (count($examResults) > 0) {
@@ -776,10 +775,22 @@ class CourseSectionController extends Controller
                         GROUP BY
                             a.id, b.name, b.profile_url;
                         ");
+        $courseCategory = "";
+        $courseCategoryColor = "#000000";
+
+        if ($lesson != null) {
+            $category = LessonCategory::where('id', $lesson->category_id)->first();
+            if ($category) {
+                $courseCategory = $category->name;
+                $courseCategoryColor = $category->color_of_categories;
+            }
+        }
 
         $compact = compact(
             'isEligibleStudent',
             'hasTakenAnyExam',
+            'courseCategory',
+            'courseCategoryColor',
             'examResults',
             'currentSectionId',
             'courseId',
