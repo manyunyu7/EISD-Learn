@@ -98,6 +98,23 @@ class CourseSectionController extends Controller
             ->orderBy(DB::raw('CAST(c.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
+        $studentsInfo = DB::table('student_section as ss')
+             ->select('ss.student_id', 'cs.id')
+             ->leftJoin('course_section as cs', 'ss.section_id','=', 'cs.id')
+             ->where('cs.course_id', $lesson_id)
+             ->get();
+
+
+        if(count($studentsInfo) != 0){
+            $student_info = 'Ready-on-Student-Section';
+        }else{
+            $student_info = null;
+        }
+        
+        // return $student_info;
+
+
+
         $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
             ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
             ->where("exams.created_by",Auth::id())
@@ -107,7 +124,7 @@ class CourseSectionController extends Controller
             })
             ->get();
 
-        $compact = compact('dayta', 'lesson_id', 'examSessions');
+        $compact = compact('dayta', 'lesson_id', 'examSessions', 'student_info');
         return view('lessons.manage_materials', $compact);
     }
 

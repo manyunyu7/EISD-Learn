@@ -211,30 +211,33 @@
         </div>
 
         {{-- BUTTON REARRANGE --}}
-        <div class="page-header mb-3">
-            <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3">
-                <button class="btn mr-2 ml--10"
-                        onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
-                        type="submit"
-                        style=" background-color: #208DBB;
-                                border-radius: 12px;
-                                width:80px;
-                                height: 40px;
-                                position: relative;
-                                padding: 0;
-                                margin-left: -15px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;">
-                        <span style="color:white">Rearrange</span>
-                </button>
-                <script>
-                    function redirectToSection(url) {
-                        window.location.href = url;
-                    }
-                </script>
+        @if($student_info == 0)
+            <div class="page-header mb-3">
+                <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3">
+                    <button class="btn mr-2 ml--10"
+                            onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
+                            type="submit"
+                            style=" background-color: #208DBB;
+                                    border-radius: 12px;
+                                    width:80px;
+                                    height: 40px;
+                                    position: relative;
+                                    padding: 0;
+                                    margin-left: -15px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;">
+                            <span style="color:white">Rearrange</span>
+                    </button>
+                    <script>
+                        function redirectToSection(url) {
+                            window.location.href = url;
+                        }
+                    </script>
+                </div>
             </div>
-        </div>
+        @endif
+        
         <div class="page-header">
             <h1 class="mt--8"><strong>Urutan Materi</strong></h1><br>
         </div>
