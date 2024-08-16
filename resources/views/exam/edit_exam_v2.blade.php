@@ -167,7 +167,7 @@
                         var segmentMultipleChoices = document.getElementById("segment_multipleChoices");
                         var divInputGroupCount = segmentMultipleChoices.querySelectorAll(".input-group.mb-3").length;
 
-                        if (divInputGroupCount < 4) {
+                        if (divInputGroupCount < 5) {
                             var divInputGroup = document.createElement("div");
                             divInputGroup.classList.add("input-group", "mb-3");
 
@@ -221,7 +221,7 @@
             </form>
         </div>
 
-        
+
         <div class="col-12">
             {{-- MENAMPILKAN SOAL --}}
             @forelse ($questionAnswer as $data)
