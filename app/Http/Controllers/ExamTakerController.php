@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+
 class ExamTakerController extends Controller
 {
     public function viewInitialTakeSession(Request $request, $id)
@@ -20,7 +21,8 @@ class ExamTakerController extends Controller
         $data = $session;
         $showCompact = true;
         MyHelper::addAnalyticEvent(
-            "Take Quiz on exam " . $exam->id . "-" . $exam->title, "Exam Taker"
+            "Take Quiz on exam " . $exam->id . "-" . $exam->title,
+            "Exam Taker"
         );
         $questions = json_decode($session->questions_answers);
         $totalScore = 0;
@@ -79,16 +81,23 @@ class ExamTakerController extends Controller
         return response()->json(['exam' => $exam, 'questions' => $questions]);
     }
 
-    public function fetchResultByStudentOnSection(Request $request){
+    public function fetchResultByStudentOnSection(Request $request)
+    {
         $courseId = $request->course_id;
         $sectionId = $request->section_id;
 
         $examResults = ExamTaker::where(
-            "course_flag", "=", $courseId
+            "course_flag",
+            "=",
+            $courseId
         )->where(
-            "course_section_flag", "=", $sectionId
+            "course_section_flag",
+            "=",
+            $sectionId
         )->where(
-            "user_id", '=', Auth::id()
+            "user_id",
+            '=',
+            Auth::id()
         )->get();
 
 
@@ -139,7 +148,7 @@ class ExamTakerController extends Controller
 
                 // Loop through the choices to find the correct answer and its score
                 foreach ($choices as $choice) {
-                    if($question->question_type=="Single Multiple Choice"){
+                    if ($question->question_type == "Single Multiple Choice") {
                         if ($choice['score'] > $correctScore) {
                             $correctAnswer = $choice['text'];
                             $correctScore = $choice['score'];
@@ -186,12 +195,12 @@ class ExamTakerController extends Controller
 
         //check if the session allow multiple attempt
         $allowMultipleAttempt = false;
-        if ($session->allow_multiple == "y" || $session->allow_multiple=="Aktif") {
+        if ($session->allow_multiple == "y" || $session->allow_multiple == "Aktif") {
             $allowMultipleAttempt = true;
         }
 
         $allowPublicAccess = false;
-        if ($session->public_access == "y"|| $session->public_access == "Aktif") {
+        if ($session->public_access == "y" || $session->public_access == "Aktif") {
             $allowPublicAccess = true;
         }
 
@@ -205,13 +214,13 @@ class ExamTakerController extends Controller
             ], 200);
         }
 
-           // Checking is Exam
-           if ($session != null) {
+        // Checking is Exam
+        if ($session != null) {
             $startDate_exam = $session->start_date;
             $endDate_exam   = $session->end_date;
-        
+
             $now = Carbon::now();
-        
+
             if ($now->between($startDate_exam, $endDate_exam)) {
             } else {
                 return response()->json([
@@ -307,9 +316,13 @@ class ExamTakerController extends Controller
         //if not finished and not first attempt
         if ($request->isFinished != true && $isFirstUnfinishedAttempt != true) {
             $examResult = ExamTaker::where(
-                "session_id", '=', $sessionId
+                "session_id",
+                '=',
+                $sessionId
             )->where(
-                "user_id", '=', Auth::id()
+                "user_id",
+                '=',
+                Auth::id()
             )->where(function ($query) {
                 $query->whereNull('finished_at');
             })->first();
@@ -326,23 +339,44 @@ class ExamTakerController extends Controller
 
         if ($request->isFinished == true) {
             if ($isFirstUnfinishedAttempt) {
+                $now = Carbon::now();
+                $timeWindow = 10; // Time window in seconds
+
+                // Find existing records where finished_at is less than 10 seconds ago
+                $recordsToDelete = ExamTaker::where('user_id', Auth::id())
+                    ->where('session_id', $sessionId)
+                    ->where('course_flag', $courseId)
+                    ->where('finished_at', '<=', $now->subSeconds($timeWindow))
+                    ->get();
+
+                // Delete those records
+                foreach ($recordsToDelete as $record) {
+                    $record->delete();
+                }
+
+                // Now save the new record
                 $examResult = new ExamTaker();
                 $examResult->user_id = Auth::id();
                 $examResult->session_id = $sessionId;
-                $examResult->user_answers = ($answers);
+                $examResult->user_answers = $answers;
                 $examResult->current_score = $userScore;
                 $examResult->guest_name = $name;
                 $examResult->course_flag = $courseId;
                 $examResult->course_section_flag = $sectionId;
-                $examResult->finished_at = Carbon::now();
+                $examResult->finished_at = $now;
                 $examResult->is_finished = "y";
                 $examResult->save();
+
                 $dimanaYa = "priskilla";
             } else {
                 $examResult = ExamTaker::where(
-                    "session_id", '=', $sessionId
+                    "session_id",
+                    '=',
+                    $sessionId
                 )->where(
-                    "user_id", '=', Auth::id()
+                    "user_id",
+                    '=',
+                    Auth::id()
                 )->where(function ($query) {
                     $query->whereNull('finished_at');
                 })->first();
@@ -361,7 +395,8 @@ class ExamTakerController extends Controller
         }
 
         MyHelper::addAnalyticEvent(
-            "Submit Exam Session : " . $session->id . " with score :" . $userScore, "Exam Taker"
+            "Submit Exam Session : " . $session->id . " with score :" . $userScore,
+            "Exam Taker"
         );
 
         //check if the session allowed user to see the result score
