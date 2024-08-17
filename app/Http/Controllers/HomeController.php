@@ -244,7 +244,7 @@ class HomeController extends Controller
                 ->where(function ($query) use ($departmentId) {
                     if (!empty($departmentId)) {
                         if ($departmentId != "all") {
-                            $query->where('users.department_id', '=', $departmentId);
+                            $query->where('department_id', '=', $departmentId);
                         }
                     }
                 })

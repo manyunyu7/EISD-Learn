@@ -293,13 +293,22 @@
 
     <script>
         $(document).ready(function() {
+            $('#basic-exam-tables').DataTable({
+                dom: '<"top"Bfrtip>', // Add buttons to the top and bottom, with buttons at the top
+                buttons: [
+                    'excel', 'pdf', 'csv' // Button for Excel export
+                ],
+                lengthMenu: [
+                    [10, 25, 50, "All"]
+                ], // Define options for number of rows per page
+                pagingType: 'full_numbers' // Include pagination numbers
+            });
             $('#basic-main-tables').DataTable({
                 dom: '<"top"Bfrtip>', // Add buttons to the top and bottom, with buttons at the top
                 buttons: [
                     'excel', 'pdf', 'csv' // Button for Excel export
                 ],
                 lengthMenu: [
-                    [10, 25, 50, -1],
                     [10, 25, 50, "All"]
                 ], // Define options for number of rows per page
                 pagingType: 'full_numbers' // Include pagination numbers
@@ -477,7 +486,7 @@
                                                         <p style="margin-top: 20px; font-size: 1.2em;">No Data Available</p>
                                                     @endif
                                                     <!-- Button placed at the bottom left, inline with content -->
-                                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    <button type="button" class="btn btn-outline-primary btn-sm d-none"
                                                         onclick="openPieDetailsPage()"
                                                         style="position: absolute; bottom: 10px; left: 10px;">See More
                                                         Details</button>
@@ -546,14 +555,14 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Daftar Siswa
-                                @if (Request::query('class') !== 'all')
+                                @if (!Request::has('class') || Request::query('class') !== 'all')
                                     Terdaftar
                                 @endif
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="basic-main-tables"
+                                <table id="basic-exam-tables"
                                     class="table table-bordered  @if (count($userFilters) < 1) d-none @endif">
                                     <thead>
                                         <tr>
@@ -659,10 +668,10 @@
                                                                 </td>
                                                             </tr>
                                                         @empty
-                                                            {{--                                                <!-- Handle the case where $summaryPrePost is empty --> --}}
-                                                            {{--                                                <div class="alert alert-danger"> --}}
-                                                            {{--                                                    Belum Ada Peserta Yang Mengerjakan Exam Ini --}}
-                                                            {{--                                                </div> --}}
+                                                            <!-- Handle the case where $summaryPrePost is empty -->
+                                                            <div class="alert alert-danger">
+                                                                Belum Ada Data
+                                                            </div>
                                                         @endforelse
                                                     </tbody>
                                                 </table>
@@ -736,7 +745,7 @@
                         @endforelse
                     </div>
                 </div>
-                @if (Request::query('class') !== 'all' || Request::query('class')== null)
+                @if (Request::query('class') !== 'all' || Request::query('class') == null)
                     <div class="col-md-12">
                         <div class="table-responsive">
                             <table id="leaderboard-table"
@@ -810,6 +819,54 @@
 
                     </div>
                 @endif
+
+                @if (!Request::has('class') || Request::query('class') !== 'all')
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Daftar Ujian Pada Kelas
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="basic-main-tables"
+                                    class="table table-bordered  @if (count($userFilters) < 1) d-none @endif">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Judul Materi</th>
+                                            <th scope="col">Judul Exam</th>
+                                            <th scope="col">Lihat Hasil</th>
+                                            <th scope="col">Jenis</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($listExamInClass as $data)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $data->section_title }}</td>
+                                                <td>{{ $data->exam_title }}</td>
+                                                <td>
+                                                    <a href="{{ url("/exam/download-exam/$data->exam_id") }}">
+                                                        Lihat Hasil Ujian
+                                                    </a>
+
+                                                </td>
+                                                <td>{{ $data->type }}</td>
+
+                                            </tr>
+                                        @empty
+                                            <div class="alert alert-danger">
+                                                Anda Belum Memiliki Kelas
+                                            </div>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
             </div>
         </div>
     </div>

@@ -252,6 +252,10 @@
                                         value: document.getElementById('exampleFormControlSelect2').value
                                     },
                                     {
+                                        name: 'class',
+                                        value: "all"
+                                    },
+                                    {
                                         name: 'month',
                                         value: document.getElementById('exampleFormControlSelect3').value
                                     }
