@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use stdClass;
 
 class CourseSectionController extends Controller
 {
@@ -99,18 +100,18 @@ class CourseSectionController extends Controller
             ->get();
 
         $studentsInfo = DB::table('student_section as ss')
-             ->select('ss.student_id', 'cs.id')
-             ->leftJoin('course_section as cs', 'ss.section_id','=', 'cs.id')
-             ->where('cs.course_id', $lesson_id)
-             ->get();
+            ->select('ss.student_id', 'cs.id')
+            ->leftJoin('course_section as cs', 'ss.section_id', '=', 'cs.id')
+            ->where('cs.course_id', $lesson_id)
+            ->get();
 
 
-        if(count($studentsInfo) != 0){
+        if (count($studentsInfo) != 0) {
             $student_info = 'Ready-on-Student-Section';
-        }else{
+        } else {
             $student_info = null;
         }
-        
+
         // return $student_info;
 
 
@@ -357,95 +358,99 @@ class CourseSectionController extends Controller
 
     public function goToNextSection(Lesson $lesson, CourseSection $lesson_id) {}
 
-    public function publicExam($examId, Request $request)
-    {
-        $questions = [];
-        $isExam = false;
-        $title = "";
+    // public function publicExam($examId, Request $request)
+    // {
+    //     $questions = [];
+    //     $isExam = false;
+    //     $title = "";
 
 
-        $examSession = null;
-        $exam = null;
-        $question_count = 0;
-        $totalScore = 0;
-        $session = null;
+    //     $examSession = null;
+    //     $exam = null;
+    //     $question_count = 0;
+    //     $totalScore = 0;
+    //     $session = null;
 
-        $isExam = true;
-        $exam = Exam::find($examId);
-        $examSession = ExamSession::where('exam_id', '=', $examId)->first();
-        $session = $examSession;
-        $sessionId = $session->id;
-        $questions = json_decode($session->questions_answers);
-        $totalScore = 0;
-        $title = $exam->title;
-        if ($questions != null) {
-            foreach ($questions as $question) {
-                if (isset($question->choices)) {
-                    $choices = json_decode($question->choices, true);
+    //     $isExam = true;
+    //     $exam = Exam::find($examId);
+    //     $examSession = ExamSession::where('exam_id', '=', $examId)->first();
+    //     $session = $examSession;
+    //     $sessionId = $session->id;
+    //     $questions = json_decode($session->questions_answers);
+    //     $totalScore = 0;
+    //     $title = $exam->title;
+    //     if ($questions != null) {
+    //         foreach ($questions as $question) {
+    //             if (isset($question->choices)) {
+    //                 $choices = json_decode($question->choices, true);
 
-                    foreach ($choices as $choice) {
-                        if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
-                            $totalScore += (int) $choice['score'];
-                        }
-                    }
-                }
-            }
-        }
+    //                 foreach ($choices as $choice) {
+    //                     if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
+    //                         $totalScore += (int) $choice['score'];
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        if ($questions != null) {
-            $question_count = count($questions);
-        }
-        // Check if student has taken any exam on this session
-        $hasTakenAnyExam = false;
-        $examResults = ExamTaker::where("session_id", "=", $sessionId)->get();
+    //     if ($questions != null) {
+    //         $question_count = count($questions);
+    //     }
+    //     // Check if student has taken any exam on this session
+    //     $hasTakenAnyExam = false;
+    //     $examResults = ExamTaker::where("session_id", "=", $sessionId)->get();
 
-        if (count($examResults) > 0) {
-            $hasTakenAnyExam = true;
-        }
+    //     if (count($examResults) > 0) {
+    //         $hasTakenAnyExam = true;
+    //     }
 
-        $examTokenKey = 'exam_token_' . $examId;
+    //     $examTokenKey = 'exam_token_' . $examId;
 
-        if (!session()->has($examTokenKey)) {
-            session([$examTokenKey => Str::uuid()->toString()]);
-        }
-        $examToken = session($examTokenKey);
+    //     if (!session()->has($examTokenKey)) {
+    //         session([$examTokenKey => Str::uuid()->toString()]);
+    //     }
+    //     $examToken = session($examTokenKey);
 
-        // return $examResults;
+    //     // return $examResults;
 
-        $compact = compact(
-            'hasTakenAnyExam',
-            'examResults',
-            'examToken',
-            'isExam',
-            'title',
-            'questions',
-            'examSession',
-            'exam',
-            'session',
-            'question_count',
-            'totalScore',
-        );
+    //     $compact = compact(
+    //         'hasTakenAnyExam',
+    //         'examResults',
+    //         'examToken',
+    //         'isExam',
+    //         'title',
+    //         'questions',
+    //         'examSession',
+    //         'exam',
+    //         'session',
+    //         'question_count',
+    //         'totalScore',
+    //     );
 
-        if ($request->dump == true) {
-            return $compact;
-        }
+    //     if ($request->dump == true) {
+    //         return $compact;
+    //     }
 
-        MyHelper::addAnalyticEvent(
-            "Mengerjakan Public Exam",
-            "Exam"
-        );
+    //     MyHelper::addAnalyticEvent(
+    //         "Mengerjakan Public Exam",
+    //         "Exam"
+    //     );
 
 
-        return view('lessons.play.course_play_public_exam', $compact);
-    }
+    //     return view('lessons.play.course_play_public_exam', $compact);
+    // }
 
 
     // SEE SECTION
-    public function seeSection(Request $request, Lesson $lesson, CourseSection $section)
+    public function seeSection(Request $request, $lessonId, $sectionId)
     {
         // Find the next and previous sections
         $nextSectionId = null;
         $prevSectionId = null;
+
+        $section = CourseSection::findOrFail($sectionId);
+        $lesson = Lesson::findOrFail($lessonId);
+
         $currentSectionId = $section->id;
         $questions = [];
         $currentSection = CourseSection::findOrFail($currentSectionId);
@@ -476,8 +481,6 @@ class CourseSectionController extends Controller
             }
         }
 
-        $sectionId = $section->id;
-        $lessonId = $lesson->id;
 
         $lessonObject = Lesson::findOrFail($lessonId);
         if (Auth::user()->role == "student") {
@@ -503,23 +506,23 @@ class CourseSectionController extends Controller
 
 
         $studentTakenSections = DB::select("
-        SELECT
-            ss.student_id,
-            users.name,
-            lessons.course_title,
-            lessons.id AS lessons_id,
-            ss.section_id,
-            ss.`student-section`
-        FROM
-            student_section AS ss
-        LEFT JOIN users ON users.id = ss.student_id
-        LEFT JOIN course_section ON ss.section_id = course_section.id
-        LEFT JOIN lessons ON course_section.course_id = lessons.id
-        WHERE users.id = :user_id AND lessons.id = :lessons_id
-      ", [
-            'user_id' => Auth::id(),
-            'lessons_id' => $lessonId,
-        ]);
+            SELECT
+                ss.student_id,
+                users.name,
+                lessons.course_title,
+                lessons.id AS lessons_id,
+                ss.section_id,
+                ss.`student-section`
+            FROM
+                student_section AS ss
+            LEFT JOIN users ON users.id = ss.student_id
+            LEFT JOIN course_section ON ss.section_id = course_section.id
+            LEFT JOIN lessons ON course_section.course_id = lessons.id
+            WHERE users.id = :user_id AND lessons.id = :lessons_id
+        ", [
+                'user_id' => Auth::id(),
+                'lessons_id' => $lessonId,
+            ]);
         $studentTakenSectionIds = array_map(function ($section) {
             return $section->section_id;
         }, $studentTakenSections);
@@ -683,35 +686,44 @@ class CourseSectionController extends Controller
             // Loop through the sectionOrder array from the beginning until the current section index
             for ($i = 0; $i < $currentSectionIndex; $i++) {
 
-
+                //active section within the loop
                 $currentIndexedSection = CourseSection::find($sectionOrder[$i]);
 
-                if ($currentIndexedSection && $currentIndexedSection->quiz_session_id) {
-                    $quizSession = ExamSession::find($currentIndexedSection->quiz_session_id);
+                if ($currentIndexedSection!=null && $currentIndexedSection->quiz_session_id!=null) {
+                    $zquizSession = ExamSession::find($currentIndexedSection->quiz_session_id);
 
-                    if ($quizSession) {
+                    if ($zquizSession) {
                         $now = Carbon::now($timezone)->toDateTimeString();
 
-                        $checkIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
-                            ->where('course_section_flag', $sectionOrder[$i])
-                            ->where('is_finished', 'y')
-                            ->count();
+                        $zcheckIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
+                        ->where('course_section_flag', $sectionOrder[$i])
+                        ->where('is_finished', 'y')
+                        ->whereNotNull('finished_at')
+                        ->count();
 
-                        $exam = Exam::find("$quizSession->exam_id");
-                        $sectionTitle = $currentIndexedSection->section_title;
-                        $sectionId = $currentIndexedSection->id;
+                        $zquizResults = ExamTaker::where('user_id', Auth::id())
+                        ->where('course_section_flag', $sectionOrder[$i])
+                        ->where('is_finished', 'y')
+                        ->whereNotNull('finished_at')
+                        ->get();
+
+
+                        $zexam = Exam::find("$zquizSession->exam_id");
+                        $zsectionTitle = $currentIndexedSection->section_title;
+                        $zsectionId = $currentIndexedSection->id;
                         $examTitle = "";
-                        if ($exam != null) {
-                            $examTitle = $exam->title;
+                        if ($zexam != null) {
+                            $examTitle = $zexam->title;
                         }
 
                         // Abort if the student has not taken the quiz and it's not the first section
-                        if ($checkIfStudentAlreadyTake == 0) {
+                        if ($zcheckIfStudentAlreadyTake == 0) {
                             $alreadyTakeNeededExam = false;
-                            $link = url()->to("/course/$lessonId/section/$sectionId");
-                            $message = "Terdapat Quiz pada Bagian $sectionTitle  yang Belum Anda Kerjakan.";
+                            $link = url()->to("/course/$lessonId/section/$zsectionId");
+                            $additional = "<a href='$link'>$examTitle</a>";
+                            $message = "Terdapat Quiz pada Bagian $zsectionTitle yang Belum Anda Kerjakan.\n";
                             return response()->view('errors.sesval', [
-                                'sectionTitle' => $sectionTitle,
+                                'sectionTitle' => $zsectionTitle,
                                 'message' => $message,
                                 'link' => $link
                             ], 401);
@@ -729,6 +741,8 @@ class CourseSectionController extends Controller
                     }
                 }
             }
+
+            // return $wantToKnowEachExamPassed;
         }
 
 
@@ -793,25 +807,30 @@ class CourseSectionController extends Controller
         }
 
 
+
         // ========== CHECK IF EXAM ON FIRST SECTION IS ALREADY FINISHED =========================
-        $isFirstExamTaken = true;
-        $quizSession = ExamSession::find($currentSection->quiz_session_id);
-        if ($quizSession!=null) {
-            $now = Carbon::now($timezone)->toDateTimeString();
 
-            $checkIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
-                ->where('course_section_flag', $sectionOrder[$i])
-                ->where('is_finished', 'y')
-                ->count();
-
-            if($checkIfStudentAlreadyTake!=0){
-                $isFirstExamTaken = true;
-            }else{
-                $isFirstExamTaken = false;
-            }
-        }else{
+        if (Auth::user()->role == "student") {
             $isFirstExamTaken = true;
+            $quizSession = ExamSession::find($currentSection->quiz_session_id);
+            if ($quizSession != null) {
+                $now = Carbon::now($timezone)->toDateTimeString();
+
+                $checkIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
+                    ->where('course_section_flag', $sectionOrder[$i])
+                    ->where('is_finished', 'y')
+                    ->count();
+
+                if ($checkIfStudentAlreadyTake != 0) {
+                    $isFirstExamTaken = true;
+                } else {
+                    $isFirstExamTaken = false;
+                }
+            } else {
+                $isFirstExamTaken = true;
+            }
         }
+
 
 
         if (Auth::user()->role == "student") {
@@ -846,19 +865,15 @@ class CourseSectionController extends Controller
 
         //check if student has taken any exam on this session
         $hasTakenAnyExam = false;
-        $examResults = ExamTaker::where(
-            "course_flag",
-            "=",
-            $courseId
-        )->where(
-            "course_section_flag",
-            "=",
-            $sectionId
-        )->where(
-            "user_id",
-            '=',
-            Auth::id()
-        )->get();
+        $examResults = ExamTaker::where('user_id', Auth::id())         // AND user_id = Auth::id()
+        ->where('course_section_flag', $currentSectionId)                // AND course_section_flag = $sectionId
+        ->where('is_finished', 'y')                               // AND is_finished = 'y'
+        ->whereNotNull('finished_at')                             // AND finished_at IS NOT NULL
+        ->leftJoin('exam_sessions as es', 'es.id', '=', 'exam_takers.session_id')
+        ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
+        ->select('exam_takers.*', 'e.title as exam_title')
+        ->get();
+
 
 
         if (count($examResults) > 0) {
