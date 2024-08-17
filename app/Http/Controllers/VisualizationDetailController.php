@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CourseSection;
+use App\Models\Exam;
+use App\Models\ExamSession;
 use App\Models\Lesson;
 use App\Models\StudentLesson;
 use Illuminate\Http\Request;
@@ -19,6 +21,10 @@ class VisualizationDetailController extends Controller
         $classId = $request->input('class') ?? "all";
         $month = $request->input('month') ?? "all";
         $learnStatus = request('learn_status');
+
+        if($classId==null){
+            $classId="all";
+        }
 
 
         // department for pie chart
@@ -384,9 +390,28 @@ class VisualizationDetailController extends Controller
 
 
 
+        $listExamInClass = CourseSection::where('course_id', $classId)
+        ->whereNotNull('quiz_session_id')
+        ->where('quiz_session_id', '!=', '')
+        ->where('quiz_session_id', '!=', '-')
+        ->get();
+
+        foreach ($listExamInClass as $la) {
+            $examSession = ExamSession::where('id', $la->quiz_session_id)->first();
+            if($examSession!=null){
+                $section =CourseSection::find($la->id);
+                $exam = Exam::where('id', $examSession->exam_id)->first();
+                $la->exam_id = $exam->id;
+                $la->exam_session_id = $examSession->id;
+                $la->type = $examSession->exam_type;
+                $la->exam_title = $exam->title;
+                $la->section_title = $section->section_title;
+            }
+        }
 
         $compact = compact(
             'sections',
+            'listExamInClass',
             'postTest',
             'lastPostTestDetail',
             'preTest',

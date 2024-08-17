@@ -180,7 +180,7 @@
                                             {{-- onclick="{{ $class ? "redirectToSection('" . url('/dashboard/mentor/course/'. $data->id) . "')" : "void(0)" }}" --}}
                                             <a id="checkBtn" class="btn text-white btn-round{{ $class ? '' : ' empty' }}"
                                                 style="background-color: {{ $class ? '#208DBB' : '#CCCCCC' }}"
-                                                onclick="{{ $class ? "redirectToSection('" . url('/lesson/' . $data->id . '/dashboard/') . "')" : 'void(0)' }}">Check</a>
+                                                onclick="{{ $class ? "redirectToSection('" . url('/visualization/main-pie-chart-details?learn_status=all&location=all&class=' . $data->id . '&department=all&month=all/') . "')" : 'void(0)' }}">Check</a>
                                             <script>
                                                 // Mengambil tombol check
                                                 var checkBtn = document.getElementById('checkBtn');
