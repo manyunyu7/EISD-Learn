@@ -8,6 +8,7 @@ use App\Models\Exam;
 use App\Models\ExamSession;
 use App\Models\ExamTaker;
 use App\Models\Lesson;
+use App\Models\StudentLesson;
 use App\Models\StudentSection;
 use App\Models\User;
 use Carbon\Carbon;
@@ -230,8 +231,9 @@ class MobileSeeCourseController extends Controller
 
         $courseId = $lessonId;
         $isStudent = false;
+        $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
 
-
+        $alreadyTakeNeededExam = true; // if student has taken the needed exam
         $isEligibleStudent = true; //eligible to open the section
         if (Auth::user()->role == "student") {
             $isStudent = true;
@@ -242,18 +244,71 @@ class MobileSeeCourseController extends Controller
 
             // Loop through the sectionOrder array from the beginning until the current section index
             for ($i = 0; $i < $currentSectionIndex; $i++) {
+
+                //active section within the loop
+                $currentIndexedSection = CourseSection::find($sectionOrder[$i]);
+
+                if ($currentIndexedSection != null && $currentIndexedSection->quiz_session_id != null) {
+                    $zquizSession = ExamSession::find($currentIndexedSection->quiz_session_id);
+
+                    if ($zquizSession) {
+                        $now = Carbon::now($timezone)->toDateTimeString();
+
+                        $zcheckIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
+                            ->where('course_section_flag', $sectionOrder[$i])
+                            ->where('is_finished', 'y')
+                            ->whereNotNull('finished_at')
+                            ->count();
+
+                        $zquizResults = ExamTaker::where('user_id', Auth::id())
+                            ->where('course_section_flag', $sectionOrder[$i])
+                            ->where('is_finished', 'y')
+                            ->whereNotNull('finished_at')
+                            ->get();
+
+
+                        $zexam = Exam::find("$zquizSession->exam_id");
+                        $zsectionTitle = $currentIndexedSection->section_title;
+                        $zsectionId = $currentIndexedSection->id;
+                        $examTitle = "";
+                        if ($zexam != null) {
+                            $examTitle = $zexam->title;
+                        }
+
+                        // Abort if the student has not taken the quiz and it's not the first section
+                        if ($zcheckIfStudentAlreadyTake == 0) {
+                            $alreadyTakeNeededExam = false;
+                            $zlink = url()->to("/course/$lessonId/section/$zsectionId");
+                            $additional = "<a href='$zlink'>$examTitle</a>";
+                            $message = "Terdapat Quiz pada Bagian $zsectionTitle yang Belum Anda Kerjakan.\n";
+                            return response()->view('errors.sesval', [
+                                'sectionTitle' => $zsectionTitle,
+                                'message' => $message,
+                                'link' => $zlink
+                            ], 401);
+                        }
+                    }
+                }
+
                 // Check if the section from sectionOrder exists in completedSections
                 if (!in_array($sectionOrder[$i], $completedSections)) {
-                    $isEligibleStudent = false;
                     if ($sectionTakenOnCourseCount != 0) {
-                        //                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                        $zsectionTitle = $currentIndexedSection->section_title;
+                        $zsectionId = $currentIndexedSection->id;
+                        $zlink = url()->to("/course/$lessonId/section/$zsectionId");
+                        return response()->view('errors.sesval', [
+                            'sectionTitle' => $zsectionTitle,
+                            'message' => "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini",
+                            'link' => $zlink
+                        ], 401);
+                    } else {
+                        $isEligibleStudent = false;
                     }
                 }
             }
-            if ($isEligibleStudent) {
-                $this->startSection($currentSectionId);
-            }
         }
+
+
 
         $examSession = null;
         $exam = null;
@@ -287,7 +342,7 @@ class MobileSeeCourseController extends Controller
             $endDate = Carbon::parse($examSession->end_date);
 
             if ($currentDate->lt($startDate) || $currentDate->gt($endDate)) {
-                abort(401,"Kelas hanya bisa diakses pada $startDate - $endDate");
+                abort(401, "Kelas hanya bisa diakses pada $startDate - $endDate");
             }
 
             foreach ($questions as $question) {
@@ -306,16 +361,13 @@ class MobileSeeCourseController extends Controller
 
         //check if student has taken any exam on this session
         $hasTakenAnyExam = false;
-        $examResults = ExamTaker::where(
-            "course_flag",
-            "=",
-            $courseId
-        )->where(
-                "course_section_flag",
-                "=",
-                $sectionId
-            )
-            ->where("user_id", '=', Auth::id())
+        $examResults = ExamTaker::where('user_id', Auth::id())         // AND user_id = Auth::id()
+            ->where('course_section_flag', $currentSectionId)                // AND course_section_flag = $sectionId
+            ->where('is_finished', 'y')                               // AND is_finished = 'y'
+            ->whereNotNull('finished_at')                             // AND finished_at IS NOT NULL
+            ->leftJoin('exam_sessions as es', 'es.id', '=', 'exam_takers.session_id')
+            ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
+            ->select('exam_takers.*', 'e.title as exam_title')
             ->get();
 
 
@@ -357,9 +409,79 @@ class MobileSeeCourseController extends Controller
         $mentor = User::where("id", '=', "");
         $sectionCount = count($sections);
 
+
         // taken $sectionTakenOnCourseCount;
         // all sections $sectionCount;
         $progressPercentage = round(($sectionTakenOnCourseCount / $sectionCount) * 100);
+
+        // ================CHECK IF EXAM IS IN TIME =========================
+        $isExamInTime = true;
+        // Checking is Exam
+        if ($isExam == true) {
+            if ($examSession != null) {
+                $startDate_exam = $examSession->start_date;
+                $endDate_exam   = $examSession->end_date;
+                $now = Carbon::now();
+                if ($now->between($startDate_exam, $endDate_exam)) {
+                    // Jika waktu sekarang berada di antara start_date dan end_date
+                    // Tambahkan logika di sini
+                    $isExamInTime = true;
+                } else {
+                    // Jika waktu sekarang berada di luar rentang start_date dan end_date
+                    // Tambahkan logika di sini
+                    $isExamInTime = false;
+                }
+            }
+        }
+
+
+        // ========== CHECK IF EXAM ON FIRST SECTION IS ALREADY FINISHED =========================
+
+        if (Auth::user()->role == "student") {
+            $isFirstExamTaken = true;
+            $quizSession = ExamSession::find($currentSection->quiz_session_id);
+            if ($quizSession != null) {
+                $now = Carbon::now($timezone)->toDateTimeString();
+
+                $checkIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
+                    ->where('course_section_flag', $sectionOrder[$i])
+                    ->where('is_finished', 'y')
+                    ->count();
+
+                if ($checkIfStudentAlreadyTake != 0) {
+                    $isFirstExamTaken = true;
+                } else {
+                    $isFirstExamTaken = false;
+                }
+            } else {
+                $isFirstExamTaken = true;
+            }
+        }
+
+        if (Auth::user()->role == "student") {
+            if ($isEligibleStudent && $alreadyTakeNeededExam && $isFirstExamTaken) {
+                if ($isExamInTime) {
+                    $this->startSection($currentSectionId); //168
+                }
+                $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
+                $sectionTakenOnCourseCount = DB::table('student_section as ss')
+                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                    ->where('ss.student_id', Auth::id())
+                    ->where('lessons.id', $lessonId)
+                    ->count();
+
+                if ($sectionTakenOnCourseCount == $sectionCount) {
+                    if ($u_student_lesson->learn_status != 1) {
+                        $u_student_lesson->finished_at = Carbon::now();
+                        $u_student_lesson->learn_status = 1;
+                        $u_student_lesson->save();
+                    }
+                }
+            }
+        }
+
 
         $compact = compact(
             'userId',
