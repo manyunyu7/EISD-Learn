@@ -1,5 +1,7 @@
 @section('head-section')
     @include('main.home._styling_home_student')
+    {{-- Charts.css --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
 @endsection
 
 
@@ -11,7 +13,6 @@
 
     {{-- canvasJS for Pie Chart --}}
     <script type="text/javascript">
-
         window.onload = function() {
             // Data from controller
             var groupedByDepartment = @json($groupedByDepartment);
@@ -39,9 +40,9 @@
             // Script untuk Pie Chart
             var chart_pie = new CanvasJS.Chart("chartContainer_pieChart", {
                 theme: "light3",
-                title: {
-                    text: "Percentage of Students in Departments"
-                },
+                // title: {
+                //     text: "Percentage of Students in Departments"
+                // },
                 legend: {
                     horizontalAlign: "bottom",
                     verticalAlign: "center",
@@ -68,113 +69,6 @@
                 axisY: {
                     title: "percent"
                 },
-                data: [{
-                        type: "stackedBar100",
-                        showInLegend: true,
-                        name: "April",
-                        dataPoints: [{
-                                y: 600,
-                                label: "Water Filter"
-                            },
-                            {
-                                y: 400,
-                                label: "Modern Chair"
-                            },
-                            {
-                                y: 120,
-                                label: "VOIP Phone"
-                            },
-                            {
-                                y: 250,
-                                label: "Microwave"
-                            },
-                            {
-                                y: 120,
-                                label: "Water Filter"
-                            },
-                            {
-                                y: 374,
-                                label: "Expresso Machine"
-                            },
-                            {
-                                y: 350,
-                                label: "Lobby Chair"
-                            }
-
-                        ]
-                    },
-                    {
-                        type: "stackedBar100",
-                        showInLegend: true,
-                        name: "May",
-                        dataPoints: [{
-                                y: 400,
-                                label: "Water Filter"
-                            },
-                            {
-                                y: 500,
-                                label: "Modern Chair"
-                            },
-                            {
-                                y: 220,
-                                label: "VOIP Phone"
-                            },
-                            {
-                                y: 350,
-                                label: "Microwave"
-                            },
-                            {
-                                y: 220,
-                                label: "Water Filter"
-                            },
-                            {
-                                y: 474,
-                                label: "Expresso Machine"
-                            },
-                            {
-                                y: 450,
-                                label: "Lobby Chair"
-                            }
-
-                        ]
-                    },
-                    {
-                        type: "stackedBar100",
-                        showInLegend: true,
-                        name: "June",
-                        dataPoints: [{
-                                y: 300,
-                                label: "Water Filter"
-                            },
-                            {
-                                y: 610,
-                                label: "Modern Chair"
-                            },
-                            {
-                                y: 215,
-                                label: "VOIP Phone"
-                            },
-                            {
-                                y: 221,
-                                label: "Microwave"
-                            },
-                            {
-                                y: 75,
-                                label: "Water Filter"
-                            },
-                            {
-                                y: 310,
-                                label: "Expresso Machine"
-                            },
-                            {
-                                y: 340,
-                                label: "Lobby Chair"
-                            }
-
-                        ]
-                    }
-
-                ]
 
             });
             chart_stackedBar.render();
@@ -217,10 +111,6 @@
             }
         });
     </script>
-
-
-    {{-- Charts.css --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
 @endsection
 
 @section('main')
@@ -290,14 +180,95 @@
             <div class="col-md-7">
                 <div class="card">
                     <div class="card-body">
-                        <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
-                            <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
-                                aria-labelledby="pills-home-tab-nobd">
-                                <div class="">
-                                    <div id="chartContainer_pieChart" style="height: 275px; width: auto;"></div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Overview</h5>
+                            <div class="dropdown">
+                                <select class="form-control" id="learnStatusSelect" style="border: none;"
+                                    onchange="updateLearnStatus()">
+                                    <option value="all" {{ request('learn_status') == 'all' ? 'selected' : '' }}>All
+                                        Status</option>
+                                    <option value="finished" {{ request('learn_status') == 'finished' ? 'selected' : '' }}>
+                                        Finished</option>
+                                    <option value="not_finished"
+                                        {{ request('learn_status') == 'not_finished' ? 'selected' : '' }}>Not Finished
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <script>
+                            function updateLearnStatus() {
+                                const selectElement = document.getElementById('learnStatusSelect');
+                                const hiddenInputElement = document.getElementById('learnStatusInput');
+                                hiddenInputElement.value = selectElement.value;
+                                document.getElementById('filterForm').submit();
+                            }
+                        </script>
+
+                        <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
+                            aria-labelledby="pills-home-tab-nobd">
+                            <div class="" style="position: relative; height: 100%;">
+                                <div class="d-flex flex-column">
+                                    <div style="text-align: center; flex-grow: 1;">
+                                        <div id="chartContainer_pieChart" style="height: 275px; width: auto;"></div>
+                                        @if (count($groupedByDepartment) == 0)
+                                            <p style="margin-top: 20px; font-size: 1.2em;">No Data Available</p>
+                                            <!-- Button placed at the bottom left, inline with content -->
+                                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                                onclick="openPieDetailsPage()"
+                                                style="position: absolute; bottom: 10px; left: 10px;">See More
+                                                Details</button>
+                                        @else
+                                            <!-- Button placed at the bottom left, inline with content -->
+                                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                                onclick="openPieDetailsPage()"
+                                                style="position: absolute; bottom: 10px; left: 10px;">See More
+                                                Details</button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+
+                        <script>
+                            function openPieDetailsPage() {
+                                const form = document.createElement('form');
+                                form.method = 'GET';
+                                form.action = '{{ url('/visualization/main-pie-chart-details') }}'; // Replace with the URL for the new page
+
+                                // Create hidden inputs with the current form values
+                                const inputs = [{
+                                        name: 'learn_status',
+                                        value: document.getElementById('learnStatusSelect').value
+                                    },
+                                    {
+                                        name: 'location',
+                                        value: document.getElementById('exampleFormControlSelect1').value
+                                    },
+                                    {
+                                        name: 'department',
+                                        value: document.getElementById('exampleFormControlSelect2').value
+                                    },
+                                    {
+                                        name: 'month',
+                                        value: document.getElementById('exampleFormControlSelect3').value
+                                    }
+                                ];
+
+                                inputs.forEach(input => {
+                                    const hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = input.name;
+                                    hiddenInput.value = input.value;
+                                    form.appendChild(hiddenInput);
+                                });
+
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
+                        </script>
                     </div>
                 </div>
             </div>
@@ -397,6 +368,7 @@
                 <div class="card">
                     <div class="card-header">
                         <form action="{{ url()->current() }}" method="GET" id="filterForm">
+                            <input type="hidden" name="learn_status" id="learnStatusInput" value="all">
                             <div class="row">
                                 <div class="col-4">
                                     <h3><strong>Average Score Post Test</strong></h3>
@@ -452,7 +424,9 @@
                                             @foreach ($averageScoreArray as $postTest)
                                                 <tr>
                                                     {{-- <th scope="row">{{ $postTest['title_exam'] }}</th> --}}
-                                                    <th scope="row" title="{{ $postTest['title_exam'] }}">{{ \Illuminate\Support\Str::limit($postTest['title_exam'], 15) }}</th>
+                                                    <th scope="row" title="{{ $postTest['title_exam'] }}">
+                                                        {{ \Illuminate\Support\Str::limit($postTest['title_exam'], 15) }}
+                                                    </th>
                                                     <td
                                                         style="--size: calc( {{ $postTest['average_score'] }} ); background-color:#23BD33; color:white">
                                                         <span

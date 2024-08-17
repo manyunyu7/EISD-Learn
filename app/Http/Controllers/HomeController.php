@@ -225,20 +225,54 @@ class HomeController extends Controller
 
             // return $averageScoreArray;
 
+
+            $learnStatus = request('learn_status');
+
+
+
             $userLMS = DB::connection('mysql')
                 ->table('users')
-                ->select('mdln_username', 'name', 'department_id')
+                ->select('mdln_username', 'name', 'users.department_id')
                 ->where('role', '=', 'student')
+                ->where(function ($query) use ($locationId) {
+                    if (!empty($locationId)) {
+                        if ($locationId !== 'all') {
+                            $query->whereJsonContains('location', ['site_id' => $locationId]);
+                        }
+                    }
+                })
+                ->where(function ($query) use ($departmentId) {
+                    if (!empty($departmentId)) {
+                        if ($departmentId != "all") {
+                            $query->where('users.department_id', '=', $departmentId);
+                        }
+                    }
+                })
+                ->leftJoin('student_lesson', 'users.id', '=', 'student_lesson.student_id') // Join with student_lesson table
+                ->leftJoin('lessons', 'lessons.id', '=', 'student_lesson.lesson_id') // Join with student_lesson table
+                ->where(function ($query) use ($learnStatus) {
+                    if (!empty($learnStatus) && $learnStatus !== 'all') {
+                        if ($learnStatus === 'finished') {
+                            $query->where('student_lesson.learn_status', '=', 1);
+                        } elseif ($learnStatus === 'not_finished') {
+                            $query->where('student_lesson.learn_status', '=', 0);
+                        }
+                    }
+                })
+                ->where(function ($query) {
+                    // Check that the lesson is not deleted
+                    $query->whereNull('lessons.deleted_at');
+                })
                 ->get();
 
-                // department for pie chart
+            // department for pie chart
             $departments = DB::connection('ithub')
                 ->table('m_departments')
                 ->select('id', 'code', 'name')
                 // ->where('code', 'like', '%_NEW%')
                 ->get();
 
-                //Department for filter latest post test
+            //Department for filter latest post test
             $departmentsForFilter = DB::connection('ithub')
                 ->table('m_departments')
                 ->select('id', 'code', 'name')
@@ -261,8 +295,6 @@ class HomeController extends Controller
             })->map(function ($group) {
                 return $group->count();
             });
-
-            // return $groupedByDepartment;
 
 
             $myStudent = DB::select("select * from view_student_lesson where mentor_name = '$user_name' ");
