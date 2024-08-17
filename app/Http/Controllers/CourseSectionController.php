@@ -615,7 +615,7 @@ class CourseSectionController extends Controller
             'course_section.created_at',
             'course_section.updated_at',
             'course_section.can_be_accessed',
-            'exams.is_deleted',
+            'exams.is_deleted as is_exam_deleted',
             DB::raw('CASE
                         WHEN exam_sessions.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
                         WHEN exam_sessions.start_date <= "' . $currentDateTime . '" AND exam_sessions.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
@@ -719,13 +719,13 @@ class CourseSectionController extends Controller
                         // Abort if the student has not taken the quiz and it's not the first section
                         if ($zcheckIfStudentAlreadyTake == 0) {
                             $alreadyTakeNeededExam = false;
-                            $link = url()->to("/course/$lessonId/section/$zsectionId");
-                            $additional = "<a href='$link'>$examTitle</a>";
+                            $zlink = url()->to("/course/$lessonId/section/$zsectionId");
+                            $additional = "<a href='$zlink'>$examTitle</a>";
                             $message = "Terdapat Quiz pada Bagian $zsectionTitle yang Belum Anda Kerjakan.\n";
                             return response()->view('errors.sesval', [
                                 'sectionTitle' => $zsectionTitle,
                                 'message' => $message,
-                                'link' => $link
+                                'link' => $zlink
                             ], 401);
                         }
                     }
@@ -735,7 +735,14 @@ class CourseSectionController extends Controller
                 // Check if the section from sectionOrder exists in completedSections
                 if (!in_array($sectionOrder[$i], $completedSections)) {
                     if ($sectionTakenOnCourseCount != 0) {
-                        abort(401, "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini");
+                        $zsectionTitle = $currentIndexedSection->section_title;
+                        $zsectionId = $currentIndexedSection->id;
+                        $zlink = url()->to("/course/$lessonId/section/$zsectionId");
+                        return response()->view('errors.sesval', [
+                            'sectionTitle' => $zsectionTitle,
+                            'message' => "Anda Harus Menyelesaikan Bagian-bagian Sebelumnya Untuk Mengakses Bagian Ini",
+                            'link' => $zlink
+                        ], 401);
                     } else {
                         $isEligibleStudent = false;
                     }

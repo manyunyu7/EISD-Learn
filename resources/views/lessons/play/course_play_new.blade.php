@@ -589,7 +589,7 @@
                     <!--- Item Course Section Item -->
                     <div style="padding: 20px;  background-color: #FFFFFF; max-width: 560px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.2px solid black;">
                         <!-- First Section -->
-                        <div style="flex: 1; flex-shrink: 1;" class="{{ $item->is_deleted === 'y' ? 'd-none' : '' }}" >
+                        <div style="flex: 1; flex-shrink: 1;" c >
                             @if (isset($item) && isset($item->isTaken))
                                 @php
                                     $isCurrent = $item->isCurrent ?? false; // Check if $item->isCurrent is set, if not, set it to false
@@ -615,7 +615,9 @@
                                         {{-- Display the section title --}}
                                     @endif
                                     <span style="display: inline-block; @if($item->section_id == $currentSectionId) font-weight: bold; @endif">
+                                        <span style='{{ $item->is_deleted === 'y' ? 'grey' : '' }}' >
                                         {{ $item->section_title }}
+                                         </span>
                                     </span>
                                 </a>
                             @endif
