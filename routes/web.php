@@ -16,6 +16,7 @@ use App\Http\Controllers\QRLoginController;
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TestEmailController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\VisualizationDetailController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use UniSharp\LaravelFilemanager\Lfm;
@@ -99,6 +100,8 @@ Route::get('/loginz', function () {
 });
 
 
+
+Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail'])->name('qr-login');
 
 
 // ROUTING SETELAH LOGIN
