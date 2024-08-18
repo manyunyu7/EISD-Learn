@@ -114,8 +114,6 @@ class CourseSectionController extends Controller
 
         // return $student_info;
 
-
-
         $examSessions = ExamSession::select('exam_sessions.*', 'exams.title as title')
             ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
             ->where("exams.created_by", Auth::id())

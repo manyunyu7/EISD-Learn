@@ -257,6 +257,7 @@
                         <td style="overflow: hidden; white-space: nowrap;">{{ $item->section_title }}</td>
                         <td>
                             <div class="d-flex justify-content-center" >
+                                {{-- Btn Presensi --}}
                                 <form action="{{ route('absensi.manage', ['lesson_id' => $lesson_id, 'section_id' => $item->section_id]) }}" action="GET">
                                     <button class="btn mr-2" style="background-color: #208DBB;
                                                                     border-radius: 15px;
@@ -270,26 +271,30 @@
                                         <img src="{{ url('/icons/absensi/absensi_btn.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
                                 </form>
-                                <form action="{{ route('materials.edit', ['lesson' => $lesson_id, 'section_id' => $item->section_id]) }}" action="POST">
-                                    <button class="btn mr-2" style="background-color: #208DBB;
-                                                                    border-radius: 15px;
-                                                                    width:50px;
-                                                                    height: 40px;
-                                                                    position: relative;
-                                                                    padding: 0;
-                                                                    display: flex;
-                                                                    align-items: center;
-                                                                    justify-content: center;">
-                                                <img src="{{ url('/icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
-                                    </button>
-                                </form>
-                                <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn delete-btn" data-id="{{ $item->section_id }}" style="background-color: #FC1E01; border-radius: 15px; width:50px; height: 40px; position: relative; padding: 0; display: flex; align-items: center; justify-content: center;">
-                                        <img src="{{ url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
-                                    </button>
-                                </form>
+                                @if($student_info == null)
+                                    {{-- Btn Edit --}}
+                                    <form action="{{ route('materials.edit', ['lesson' => $lesson_id, 'section_id' => $item->section_id]) }}" action="POST">
+                                        <button class="btn mr-2" style="background-color: #208DBB;
+                                                                        border-radius: 15px;
+                                                                        width:50px;
+                                                                        height: 40px;
+                                                                        position: relative;
+                                                                        padding: 0;
+                                                                        display: flex;
+                                                                        align-items: center;
+                                                                        justify-content: center;">
+                                                    <img src="{{ url('/icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                        </button>
+                                    </form>
+                                    {{-- Btn Delete --}}
+                                    <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn delete-btn" data-id="{{ $item->section_id }}" style="background-color: #FC1E01; border-radius: 15px; width:50px; height: 40px; position: relative; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                            <img src="{{ url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                        </button>
+                                    </form>
+                                @endif
 
                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                                 <script>
