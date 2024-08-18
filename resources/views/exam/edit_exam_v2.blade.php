@@ -120,6 +120,64 @@
         </div>
 
 
+        {{-- INFORMASI UJIAN --}}
+        <div class="col-12">
+            <div class="page-header">
+                <h2><b>Informasi Ujian</b></h2>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Judul Ujian</th>
+                                <td>{{ $examInfo->first()->quiz_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Jenis Ujian</th>
+                                <td>{{ $examInfo->first()->exam_type }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tanggal dibuat</th>
+                                <td>{{ $examInfo->first()->created_at }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tanggal Akses</th>
+                                <td>{{ $examInfo->first()->start_date }} s/d {{ $examInfo->first()->end_date }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Durasi</th>
+                                <td>{{ $examInfo->first()->time_limit_minute }} Menit</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Public Access</th>
+                                <td>{{ $examInfo->first()->public_access === 'y' ? 'Aktif' : 'Tidak Aktif' }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Allow Review</th>
+                                <td>{{ $examInfo->first()->allow_review === 'y' ? 'Aktif' : 'Tidak Aktif'}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Allow Multiple</th>
+                                <td>{{ $examInfo->first()->allow_multiple === 'y' ? 'Aktif' : 'Tidak Aktif'}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Show Score</th>
+                                <td>{{ $examInfo->first()->show_score_on_review === 'y' ? 'Aktif' : 'Tidak Aktif'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <br><br>
         {{-- SOAL UJIAN --}}
         <div class="col-12 {{ ($status_exam === 'Ongoing' OR ($status_exam === 'Finish' AND ($examScore_status === 'Scored' OR $examScore_status === 'Not Scored'))) ? 'd-none' : '' }}">
             <div class="page-header">

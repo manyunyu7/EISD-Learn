@@ -153,7 +153,9 @@ value="{{ Auth::user()->name }}" @endauth>
                     <thead>
                         <tr>
                             <th>Guest Name</th>
-                            <th>Current Score</th>
+                            @if ($examSession->show_score_on_review == 'y' || $examSession->show_score_on_review == '')
+                                <th>Current Score</th>
+                            @endif
                             <th>Finished At</th>
                             @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
                                 <th>Actions</th>
@@ -164,7 +166,9 @@ value="{{ Auth::user()->name }}" @endauth>
                         @forelse($examResults->reverse() as $result)
                             <tr>
                                 <td>{{ $result['guest_name'] }}</td>
-                                <td>{{ $result['current_score'] }}</td>
+                                @if ($examSession->show_score_on_review == 'y' || $examSession->show_score_on_review == '')
+                                    <td>{{ $result['current_score'] }}</td>
+                                @endif
                                 <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}
                                 </td>
                                 @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')

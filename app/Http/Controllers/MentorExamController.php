@@ -491,14 +491,16 @@ class MentorExamController extends Controller
                             ->leftJoin("exam_takers as et","es.id","=","et.session_id")
                             ->first();
 
+        $examInfo = ExamSession::where("exam_id", $examId)->get();
         $status_exam =  $data_examSession->status;
         $examScore_status=  $data_examSession->score_status;
 
         $questionAnswer = ExamQuestionAnswers::all();
         // return $status_exam;
 
+        // return $examInfo;
 
-        $compact = compact('examId', 'questionAnswer', 'data_examSession', 'status_exam', 'examScore_status');
+        $compact = compact('examId', 'questionAnswer', 'data_examSession', 'status_exam', 'examScore_status', 'examInfo');
 
         if ($request->dump == true) {
             return $compact;
