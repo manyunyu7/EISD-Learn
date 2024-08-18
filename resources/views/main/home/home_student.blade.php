@@ -205,7 +205,7 @@
 
     // Extract dates, scores, and titles
     const labels = data.map(item => new Date(item.time_finish).toLocaleDateString());
-    const scores = data.map(item => item.highest_currentScore);
+    const scores = data.map(item => item.current_score);
     const titles = data.map(item => item.title_exam);
 
     // Create the chart
@@ -229,6 +229,7 @@
             maintainAspectRatio: false, // Allows the chart to maintain aspect ratio based on container size
             scales: {
                 x: {
+                    offset: true,
                     title: {
                         display: true,
                         text: 'Date'

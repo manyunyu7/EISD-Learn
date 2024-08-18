@@ -537,14 +537,15 @@ class HomeController extends Controller
 
             // Add month and year filters if needed
             if ($month !== 'all') {
-                $examTakerData->whereRaw('MONTH(es.created_at) = ?', [$month]);
+                $examTakerData->whereRaw('MONTH(et.created_at) = ?', [$month]);
             }
             if ($year !== 'all') {
-                $examTakerData->whereRaw('YEAR(es.created_at) = ?', [$year]);
+                $examTakerData->whereRaw('YEAR(et.created_at) = ?', [$year]);
             }
 
             // Get the exam taker data
             $examTakerRecords = $examTakerData->get();
+
 
             // Group by courseSectionID and determine the highest score for each section
             $highestScores = [];
@@ -561,6 +562,7 @@ class HomeController extends Controller
 
             // Convert the associative array to a simple array with unique courseSectionID
             $postTestScore = array_values($highestScores);
+
 
 
             MyHelper::addAnalyticEvent(
