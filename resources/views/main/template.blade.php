@@ -310,8 +310,8 @@
     @endif
 
     @if(!isset($showCompact))
-        <div class="main-panel">
-            @endif
+    <div class="main-panel" style="background-color:white">
+        @endif
             <div class="content">
                 @yield('breadcumb')
                 <div class="mt-5">

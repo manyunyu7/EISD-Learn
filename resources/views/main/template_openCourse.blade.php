@@ -179,7 +179,7 @@
 
 
         .btn-custom {
-            width: auto; 
+            width: auto;
             height: 45px;
             margin: 10px;
             padding: 0px 10px;
@@ -190,12 +190,12 @@
 
 
         /* STYLE CSS FOR SOCMED SECTION AT PROFILE PAGES */
-       
+
     </style>
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/demo.css"> --}}
-    
+
 </head>
 <body>
 
@@ -238,15 +238,15 @@
 </script>
 
 <div class="wrapper">
-    
+
     @if(!isset($showCompact))
         <div class="main-header">
             <!-- Logo Header -->
             <div class="logo-header" style="background-color: #1D2026">
                 <a href="{{url('/home')}}" class="logo">
                     <div style="text-align: center;">
-                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg" 
-                             style="width: 80%; 
+                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"
+                             style="width: 80%;
                                     height: auto;
                                     display: flex;
                                     margin-top: 5px;
@@ -254,7 +254,7 @@
                         >
                     </div>
                 </a>
-                
+
                 <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
                 <div class="nav-toggle">
                     <button class="btn btn-toggle toggle-sidebar">
@@ -279,7 +279,7 @@
     @endif
 
     @if(!isset($showCompact))
-        <div class="main-panel">
+        <div class="main-panel" style="background-color:white">
             @endif
             <div class="content">
                 @yield('breadcumb')

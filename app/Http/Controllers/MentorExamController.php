@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
+
 class MentorExamController extends Controller
 {
     public function viewCreateNew()
@@ -391,18 +392,19 @@ class MentorExamController extends Controller
         $currentDateTime = Carbon::now($timezone)->toDateTimeString();
         $dayta = DB::table('exams as e')
                 ->select(
-                    'e.*', 
-                    'es.start_date', 
+                    'e.*',
+                    'es.exam_type',
+                    'es.start_date',
                     'es.end_date',
                     'cs.quiz_session_id as examSessionID_onCourseSection',
                     DB::raw('CASE
                                 WHEN cs.quiz_session_id = es.id THEN "Exam Used"
                                 ELSE "Exam Not Used"
                             END as is_examUsed'),
-                    DB::raw('CASE 
+                    DB::raw('CASE
                                 WHEN es.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
-                                WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing" 
-                                ELSE "Finish" 
+                                WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
+                                ELSE "Finish"
                             END as status')
                 )
                 ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
@@ -441,15 +443,15 @@ class MentorExamController extends Controller
     public function viewCreateQuest_v2(Request $request, $examId)
     {
         $dayta = DB::table('exams as e')->select(
-            'e.*', 
-            'es.start_date', 
+            'e.*',
+            'es.start_date',
             'es.end_date',
-            DB::raw('CASE 
+            DB::raw('CASE
                         WHEN es.start_date > NOW() AND es.end_date <= NOW() THEN "Waiting to Start"
-                        WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing" 
+                        WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing"
                         ELSE "Finish" END as status'),
             DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status'))
-            
+
         ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
         ->leftJoin('exam_takers as et', 'es.id', '=', 'et.session_id')
         ->where("e.created_by",Auth::id())
@@ -473,15 +475,15 @@ class MentorExamController extends Controller
 
     public function viewEditQuest_v2(Request $request, $examId)
     {
-        
+
         $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
         $currentDateTime = Carbon::now($timezone)->toDateTimeString();
         $data_examSession = DB::table('exam_sessions as es')->select(
                                 'es.*',
-                                DB::raw('CASE 
+                                DB::raw('CASE
                                             WHEN es.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
-                                            WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing" 
-                                            ELSE "Finish" 
+                                            WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
+                                            ELSE "Finish"
                                         END as status'),
                                 DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status')
                             )
