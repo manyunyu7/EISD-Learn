@@ -190,28 +190,40 @@
                         <table class="table">
                             <thead class="mt-5" style="background-color: #ebebeb; text-align: center;">
                                 <tr>
-                                    <th><h3><b>Judul</b></h3></th>
-                                    <th><h3><b>Jenis Exam</b></h3></th>
-                                    <th><h3><b>Manage</b></h3></th>
-                                    <th><h3><b>Status</b></h3></th>
-                                    <th><h3><b></b></h3></th>
-                                    <th><h3><b>Tanggal Pembuatan</b></h3></th>
+                                    <th>
+                                        <h3><b>Judul</b></h3>
+                                    </th>
+                                    <th>
+                                        <h3><b>Jenis Exam</b></h3>
+                                    </th>
+                                    <th>
+                                        <h3><b>Manage</b></h3>
+                                    </th>
+                                    <th>
+                                        <h3><b>Status</b></h3>
+                                    </th>
+                                    <th>
+                                        <h3><b></b></h3>
+                                    </th>
+                                    <th>
+                                        <h3><b>Tanggal Pembuatan</b></h3>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="examTableBody">
                                 @forelse ($dayta as $data)
-                                <tr data-date="{{ $data->created_at }}" data-type="{{ $data->exam_type }}">
-                                    <td style="overflow: hidden; white-space: nowrap;">
-                                        {{ $data->title }}
-                                    </td>
-                                    <td style="overflow: hidden; white-space: nowrap;">
-                                        {{ $data->exam_type }}
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <div class="d-flex justify-content-center">
-                                            <!-- BTN DOWNLOAD -->
-                                            <button class="btn mr-2"
-                                                style="background-color: #4BC9FF;
+                                    <tr data-date="{{ $data->created_at }}" data-type="{{ $data->exam_type }}">
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->title }}
+                                        </td>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->exam_type }}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div class="d-flex justify-content-center">
+                                                <!-- BTN DOWNLOAD -->
+                                                <button class="btn mr-2"
+                                                    style="background-color: #4BC9FF;
                                                        border-radius: 15px;
                                                        width:45px;
                                                        height: 40px;
@@ -220,16 +232,16 @@
                                                        display: flex;
                                                        align-items: center;
                                                        justify-content: center;"
-                                                onclick="redirectToSection_download('{{ url('/exam/download-exam/' . $data->id) }}')"
-                                                data-toggle="tooltip" title="Download Exam">
-                                                <img src="{{ url('/icons/Download.svg') }}"
-                                                    style="max-width: 100%; max-height: 100%;">
-                                            </button>
+                                                    onclick="redirectToSection_download('{{ url('/exam/download-exam/' . $data->id) }}')"
+                                                    data-toggle="tooltip" title="Download Exam">
+                                                    <img src="{{ url('/icons/Download.svg') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
 
-                                            <!-- BTN COPY LINK -->
-                                            <button class="btn mr-2" onclick="copyLink(this)"
-                                                data-link="{{ url('/public-exam/' . $data->id) }}"
-                                                style="background-color: #6DCBA8;
+                                                <!-- BTN COPY LINK -->
+                                                <button class="btn mr-2" onclick="copyLink(this)"
+                                                    data-link="{{ url('/public-exam/' . $data->id) }}"
+                                                    style="background-color: #6DCBA8;
                                                        border-radius: 15px;
                                                        width:45px;
                                                        height: 40px;
@@ -238,14 +250,14 @@
                                                        display: flex;
                                                        align-items: center;
                                                        justify-content: center;"
-                                                data-toggle="tooltip" title="Copy Link">
-                                                <img src="{{ url('/icons/Link.svg') }}"
-                                                    style="max-width: 100%; max-height: 100%;">
-                                            </button>
+                                                    data-toggle="tooltip" title="Copy Link">
+                                                    <img src="{{ url('/icons/Link.svg') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
 
-                                            <!-- BTN EDIT EXAM -->
-                                            <button class="btn mr-2"
-                                                style="background-color: #208DBB;
+                                                <!-- BTN EDIT EXAM -->
+                                                <button class="btn mr-2"
+                                                    style="background-color: #208DBB;
                                                        border-radius: 15px;
                                                        width:45px;
                                                        height: 40px;
@@ -254,20 +266,20 @@
                                                        display: flex;
                                                        align-items: center;
                                                        justify-content: center;"
-                                                onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/edit-question') }}')"
-                                                data-toggle="tooltip" title="Edit Pertanyaan dan Jawaban">
-                                                <img src="{{ url('icons/Edit.svg') }}"
-                                                    style="max-width: 100%; max-height: 100%;">
-                                            </button>
+                                                    onclick="redirectToSection_edit('{{ url('/exam/manage-exam-v2/' . $data->id . '/edit-question') }}')"
+                                                    data-toggle="tooltip" title="Edit Pertanyaan dan Jawaban">
+                                                    <img src="{{ url('icons/Edit.svg') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
 
-                                            <!-- BTN DELETE -->
-                                            <form id="deleteForm_{{ $data->id }}"
-                                                action="{{ route('exam.delete', $data->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn delete-btn" data-id="{{ $data->id }}"
-                                                    {{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'disabled' : '' }}
-                                                    style="background-color: #FC1E01;
+                                                <!-- BTN DELETE -->
+                                                <form id="deleteForm_{{ $data->id }}"
+                                                    action="{{ route('exam.delete', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn delete-btn" data-id="{{ $data->id }}"
+                                                        {{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'disabled' : '' }}
+                                                        style="background-color: #FC1E01;
                                                            border-radius: 15px;
                                                            width:45px;
                                                            height: 40px;
@@ -276,27 +288,29 @@
                                                            display: flex;
                                                            align-items: center;
                                                            justify-content: center;"
-                                                    data-toggle="tooltip" title="Delete Exam">
-                                                    <img src="{{ url('/icons/Delete.svg') }}"
-                                                        style="max-width: 100%; max-height: 100%;">
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <h4><b>{{ $data->status }}</b></h4>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <h4><b>{{ $data->is_examUsed }}</b></h4>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <h4><b>{{ $data->created_at }}</b></h4>
-                                    </td>
-                                </tr>
+                                                        data-toggle="tooltip"
+                                                        title="{{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'Exam tidak dapat dihapus karena telah digunakan di Course atau sedang berlangsung' : 'Hapus Exam' }}
+">
+                                                        <img src="{{ url('/icons/Delete.svg') }}"
+                                                            style="max-width: 100%; max-height: 100%;">
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <h4><b>{{ $data->status }}</b></h4>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <h4><b>{{ $data->is_examUsed }}</b></h4>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <h4><b>{{ $data->created_at }}</b></h4>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="5" style="text-align: center;">No data available</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="5" style="text-align: center;">No data available</td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
