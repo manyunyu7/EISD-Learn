@@ -440,9 +440,7 @@
                             </div>
                         </div>
                         <div style="flex-shrink: 1;">
-                            <img style="width: 12%; height: auto;"
-                                 src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
-                            Modernland Training
+                            <img style="width: 12%; height: auto;" src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}"> {{ $lesson->mentor_name }}
                         </div>
                     </div>
 
@@ -474,12 +472,10 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
                         <div style="flex: 1; flex-shrink: 1;">
-                            <h4 style="color: #000000">Learning Path</h4>
+                            <h4 style="color: #000000; font-weight: bold">Learning Path</h4>
                         </div>
                         <div style="flex-shrink: 1;">
-                            <img style="width: 12%; height: auto;"
-                                src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
-                            {{$percentage}}% Completed
+                            <h4 style="color: #23BD33; font-weight: bold">{{$percentage}}% Completed</h4>
                         </div>
                     </div>
 
@@ -505,7 +501,7 @@
                     style="padding: 30px;  background-color: #F5F7FA; max-width: 560px; display: flex; justify-content: space-between; align-items: center;">
                     <!-- First Section -->
                     <div style="flex: 1; flex-shrink: 1;">
-                        <h4 style="color: #000000">Getting Started</h4>
+                        <h4 style="color: #FE1D04">Getting Started</h4>
                     </div>
 
                     <div style="flex-shrink: 1;">

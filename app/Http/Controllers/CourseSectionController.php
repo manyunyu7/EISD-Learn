@@ -447,7 +447,12 @@ class CourseSectionController extends Controller
         $prevSectionId = null;
 
         $section = CourseSection::findOrFail($sectionId);
-        $lesson = Lesson::findOrFail($lessonId);
+        // $lesson = Lesson::findOrFail($lessonId);
+        $lesson = Lesson::leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
+        ->select('lessons.*', 'users.name as mentor_name')
+        ->where('lessons.id', $lessonId)
+        ->firstOrFail();
+
 
         $currentSectionId = $section->id;
         $questions = [];
@@ -917,6 +922,8 @@ class CourseSectionController extends Controller
                 $courseCategoryColor = $category->color_of_categories;
             }
         }
+
+        // return $classInfo;
 
         $compact = compact(
             'isEligibleStudent',
