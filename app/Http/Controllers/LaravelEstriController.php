@@ -120,7 +120,7 @@ class LaravelEstriController extends Controller
                     $user->password = $ithubUser->password; // Assuming the passwords are already hashed
                     $user->save();
 
-                    if($user->department_id!= null) {
+                    if ($user->department_id != null) {
                         $user->department_id = json_decode($userIthub->department)->id;
                     }
 
@@ -135,7 +135,16 @@ class LaravelEstriController extends Controller
 
                         // Assign the transformed array to the user's location
                         $user->location = json_encode($location);
-                        $user->save();
+
+                        $idHolding = '0d73ca4e-ff81-441b-ab11-0d19af87f76d';
+
+                        // Extract site_ids from $location
+                        $siteIds = array_column($location, 'site_id');
+
+                        //Yang holding holding aja
+                        if (in_array($idHolding, $siteIds)) {
+                            $user->save();
+                        }
                     }
                 }
             }
