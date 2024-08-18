@@ -140,7 +140,7 @@
             <div class="col-xs-1">
                 <div class="row">
                     <div class="col-xs-6">
-                        <a href="{{ url()->previous() }}">
+                        <a id="statusBarBackButton" href="{{ url()->previous() }}">
                             <img src="{{  asset('lesson_template/img/back_button_course_play.svg') }}" alt="Home" style="width:68px;height:68px;">
                         </a>
                     </div>
@@ -153,7 +153,7 @@
                                 $url = '/lesson/manage_v2';
                             }
                         @endphp
-                        <a href="{{ url($url) }}">
+                        <a id="statusBarHomeButton" href="{{ url($url) }}">
                             <img src="{{ asset('lesson_template/img/home_button_course_play.svg') }}" alt="Home" style="width:68px;height:68px;">
                         </a>
                     </div>

@@ -10,10 +10,13 @@
 
                             <div class="form-group d-none">
                                 <label for="fullName">Nama Peserta Quiz :</label>
-                                <input type="text" id="fullName" name="fullName" class="form-control" placeholder="Enter your full name" required @auth value="{{ Auth::user()->name }}" @endauth>
+                                <input type="text" id="fullName" name="fullName" class="form-control"
+                                    placeholder="Enter your full name" required
+                                    @auth value="{{ Auth::user()->name }}" @endauth>
                             </div>
 
-                            <h5 style="font-size: 22px; color: slategray;">{{ 'Anda Sudah Mengambil Quiz ini : ' . count($examResults) . ' Kali' }}</h5>
+                            <h5 style="font-size: 22px; color: slategray;">
+                                {{ 'Anda Sudah Mengambil Quiz ini : ' . count($examResults) . ' Kali' }}</h5>
                             <h5 style="font-size: 21px; margin-top: 20px">{!! $session->instruction !!}</h5>
 
                             <!-- Time -->
@@ -51,7 +54,8 @@
 
                             <div class="alert alert-primary d-none" role="alert">
                                 <h4 class="alert-heading"></h4>
-                                    <p>Klik <strong>tombol kirim</strong>, setelah ujian selesai, perhatikan sisa waktu yang tersedia<strong></strong></p>
+                                <p>Klik <strong>tombol kirim</strong>, setelah ujian selesai, perhatikan sisa waktu yang
+                                    tersedia<strong></strong></p>
                                 <hr>
                             </div>
 
@@ -61,8 +65,10 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmationModalLabel">Start Exam Confirmation</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <h5 class="modal-title" id="confirmationModalLabel">Start Exam Confirmation
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -73,7 +79,8 @@
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                                 Cancel
                                             </button>
-                                            <button id="startExam" type="button" data-dismiss="modal" class="btn btn-primary">
+                                            <button id="startExam" type="button" data-dismiss="modal"
+                                                class="btn btn-primary">
                                                 Start Exam
                                             </button>
                                         </div>
@@ -210,9 +217,9 @@
                                                             </div>
                                                             <div>
                                                                 <strong>Jawaban Benar:</strong><br>
-                                                                @if(is_array($answer['correct_answer']))
+                                                                @if (is_array($answer['correct_answer']))
                                                                     <ul>
-                                                                        @foreach($answer['correct_answer'] as $item)
+                                                                        @foreach ($answer['correct_answer'] as $item)
                                                                             <li>{{ $item }}</li>
                                                                         @endforeach
                                                                     </ul>
@@ -798,31 +805,31 @@
         };
 
         fetch("/exam/save-user-answer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.showError) {
-                Swal.fire({
-                    title: "Error",
-                    text: `${data.message}`,
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-                clearInterval(timerInterval);
-                return;
-            }
-            confirmStartButton.style.display = "none";
-            sectionFocus.style.display = "block";
-            timerInterval = setInterval(updateTimer, 1000);
-            activateRestrictions(); // Activate restrictions
-        })
-        .catch(error => console.error("Error starting timer:", error));
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.showError) {
+                    Swal.fire({
+                        title: "Error",
+                        text: `${data.message}`,
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                    clearInterval(timerInterval);
+                    return;
+                }
+                confirmStartButton.style.display = "none";
+                sectionFocus.style.display = "block";
+                timerInterval = setInterval(updateTimer, 1000);
+                activateRestrictions(); // Activate restrictions
+            })
+            .catch(error => console.error("Error starting timer:", error));
     }
 
     // Function to update the timer
@@ -895,52 +902,53 @@
         });
 
         fetch("/exam/save-user-answer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.showError) {
-                Swal.fire({
-                    title: "Error",
-                    text: `${data.message}`,
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-            if (data.is_finished) {
-                Swal.fire({
-                    title: 'Exam Finished!',
-                    text: `Your score is ${data.scores}.`,
-                    icon: 'success',
-                    confirmButtonText: 'Next Page'
-                }).then(result => {
-                    if (result.isConfirmed) {
-                        location.reload();
-                    }
-                });
-            } else {
-                console.log("Answers submitted successfully");
-            }
-        })
-        .catch(error => console.error("Error submitting answers:", error));
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.showError) {
+                    Swal.fire({
+                        title: "Error",
+                        text: `${data.message}`,
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+                if (data.is_finished) {
+                    Swal.fire({
+                        title: 'Exam Finished!',
+                        text: `Your score is ${data.scores}.`,
+                        icon: 'success',
+                        confirmButtonText: 'Next Page'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    console.log("Answers submitted successfully");
+                }
+            })
+            .catch(error => console.error("Error submitting answers:", error));
     }
 
     // Function to activate restrictions
     function activateRestrictions() {
-        window.addEventListener("beforeunload", function (e) {
-            if (!isFinished){
-                var confirmationMessage = "Are you sure you want to leave the exam? Your progress will be lost.";
+        window.addEventListener("beforeunload", function(e) {
+            if (!isFinished) {
+                var confirmationMessage =
+                    "Are you sure you want to leave the exam? Your progress will be lost.";
                 (e || window.event).returnValue = confirmationMessage;
                 return confirmationMessage;
             }
         });
 
-        document.addEventListener("visibilitychange", function () {
+        document.addEventListener("visibilitychange", function() {
             if (document.hidden && !isFinished) {
                 Swal.fire({
                     title: "Warning",
@@ -951,13 +959,46 @@
             }
         });
 
-        const buttons = document.querySelectorAll("button:not(#finishExam)");
-        const links = document.querySelectorAll("a");
+        // Array of IDs for buttons and links you want to enable
+        const enabledButtonIds = ['statusBarHomeButton', 'statusBarBackButton',"finishExam"];
+        const enabledLinkIds = ['statusBarHomeButton', 'statusBarBackButton',"finishExam"];
 
-        buttons.forEach(button => button.disabled = true);
+        // Select all buttons and links
+        const buttons = document.querySelectorAll('button');
+        const links = document.querySelectorAll('a');
+
+        // Select the element with the ID 'wrapper'
+        var element = document.getElementById('wrapper');
+        // Check if the element contains the class 'toggled'
+        if (element.classList.contains('toggled')) {
+            console.log('The element contains the class "toggled".');
+        } else {
+            // Toggle the 'toggled' class on the element
+            element.classList.toggle('toggled');
+            console.log('The element does not contain the class "toggled".');
+        }
+
+        // Function to enable or disable buttons and links based on their IDs
+        buttons.forEach(button => {
+            if (enabledButtonIds.includes(button.id)) {
+                // Enable specified buttons
+                button.disabled = false;
+            } else {
+                // Disable other buttons
+                button.disabled = true;
+            }
+        });
+
         links.forEach(link => {
-            link.style.pointerEvents = 'none';
-            link.style.color = 'gray';
+            if (enabledLinkIds.includes(link.id)) {
+                // Enable specified links
+                link.style.pointerEvents = 'auto';
+                link.style.color = 'initial'; // or set a specific color
+            } else {
+                // Disable other links
+                link.style.pointerEvents = 'none';
+                link.style.color = 'gray';
+            }
         });
     }
 
@@ -989,7 +1030,6 @@
             sendAllUserAnswers(false); // Call function to send all user answers
         });
     });
-
 </script>
 
 
@@ -997,23 +1037,22 @@
 
 
 <script>
-
-        // Swal.fire({
-        //     title: 'Are you sure you want to finish the exam?',
-        //     text: 'You won\'t be able to change your answers after submission!',
-        //     icon: 'warning',
-        //     showCancelButton: true,
-        //     confirmButtonText: 'Yes, submit it!',
-        //     cancelButtonText: 'No, cancel!',
-        //     reverseButtons: true
-        // }).then(result => {
-        //     if (result.isConfirmed) {
-        //         sendAllUserAnswers(true);
-        //     } else if (result.dismiss === Swal.DismissReason.cancel) {
-        //         Swal.fire('Cancelled', 'Your exam submission was cancelled.', 'info');
-        //     }
-        // });
-document.addEventListener("DOMContentLoaded", function() {
+    // Swal.fire({
+    //     title: 'Are you sure you want to finish the exam?',
+    //     text: 'You won\'t be able to change your answers after submission!',
+    //     icon: 'warning',
+    //     showCancelButton: true,
+    //     confirmButtonText: 'Yes, submit it!',
+    //     cancelButtonText: 'No, cancel!',
+    //     reverseButtons: true
+    // }).then(result => {
+    //     if (result.isConfirmed) {
+    //         sendAllUserAnswers(true);
+    //     } else if (result.dismiss === Swal.DismissReason.cancel) {
+    //         Swal.fire('Cancelled', 'Your exam submission was cancelled.', 'info');
+    //     }
+    // });
+    document.addEventListener("DOMContentLoaded", function() {
 
 
 
