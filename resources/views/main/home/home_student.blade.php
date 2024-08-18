@@ -8,96 +8,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
-    {{-- <script>
-        var userScores = @json($userScores);
 
-        var sectionTitles = userScores.map(score => score.section_title);
-        var scoreData = userScores.map(score => score.score);
-
-        var ctx = document.getElementById('userScoresChart').getContext('2d');
-        var userScoresChart = new Chart(ctx, {
-            type: 'line', // Use bar chart for 3D effect
-            data: {
-                labels: sectionTitles,
-                datasets: [{
-                    label: 'User Scores',
-                    data: scoreData,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.7)',
-                        'rgba(54, 162, 235, 0.7)',
-                        'rgba(255, 206, 86, 0.7)',
-                        'rgba(75, 192, 192, 0.7)',
-                        'rgba(153, 102, 255, 0.7)',
-                        'rgba(255, 159, 64, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true // Adjust this based on your data
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    title: {
-                        display: true,
-                        text: 'User Scores Chart'
-                    }
-                }
-            }
-        });
-    </script> --}}
-
-    <script>
-        const DISPLAY = true;
-        const BORDER = true;
-        const CHART_AREA = true;
-        const TICKS = true;
-        const ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
-                datasets: [{
-                        label: 'Blue Line',
-                        data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
-                        borderColor: 'blue',
-                        borderWidth: 2,
-                        fill: false
-                    },
-                    {
-                        label: 'Red Line',
-                        data: [5, 9, 8, 2, 6, 7, 5, 9, 8, 2, 6, 7],
-                        borderColor: 'red',
-                        borderWidth: 2,
-                        fill: false
-                    }
-                ]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
 
     <script>
         window.onload = function() {
@@ -280,51 +191,76 @@
             });
             chart1.render();
 
-            var resultPostTest = <?php echo json_encode($postTestScore); ?>;
-            var dataPoints = [];
+
+            // CHART SCORE POST TEST
+            // Load the data from PHP
 
 
-            resultPostTest.forEach(function(item) {
-                function formatDate(dateStr) {
-                    var date = new Date(dateStr);
-                    var day = date.getDate().toString().padStart(2, '0');
-                    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-                    var year = date.getFullYear().toString().slice(-2); // Get last two digits of year
-
-                    return `${day}-${month}-${year}`;
-                }
-
-                var xValue = formatDate(item.time_finish);
-                var yValue = parseInt(item.highest_currentScore);
-
-                dataPoints.push({
-                    label: xValue,
-                    y: yValue,
-                    examTitle: item.title_exam
-                });
-            });
-
-            console.log(dataPoints);
-            var chart2 = new CanvasJS.Chart("chartContainer2", {
-                axisX: {
-                    interval: 1,
-                    labelAngle: -45
-                },
-                axisY: {
-                    minimum: 0,
-                    maximum: 100,
-                    title: "Score"
-                },
-                data: [{
-                    type: "line",
-                    dataPoints: dataPoints,
-                    toolTipContent: "{examTitle} : {y}"
-                }]
-            });
-
-            chart2.render();
         }
     </script>
+
+    <script>
+    // Parse the data passed from the controller
+    const data = @json($postTestScore);
+
+    // Extract dates, scores, and titles
+    const labels = data.map(item => new Date(item.time_finish).toLocaleDateString());
+    const scores = data.map(item => item.highest_currentScore);
+    const titles = data.map(item => item.title_exam);
+
+    // Create the chart
+    const ctx = document.getElementById('myLineChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Nilai Post Test',
+                data: scores,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 1,
+                // Add additional properties if needed
+                // Optional: If you have multiple datasets, you might want to structure the tooltip data differently
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Allows the chart to maintain aspect ratio based on container size
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Highest Current Score'
+                    },
+                    // beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            // Return an array of titles for each tooltip item
+                            return tooltipItems.map(item => {
+                                return titles[item.dataIndex]; // Get the title from the titles array based on the dataIndex
+                            });
+                        },
+                        label: function(tooltipItem) {
+                            // Return the label (score) for each tooltip item
+                            return 'Score: ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 @endsection
 
 @section('main')
@@ -431,20 +367,25 @@
                                     <h3><strong>Post Test Score</strong></h3>
                                 </div>
                                 <div class="col-2">
-                                    <select class="form-control" name="month" id="monthDropdown" style="border: none;" onchange="document.getElementById('filterForm').submit();">
+                                    <select class="form-control" name="month" id="monthDropdown" style="border: none;"
+                                        onchange="document.getElementById('filterForm').submit();">
                                         <option value="all">All Months</option>
                                         @foreach (range(1, 12) as $month)
-                                            <option value="{{ $month }}" {{ request('month', date('n')) == $month ? 'selected' : '' }}>
+                                            <option value="{{ $month }}"
+                                                {{ request('month', date('n')) == $month ? 'selected' : '' }}>
                                                 {{ date('F', mktime(0, 0, 0, $month, 1)) }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-2">
-                                    <select class="form-control" name="year" id="yearDropdown" style="border: none;" onchange="document.getElementById('filterForm').submit();">
+                                    <select class="form-control" name="year" id="yearDropdown" style="border: none;"
+                                        onchange="document.getElementById('filterForm').submit();">
                                         <option value="all">All Years</option>
-                                        @foreach (range(date('Y') - 1, date('Y')) as $year)  <!-- Adjust the range as needed -->
-                                            <option value="{{ $year }}" {{ request('year', date('Y')) == $year ? 'selected' : '' }}>
+                                        @foreach (range(date('Y') - 1, date('Y')) as $year)
+                                            <!-- Adjust the range as needed -->
+                                            <option value="{{ $year }}"
+                                                {{ request('year', date('Y')) == $year ? 'selected' : '' }}>
                                                 {{ $year }}
                                             </option>
                                         @endforeach
@@ -457,9 +398,11 @@
                     <div class="card-body">
                         <div class="tab-content mt-2 mb-3" id="pills-without-border-tabContent">
                             <div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel"
-                                aria-labelledby="pills-home-tab-nobd">
-                                <div class="">
-                                    <div id="chartContainer2" style="height: 370px; width: 100%;"></div>
+                                aria-labelledby="pills-home-tab-nobd"
+                                style="position: relative; width: 100%; height: 370px;">
+                                <div style="position: relative; width: 100%; height: 100%;">
+                                    <canvas id="myLineChart"
+                                        style="width: 100% !important; height: 100% !important;"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -815,14 +758,14 @@
                 <script>
                     toastr.success(
                         '{{ session('
-                                                                                                            success ') }}',
+                                                                                                                                                                                                                                                            success ') }}',
                         ' {{ Session::get('success') }}');
                 </script>
             @elseif(session()->has('error'))
                 <script>
                     toastr.error(
                         '{{ session('
-                                                                                                            error ') }}',
+                                                                                                                                                                                                                                                            error ') }}',
                         ' {{ Session::get('error') }}');
                 </script>
             @endif
