@@ -194,6 +194,7 @@
                                     <th><h3><b>Jenis Exam</b></h3></th>
                                     <th><h3><b>Manage</b></h3></th>
                                     <th><h3><b>Status</b></h3></th>
+                                    <th><h3><b></b></h3></th>
                                     <th><h3><b>Tanggal Pembuatan</b></h3></th>
                                 </tr>
                             </thead>
@@ -265,7 +266,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn delete-btn" data-id="{{ $data->id }}"
-                                                    {{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Scored') ? 'disabled' : '' }}
+                                                    {{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'disabled' : '' }}
                                                     style="background-color: #FC1E01;
                                                            border-radius: 15px;
                                                            width:45px;
@@ -286,6 +287,9 @@
                                         <h4><b>{{ $data->status }}</b></h4>
                                     </td>
                                     <td style="text-align: center;">
+                                        <h4><b>{{ $data->is_examUsed }}</b></h4>
+                                    </td>
+                                    <td style="text-align: center;">
                                         <h4><b>{{ $data->created_at }}</b></h4>
                                     </td>
                                 </tr>
@@ -298,6 +302,20 @@
                         </table>
                     </div>
                 </div>
+
+                <script>
+                    function redirectToSection_edit(url) {
+                        window.location.href = url;
+                    }
+
+                    function redirectToSection_edit_exam(url) {
+                        window.location.href = url;
+                    }
+
+                    function redirectToSection_download(url) {
+                        window.location.href = url;
+                    }
+                </script>
 
                 <script>
                     const sortSelect = document.getElementById('sortSelect');

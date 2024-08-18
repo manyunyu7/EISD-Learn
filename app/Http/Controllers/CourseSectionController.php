@@ -356,87 +356,87 @@ class CourseSectionController extends Controller
 
     public function goToNextSection(Lesson $lesson, CourseSection $lesson_id) {}
 
-    // public function publicExam($examId, Request $request)
-    // {
-    //     $questions = [];
-    //     $isExam = false;
-    //     $title = "";
+    public function publicExam($examId, Request $request)
+    {
+        $questions = [];
+        $isExam = false;
+        $title = "";
 
 
-    //     $examSession = null;
-    //     $exam = null;
-    //     $question_count = 0;
-    //     $totalScore = 0;
-    //     $session = null;
+        $examSession = null;
+        $exam = null;
+        $question_count = 0;
+        $totalScore = 0;
+        $session = null;
 
-    //     $isExam = true;
-    //     $exam = Exam::find($examId);
-    //     $examSession = ExamSession::where('exam_id', '=', $examId)->first();
-    //     $session = $examSession;
-    //     $sessionId = $session->id;
-    //     $questions = json_decode($session->questions_answers);
-    //     $totalScore = 0;
-    //     $title = $exam->title;
-    //     if ($questions != null) {
-    //         foreach ($questions as $question) {
-    //             if (isset($question->choices)) {
-    //                 $choices = json_decode($question->choices, true);
+        $isExam = true;
+        $exam = Exam::find($examId);
+        $examSession = ExamSession::where('exam_id', '=', $examId)->first();
+        $session = $examSession;
+        $sessionId = $session->id;
+        $questions = json_decode($session->questions_answers);
+        $totalScore = 0;
+        $title = $exam->title;
+        if ($questions != null) {
+            foreach ($questions as $question) {
+                if (isset($question->choices)) {
+                    $choices = json_decode($question->choices, true);
 
-    //                 foreach ($choices as $choice) {
-    //                     if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
-    //                         $totalScore += (int) $choice['score'];
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
+                    foreach ($choices as $choice) {
+                        if (isset($choice['score']) && $choice['score'] !== null && $choice['score'] >= 0) {
+                            $totalScore += (int) $choice['score'];
+                        }
+                    }
+                }
+            }
+        }
 
-    //     if ($questions != null) {
-    //         $question_count = count($questions);
-    //     }
-    //     // Check if student has taken any exam on this session
-    //     $hasTakenAnyExam = false;
-    //     $examResults = ExamTaker::where("session_id", "=", $sessionId)->get();
+        if ($questions != null) {
+            $question_count = count($questions);
+        }
+        // Check if student has taken any exam on this session
+        $hasTakenAnyExam = false;
+        $examResults = ExamTaker::where("session_id", "=", $sessionId)->get();
 
-    //     if (count($examResults) > 0) {
-    //         $hasTakenAnyExam = true;
-    //     }
+        if (count($examResults) > 0) {
+            $hasTakenAnyExam = true;
+        }
 
-    //     $examTokenKey = 'exam_token_' . $examId;
+        $examTokenKey = 'exam_token_' . $examId;
 
-    //     if (!session()->has($examTokenKey)) {
-    //         session([$examTokenKey => Str::uuid()->toString()]);
-    //     }
-    //     $examToken = session($examTokenKey);
+        if (!session()->has($examTokenKey)) {
+            session([$examTokenKey => Str::uuid()->toString()]);
+        }
+        $examToken = session($examTokenKey);
 
-    //     // return $examResults;
+        // return $examResults;
 
-    //     $compact = compact(
-    //         'hasTakenAnyExam',
-    //         'examResults',
-    //         'examToken',
-    //         'isExam',
-    //         'title',
-    //         'questions',
-    //         'examSession',
-    //         'exam',
-    //         'session',
-    //         'question_count',
-    //         'totalScore',
-    //     );
+        $compact = compact(
+            'hasTakenAnyExam',
+            'examResults',
+            'examToken',
+            'isExam',
+            'title',
+            'questions',
+            'examSession',
+            'exam',
+            'session',
+            'question_count',
+            'totalScore',
+        );
 
-    //     if ($request->dump == true) {
-    //         return $compact;
-    //     }
+        if ($request->dump == true) {
+            return $compact;
+        }
 
-    //     MyHelper::addAnalyticEvent(
-    //         "Mengerjakan Public Exam",
-    //         "Exam"
-    //     );
+        MyHelper::addAnalyticEvent(
+            "Mengerjakan Public Exam",
+            "Exam"
+        );
 
 
-    //     return view('lessons.play.course_play_public_exam', $compact);
-    // }
+        return view('lessons.play.course_play_public_exam', $compact);
+    }
 
 
     // SEE SECTION
