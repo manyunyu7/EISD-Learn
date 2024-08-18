@@ -409,7 +409,7 @@ class CourseSectionController extends Controller
         }
         $examToken = session($examTokenKey);
 
-        // return $examResults;
+        // return $examSession;
 
         $compact = compact(
             'hasTakenAnyExam',
