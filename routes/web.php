@@ -107,6 +107,7 @@ Route::get('/visualization/main-pie-chart-details', [VisualizationDetailControll
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
 
+    Route::get('sync',[LaravelEstriController::class,'syncDataWithIthub']);
 
     Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
     Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');

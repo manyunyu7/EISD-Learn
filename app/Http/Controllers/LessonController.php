@@ -643,7 +643,7 @@ class LessonController extends Controller
                 'title' => 'required',
                 'content' => 'required',
             ]);
-    
+
             //upload image
             $image = $request->file('image');
             $imagePath = "";
@@ -652,21 +652,21 @@ class LessonController extends Controller
                 $imagePath = "lesson-s3/" . $image->hashName();
                 Storage::disk('s3')->put($imagePath, file_get_contents($image));
             }
-    
+
             $user_id = Auth::id();
-    
+
             // Setting Value Department
             $department = $request->department_id;
             $json_department = json_encode($department);
             // return $json_department;
             // Setting Value Position
             $position = $request->position_id;
-    
+
             $insert_to_Lesson = new Lesson();
             $insert_to_Lesson->course_cover_image = $imagePath;
             $insert_to_Lesson->course_title = $request->title;
-    
-    
+
+
             $insert_to_Lesson->course_trailer = 'Value';
             $insert_to_Lesson->category_id = $request->category_id;
             $insert_to_Lesson->start_time = $request->start_time;
@@ -686,21 +686,21 @@ class LessonController extends Controller
                 'Aktif' => 'y',
                 'Tidak Aktif' => 'n',
             ];
-    
+
             $insert_to_Lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
             $insert_to_Lesson->tipe = $request->tipe;
             $insert_to_Lesson->department_id = json_encode($request->department_id);
             $insert_to_Lesson->position_id = json_encode($request->position_id);
-    
+
             if($request->department_id==null || $request->department_id==""){
                 $insert_to_Lesson->department_id = "[]";
             }
-    
+
             if($request->position_id==null || $request->position_id==""){
                 $insert_to_Lesson->position_id = "[]";
             }
-    
-    
+
+
             if ($insert_to_Lesson->save()) {
                 //redirect dengan pesan sukses
                 return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
@@ -717,7 +717,7 @@ class LessonController extends Controller
 
         // return $totalsize;
 
-        
+
     }
 
     public function fetchDepartments()
@@ -843,6 +843,9 @@ class LessonController extends Controller
         $completedCourseCount = 0;
         // Gabungkan kedua hasil perhitungan sebelumnya untuk menentukan apakah suatu course telah selesai
         $courseStatus = [];
+        $completedStudents = 0;
+        $totalStudents = 0;
+
         foreach ($courseCompleteCount as $course) {
             $lessonId = $course->lesson_id;
             $completedStudents = $course->completed_students;
