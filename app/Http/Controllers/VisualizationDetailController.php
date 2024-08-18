@@ -22,8 +22,8 @@ class VisualizationDetailController extends Controller
         $month = $request->input('month') ?? "all";
         $learnStatus = request('learn_status');
 
-        if($classId==null){
-            $classId="all";
+        if ($classId == null) {
+            $classId = "all";
         }
 
 
@@ -60,7 +60,7 @@ class VisualizationDetailController extends Controller
 
         $userFilters = DB::connection('mysql')
             ->table('users')
-            ->select('mdln_username', 'name', 'users.position_id', 'users.department_id', 'lessons.course_title')
+            ->select('mdln_username', 'name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
             ->where('role', '=', 'student')
             ->where(function ($query) use ($locationId) {
                 if (!empty($locationId)) {
@@ -128,8 +128,26 @@ class VisualizationDetailController extends Controller
             // Assign the department name based on the department_id
             $userFilterItem->department_name = $departmentMap[$userFilterItem->department_id] ?? '';
 
+            $userFilterItem->locations = json_decode($userFilterItem->location);
             // Assign the position name based on the position_id (assuming you have a position_id field)
             $userFilterItem->position_name = $positionMap[$userFilterItem->position_id] ?? '';
+        }
+
+        foreach ($userFilters as $key) {
+
+            if ($key->locations != null) {
+                foreach ($key->locations as $locationItem) {
+                    $locationItem->site_name = $locations->firstWhere('id', $locationItem->site_id)->name ?? "-";
+                }
+            }
+        }
+
+        foreach ($userFilters as $key) {
+            unset($key->location);
+
+            if($key->locations==null || $key->locations==""){
+                $key->locations = [];
+            }
         }
 
 
@@ -211,7 +229,7 @@ class VisualizationDetailController extends Controller
             ->leftJoin('lessons as l', 'sl.lesson_id', '=', 'l.id')
             ->select('u.id as student_id', 'u.profile_url', 'u.name as student_name', 'l.course_title', 'sl.lesson_id')
             ->where('sl.lesson_id', $classId)
-                 ->where(function ($query) use ($departmentId) {
+            ->where(function ($query) use ($departmentId) {
                 if (!empty($departmentId)) {
                     if ($departmentId != "all") {
                         $query->where('u.department_id', '=', $departmentId);
@@ -391,15 +409,15 @@ class VisualizationDetailController extends Controller
 
 
         $listExamInClass = CourseSection::where('course_id', $classId)
-        ->whereNotNull('quiz_session_id')
-        ->where('quiz_session_id', '!=', '')
-        ->where('quiz_session_id', '!=', '-')
-        ->get();
+            ->whereNotNull('quiz_session_id')
+            ->where('quiz_session_id', '!=', '')
+            ->where('quiz_session_id', '!=', '-')
+            ->get();
 
         foreach ($listExamInClass as $la) {
             $examSession = ExamSession::where('id', $la->quiz_session_id)->first();
-            if($examSession!=null){
-                $section =CourseSection::find($la->id);
+            if ($examSession != null) {
+                $section = CourseSection::find($la->id);
                 $exam = Exam::where('id', $examSession->exam_id)->first();
                 $la->exam_id = $exam->id;
                 $la->exam_session_id = $examSession->id;
@@ -427,12 +445,13 @@ class VisualizationDetailController extends Controller
             'summaryPrePost',
             'userFilters',
             'mainPieChartData',
-             'departmentsForFilter',
-             'locations',
-             'learnStatus',
-             'locationId',
-             'departmentId',
-             'classes');
+            'departmentsForFilter',
+            'locations',
+            'learnStatus',
+            'locationId',
+            'departmentId',
+            'classes'
+        );
 
 
         if ($request->dump == true) {
