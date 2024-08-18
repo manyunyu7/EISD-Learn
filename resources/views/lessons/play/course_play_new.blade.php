@@ -583,7 +583,17 @@
                 @forelse ($sections as $item)
 
                     <!--- Item Course Section Item -->
-                    <div style="padding: 20px;  background-color: #FFFFFF; max-width: 560px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.2px solid black;">
+                    <div style="padding: 20px;
+
+                    @if($item->section_id == $currentSectionId)
+                    background-color: #F8BFB9;
+                    @else
+                    background-color: #FFFFFF;
+                    @endif
+
+
+
+                    max-width: 560px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.2px solid #E9EAF0;">
                         <!-- First Section -->
                         <div style="flex: 1; flex-shrink: 1;" c >
                             @if (isset($item) && isset($item->isTaken))
@@ -610,7 +620,7 @@
                                         @endif
                                         {{-- Display the section title --}}
                                     @endif
-                                    <span style="display: inline-block; @if($item->section_id == $currentSectionId) font-weight: bold; @endif">
+                                    <span style="display: inline-block;">
                                         <span style='{{ $item->is_deleted === 'y' ? 'grey' : '' }}' >
                                         {{ $item->section_title }}
                                          </span>

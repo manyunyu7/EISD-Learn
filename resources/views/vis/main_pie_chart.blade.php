@@ -571,6 +571,7 @@
                                             <th scope="col">Department</th>
                                             <th scope="col">Position</th>
                                             <th scope="col">Kelas</th>
+                                            <th scope="col">Lokasi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -581,7 +582,30 @@
                                                 <td>{{ $data->department_name }}</td>
                                                 <td>{{ $data->position_name }}</td>
                                                 <td>{{ $data->course_title }}</td>
+                                                @php
+                                                    $colors = [
+                                                        '#FF5733', // Color 1
+                                                        '#4CAF50', // Color 2
+                                                        '#3498DB', // Color 3
+                                                        '#FFC300', // Color 4
+                                                        '#9B59B6', // Color 5
+                                                        '#E74C3C', // Color 6
+                                                        '#2ECC71', // Color 7
+                                                        '#F39C12', // Color 8
+                                                    ]; // Add more if needed
+                                                @endphp
 
+                                                <td class="text-center">
+                                                    @foreach ($data->locations as $location)
+                                                        @php
+                                                            $color = $colors[$loop->index % count($colors)]; // Rotate through colors based on index
+                                                        @endphp
+                                                        <span class="badge"
+                                                            style="background-color: {{ $color }}; color: white;">
+                                                            {{ $location->site_name }}
+                                                        </span>
+                                                    @endforeach
+                                                </td>
                                             </tr>
                                         @empty
                                             <div class="alert alert-danger">
@@ -821,52 +845,52 @@
                 @endif
 
                 @if (!Request::has('class') || Request::query('class') !== 'all')
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Daftar Ujian Pada Kelas
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Daftar Ujian Pada Kelas
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="basic-main-tables"
-                                    class="table table-bordered  @if (count($userFilters) < 1) d-none @endif">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">No</th>
-                                            <th scope="col">Judul Materi</th>
-                                            <th scope="col">Judul Exam</th>
-                                            <th scope="col">Lihat Hasil</th>
-                                            <th scope="col">Jenis</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($listExamInClass as $data)
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="basic-main-tables"
+                                        class="table table-bordered  @if (count($userFilters) < 1) d-none @endif">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $data->section_title }}</td>
-                                                <td>{{ $data->exam_title }}</td>
-                                                <td>
-                                                    <a href="{{ url("/exam/download-exam/$data->exam_id") }}">
-                                                        Lihat Hasil Ujian
-                                                    </a>
-
-                                                </td>
-                                                <td>{{ $data->type }}</td>
-
+                                                <th scope="col">No</th>
+                                                <th scope="col">Judul Materi</th>
+                                                <th scope="col">Judul Exam</th>
+                                                <th scope="col">Lihat Hasil</th>
+                                                <th scope="col">Jenis</th>
                                             </tr>
-                                        @empty
-                                            <div class="alert alert-danger">
-                                                Anda Belum Memiliki Kelas
-                                            </div>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($listExamInClass as $data)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $data->section_title }}</td>
+                                                    <td>{{ $data->exam_title }}</td>
+                                                    <td>
+                                                        <a href="{{ url("/exam/download-exam/$data->exam_id") }}">
+                                                            Lihat Hasil Ujian
+                                                        </a>
+
+                                                    </td>
+                                                    <td>{{ $data->type }}</td>
+
+                                                </tr>
+                                            @empty
+                                                <div class="alert alert-danger">
+                                                    Anda Belum Memiliki Kelas
+                                                </div>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endif
+                @endif
             </div>
         </div>
     </div>
