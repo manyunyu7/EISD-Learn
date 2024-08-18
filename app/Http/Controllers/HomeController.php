@@ -210,7 +210,7 @@ class HomeController extends Controller
                 })
                 ->groupBy('es.id')
                 ->orderByDesc('es.created_at')
-                ->limit(3)
+                // ->limit(3)
                 ->get();
 
             $averageScoreArray = [];
@@ -244,7 +244,7 @@ class HomeController extends Controller
                 ->where(function ($query) use ($departmentId) {
                     if (!empty($departmentId)) {
                         if ($departmentId != "all") {
-                            $query->where('department_id', '=', $departmentId);
+                            $query->where('users.department_id', '=', $departmentId);
                         }
                     }
                 })
@@ -334,12 +334,16 @@ class HomeController extends Controller
             return view('main.dashboard')
                 ->with($compact);
         } else if (Auth::check() && Auth::user()->role == 'student') {
+
+            $currentMonth = date('n'); // Numeric representation of the current month (1-12)
+            $currentYear = date('Y');  // Full numeric representation of the current year (e.g., 2024)
+
+
+
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
-            $month = $request->input('month') ?? "all";
-            $year = $request->input('year') ?? "all";
-
-            // return $month;
+            $month = $request->input('month') ?? $currentMonth;
+            $year = $request->input('year') ?? $currentYear;
 
 
             $userScores = DB::table('student_section')
@@ -503,89 +507,68 @@ class HomeController extends Controller
                 ->select('id', 'name', 'color_of_categories')
                 ->get();
 
-            // BUILD QUERY POST TEST SCORE
-            // $postTestScore = DB::select("
-            //                 SELECT
-            //                     et.user_id AS userID,
-            //                     es.id AS exam_SessionId,
-            //                     es.exam_type AS examType,
-            //                     cs.section_title AS title_exam,
-            //                     exm.title AS materiExam,
-            //                     MAX(et.current_score) AS highest_currentScore,
-            //                     et.course_flag AS courseID,
-            //                     et.course_section_flag AS courseSectionID
-            //                 FROM
-            //                     exam_takers AS et
-            //                 LEFT JOIN
-            //                     exam_sessions AS es ON et.session_id = es.id
-            //                 LEFT JOIN
-            //                     course_section AS cs ON es.id = cs.quiz_session_id
-            //                 LEFT JOIN
-            //                     exams AS exm ON es.exam_id = exm.id
-            //                 WHERE
-            //                     et.user_id = $userID
-            //                     AND
-            //                     es.exam_type = 'Post Test'
-            //                 GROUP BY
-            //                     et.user_id,
-            //                     es.exam_type,
-            //                     es.id,
-            //                     cs.section_title,
-            //                     exm.title,
-            //                     et.course_flag,
-            //                     et.course_section_flag
-            // ");
 
-            // return $postTestScore;
-
-
-            $postTestScore = DB::table('exam_takers as et')
+            //============== FOR THE SCORE CHART =========================
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            $examTakerData = DB::table('exam_takers as et')
                 ->select(
                     'et.user_id as userID',
                     'et.finished_at as time_finish',
-                    'es.id as exam_SessionId',
+                    'et.session_id as exam_SessionId',
                     'es.exam_type as examType',
-                    'cs.section_title as title_exam',
-                    'exm.title as materiExam',
-                    DB::raw('MAX(et.current_score) as highest_currentScore'),
+                    'exm.title as title_exam',
+                    'cs.section_title as materiExam',
                     'et.course_flag as courseID',
-                    'et.course_section_flag as courseSectionID'
+                    'et.course_section_flag as courseSectionID',
+                    'et.current_score' // Include the score column
                 )
                 ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
-                ->leftJoin('course_section as cs', 'es.id', '=', 'cs.quiz_session_id')
                 ->leftJoin('exams as exm', 'es.exam_id', '=', 'exm.id')
+                ->leftJoin('course_section as cs', 'et.course_section_flag', '=', 'cs.id')
                 ->where('et.user_id', $userID)
+                ->whereNotNull('et.finished_at')
+                ->where('et.is_finished', "y")
                 ->where('es.exam_type', 'Post Test');
 
-            // Tambahkan filter bulan jika diperlukan
+            // Add month and year filters if needed
             if ($month !== 'all') {
-                $postTestScore->whereRaw('MONTH(es.created_at) = ?', [$month]);
+                $examTakerData->whereRaw('MONTH(et.created_at) = ?', [$month]);
             }
             if ($year !== 'all') {
-                $postTestScore->whereRaw('YEAR(es.created_at) = ?', [$year]);
+                $examTakerData->whereRaw('YEAR(et.created_at) = ?', [$year]);
             }
 
-            // Tambahkan grup by clause
-            $postTestScore->groupBy(
-                'et.user_id',
-                'et.finished_at',
-                'es.exam_type',
-                'es.id',
-                'cs.section_title',
-                'exm.title',
-                'et.course_flag',
-                'et.course_section_flag'
-            );
-            // Dapatkan hasil query
-            $postTestScore = $postTestScore->get();
+            // Get the exam taker data
+            $examTakerRecords = $examTakerData->get();
+
+
+            // Group by courseSectionID and determine the highest score for each section
+            $highestScores = [];
+
+            foreach ($examTakerRecords as $item) {
+                $courseSectionID = $item->courseSectionID;
+
+                // Check if this courseSectionID is already processed
+                if (!isset($highestScores[$courseSectionID]) || $item->current_score > $highestScores[$courseSectionID]->current_score) {
+                    // Update the highest score for this courseSectionID
+                    $highestScores[$courseSectionID] = $item;
+                }
+            }
+
+            // Convert the associative array to a simple array with unique courseSectionID
+            $postTestScore = array_values($highestScores);
+
+
 
             MyHelper::addAnalyticEvent(
                 "Buka Dashboard Student",
                 "Dashboard"
             );
-
-            // return $postTestScore;
-
 
 
             return view('main.dashboard')
