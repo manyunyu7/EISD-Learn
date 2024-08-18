@@ -1240,6 +1240,14 @@ class CourseSectionController extends Controller
     public function delete_Students($id, $lessonId)
     {
         StudentLesson::where('student_id', $id)->where('lesson_id', $lessonId)->delete();
+
+        StudentSection::leftJoin('course_section as cs', 'student_section.section_id', '=', 'cs.id')
+                        ->where('student_id', $id)
+                        ->where('cs.course_id', $lessonId)
+                        ->delete();
+        
+        ExamTaker::where('user_id', $id)->where('exam_takers.course_flag', $lessonId)->delete();
+
         return back()->with(['success' => 'Students Deleted Successfully']);
     }
 
