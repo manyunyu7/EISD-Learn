@@ -639,7 +639,7 @@ class LessonController extends Controller
 
         if($totalsize <= 1048576){
             $this->validate($request, [
-                'image' => 'required|max_uploaded_file_size:3000',
+                'image' => 'required',
                 'title' => 'required',
                 'content' => 'required',
             ]);
@@ -710,7 +710,7 @@ class LessonController extends Controller
                 return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
             }
         }else{
-            return redirect('/lesson/create_v2')->with(['error' => 'Ukuran file terlalu besar! Program hanya menerima ukuran file di bawah 1 MB.']);
+            return redirect('lesson/manage_v2')->with(['error' => 'Ukuran file terlalu besar! Program hanya menerima ukuran file di bawah 1 MB.']);
         }
 
 

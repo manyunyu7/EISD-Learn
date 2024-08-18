@@ -384,7 +384,7 @@
 
                         {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">Deskripsi Kelas</label>
+                            <label for="" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
                             <textarea id="editor" class="form-control" name="content">{{ old('content') }}</textarea>
                             <div id="error-message" style="color: red; display: none; font-size: 0.9em;"></div>
                             <script>
@@ -401,7 +401,7 @@
 
                         {{-- New Kelas --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">New Kelas<span style="color: red">*</span></label>
+                            <label for="" class="mb-2">New Kelas</label>
                             <div class="input-group mb-3">
                                 <input readonly type="text" value="Tidak Aktif" name="new_class" id="btn-new-clas"
                                     class="btn btn-danger" style="width: 100%">
@@ -410,7 +410,7 @@
 
                         {{-- Bisa Diakses --}}
                         <div class="mb-3">
-                            <label for="" class="mb-2">Akses Kelas<span style="color: red">*</span></label>
+                            <label for="" class="mb-2">Akses Kelas</label>
                             <div class="input-group mb-3">
                                 <input readonly type="text" value="Tidak Aktif" name="akses_kelas" id="btn-akses-kelas"
                                     class="btn btn-danger" style="width: 100%">
@@ -484,7 +484,7 @@
                                     <div class="input-group mb-3">
                                         <input required type="file"  name="image" class="form-control" id="inFile_coverCourse" accept="image/*" onchange="validateImage()">
                                     </div>
-                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9</small>
+                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9<span style="color: red">*</span></small>
                                 </div>
                             </div>
                         </div>
