@@ -175,21 +175,17 @@
                                                         cs.created_at DESC
                                                         ");
                                         @endphp
+                                        
+                                        
                                         <div>
-                                            {{-- href="{{ url('/lesson/'.$data->id.'/dashboard/') }}" --}}
-                                            {{-- onclick="{{ $class ? "redirectToSection('" . url('/dashboard/mentor/course/'. $data->id) . "')" : "void(0)" }}" --}}
-                                            <a id="checkBtn" class="btn text-white btn-round{{ $class ? '' : ' empty' }}"
-                                                style="background-color: {{ $class ? '#208DBB' : '#CCCCCC' }}"
-                                                onclick="{{ $class ? "redirectToSection('" . url('/visualization/main-pie-chart-details?learn_status=all&location=all&class=' . $data->id . '&department=all&month=all/') . "')" : 'void(0)' }}">Check</a>
+                                            <a id="checkBtn" class="btn text-white btn-round{{ $class ? '' : ' empty' }}" style="background-color: {{ $class ? '#208DBB' : '#CCCCCC' }}" onclick="{{ $class ? "redirectToSection('" . url('/visualization/main-pie-chart-details?learn_status=all&location=all&class=' . $data->id . '&department=all&month=all/') . "')" : 'void(0)' }}">Check</a>
                                             <script>
                                                 // Mengambil tombol check
                                                 var checkBtn = document.getElementById('checkBtn');
 
                                                 // Mengecek apakah class kosong, jika ya, menonaktifkan tombol
                                                 if (checkBtn.classList.contains('empty')) {
-                                                    // Menghapus atribut onclick
                                                     checkBtn.removeAttribute('onclick');
-                                                    // Mengubah warna latar belakang menjadi abu-abu
                                                     checkBtn.style.backgroundColor = '#CCCCCC';
                                                 }
 
@@ -200,15 +196,12 @@
                                             </script>
                                         </div>
 
-
-                                        {{-- <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i>15 lectures</span> --}}
-                                        <p id="progressCourse" class="h6 mb-0">
-                                            {{-- {{ $data->id }} --}}
-                                            {{ isset($courseStatus[$data->id]) ? $courseStatus[$data->id] : '0' }}%
-                                            Completed
+                                        
+                                        <p style="width: 100%; margin-top: 15px; font-size: 17px; color: #23BD33; text-align: end" class="h6 mb-0">
+                                            {{ isset($courseStatus[$data->id]) ? $courseStatus[$data->id] : '0' }}% Completed
                                         </p>
-
                                     </div>
+
 
                                     <!-- Rating star -->
                                     <ul class="list-inline mb-0 d-none">
