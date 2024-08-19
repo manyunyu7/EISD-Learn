@@ -233,6 +233,7 @@ class HomeController extends Controller
                 ->table('users')
                 ->select('mdln_username', 'name', 'users.department_id')
                 ->where('role', '=', 'student')
+                ->where('is_testing', '=', 'n')
                 ->where(function ($query) use ($locationId) {
                     if (!empty($locationId)) {
                         if ($locationId !== 'all') {
@@ -263,6 +264,7 @@ class HomeController extends Controller
                     $query->whereNull('lessons.deleted_at');
                 })
                 ->get();
+
 
             // department for pie chart
             $departments = DB::connection('ithub')
@@ -372,6 +374,7 @@ class HomeController extends Controller
                 ->where('student_id', $userId)
                 ->where('learn_status', 0)
                 ->whereNull('lessons.deleted_at')
+                ->where('users.is_testing', '=', 'n')
                 ->count();
 
             $completedCourse = DB::table('student_lesson')
@@ -381,6 +384,7 @@ class HomeController extends Controller
                 ->where('student_id', $userId)
                 ->where('learn_status', 1)
                 ->whereNull('lessons.deleted_at')
+                ->where('users.is_testing', '=', 'n')
                 ->count();
 
             $monthly_CompletedCourse = DB::table('student_lesson')
@@ -390,6 +394,7 @@ class HomeController extends Controller
                 ->where('student_lesson.student_id', $userId)
                 ->where('student_lesson.learn_status', 1)
                 ->where('lessons.is_visible', 'y')
+                ->where('users.is_testing', '=', 'n')
                 ->whereNull('lessons.deleted_at')
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();

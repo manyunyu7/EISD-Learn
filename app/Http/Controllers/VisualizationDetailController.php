@@ -62,6 +62,7 @@ class VisualizationDetailController extends Controller
             ->table('users')
             ->select('mdln_username', 'name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
             ->where('role', '=', 'student')
+            ->where('users.is_testing', '=', 'n')
             ->where(function ($query) use ($locationId) {
                 if (!empty($locationId)) {
                     if ($locationId !== 'all') {
@@ -183,6 +184,7 @@ class VisualizationDetailController extends Controller
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id')
             ->where('course_section.course_id', $classId)
+            ->where('users.is_testing', '=', 'n')
             ->orderByRaw('CAST(course_section.section_order AS UNSIGNED) ASC')
             ->get();
 
