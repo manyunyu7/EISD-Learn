@@ -4,25 +4,10 @@
         <div class="col-sm-12 my-auto">
             <!-- 404 Error Text -->
             <div class="text-center w-100">
-                <!-- 16:9 aspect ratio -->
-
-{{--                <div class="d-flex justify-content-center">--}}
-{{--                    <div class="embed-responsive embed-responsive-4by3 video-mask" style="width:300px; height:170px" >--}}
-{{--                        <video loop autoplay="autoplay" muted  class="embed-responsive-item">--}}
-{{--                            <source src="{{ URL::to('/') }}/401.mp4" type=video/mp4>--}}
-{{--                        </video>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-
-
                 <div class="error mx-auto" data-text="401">401</div>
-                <strong>
-                    <h4>
-                        <h2>{{ $exception->getMessage() }}</h2>
-                    </h4>
-                </strong>
+                <p class="my-4">{{ $exception->getMessage() }}</p>
                 <p class="lead text-gray-800">Anda Tidak Punya Akses ke Halaman Ini</p>
-                <a href="{{ URL::previous() }}">&larr; Kembali</a>
+                <a href="{{ route('login') }}">&larr; Log In</a>
             </div>
         </div>
     </div>

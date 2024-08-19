@@ -172,7 +172,7 @@
         </script>
     @endif
 
-    <div class="row" style="background-color: #015351; z-index: 22222">
+    <div class="row d-none" style="background-color: #015351; z-index: 22222">
         <div class="small-hamburger" style="margin-top:6px; margin-bottom: 6px; margin-right: 30px; margin-left: 20px">
              <span style="min-width: 100vw!important; display: flex; align-items: center;">
                 <a href="#menu-toggle" id="menu-toggle-small" style="margin: 8px;">
@@ -183,7 +183,7 @@
         </div>
     </div>
 
-    <div class="container-fluid navbar-fixed-top large-nav-bar" style="background-color: #F5F7FA; padding: 10px 20px;">
+    <div class="container-fluid navbar-fixed-top large-nav-bar d-none" style="background-color: #F5F7FA; padding: 10px 20px;">
         <div class="row">
             <div class="col-xs-1 back-button">
                 <a href="{{ url()->previous() }}" class="btn btn-link">
@@ -360,7 +360,7 @@
                                                 src="{{$sectionDetail->section_video}}">
                                         </video>
                                     @else
-                                        <h1>Unsupported file format</h1>
+                                        {{-- <h1>Unsupported file format</h1> --}}
                                     @endif
                                 @endif
                             </div>
@@ -368,29 +368,28 @@
 
                         <script>
                             function nextCuy() {
-                                var loaderContainer = document.querySelector('.loader-container');
-                                loaderContainer.style.display = 'flex'; // or 'flex' if it's a flex container
-                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
-                                window.location.href = nextUrl;
-                                return;
                                 var videoPlayer = document.getElementById("myVideo");
-                                var nextUrl = "{{ url('/') . "/mobile/course/$courseId/section/$next_section" }}";
-                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+                                var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                                if (videoPlayer) {
+                                    var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
-                                if (progress >= 90) {
-                                    window.location.href = nextUrl;
-                                    return;
+                                    if (progress >= 90) {
+                                        document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                        window.location.href = nextUrl;
+                                    } else {
+                                        event.preventDefault();
+                                        Swal.fire({
+                                            title: "Video Progress",
+                                            text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                            icon: "warning",
+                                            confirmButtonText: "OK",
+                                        });
+                                    }
                                 } else {
-
-                                    // Prevent the default behavior of the button
-                                    event.preventDefault();
-                                    // Show a SweetAlert alert informing the user to complete the video first
-                                    Swal.fire({
-                                        title: "Video Progress",
-                                        text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                        icon: "warning",
-                                        confirmButtonText: "OK",
-                                    });
+                                    // Handle case where videoPlayer element does not exist
+                                    document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                    window.location.href = nextUrl;
+                                    console.error("Video player element not found.");
                                 }
                             }
                         </script>
@@ -432,9 +431,9 @@
         <!-- /#page-content-wrapper -->
 
         <!-- Sidebar -->
-        <div id="sidebar-wrapper" style="background-color: whitesmoke;">
+        <div id="sidebar-wrapper d-none" style="background-color: whitesmoke;">
             <ul class="sidebar-nav">
-                <div class="container content-container">
+                <div class="container content-container d-none">
                     <div class="" style="max-width: 560px">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">

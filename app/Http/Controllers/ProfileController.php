@@ -8,20 +8,107 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use DB;
 
 class ProfileController extends Controller
 {
 
     public function index()
     {
+
+        // Read Full Name
         $fullName = Auth::user()->name;
         $nameParts = explode(' ', $fullName);
         $twoWords_ofName = implode(' ', array_slice($nameParts, 0, 2));
         $end_ofName = implode(' ', array_slice($nameParts, 2));
-        // return $fullName;
-        return view('profile.profile', compact('twoWords_ofName', 'end_ofName'));
+
+        // Read Username
+        $uname = Auth::user()->mdln_username;
+        $username = '';
+        $query_uname = DB::connection('ithub')
+            ->table('users')
+            ->select('username')
+            ->where('id', '=', $uname)
+            ->first();
+        if ($query_uname) {
+            $username = $query_uname->username;
+        } else {
+            $username = '-';
+        }
+
+        // Read Jabatan
+        $id_jbtn = Auth::user()->position_id;
+        $query_jabatan = DB::connection('ithub')
+            ->table('m_group_employees')
+            ->select('name')
+            ->where('id', '=', $id_jbtn)
+            ->get();
+
+        $value_jbtn = "";
+        if ($query_jabatan && count($query_jabatan) > 0) {
+            $jabatan = json_decode($query_jabatan, true);
+            // Periksa apakah hasil decode adalah array dan memiliki key 'name'
+            if (is_array($jabatan) && isset($jabatan)) {
+                $value_jbtn = $jabatan[0]['name'] ?? null; // Mengembalikan nilai dari key 'name'
+            } else {
+                $value_jbtn =  "-";
+            }
+        } else {
+            $value_jbtn = "-";
+        }
+        $name_jbtn = $value_jbtn;
+
+
+        // Read Department
+        $id_dept = Auth::user()->department_id;
+        $query_department = DB::connection('ithub')
+            ->table('m_departments')
+            ->select('name')
+            ->where('id', '=', $id_dept)
+            ->get();
+        $value_dept = "";
+        if ($query_department && count($query_department) > 0) {
+            $department = json_decode($query_department, true);
+            // Periksa apakah hasil decode adalah array dan memiliki key 'name'
+            if (is_array($department) && isset($department)) {
+                $value_dept = $department[0]['name'] ?? null; // Mengembalikan nilai dari key 'name'
+            } else {
+                $value_dept =  "-";
+            }
+        } else {
+            $value_dept = "-";
+        }
+        $name_dept = $value_dept;
+
+        // Read Business Unit
+        $id_bu = json_decode(Auth::user()->location, true);
+
+        $name_sites = "-";
+        // Pastikan $id_bu tidak null dan merupakan array
+        if ($id_bu && is_array($id_bu)) {
+            // Ambil semua nilai site_id dari array
+            $site_ids = array_map(function($location) {
+                return $location['site_id'];
+            }, $id_bu);
+
+            // Pastikan ada nilai dalam $site_ids
+            if (!empty($site_ids)) {
+                // Query menggunakan whereIn
+                $locations = DB::connection('ithub')
+                                ->table('m_sites')
+                                ->whereIn('id', $site_ids)
+                                ->get();
+                $name_sites = $locations->pluck('code')->implode(', ');
+            } else {
+                $name_sites = "-";
+            }
+        } else {
+            $name_sites = "-";
+        }
+
+
+        return view('profile.profile', compact( 'fullName', 'twoWords_ofName', 'end_ofName', 'name_jbtn', 'name_dept', 'name_sites', 'username'));
     }
 
 
@@ -29,7 +116,8 @@ class ProfileController extends Controller
     {
 
         MyHelper::addAnalyticEvent(
-            "Ganti Password","Profile"
+            "Ganti Password",
+            "Profile"
         );
 
         $request->validate([
@@ -88,13 +176,14 @@ class ProfileController extends Controller
     {
 
         MyHelper::addAnalyticEvent(
-            "Update Foto Profile","Profile"
+            "Update Foto Profile",
+            "Profile"
         );
 
         $user = User::findOrFail(auth()->id());
         $first_name = $request->input('first_name');
         $end_name = $request->input('end_name');
-        $complete_name = $first_name.' '.$end_name;
+        $complete_name = $first_name . ' ' . $end_name;
 
         if ($request->hasFile('profile_image')) {
             // Delete old image from S3 if not the default image
@@ -110,7 +199,7 @@ class ProfileController extends Controller
             // Update user profile data
             $user->update([
                 'profile_url' => $imagePath,
-                'contact' => $request->phone,
+                // 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
                 'jobs' => $request->jobs,
@@ -120,7 +209,7 @@ class ProfileController extends Controller
         } else {
             // Update user profile data without changing the image
             $user->update([
-                'contact' => $request->phone,
+                // 'contact' => $request->phone,
                 'institute' => $request->institute,
                 'motto' => $request->motto,
                 'jobs' => $request->jobs,
@@ -145,7 +234,8 @@ class ProfileController extends Controller
     {
         // return $request->all();
         MyHelper::addAnalyticEvent(
-            "Update Socieal Media","Profile"
+            "Update Socieal Media",
+            "Profile"
         );
 
 
@@ -161,22 +251,15 @@ class ProfileController extends Controller
         $yt = $request->input("youtube");
 
         // URL SOCMED
-        if (substr($wa, 0, 1) === '0') {
-            // Jika dimulai dengan 0, ubah format menjadi +62
-            $wa = '+62' . substr($wa, 1);
-        } else {
-            // Jika tidak dimulai dengan 0, tambahkan +62 di depannya
-            $wa = $wa;
-            $user->update([
-                'url_personal_website' => $website,
-                'url_facebook' => $fb,
-                'url_instagram' => $ig,
-                'url_linkedin' => $li,
-                'url_twitter' => $twt,
-                'url_whatsapp' => $wa,
-                'url_youtube' => $yt,
-            ]);
-        }
+        $user->update([
+            'url_personal_website' => $website,
+            'url_facebook' => $fb,
+            'url_instagram' => $ig,
+            'url_linkedin' => $li,
+            'url_twitter' => $twt,
+            'url_whatsapp' => $wa,
+            'url_youtube' => $yt,
+        ]);
 
 
         if ($user) {
@@ -186,8 +269,5 @@ class ProfileController extends Controller
             //redirect dengan pesan error
             return redirect('profile')->with(['error' => 'Data Gagal Diupdate!']);
         }
-
-
     }
-
 }

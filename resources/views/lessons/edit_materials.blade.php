@@ -150,8 +150,8 @@
                                     <div class="input-group mb-3">
                                         <select required name="update_is_access" class="form-control form-select-lg" aria-label="Default select example">
                                             <option value="" disabled> </option>
-                                            <option value="Y" {{ $data_course_section_to_edit->can_be_accessed == 'Y' ? 'selected' : '' }}>Ya</option>
-                                            <option value="T" {{ $data_course_section_to_edit->can_be_accessed == 'T' ? 'selected' : '' }}>Tidak</option>
+                                            <option value="y" {{ $data_course_section_to_edit->can_be_accessed == 'y' ? 'selected' : '' }}>Ya</option>
+                                            <option value="n" {{ $data_course_section_to_edit->can_be_accessed == 'n' ? 'selected' : '' }}>Tidak</option>
                                         </select>
                                     </div>
                                 </div>
@@ -194,7 +194,7 @@
                             </div>
 
                             {{-- Embedded File --}}
-                            <div class="mb-3">
+                            <div class="mb-3 d-none">
                                 <label for="" class="mb-2">Embeded File<span style="color: red"></span></label>
                                 <textarea style="min-height:100px;height:100%;width:100%;border:1px solid;" type='text'  class="form-control" name="embeded_file">{{ $data_course_section_to_edit->embedded_file }}</textarea>
                             </div>

@@ -149,8 +149,8 @@
                                     <div class="input-group mb-3">
                                         <select required name="is_access" class="form-control form-select-lg" aria-label="Default select example">
                                             <option value="" disabled selected> </option>
-                                            <option value="Y">Ya</option>
-                                            <option value="T">Tidak</option>
+                                            <option value="y">Ya</option>
+                                            <option value="n">Tidak</option>
                                         </select>
                                     </div>
                                 </div>
@@ -189,7 +189,7 @@
                             </div>
 
                             {{-- Embedded File --}}
-                            <div class="mb-3">
+                            <div class="mb-3 d-none">
                                 <label for="" class="mb-2">Embeded File<span style="color: red">*</span></label>
                                 <textarea  type='text'  class="form-control" name="embeded_file"></textarea>
                             </div>
@@ -211,30 +211,33 @@
         </div>
 
         {{-- BUTTON REARRANGE --}}
-        <div class="page-header mb-3">
-            <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3">
-                <button class="btn mr-2 ml--10"
-                        onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
-                        type="submit"
-                        style=" background-color: #208DBB;
-                                border-radius: 12px;
-                                width:80px;
-                                height: 40px;
-                                position: relative;
-                                padding: 0;
-                                margin-left: -15px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;">
-                        <span style="color:white">Rearrange</span>
-                </button>
-                <script>
-                    function redirectToSection(url) {
-                        window.location.href = url;
-                    }
-                </script>
+        @if($student_info == 0)
+            <div class="page-header mb-3">
+                <div class="col-xs-4 col-sm-6 col-md-3 col-lg-3">
+                    <button class="btn mr-2 ml--10"
+                            onclick="redirectToSection('{{ url('lesson/rearrange/'.$lesson_id) }}')"
+                            type="submit"
+                            style=" background-color: #208DBB;
+                                    border-radius: 12px;
+                                    width:80px;
+                                    height: 40px;
+                                    position: relative;
+                                    padding: 0;
+                                    margin-left: -15px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;">
+                            <span style="color:white">Rearrange</span>
+                    </button>
+                    <script>
+                        function redirectToSection(url) {
+                            window.location.href = url;
+                        }
+                    </script>
+                </div>
             </div>
-        </div>
+        @endif
+        
         <div class="page-header">
             <h1 class="mt--8"><strong>Urutan Materi</strong></h1><br>
         </div>
@@ -254,6 +257,7 @@
                         <td style="overflow: hidden; white-space: nowrap;">{{ $item->section_title }}</td>
                         <td>
                             <div class="d-flex justify-content-center" >
+                                {{-- Btn Presensi --}}
                                 <form action="{{ route('absensi.manage', ['lesson_id' => $lesson_id, 'section_id' => $item->section_id]) }}" action="GET">
                                     <button class="btn mr-2" style="background-color: #208DBB;
                                                                     border-radius: 15px;
@@ -267,26 +271,30 @@
                                         <img src="{{ url('/icons/absensi/absensi_btn.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
                                 </form>
-                                <form action="{{ route('materials.edit', ['lesson' => $lesson_id, 'section_id' => $item->section_id]) }}" action="POST">
-                                    <button class="btn mr-2" style="background-color: #208DBB;
-                                                                    border-radius: 15px;
-                                                                    width:50px;
-                                                                    height: 40px;
-                                                                    position: relative;
-                                                                    padding: 0;
-                                                                    display: flex;
-                                                                    align-items: center;
-                                                                    justify-content: center;">
-                                                <img src="{{ url('/icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
-                                    </button>
-                                </form>
-                                <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn delete-btn" data-id="{{ $item->section_id }}" style="background-color: #FC1E01; border-radius: 15px; width:50px; height: 40px; position: relative; padding: 0; display: flex; align-items: center; justify-content: center;">
-                                        <img src="{{ url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
-                                    </button>
-                                </form>
+                                @if($student_info == null)
+                                    {{-- Btn Edit --}}
+                                    <form action="{{ route('materials.edit', ['lesson' => $lesson_id, 'section_id' => $item->section_id]) }}" action="POST">
+                                        <button class="btn mr-2" style="background-color: #208DBB;
+                                                                        border-radius: 15px;
+                                                                        width:50px;
+                                                                        height: 40px;
+                                                                        position: relative;
+                                                                        padding: 0;
+                                                                        display: flex;
+                                                                        align-items: center;
+                                                                        justify-content: center;">
+                                                    <img src="{{ url('/icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                        </button>
+                                    </form>
+                                    {{-- Btn Delete --}}
+                                    <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn delete-btn" data-id="{{ $item->section_id }}" style="background-color: #FC1E01; border-radius: 15px; width:50px; height: 40px; position: relative; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                            <img src="{{ url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                        </button>
+                                    </form>
+                                @endif
 
                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
                                 <script>

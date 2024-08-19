@@ -179,7 +179,7 @@
 
 
         .btn-custom {
-            width: auto; 
+            width: auto;
             height: 45px;
             margin: 10px;
             padding: 0px 10px;
@@ -215,8 +215,8 @@
             border: none;
             padding: 10px;
         }
-        
-        
+
+
         .table2 {
             width: 100%;
             border-collapse: collapse;
@@ -253,7 +253,7 @@
             height: 100%; /* Mengisi tinggi sel dengan konten tengah */
         }
         .btn {
-            width: 80px; 
+            width: 80px;
             height: 40px;
             margin: 10px;
             padding: 0px 10px;
@@ -269,7 +269,7 @@
 
         /* STYLE CSS FOR SOCMED SECTION AT PROFILE PAGES */
 
-        
+
 
         .landscape video {
             height: auto;
@@ -295,7 +295,7 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     {{-- <link rel="stylesheet" href="{{asset('atlantis/examples')}}/assets/css/demo.css"> --}}
-    
+
 </head>
 <body>
 
@@ -338,7 +338,7 @@
 </script>
 
 <div class="wrapper">
-    
+
     @if(!isset($showCompact))
         <div class="main-header">
             <!-- Logo Header -->
@@ -350,7 +350,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <!-- End Logo Header -->
 
             <!-- Navbar Header -->
@@ -360,8 +360,8 @@
 
             <!-- End Navbar -->
         </div>
-        
-        
+
+
         <!-- Sidebar -->
         @include('lessons.open_content')
         <!-- End Sidebar -->
@@ -369,7 +369,7 @@
     @endif
 
     @if(!isset($showCompact))
-        <div class="main-panel">
+        <div class="main-panel" style="background-color:white">
             @endif
             <div class="content">
                 @yield('breadcumb')

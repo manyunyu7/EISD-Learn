@@ -22,7 +22,7 @@
 
 	<!-- jQuery Scrollbar -->
 	<script src="{{asset('atlantis/examples')}}/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-	
+
 	<!-- Bootstrap Tagsinput -->
 	<script src="{{asset('atlantis/examples')}}/assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
 
@@ -38,7 +38,7 @@
 			}
 		});
 
-	
+
 	</script>
 
 		@yield('head-section')
@@ -55,7 +55,7 @@
 		<div class="main-header">
 			<!-- Logo Header -->
 			<div class="logo-header" data-background-color="blue">
-				
+
 				<a href="{{url('/home')}}" class="logo">
 					<p class="navbar-brand text-white">{{ config('app.name') }}</p>
 					{{-- <img src="{{asset('atlantis/examples')}}/assets/img/logo.svg" alt="navbar brand" class="navbar-brand"> --}}
@@ -83,8 +83,8 @@
 		@include('student.side-bar')
 		<!-- End Sidebar -->
 
-		
-		<div class="main-panel">
+
+        <div class="main-panel" style="background-color:white">
 			<div class="content">
 				@yield('breadcumb')
 				@yield('main')
@@ -92,7 +92,7 @@
 		</div>
 
 		</div>
-		
+
 	</div>
 
 
@@ -131,7 +131,7 @@
 
 
 	@yield('script')
-	<script>	
+	<script>
 		Circles.create({
 			id:'circles-1',
 			radius:45,
