@@ -10,153 +10,138 @@ use Illuminate\Support\Facades\Storage;
 class LaravelEstriController extends Controller
 {
 
-
     public function syncDataWithIthub()
     {
-        $ar = [];
-        $batchSize = 10;
+        $addedUsers = []; // Array to hold the newly added users
 
-        // Fetch total user count from the 'ithub' database connection
-        $totalUsers = DB::connection('ithub')->table('users')->count();
+        $subQueryIthubUsers = DB::connection('ithub')->table(DB::raw('users a'))
+            ->select([
+                'a.created_at',
+                'a.id',
+                'a.name',
+                'a.password',
+                'a.username',
+                'a.email',
+                'a.is_active',
+                'b.is_approval',
+                'a.last_login',
+                'a.pin',
+                'b.gender',
+                'b.image',
+                'b.sign',
+                'b.nip',
+                DB::raw("(SELECT json_build_object('id', d.id, 'name', d.name)
+                          FROM u_employees b
+                          JOIN m_departments c ON b.department_id = c.id
+                          JOIN m_divisions d ON c.division_id = d.id
+                          WHERE b.user_id = a.id
+                          LIMIT 1) AS division"),
+                DB::raw("(SELECT json_build_object('id', mub.id, 'name', mub.name)
+                          FROM u_structure_user usu
+                          JOIN m_unit_businesses mub ON usu.unit_business_id = mub.id
+                          WHERE usu.user_employee_id = a.id
+                          LIMIT 1) AS business_unit"),
+                DB::raw("(SELECT json_build_object('id', b.department_id, 'name', c.name)
+                          FROM u_employees b
+                          JOIN m_departments c ON b.department_id = c.id
+                          WHERE b.user_id = a.id
+                          LIMIT 1) AS department"),
+                DB::raw("(SELECT json_build_object('id', b.sub_department_id, 'name', c.name)
+                          FROM u_sub_department_user b
+                          JOIN m_sub_departments c ON b.sub_department_id = c.id
+                          WHERE b.user_id = a.id
+                          LIMIT 1) AS sub_department"),
+                DB::raw("(SELECT json_build_object('id', b.position_id, 'name', c.name)
+                          FROM u_employees b
+                          JOIN m_positions c ON b.position_id = c.id
+                          WHERE b.user_id = a.id
+                          LIMIT 1) AS position"),
+                DB::raw("(SELECT json_agg(json_build_object('id', b.id, 'role_id', b.role_id, 'name', c.name))
+                          FROM u_role_user b
+                          JOIN m_roles c ON b.role_id = c.id
+                          WHERE b.user_id = a.id) AS roles"),
+                DB::raw("(SELECT json_agg(json_build_object('id', b.id, 'site_id', b.site_id, 'name', c.name, 'code', c.code))
+                          FROM u_site_user b
+                          JOIN m_sites c ON b.site_id = c.id
+                          WHERE b.user_id = a.id) AS sites")
+            ])
+            ->join('u_employees as b', 'a.id', '=', 'b.user_id')
+            ->whereNull('a.deleted_at')
+            ->where('a.is_active', true);
 
-        // Calculate the total number of batches
-        $totalBatches = ceil($totalUsers / $batchSize);
+        $ithubUsers = DB::connection('ithub')->table(DB::raw("({$subQueryIthubUsers->toSql()}) as sss"))
+            ->mergeBindings($subQueryIthubUsers)
+            ->whereRaw("(SELECT json_build_object('id', mub.id, 'name', mub.name)
+                         FROM u_structure_user usu
+                         JOIN m_unit_businesses mub ON usu.unit_business_id = mub.id
+                         WHERE usu.user_employee_id = sss.id
+                         LIMIT 1) ->> 'id' = '8997302f-0d4f-49ce-8d1d-b4a556d88291'")
+            ->get();
 
-        // Process users in batches
-        for ($batch = 0; $batch < $totalBatches; $batch++) {
-            // Fetch users for the current batch
-            $ithubUsers = DB::connection('ithub')
-                ->table('users')
-                ->offset($batch * $batchSize)
-                ->limit($batchSize)
-                ->get();
+        foreach ($ithubUsers as $ithubUser) {
+            if ($ithubUser) {
+                // Check if the user already exists in the second table
+                $check = User::where('mdln_username', $ithubUser->id)->first();
 
-            foreach ($ithubUsers as $ithubUser) {
-                $userIthub = DB::connection('ithub')->selectOne("
-                SELECT
-                    a.created_at,
-                    a.id,
-                    a.name,
-                    a.username,
-                    a.email,
-                    a.is_active,
-                    b.is_approval,
-                    a.last_login,
-                    a.pin,
-                    b.gender,
-                    b.image,
-                    b.sign,
-                    b.nip,
-                    (
-                        SELECT json_build_object('id', d.id, 'name', d.name)
-                        FROM u_employees b
-                        JOIN m_departments c ON b.department_id = c.id
-                        JOIN m_divisions d ON c.division_id = d.id
-                        WHERE b.user_id = a.id
-                        LIMIT 1
-                    ) AS division,
-                    (
-                        SELECT json_build_object('id', b.department_id, 'name', c.name)
-                        FROM u_employees b
-                        JOIN m_departments c ON b.department_id = c.id
-                        WHERE b.user_id = a.id
-                        LIMIT 1
-                    ) AS department,
-                    (
-                        SELECT json_build_object('id', b.sub_department_id, 'name', c.name)
-                        FROM u_sub_department_user b
-                        JOIN m_sub_departments c ON b.sub_department_id = c.id
-                        WHERE b.user_id = a.id
-                        LIMIT 1
-                    ) AS sub_department,
-                    (
-                        SELECT json_build_object('id', b.position_id, 'name', c.name)
-                        FROM u_employees b
-                        JOIN m_positions c ON b.position_id = c.id
-                        WHERE b.user_id = a.id
-                        LIMIT 1
-                    ) AS position,
-                    (
-                        SELECT json_agg(json_build_object('id', b.id, 'role_id', b.role_id, 'name', c.name))
-                        FROM u_role_user b
-                        JOIN m_roles c ON b.role_id = c.id
-                        WHERE b.user_id = a.id
-                    ) AS roles,
-                    (
-                        SELECT json_agg(json_build_object('id', b.id, 'site_id', b.site_id, 'name', c.name, 'code', c.code))
-                        FROM u_site_user b
-                        JOIN m_unit_businesses c ON b.site_id = c.id
-                        WHERE b.user_id = a.id
-                    ) AS sites
-                FROM users a
-                JOIN u_employees b ON a.id = b.user_id
-                WHERE a.deleted_at IS NULL AND a.id = ?
-                AND is_active = true
-                LIMIT 1;
-                ", [$ithubUser->id]);
+                // If user does not exist yet in LMS table
+                if ($check == null) {
+                    // Check if a user with the same email already exists
+                    $existingUserWithEmail = User::where('email', $ithubUser->email)->first();
 
-                if ($userIthub) {
-                    array_push($ar, $userIthub);
+                    if ($existingUserWithEmail != null) {
+                        // If email already exists, append '_temp_' and current datetime
+                        $ithubUser->email = $ithubUser->email . '_temp_' . now()->format('Ymd_His');
+                    }
 
-                    // Check if the user already exists in the second table
-                    $check = User::where('mdln_username', $ithubUser->id)->first();
+                    $user = new User();
+                    $user->email = $ithubUser->email;
+                    $user->name = $ithubUser->name;
+                    $user->mdln_username = $ithubUser->id;
+                    $user->role = "student";
+                    $user->is_testing = "n";
+                    $user->password = $ithubUser->password; // Assuming the passwords are already hashed
 
-                    // If user does not exist yet in LMS table
-                    if ($check == null) {
-                        // Check if a user with the same email already exists
-                        $existingUserWithEmail = User::where('email', $ithubUser->email)->first();
+                    if (isset($ithubUser->department)) {
+                        $department = json_decode($ithubUser->department);
+                        if ($department != null && isset($department->id)) {
+                            $user->department_id = $department->id;
+                        }
+                    }
 
-                        if ($existingUserWithEmail != null) {
-                            // If email already exists, append '_temp_' and current datetime
-                            $ithubUser->email = $ithubUser->email . '_temp_' . now()->format('Ymd_His');
+                    if (isset($ithubUser->position)) {
+                        $position = json_decode($ithubUser->position);
+                        if ($position != null && isset($position->id)) {
+                            $user->position_id = $position->id;
+                        }
+                    }
+
+                    if (isset($ithubUser->business_unit) && $ithubUser->business_unit != null) {
+                        // Decode the business_unit JSON into an array
+                        $business_unit = json_decode($ithubUser->business_unit, true);
+
+                        // Initialize an empty array to store the formatted data
+                        $siteIds = [];
+
+                        // Check if the 'business_unit' has the necessary data
+                        if (isset($business_unit['id'])) {
+                            // Map the data to the format you want
+                            $siteIds[] = [
+                                'site_id' => $business_unit['id']
+                            ];
                         }
 
-                        $user = new User();
-                        $user->email = $ithubUser->email;
-                        $user->name = $ithubUser->name;
-                        $user->mdln_username = $ithubUser->id;
-                        $user->role = "student";
-                        $user->is_testing = "n";
-                        $user->password = $ithubUser->password; // Assuming the passwords are already hashed
+                        // Convert the array to a JSON string
+                        $user->sites = json_encode($siteIds);
+                    }
 
-                        if (isset($userIthub->department)) {
-                            $department = json_decode($userIthub->department);
-                            if ($department != null && isset($department->id)) {
-                                $user->department_id = $department->id;
-                            }
-                        }
-
-                        if (isset($userIthub->position)) {
-                            $position = json_decode($userIthub->position);
-                            if ($position != null && isset($position->id)) {
-                                $user->position_id = $position->id;
-                            }
-
-                            // Assuming you have the $userIthub object and it has a sites property
-                            if (isset($userIthub->sites)) {
-                                $sites = json_decode($userIthub->sites, true);
-                                if (is_array($sites)) {
-                                    // Use array_map to transform the array
-                                    $location = array_map(function ($site) {
-                                        return isset($site['site_id']) ? ['site_id' => $site['site_id']] : null;
-                                    }, $sites);
-
-                                    // Remove null values from $location
-                                    $location = array_filter($location);
-
-                                    // Assign the transformed array to the user's location
-                                    $user->location = json_encode($location);
-
-                                    $idHolding = '0d73ca4e-ff81-441b-ab11-0d19af87f76d';
-
-                                    // Extract site_ids from $location
-                                    $siteIds = array_column($location, 'site_id');
-
-                                    // Yang holding holding aja
-                                    if (in_array($idHolding, $siteIds)) {
-                                        $user->save();
-                                    }
-                                }
+                    // Check if any site_id contains "xyz" before saving
+                    if (isset($ithubUser->sites)) {
+                        $sites = json_decode($ithubUser->sites, true);
+                        foreach ($sites as $site) {
+                            if (strpos($site['site_id'], '8997302f-0d4f-49ce-8d1d-b4a556d88291') !== false) {
+                                $user->save(); // Save the user if site_id contains "xyz"
+                                $addedUsers[] = $user;
+                                break; // Exit loop after saving
                             }
                         }
                     }
@@ -164,114 +149,11 @@ class LaravelEstriController extends Controller
             }
         }
 
-        return $ar;
+        // Return the array of added users
+        return $addedUsers;
     }
 
-    public function syncDataWithIxthub()
-    {
 
-        // Fetch users from the 'ithub' database connection
-        $ithubUsers = DB::connection('ithub')->table('users')->limit(10)->get();
-
-        $ar = [];
-        // Loop through the fetched users and update the second table
-        foreach ($ithubUsers as $ithubUser) {
-            $userIthub = DB::connection('ithub')->selectOne("
-            SELECT
-                a.created_at,
-                a.id,
-                a.name,
-                a.username,
-                a.email,
-                a.is_active,
-                b.is_approval,
-                a.last_login,
-                a.pin,
-                b.gender,
-                b.image,
-                b.sign,
-                b.nip,
-                (
-                    SELECT json_build_object('id', d.id, 'name', d.name)
-                    FROM u_employees b
-                    JOIN m_departments c ON b.department_id = c.id
-                    JOIN m_divisions d ON c.division_id = d.id
-                    WHERE b.user_id = a.id
-                    LIMIT 1
-                ) AS division,
-                (
-                    SELECT json_build_object('id', b.department_id, 'name', c.name)
-                    FROM u_employees b
-                    JOIN m_departments c ON b.department_id = c.id
-                    WHERE b.user_id = a.id
-                    LIMIT 1
-                ) AS department,
-                (
-                    SELECT json_build_object('id', b.sub_department_id, 'name', c.name)
-                    FROM u_sub_department_user b
-                    JOIN m_sub_departments c ON b.sub_department_id = c.id
-                    WHERE b.user_id = a.id
-                    LIMIT 1
-                ) AS sub_department,
-                (
-                    SELECT json_build_object('id', b.position_id, 'name', c.name)
-                    FROM u_employees b
-                    JOIN m_positions c ON b.position_id = c.id
-                    WHERE b.user_id = a.id
-                    LIMIT 1
-                ) AS position,
-                (
-                    SELECT json_agg(json_build_object('id', b.id, 'role_id', b.role_id, 'name', c.name))
-                    FROM u_role_user b
-                    JOIN m_roles c ON b.role_id = c.id
-                    WHERE b.user_id = a.id
-                ) AS roles,
-                (
-                    SELECT json_agg(json_build_object('id', b.id, 'site_id', b.site_id, 'name', c.name, 'code', c.code))
-                    FROM u_site_user b
-                    JOIN m_unit_businesses c ON b.site_id = c.id
-                    WHERE b.user_id = a.id
-                ) AS sites
-            FROM users a
-            JOIN u_employees b ON a.id = b.user_id
-            WHERE a.deleted_at IS NULL AND a.id = ?
-            AND is_active = true
-            LIMIT 1;
-        ", [$ithubUser->id]);
-
-
-            array_push($ar, $userIthub);
-
-            //check if the user already exists in the second table
-            $check = User::where('mdln_username', $ithubUser->id)->first();
-
-            // if user not exist yet on LMS table
-            if ($check != null) {
-                $user = new User();
-                $user->email = $ithubUser->email;
-                $user->mdln_username = $ithubUser->id;
-                $user->password = $ithubUser->password; // Assuming the passwords are already hashed
-                $user->save();
-
-                if ($userIthub->position != null) {
-                    $user->department_id = json_decode($userIthub->department)->id;
-                    $user->position_id = json_decode($userIthub->position)->id;
-                    // Assuming you have the $userIthub object and it has a sites property
-                    $sites = json_decode($userIthub->sites, true);
-                    // Use array_map to transform the array
-                    $location = array_map(function ($site) {
-                        return ['site_id' => $site['site_id']];
-                    }, $sites);
-
-                    // Assign the transformed array to the user's location
-                    $user->location = json_encode($location);
-                    $user->save();
-                }
-            }
-        }
-
-        return $ar;
-    }
 
     public function imageUpload()
     {
