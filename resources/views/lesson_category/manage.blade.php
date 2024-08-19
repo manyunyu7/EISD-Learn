@@ -99,7 +99,7 @@
 
 @section('main')
 
-    <div class="page-inner">
+    <div class="page-inner"  style="background-color: white !important">
         <div class="page-header">
             <h4 class="page-title">Course Category</h4>
             <ul class="breadcrumbs">

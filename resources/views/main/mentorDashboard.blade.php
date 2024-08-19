@@ -91,7 +91,7 @@
 
 
 @section('main')
-    <div class="page-inner">
+    <div class="page-inner" style="background-color: white !important">
         <div class="container-fluid">
             <div class="row">
                 <h1 class="mb-3 mt-3 col-12"><b>Dashboard</b></h1>

@@ -62,7 +62,7 @@
 
 
 
-    <div class="page-inner">
+    <div class="page-inner"  style="background-color: white !important">
         <form action="{{ route('lesson_category.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="container-fluid mt-3">

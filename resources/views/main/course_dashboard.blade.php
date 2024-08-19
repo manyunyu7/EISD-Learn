@@ -30,7 +30,7 @@
     <div class="container">
         @if (count($list_studentTaken) >= 3)
             @foreach ($class as $data)
-                <div class="page-inner">
+                <div class="page-inner"
                     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                         <ol class="breadcrumb bg-white">
                             <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>

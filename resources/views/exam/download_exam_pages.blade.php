@@ -157,7 +157,7 @@
 @section('main')
 
 
-    <div class="page-inner">
+    <div class="page-inner"  style="background-color: white !important">
         <div class="col-md-12 mt-2">
             {{-- BREADCRUMB --}}
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">

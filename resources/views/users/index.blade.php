@@ -6,7 +6,7 @@
 @endsection
 
 @section('main')
-    <div class="page-inner">
+    <div class="page-inner" style="background-color: white !important">
 
         <div class="container-fluid">
             <!-- Page Header -->

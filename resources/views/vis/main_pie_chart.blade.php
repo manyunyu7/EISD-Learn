@@ -364,7 +364,7 @@
     </script>
 
 
-    <div class="page-inner">
+    <div class="page-inner" style="background-color: white !important">
         <div class="main-content-container container-fluid px-4 mt-5">
 
             {{-- @include('blog.breadcumb') --}}

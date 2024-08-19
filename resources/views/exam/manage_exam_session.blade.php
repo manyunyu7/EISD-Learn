@@ -451,7 +451,7 @@
         </div>
     </div>
 
-    <div class="page-inner">
+    <div class="page-inner"  style="background-color: white !important">
         <div class="page-header">
             <h4 class="page-title">Exam</h4>
             <ul class="breadcrumbs">

@@ -62,7 +62,7 @@
     </script>
 
 
-<div class="page-inner">
+<div class="page-inner"  style="background-color: white !important">
     <div class="container-fluid mt-3" style="margin-top: ">
         <div class="main-content-container container-fluid px-4">
 

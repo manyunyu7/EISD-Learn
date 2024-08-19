@@ -114,7 +114,7 @@
 @endsection
 
 @section('main')
-    <div class="page-inner" style="margin-top: 50px">
+    <div class="page-inner" style="margin-top: 50px; background-color:white!important;"
         <div class="row mt-2 border-primary">
             {{-- PROFILE USER --}}
             <div class="col-md-5">
