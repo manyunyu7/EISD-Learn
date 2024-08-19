@@ -99,9 +99,11 @@ Route::get('/loginz', function () {
 });
 
 
-
+Route::get('/open-lms-from-ithub','CourseSectionController@viewStudents');
 Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail'])->name('qr-login');
 
+
+Route::get('/login-with-ithub','ModernlandIntegrationController@loginFromIthub');
 
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
@@ -115,7 +117,6 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
     Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
     Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
-
 
     // List all files (index)
     Route::get('/filemanager/s3', [FileOnS3Controller::class, 'index'])->name('filemanager.s3.index');

@@ -5,11 +5,46 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Google\Service\CloudSourceRepositories\Repo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class ModernlandIntegrationController extends Controller
 {
+
+    public function loginFromIthub(Request $request)
+    {
+        // Step 1: Get the token from the request
+        $token = $request->input('token');
+
+
+        // Step 2: Hit the external API with the Bearer token
+        $response = Http::withToken($token)
+            ->get('https://api-ithub.modernland.co.id/api/v1/profile');
+
+        // Step 3: Check if the response is successful
+        if ($response->successful()) {
+
+            $data = $response->json();
+            // Step 4: Extract the userId from the response
+            $userId = $data['result']['id'];
+            $userAccount = User::where('mdln_username', $userId)->first();
+
+            if ($userAccount == null) {
+                abort('403', "Anda Belum Terdaftar Sebagai User di LMS, Hubungi Tim Training untuk Mendaftarkan Akun");
+            } else {
+                // Step 6: Log in the user
+                Auth::loginUsingId($userId);
+            }
+
+            // Step 7: Redirect to the home page
+            return redirect()->url('/home');
+        } else {
+            // Handle error response if needed
+            return redirect()->back()->with('error', 'Failed to authenticate with Ithub');
+        }
+    }
 
     public function getLearningUsers(Request $request)
     {
