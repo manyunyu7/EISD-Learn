@@ -509,33 +509,32 @@ class MentorExamController extends Controller
     }
     public function downloadExam($examId)
     {
-        $data_exam = DB::select("
-                        SELECT
-                            e.id as exam_id,
-                            e.title as exam_title,
-                            l.course_title as course,
-                            l.id as course_id,
-                            et.current_score as exam_score,
-                            u.name as takers_name,
-                            es.exam_type as type,
-                            cs.section_title as course_section_title,
-                            es.id as exam_session_id,
-                            cs.id as course_section_id
-                        FROM
-                            exam_takers et
-                        LEFT JOIN
-                            exam_sessions es ON et.session_id = es.id
-                        LEFT JOIN
-                            course_section cs ON cs.id = et.course_section_flag
-                        LEFT JOIN
-                            exams e ON e.id = es.exam_id
-                        LEFT JOIN
-                            users u ON et.user_id = u.id
-                        LEFT JOIN
-                            lessons l ON l.id = cs.course_id
-                        WHERE
-                            e.id = $examId
-                    ");
+        $data_exam = DB::table('exam_takers as et')
+            ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
+            ->leftJoin('course_section as cs', 'cs.id', '=', 'et.course_section_flag')
+            ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
+            ->leftJoin('users as u', 'et.user_id', '=', 'u.id')
+            ->leftJoin('lessons as l', 'l.id', '=', 'cs.course_id')
+            ->select(
+                'e.id as exam_id',
+                'e.title as exam_title',
+                'l.course_title as course',
+                'l.id as course_id',
+                'et.current_score as exam_score',
+                'u.name as takers_name',
+                'es.exam_type as type',
+                'cs.section_title as course_section_title',
+                'es.id as exam_session_id',
+                'cs.id as course_section_id'
+            )
+            ->where(function ($query) {
+                $query->where('e.is_deleted', '!=', 'y')
+                    ->orWhereNull('e.is_deleted')
+                    ->orWhere('e.is_deleted', '');
+            })
+            ->where('et.is_finished', 'y')
+            ->where('e.id', $examId)
+            ->get();
 
         // return $data_exam;
         return view("exam.download_exam_pages", compact('data_exam'));
