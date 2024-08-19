@@ -18,7 +18,6 @@ class LaravelEstriController extends Controller
 
         // Fetch total user count from the 'ithub' database connection
         $totalUsers = DB::connection('ithub')->table('users')->count();
-        $totalUsers = 20;
 
         // Calculate the total number of batches
         $totalBatches = ceil($totalUsers / $batchSize);
@@ -94,56 +93,71 @@ class LaravelEstriController extends Controller
                 WHERE a.deleted_at IS NULL AND a.id = ?
                 AND is_active = true
                 LIMIT 1;
-            ", [$ithubUser->id]);
+                ", [$ithubUser->id]);
 
-                array_push($ar, $userIthub);
+                if ($userIthub) {
+                    array_push($ar, $userIthub);
 
-                //check if the user already exists in the second table
-                $check = User::where('mdln_username', $ithubUser->id)->first();
+                    // Check if the user already exists in the second table
+                    $check = User::where('mdln_username', $ithubUser->id)->first();
 
-                // if user not exist yet on LMS table
-                if ($check == null) {
-                    // Check if a user with the same email already exists
-                    $existingUserWithEmail = User::where('email', $ithubUser->email)->first();
+                    // If user does not exist yet in LMS table
+                    if ($check == null) {
+                        // Check if a user with the same email already exists
+                        $existingUserWithEmail = User::where('email', $ithubUser->email)->first();
 
-                    if ($existingUserWithEmail != null) {
-                        // If email already exists, append '_temp_' and current datetime
-                        $ithubUser->email = $ithubUser->email . '_temp_' . now()->format('Ymd_His');
-                    }
+                        if ($existingUserWithEmail != null) {
+                            // If email already exists, append '_temp_' and current datetime
+                            $ithubUser->email = $ithubUser->email . '_temp_' . now()->format('Ymd_His');
+                        }
 
-                    $user = new User();
-                    $user->email = $ithubUser->email;
-                    $user->name = $ithubUser->name;
-                    $user->mdln_username = $ithubUser->id;
-                    $user->role = "student";
-                    $user->is_testing = "n";
-                    $user->password = $ithubUser->password; // Assuming the passwords are already hashed
-                    $user->save();
+                        $user = new User();
+                        $user->email = $ithubUser->email;
+                        $user->name = $ithubUser->name;
+                        $user->mdln_username = $ithubUser->id;
+                        $user->role = "student";
+                        $user->is_testing = "n";
+                        $user->password = $ithubUser->password; // Assuming the passwords are already hashed
 
-                    if ($user->department_id != null) {
-                        $user->department_id = json_decode($userIthub->department)->id;
-                    }
+                        if (isset($userIthub->department)) {
+                            $department = json_decode($userIthub->department);
+                            if ($department != null && isset($department->id)) {
+                                $user->department_id = $department->id;
+                            }
+                        }
 
-                    if ($userIthub->position != null) {
-                        $user->position_id = json_decode($userIthub->position)->id;
-                        // Assuming you have the $userIthub object and it has a sites property
-                        $sites = json_decode($userIthub->sites, true);
-                        // Use array_map to transform the array
-                        $location = array_map(function ($site) {
-                            return ['site_id' => $site['site_id']];
-                        }, $sites);
+                        if (isset($userIthub->position)) {
+                            $position = json_decode($userIthub->position);
+                            if ($position != null && isset($position->id)) {
+                                $user->position_id = $position->id;
+                            }
 
-                        // Assign the transformed array to the user's location
-                        $user->location = json_encode($location);
+                            // Assuming you have the $userIthub object and it has a sites property
+                            if (isset($userIthub->sites)) {
+                                $sites = json_decode($userIthub->sites, true);
+                                if (is_array($sites)) {
+                                    // Use array_map to transform the array
+                                    $location = array_map(function ($site) {
+                                        return isset($site['site_id']) ? ['site_id' => $site['site_id']] : null;
+                                    }, $sites);
 
-                        $idHolding = '0d73ca4e-ff81-441b-ab11-0d19af87f76d';
+                                    // Remove null values from $location
+                                    $location = array_filter($location);
 
-                        // Extract site_ids from $location
-                        $siteIds = array_column($location, 'site_id');
+                                    // Assign the transformed array to the user's location
+                                    $user->location = json_encode($location);
 
-                        //Yang holding holding aja
-                        if (in_array($idHolding, $siteIds)) {
-                            $user->save();
+                                    $idHolding = '0d73ca4e-ff81-441b-ab11-0d19af87f76d';
+
+                                    // Extract site_ids from $location
+                                    $siteIds = array_column($location, 'site_id');
+
+                                    // Yang holding holding aja
+                                    if (in_array($idHolding, $siteIds)) {
+                                        $user->save();
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -525,6 +525,7 @@ class MentorExamController extends Controller
                 'es.exam_type as type',
                 'cs.section_title as course_section_title',
                 'es.id as exam_session_id',
+                'et.finished_at',
                 'cs.id as course_section_id'
             )
             ->where(function ($query) {
