@@ -824,7 +824,7 @@ class LessonController extends Controller
         // Hitung jumlah student yang telah menyelesaikan setiap course
         $courseCompleteCount = DB::table('student_lesson')
             ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
-            ->where('learn_status', [0, 1])
+            ->where('learn_status', '<>', 0)
             ->groupBy('lesson_id')
             ->get();
 
@@ -901,6 +901,8 @@ class LessonController extends Controller
                     cs.created_at DESC
             ");
         }
+
+        // return $course;
 
         // dd($class);
         Paginator::useBootstrap();
