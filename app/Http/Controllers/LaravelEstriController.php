@@ -131,7 +131,7 @@ class LaravelEstriController extends Controller
                         }
 
                         // Convert the array to a JSON string
-                        $user->bu = json_encode($siteIds);
+                        $user->sites = json_encode($siteIds);
                     }
 
                     // Check if any site_id contains "xyz" before saving
