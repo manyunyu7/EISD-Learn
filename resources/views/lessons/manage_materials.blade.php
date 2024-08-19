@@ -119,7 +119,7 @@
         </nav>
     </div>
 
-    <div class="page-inner">
+    <div class="page-inner" style="background: white !important">
         <div class="page-header">
             <h1><strong>Tambah Materi Baru</strong></h1>
         </div>
@@ -237,9 +237,9 @@
                 </div>
             </div>
         @endif
-        
+
         <div class="page-header">
-            <h1 class="mt--8"><strong>Urutan Materi</strong></h1><br>
+            <h1 class="mt-8"><strong>Urutan Materi</strong></h1><br>
         </div>
         <div class="table-responsive">
             <table class="table">
@@ -271,7 +271,7 @@
                                         <img src="{{ url('/icons/absensi/absensi_btn.svg') }}" style="max-width: 100%; max-height: 100%;">
                                     </button>
                                 </form>
-                                @if($student_info == null)
+
                                     {{-- Btn Edit --}}
                                     <form action="{{ route('materials.edit', ['lesson' => $lesson_id, 'section_id' => $item->section_id]) }}" action="POST">
                                         <button class="btn mr-2" style="background-color: #208DBB;
@@ -286,6 +286,7 @@
                                                     <img src="{{ url('/icons/Edit.svg') }}" style="max-width: 100%; max-height: 100%;">
                                         </button>
                                     </form>
+                                @if($student_info == null)
                                     {{-- Btn Delete --}}
                                     <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">
                                         @csrf
