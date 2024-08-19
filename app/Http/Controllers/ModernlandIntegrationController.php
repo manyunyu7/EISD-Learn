@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use App\Models\User;
 use Google\Service\CloudSourceRepositories\Repo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ModernlandIntegrationController extends Controller
@@ -16,33 +20,76 @@ class ModernlandIntegrationController extends Controller
     public function loginFromIthub(Request $request)
     {
         // Step 1: Get the token from the request
-        $token = $request->input('token');
+        $token = $request->token;
+
+        // Log the token (be careful with sensitive information)
+        Log::info('Received token', ['token' => $token]);
+
+        // Create a new Guzzle client
+        $client = new Client();
 
 
-        // Step 2: Hit the external API with the Bearer token
-        $response = Http::withToken($token)
-            ->get('https://api-ithub.modernland.co.id/api/v1/profile');
+        try {
+            // Step 2: Hit the external API with the Bearer token
+            $response = $client->request('GET', 'https://github.modernland.co.id/api/v1/profile', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                ],
+            ]);
 
-        // Step 3: Check if the response is successful
-        if ($response->successful()) {
+            // Log the response status and body
+            Log::info('Ithub API response', [
+                'status' => $response->getStatusCode(),
+                'body'   => $response->getBody()->getContents(),
+            ]);
 
-            $data = $response->json();
-            // Step 4: Extract the userId from the response
-            $userId = $data['result']['id'];
-            $userAccount = User::where('mdln_username', $userId)->first();
+            // Step 3: Check if the response is successful
+            if ($response->getStatusCode() == 200) {
+                $data = json_decode($response->getBody(), true);
 
-            if ($userAccount == null) {
-                abort('403', "Anda Belum Terdaftar Sebagai User di LMS, Hubungi Tim Training untuk Mendaftarkan Akun");
+                // Log the response data
+                Log::info('Response data', ['data' => $data]);
+
+                // Step 4: Extract the userId from the response
+                if (!isset($data['result']['id'])) {
+                    Log::error('User ID not found in response', ['data' => $data]);
+                    return redirect()->back()->with('error', 'User ID not found in response from Ithub');
+                }
+
+                $userId = $data['result']['id'];
+                $userAccount = User::where('mdln_username', $userId)->first();
+
+
+
+                // Log user lookup
+                Log::info('User lookup', ['userId' => $userId, 'userAccount' => $userAccount]);
+
+                if ($userAccount == null) {
+                    // Step 5: Abort with a 403 status and error message
+                    abort(403, "Anda Belum Terdaftar Sebagai User di LMS, Hubungi Tim Training untuk Mendaftarkan Akun");
+                } else {
+                    $userId = $userAccount->id;
+                    // Step 6: Log in the user
+                    Auth::loginUsingId($userId);
+                    Log::info('User logged in', ['userId' => $userId]);
+                }
+
+                // Step 7: Redirect to the home page
+                return redirect()->url('/home');
             } else {
-                // Step 6: Log in the user
-                Auth::loginUsingId($userId);
+                // Handle error response if needed
+                Log::error('Ithub API request failed', [
+                    'status' => $response->getStatusCode(),
+                    'body'   => $response->getBody()->getContents(),
+                ]);
+                abort(401,"Failed to authenticate with Ithub. Status: ". $response->getStatusCode());
+                // return redirect()->back()->with('error', 'Failed to authenticate with Ithub. Status: ' . $response->getStatusCode());
             }
-
-            // Step 7: Redirect to the home page
-            return redirect()->url('/home');
-        } else {
-            // Handle error response if needed
-            return redirect()->back()->with('error', 'Failed to authenticate with Ithub');
+        } catch (RequestException $e) {
+            // Log exception details
+            Log::error('Exception occurred', ['exception' => $e->getMessage()]);
+            abort(401,"An error occurred while authenticating with Ithub. Please try again later,\ne:".$e->getMessage());
+            // Handle the exception
         }
     }
 
