@@ -148,7 +148,6 @@
                                     <label for="" class="mb-2">Akses Konten<span style="color: red">*</span></label>
                                     <div class="input-group mb-3">
                                         <select required name="is_access" class="form-control form-select-lg" aria-label="Default select example">
-                                            <option value="" disabled selected> </option>
                                             <option value="y">Ya</option>
                                             <option value="n">Tidak</option>
                                         </select>
@@ -169,7 +168,7 @@
 
                             {{-- Deskripsi Kelas --}}
                             <div class="mb-3">
-                                <label for="" class="mb-2">Upload File<span style="color: red">*</span></label>
+                                <label for="" class="mb-2">Upload File<span style="color: red"></span></label>
                                 <div class="mb-3">
                                     <input name="question_images" class="form-control" type="file" id="formFileMultiple" multiple>
                                 </div>
