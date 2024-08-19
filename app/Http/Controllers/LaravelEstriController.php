@@ -18,7 +18,6 @@ class LaravelEstriController extends Controller
 
         // Fetch total user count from the 'ithub' database connection
         $totalUsers = DB::connection('ithub')->table('users')->count();
-        $totalUsers = 20;
 
         // Calculate the total number of batches
         $totalBatches = ceil($totalUsers / $batchSize);
