@@ -115,6 +115,14 @@
     });
 </script>
 
+<script>
+    //message with toastr
+    @if(session()-> has('success'))
+        toastr.success('{{ session('success') }}', 'BERHASIL!');
+    @elseif(session()-> has('error'))
+        toastr.error('{{ session('error') }}', 'GAGAL!');
+    @endif
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
@@ -291,7 +299,7 @@
 
 
 
-                @if (session()->has('success'))
+                {{-- @if (session()->has('success'))
                 <script>
                     toastr.success('{{ session('
                         success ') }}', '{{ Session::get('
@@ -303,7 +311,7 @@
                         error ') }}', '{{ Session::get('
                         error ') }}');
                 </script>
-                @endif
+                @endif --}}
             </div>
         </div>
         @endsection
