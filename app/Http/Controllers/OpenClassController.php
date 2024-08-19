@@ -183,7 +183,7 @@ class OpenClassController extends Controller
                         ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                         ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
                         ->where('lessons.id', $lessonId) // Add the condition lessons.id = 5
-                        ->where('users.is_testing', '=', 'n')
+                        // ->where('users.is_testing', '=', 'n')
                         ->pluck('ss.section_id')
                         ->toArray();
 
@@ -193,7 +193,7 @@ class OpenClassController extends Controller
                         ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                         ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
                         ->where('lessons.id', $lessonId)
-                        ->where('users.is_testing', '=', 'n')
+                        // ->where('users.is_testing', '=', 'n')
                         ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
                         ->first();
                 }

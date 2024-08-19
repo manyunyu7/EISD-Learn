@@ -184,7 +184,7 @@ class VisualizationDetailController extends Controller
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id')
             ->where('course_section.course_id', $classId)
-            ->where('users.is_testing', '=', 'n')
+            // ->where('users.is_testing', '=', 'n')
             ->orderByRaw('CAST(course_section.section_order AS UNSIGNED) ASC')
             ->get();
 

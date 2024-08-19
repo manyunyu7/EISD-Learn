@@ -88,7 +88,7 @@ class MyClassController extends Controller
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->where('course_section.course_id', $class->id)
-            ->where('users.is_testing', '=', 'n')
+            // ->where('users.is_testing', '=', 'n')
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->first();
 

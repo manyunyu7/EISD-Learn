@@ -374,7 +374,7 @@ class HomeController extends Controller
                 ->where('student_id', $userId)
                 ->where('learn_status', 0)
                 ->whereNull('lessons.deleted_at')
-                ->where('users.is_testing', '=', 'n')
+                // ->where('users.is_testing', '=', 'n')
                 ->count();
 
             $completedCourse = DB::table('student_lesson')
@@ -384,7 +384,7 @@ class HomeController extends Controller
                 ->where('student_id', $userId)
                 ->where('learn_status', 1)
                 ->whereNull('lessons.deleted_at')
-                ->where('users.is_testing', '=', 'n')
+                // ->where('users.is_testing', '=', 'n')
                 ->count();
 
             $monthly_CompletedCourse = DB::table('student_lesson')
@@ -394,7 +394,7 @@ class HomeController extends Controller
                 ->where('student_lesson.student_id', $userId)
                 ->where('student_lesson.learn_status', 1)
                 ->where('lessons.is_visible', 'y')
-                ->where('users.is_testing', '=', 'n')
+                // ->where('users.is_testing', '=', 'n')
                 ->whereNull('lessons.deleted_at')
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();
