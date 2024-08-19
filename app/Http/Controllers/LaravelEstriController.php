@@ -117,32 +117,45 @@ class LaravelEstriController extends Controller
                     $user->role = "student";
                     $user->is_testing = "n";
                     $user->password = $ithubUser->password; // Assuming the passwords are already hashed
-                    $user->save();
 
-                    if ($user->department_id != null) {
-                        $user->department_id = json_decode($userIthub->department)->id;
+                    if ($userIthub->department != null) {
+                        $department = json_decode($userIthub->department);
+                        if ($department != null && isset($department->id)) {
+                            $user->department_id = $department->id;
+                        }
                     }
 
                     if ($userIthub->position != null) {
-                        $user->position_id = json_decode($userIthub->position)->id;
+                        $position = json_decode($userIthub->position);
+                        if ($position != null && isset($position->id)) {
+                            $user->position_id = $position->id;
+                        }
+
                         // Assuming you have the $userIthub object and it has a sites property
-                        $sites = json_decode($userIthub->sites, true);
-                        // Use array_map to transform the array
-                        $location = array_map(function ($site) {
-                            return ['site_id' => $site['site_id']];
-                        }, $sites);
+                        if ($userIthub->sites != null) {
+                            $sites = json_decode($userIthub->sites, true);
+                            if (is_array($sites)) {
+                                // Use array_map to transform the array
+                                $location = array_map(function ($site) {
+                                    return isset($site['site_id']) ? ['site_id' => $site['site_id']] : null;
+                                }, $sites);
 
-                        // Assign the transformed array to the user's location
-                        $user->location = json_encode($location);
+                                // Remove null values from $location
+                                $location = array_filter($location);
 
-                        $idHolding = '0d73ca4e-ff81-441b-ab11-0d19af87f76d';
+                                // Assign the transformed array to the user's location
+                                $user->location = json_encode($location);
 
-                        // Extract site_ids from $location
-                        $siteIds = array_column($location, 'site_id');
+                                $idHolding = '0d73ca4e-ff81-441b-ab11-0d19af87f76d';
 
-                        //Yang holding holding aja
-                        if (in_array($idHolding, $siteIds)) {
-                            $user->save();
+                                // Extract site_ids from $location
+                                $siteIds = array_column($location, 'site_id');
+
+                                // Yang holding holding aja
+                                if (in_array($idHolding, $siteIds)) {
+                                    $user->save();
+                                }
+                            }
                         }
                     }
                 }
