@@ -2,21 +2,20 @@
 
 @section('head-section')
     <!-- Datatables -->
-    <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     <script>
         ClassicEditor
-            .create( document.querySelector( '#editor' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
     </script>
-
 @endsection
 
 @section('script')
     <script>
-        $(document).on('click', '.button', function (e) {
+        $(document).on('click', '.button', function(e) {
             e.preventDefault();
             var id = $(this).data('id');
             swal({
@@ -26,35 +25,38 @@
                     confirmButtonText: "Yes!",
                     showCancelButton: true,
                 },
-                function () {
+                function() {
                     $.ajax({
                         type: "POST",
-                        url: "{{url('/destroy')}}",
-                        data: {id: id},
-                        success: function (data) {
+                        url: "{{ url('/destroy') }}",
+                        data: {
+                            id: id
+                        },
+                        success: function(data) {
                             //
                         }
                     });
                 });
         });
-
     </script>
     {{-- Toastr --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Datatables -->
-    <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#basic-datatables').DataTable({});
 
             $('#multi-filter-select').DataTable({
                 "pageLength": 5,
-                initComplete: function () {
-                    this.api().columns().every(function () {
+                initComplete: function() {
+                    this.api().columns().every(function() {
                         var column = this;
-                        var select = $('<select class="form-control"><option value=""></option></select>')
+                        var select = $(
+                                '<select class="form-control"><option value=""></option></select>'
+                            )
                             .appendTo($(column.footer()).empty())
-                            .on('change', function () {
+                            .on('change', function() {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
                                 );
@@ -64,8 +66,9 @@
                                     .draw();
                             });
 
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>')
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d +
+                                '</option>')
                         });
                     });
                 }
@@ -76,9 +79,10 @@
                 "pageLength": 5,
             });
 
-            var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+            var action =
+                '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-            $('#addRowButton').click(function () {
+            $('#addRowButton').click(function() {
                 $('#add-row').dataTable().fnAddData([
                     $("#addName").val(),
                     $("#addPosition").val(),
@@ -93,13 +97,12 @@
 
     <script>
         //message with toastr
-        @if(session()-> has('success'))
-        toastr.success('{{ session('success') }}', 'BERHASIL!');
-        @elseif(session()-> has('error'))
-        toastr.error('{{ session('error') }}', 'GAGAL!');
+        @if (session()->has('success'))
+            toastr.success('{{ session('success') }}', 'BERHASIL!');
+        @elseif (session()->has('error'))
+            toastr.error('{{ session('error') }}', 'GAGAL!');
         @endif
     </script>
-
 @endsection
 
 
@@ -107,12 +110,12 @@
 
     <div class="page-inner  bg-white">
 
-        <div class="col-md-12" >
+        <div class="col-md-12">
             {{-- BREADCRUMB --}}
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
-                    <li class="breadcrumb-item"><a href={{url('/exam/manage-exam-v2')}}>Exam</a></li>
+                    <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
+                    <li class="breadcrumb-item"><a href={{ url('/exam/manage-exam-v2') }}>Exam</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
                 </ol>
             </nav>
@@ -127,17 +130,36 @@
             <div class="page-header">
                 <h2><b>SetUp Quiz/Pre-Test/Post-Test/Evaluation</b></h2>
             </div>
+
+            <div>
+                <!-- Display All Errors at the Top -->
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </div>
             <form id="addSessionForm" method="post" action="{{ route('store.quiz') }}">
                 @csrf
                 @method('POST')
 
                 {{-- Input Judul Ujian --}}
                 <div class="mb-3">
-                    <label for="" class="mb-2">Judul Ujian</label>
+                    <label for="title" class="mb-2">Judul Ujian</label>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" name="title">
+                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
+                            name="title" value="{{ old('title') }}" aria-label="Recipient's username"
+                            aria-describedby="basic-addon2">
                     </div>
+                    @error('title')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 {{-- Input Jenis Soal --}}
                 <div class="mb-3">
                     <label for="" class="mb-2">Jenis Ujian</label>
@@ -154,34 +176,57 @@
                 <div class="mb-3">
                     <label for="" class="mb-2">Batas Waktu (Menit)</label>
                     <div class="input-group mb-3">
-                        <input name="times_limit" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input name="times_limit" type="text"
+                            class="form-control @error('times_limit') is-invalid @enderror"
+                            aria-label="Recipient's username" aria-describedby="basic-addon2">
                     </div>
+                    @error('times_limit')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 {{-- Input Start and End Date --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="" class="mb-2">Start Date</label>
+                        <label for="start_date" class="mb-2">Start Date</label>
                         <div class="input-group mb-3">
-                            <input type="datetime-local" class="form-control" id="start_date" name="start_date">
+                            <input type="datetime-local" class="form-control @error('start_date') is-invalid @enderror"
+                                id="start_date" name="start_date"
+                                value="{{ old('start_date') ? \Carbon\Carbon::parse(old('start_date'))->format('Y-m-d\TH:i') : '' }}">
                         </div>
+                        @error('start_date')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
+
                     <div class="col-md-6 mb-3">
-                        <label for="" class="mb-2">End Date</label>
+                        <label for="end_date" class="mb-2">End Date</label>
                         <div class="input-group mb-3">
-                            <input type="datetime-local" class="form-control" id="end_date" name="end_date">
+                            <input type="datetime-local" class="form-control @error('end_date') is-invalid @enderror"
+                                id="end_date" name="end_date"
+                                value="{{ old('end_date') ? \Carbon\Carbon::parse(old('end_date'))->format('Y-m-d\TH:i') : '' }}">
                         </div>
+                        @error('end_date')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 {{-- Input Instruksi Exam --}}
                 <div class="mb-3">
-                    <label for="" class="mb-2">Instruksi Exam</label>
-                    <textarea id="editor" class="form-control" name="instruction"></textarea>
+                    <label for="instruction" class="mb-2">Instruksi Exam</label>
+                    <textarea id="editor" class="form-control @error('instruction') is-invalid @enderror" name="instruction">{{ old('instruction') }}</textarea>
+
+                    @error('instruction')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+
                     <script>
-                        ClassicEditor
-                            .create( document.querySelector( '#editor' ) )
-                            .catch( error => {
-                                console.error( error );
-                            } );
+                        document.addEventListener('DOMContentLoaded', function() {
+                            ClassicEditor
+                                .create(document.querySelector('#editor'))
+                                .catch(error => {
+                                    console.error(error);
+                                });
+                        });
                     </script>
                 </div>
 
@@ -191,29 +236,33 @@
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Public Access</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="public_access" id="public-access-btn" class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text" value="Tidak Aktif" name="public_access" id="public-access-btn"
+                                class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Show Result</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="show_result_on_end" id="show-result-btn" class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text" value="Tidak Aktif" name="show_result_on_end"
+                                id="show-result-btn" class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Allow Review</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="allow_review" id="allow-review-btn" class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text" value="Tidak Aktif" name="allow_review" id="allow-review-btn"
+                                class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Allow Multiple</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="allow_multiple" id="allow-multiple-btn" class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text" value="Tidak Aktif" name="allow_multiple"
+                                id="allow-multiple-btn" class="btn btn-danger" style="width: 100%">
                         </div>
                     </div>
                     <script>
-                        document.addEventListener('DOMContentLoaded', function () {
+                        document.addEventListener('DOMContentLoaded', function() {
                             var btn_public_access = document.getElementById('public-access-btn');
                             var btn_show_result = document.getElementById('show-result-btn');
                             var btn_allow_review = document.getElementById('allow-review-btn');
@@ -225,13 +274,13 @@
                             var isActive_AM = false;
 
                             // Public Access Setup
-                            btn_public_access.addEventListener('click', function () {
+                            btn_public_access.addEventListener('click', function() {
                                 // Tidak Aktif
                                 if (isActive_PA) {
                                     btn_public_access.classList.remove('btn-success');
                                     btn_public_access.classList.add('btn-danger');
                                     btn_public_access.textContent = 'Tidak Aktif';
-                                    btn_public_access.value ='Tidak Aktif';
+                                    btn_public_access.value = 'Tidak Aktif';
                                     isActive_PA = false;
                                 }
                                 // Aktif
@@ -239,13 +288,13 @@
                                     btn_public_access.classList.remove('btn-danger');
                                     btn_public_access.classList.add('btn-success');
                                     btn_public_access.textContent = 'Aktif';
-                                    btn_public_access.value ='Aktif';
+                                    btn_public_access.value = 'Aktif';
                                     isActive_PA = true;
                                 }
                             });
 
                             // Show Result Setup
-                            btn_show_result.addEventListener('click', function () {
+                            btn_show_result.addEventListener('click', function() {
                                 // Tidak Aktif
                                 if (isActive_SR) {
                                     btn_show_result.classList.remove('btn-success');
@@ -265,7 +314,7 @@
                             });
 
                             // Allow Review Setup
-                            btn_allow_review.addEventListener('click', function () {
+                            btn_allow_review.addEventListener('click', function() {
                                 // Tidak Aktif
                                 if (isActive_AR) {
                                     btn_allow_review.classList.remove('btn-success');
@@ -285,7 +334,7 @@
                             });
 
                             // Allow Multiple Setup
-                            btn_allow_multiple.addEventListener('click', function () {
+                            btn_allow_multiple.addEventListener('click', function() {
                                 // Tidak Aktif
                                 if (isActive_AM) {
                                     btn_allow_multiple.classList.remove('btn-success');
@@ -311,8 +360,10 @@
                     <div style="flex-grow: 1;"></div>
                     <div style="width: 200px;">
                         <div class="input-group mb-3">
-                            <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
-                            <button type="submit" id="saveEditBtn" class="btn btn-primary" style="width: 45%; margin-left: 5px;">Next</button>
+                            <button type="button" class="btn btn-danger"
+                                style="width: 45%; margin-right: 5px;">Cancel</button>
+                            <button type="submit" id="saveEditBtn" class="btn btn-primary"
+                                style="width: 45%; margin-left: 5px;">Next</button>
                         </div>
                     </div>
                 </div>
@@ -321,7 +372,3 @@
     </div>
 
 @endsection
-
-
-
-

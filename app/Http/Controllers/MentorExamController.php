@@ -19,12 +19,12 @@ class MentorExamController extends Controller
         return view("exam.create_new_exam");
     }
 
-    public function viewEditExam(Request $request,$id)
+    public function viewEditExam(Request $request, $id)
     {
         $data = Exam::findOrFail($id);
-        $exam=$data;
-        $compact = compact('data','exam');
-        if($request->dump==true){
+        $exam = $data;
+        $compact = compact('data', 'exam');
+        if ($request->dump == true) {
             return $compact;
         }
         return view("exam.edit_exam")->with($compact);
@@ -96,7 +96,9 @@ class MentorExamController extends Controller
     {
         $id = $request->id;
         $questions = ExamQuestionAnswers::orderBy('order', 'asc')->where(
-            "exam_id", "=", $id
+            "exam_id",
+            "=",
+            $id
         )->get();
 
         return response()->json($questions);
@@ -207,7 +209,7 @@ class MentorExamController extends Controller
 
         $compact = compact('questionAnswer');
         // Save the question
-        if ($questionAnswer->save()){
+        if ($questionAnswer->save()) {
             // Fetch sessions and question answers
             $sessions = ExamSession::where("exam_id", "=", $request->exam_id)->get();
             $questionsAnswers = ExamQuestionAnswers::where("exam_id", "=", $request->exam_id)->get();
@@ -222,10 +224,8 @@ class MentorExamController extends Controller
             }
 
             return back()->with($compact)->with('success', 'Berhasil Menambah Soal!');
-        }
-        else{
-            return back()>with($compact)->with(['error' => 'Gagal Menambah Soal !']);
-
+        } else {
+            return back() > with($compact)->with(['error' => 'Gagal Menambah Soal !']);
         }
         // $examId = $request->exam_id;
         // $compact = compact('examId');
@@ -365,8 +365,7 @@ class MentorExamController extends Controller
             // Delete the question
             $question->delete();
             return back()->with('success', 'Berhasil Menghapus Soal!');
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return back()->with('error', 'Gagal Menghapus Soal !');
         }
     }
@@ -450,13 +449,14 @@ class MentorExamController extends Controller
                         WHEN es.start_date > NOW() AND es.end_date <= NOW() THEN "Waiting to Start"
                         WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing"
                         ELSE "Finish" END as status'),
-            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status'))
+            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status')
+        )
 
             ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
             ->leftJoin('exam_takers as et', 'es.id', '=', 'et.session_id')
-        ->where("e.created_by",Auth::id())
+            ->where("e.created_by", Auth::id())
             ->where(function ($query) {
-            $query->where("is_deleted","<>","y")
+                $query->where("is_deleted", "<>", "y")
                     ->orWhereNull("is_deleted");
             })
             ->get();
@@ -488,12 +488,12 @@ class MentorExamController extends Controller
             DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status')
         )
             ->where("es.exam_id", $examId)
-                            ->leftJoin("exam_takers as et","es.id","=","et.session_id")
+            ->leftJoin("exam_takers as et", "es.id", "=", "et.session_id")
             ->first();
 
         $examInfo = ExamSession::where("exam_id", $examId)->get();
         $status_exam =  $data_examSession->status;
-        $examScore_status=  $data_examSession->score_status;
+        $examScore_status =  $data_examSession->score_status;
 
         $questionAnswer = ExamQuestionAnswers::all();
         // return $status_exam;
@@ -507,7 +507,8 @@ class MentorExamController extends Controller
         }
         return view("exam.edit_exam_v2")->with($compact);
     }
-    public function downloadExam($examId){
+    public function downloadExam($examId)
+    {
         $data_exam = DB::select("
                         SELECT
                             e.id as exam_id,
@@ -573,7 +574,32 @@ class MentorExamController extends Controller
     public function storeNewExam(Request $request)
     {
         $user_id = Auth::id();
+        $this->validate($request, [
+            'times_limit' => 'required|integer|min:1',
+            'title' => 'required|string|min:1',
+            'start_date' => 'required|date|before:end_date',
+            'end_date' => 'required|date|after:start_date',
+            'instruction' => 'required|string',
+        ], [
+            'times_limit.required' => 'Batas waktu wajib diisi.',
+            'times_limit.integer' => 'Batas waktu harus berupa angka.',
+            'times_limit.min' => 'Batas waktu minimal adalah 1.',
 
+            'title.required' => 'Judul wajib diisi.',
+            'title.string' => 'Judul harus berupa teks.',
+            'title.min' => 'Judul minimal adalah 1 karakter.',
+
+            'start_date.required' => 'Tanggal mulai wajib diisi.',
+            'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid.',
+            'start_date.before' => 'Tanggal mulai harus sebelum tanggal akhir.',
+
+            'end_date.required' => 'Tanggal akhir wajib diisi.',
+            'end_date.date' => 'Tanggal akhir harus berupa tanggal yang valid.',
+            'end_date.after' => 'Tanggal akhir harus setelah tanggal mulai.',
+
+            'instruction.required' => 'Instruksi wajib diisi.',
+            'instruction.string' => 'Instruksi harus berupa teks.',
+        ]);
 
         // Insert to Table Exam
         $exam = new Exam();
@@ -635,11 +661,9 @@ class MentorExamController extends Controller
 
             // return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
             return redirect(url("/exam/manage-exam-v2/$examId/create-question"))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
-
         } else {
             //redirect dengan pesan error
             return redirect('exam/new')->with(['error' => 'Gagal Menyimpan Exam']);
         }
     }
-
 }
