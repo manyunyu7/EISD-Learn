@@ -279,7 +279,7 @@ class HomeController extends Controller
                 ->get();
 
             $locations = DB::connection('ithub')
-                ->table('m_sites')
+                ->table('m_unit_businesses')
                 ->select('id', 'code', 'name')
                 ->get();
 

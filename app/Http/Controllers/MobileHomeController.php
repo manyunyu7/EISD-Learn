@@ -202,7 +202,7 @@ class MobileHomeController extends Controller
                 (
                     SELECT json_agg(json_build_object('id', b.id, 'site_id', b.site_id, 'name', c.name, 'code', c.code))
                     FROM u_site_user b
-                    JOIN m_sites c ON b.site_id = c.id
+                    JOIN m_unit_businesses c ON b.site_id = c.id
                     WHERE b.user_id = a.id
                 ) AS sites
             FROM users a
@@ -225,7 +225,7 @@ class MobileHomeController extends Controller
         //     "SELECT a.
         //     FROM u_site_user a
         //     JOIN users b ON a.user_id = b.id
-        //     LEFT JOIN m_sites c ON a.site_id = c.id
+        //     LEFT JOIN m_unit_businesses c ON a.site_id = c.id
         //     WHERE b.deleted_at IS NULL AND b.id = ?
         //     LIMIT 1;", [$mdlnUserId]);
 
