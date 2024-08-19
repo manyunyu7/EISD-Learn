@@ -31,7 +31,7 @@ class ModernlandIntegrationController extends Controller
 
         try {
             // Step 2: Hit the external API with the Bearer token
-            $response = $client->request('GET', 'https://github.modernland.co.id/api/v1/profile', [
+            $response = $client->request('GET', 'https://ithub.modernland.co.id/api/v1/profile', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $token,
                 ],
