@@ -133,7 +133,8 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection = new CourseSection();
 
-
+        ini_set('upload_max_filesize', '500M');
+        ini_set('post_max_size', '500M');
         $materials = $request->file('question_images');
 
         if ($materials) {
