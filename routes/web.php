@@ -1,12 +1,30 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\CourseSectionController;
+use App\Http\Controllers\DropzoneController;
+use App\Http\Controllers\FileOnS3Controller;
+use App\Http\Controllers\GraphController;
 use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\QRLoginController;
+use App\Http\Controllers\SendEmailController;
+use App\Http\Controllers\TestEmailController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\VisualizationDetailController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DropzoneController;
-use App\Http\Controllers\GraphController;
+use UniSharp\LaravelFilemanager\Lfm;
+
+
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,24 +38,43 @@ use App\Http\Controllers\GraphController;
 */
 
 Route::get('/iseng-iseng-aja', 'AitiHubController@checkAitiHub');
-Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@see_section');
+Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
+Route::get('mobile-api/course/{lesson}/section/{section}', 'MobileLmsViewerController@seeSection');
 
+
+Route::get('public-exam/{sessionId}', 'CourseSectionController@publicExam');
 
 Route::get('/', 'LandingController@landing');
 Route::get('/classes', 'LandingController@classes');
 Route::get('/blogs', 'LandingController@blogs');
 Route::get('/home', 'HomeController@index');
 
-Route::view('forgotpass', 'auth.forgotpass');
+// Route::view('forgotpass', 'auth.forgotpass');
 
-Route::get('/profile', 'ProfileController@index')->middleware('auth');
+// HANDLING RESET PASSWORD
+Route::get('forgotpass', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('forgotpass');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+Route::get('/password/sent', function () {
+    return view('auth.alert_emailSent');
+})->name('password.sent');
+
+
+// HANDLING CHANGE PASSWORD
+Route::get('password/change', [ChangePasswordController::class, 'showChangeForm'])->name('password.change');
+Route::post('password/change-pass', [ChangePasswordController::class, 'change'])->name('password.updateChange');
+
+
+
+Route::get('/profile', 'ProfileController@index')->middleware('auth')->name('profile');
 Route::post('/profile/update', 'ProfileController@update')->name('profile.update')->middleware('auth');
 Route::post('/profile/update/socmed', 'ProfileController@updateSocMed')->name('profile.updateSocMed')->middleware('auth');
 
 // Route::post('/class/class-list/check/{lessonId}', 'DetailClassController@viewStudents')->name('view_students.viewStudents')->middleware('auth');
 // Route::post('/class/class-list/students/{lessonId}')->name('view_students.viewStudents')->middleware('auth');
 
-Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@see_section')->name('course.see_section');
+Route::get('/course/{lesson}/section/{section}', 'CourseSectionController@seeSection')->name('course.see_section');
 
 
 Route::get('/encrypt', [AbsensiController::class, 'encryptData']);
@@ -62,16 +99,36 @@ Route::get('/loginz', function () {
     return view('neo_login');
 });
 
-Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
-Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
-Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
-Route::delete('/files/{fileId}', [GraphController::class, 'deleteFile'])->name('delete-file-graph');
-Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
-Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
-Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
+
+
+Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail'])->name('qr-login');
+
 
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
+
+    Route::get('sync',[LaravelEstriController::class,'syncDataWithIthub']);
+
+    Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
+    Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
+    Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
+    Route::delete('/files/{fileId}', [GraphController::class, 'deleteFile'])->name('delete-file-graph');
+    Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
+    Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
+    Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
+
+
+    // List all files (index)
+    Route::get('/filemanager/s3', [FileOnS3Controller::class, 'index'])->name('filemanager.s3.index');
+
+    // Show form to upload a file (create)
+    Route::get('/filemanager/s3/create', [FileOnS3Controller::class, 'create'])->name('filemanager.s3.create');
+
+    // Handle file upload (store)
+    Route::post('/filemanager/s3', [FileOnS3Controller::class, 'store'])->name('filemanager.s3.store');
+    // Delete file (destroy)
+    Route::delete('/filemanager/s3/{file}', [FileOnS3Controller::class, 'destroy'])->name('filemanager.s3.destroy');
+
 
     Route::any('/exam/save-user-answer', 'ExamTakerController@submitQuiz');
     Route::any('/exam/fetch-result-on-section', 'ExamTakerController@fetchResultByStudentOnSection');
@@ -98,10 +155,13 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('fetch-positions', 'LessonController@fetchPositions');
     Route::post('fetch-show', 'LessonController@fetchShowCourse');
     Route::post('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
+    Route::post('/lesson/search_class', 'LessonController@search')->name('lesson.search')->middleware('auth');
 
     // ROUTING KHUSUS MENTOR
     Route::group(['middleware' => ['mentor']], function () {
 
+
+        Route::resource('users', UserManagementController::class);
 
         Route::prefix("lesson")->group(function () {
 
@@ -116,12 +176,13 @@ Route::group(['middleware’' => ['auth']], function () {
         });
 
         Route::get('/lesson/manage', ['uses' => 'LessonController@manage']);
-        Route::get('/lesson/manage_v2', ['uses' => 'LessonController@manage_v2']);
-        Route::get('/lesson/create_v2', ['uses' => 'LessonController@create_v2']);
-        Route::post('/lesson/create_class', ['uses' => 'LessonController@store_v2']);
-        Route::get('/lesson/edit_class/{lesson}', ['uses' => 'LessonController@edit_class_v2']);
-        Route::post('/update-lesson/{lesson}', ['uses' => 'LessonController@update_class_v2']);
+        Route::get('/lesson/manage_v2', ['uses' => 'LessonController@manageV2']);
+        Route::get('/lesson/create_v2', ['uses' => 'LessonController@createV2']);
+        Route::post('/lesson/create_class', ['uses' => 'LessonController@storeV2']);
+        Route::get('/lesson/edit_class/{lesson}', ['uses' => 'LessonController@editClassV2']);
+        Route::post('/update-lesson/{lesson}', ['uses' => 'LessonController@updateClassV2']);
         Route::get('/lesson/delete_class/{lesson}', ['uses' => 'LessonController@delete_class_v2']);
+
 
         Route::get('/lesson/store', 'LessonController@add');
         Route::get('/lesson/{lesson}/students/', 'LessonController@seeStudent');
@@ -165,7 +226,9 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('manage', 'MentorExamController@viewManageExam');
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
-            Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
+            Route::get('manage-exam-v2/{examId}/create-question', 'MentorExamController@viewCreateQuest_v2');
+            Route::get('manage-exam-v2/{examId}/edit-question', 'MentorExamController@viewEditQuest_v2');
+            // Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
             Route::get('download-exam/{examId}', 'MentorExamController@downloadExam');
 
             Route::delete('{id}/delete', 'MentorExamController@deleteExam')->name("exam.delete");
@@ -209,7 +272,6 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/progress', 'StudentProgressController@startSection');
 
     Route::prefix("quiz")->group(function () {
-
         Route::prefix("session")->group(function () {
             Route::get('{id}/initial', 'ExamTakerController@viewInitialTakeSession');
             Route::get('{id}/take-play', 'ExamTakerController@viewInitialTakeSession');
@@ -218,8 +280,6 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::any('{id}/mquestions', 'ExamTakerController@fetchQuestions');
             Route::any('save-answers', 'ExamTakerController@saveAnswers');
         });
-
-
         Route::any('{id}/mquestions', 'MentorExamSessionController@fetchQuestions');
     });
 
@@ -240,22 +300,21 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::get('/course/{lesson}/submission', 'FinalProjectController@submit_page')->name('course.submission');
         Route::get('/course/{lesson}/certificate', 'FinalProjectController@certificate')->name('course.certificate');
         Route::post('/course/submission/store', 'FinalProjectController@store')->name('course.submission.store');
+        // Route::post('/lesson/student/search_class', 'ClassListController@search')->name('lessonStudent.search')->middleware('auth');
+
     });
 });
 
 Route::get('/lesson/{lesson}', 'LessonController@show')->name('lesson.show');
 
 Route::group(['middleware' => ['auth']], function () {
-
     Route::get('/blog/create', ['uses' => 'BlogController@create'])->middleware('auth');
     Route::get('/blog/manage', ['uses' => 'BlogController@index'])->middleware('auth');
     Route::get('/blog/store', 'BlogController@add')->middleware('auth');
 });
 
 
-
-
-
+Route::post('/qr-login', [QRLoginController::class, 'processQRCodeLogin'])->name('qr.login');
 Route::resource('blog', BlogController::class);
 Route::get('/blog/{blog}', 'BlogController@show')->name('blog.read');
 
@@ -266,5 +325,9 @@ Route::group(['prefix' => 'filemanager'], function () {
 
 
 
+Route::get('/generate-qr-code', [QRLoginController::class, 'generateQRCode'])->name('generate.qrcode');
+Route::post('/check-qr-jwt', 'QRLoginController@checkToken')->name('checkQrLoginJWT');
+
 
 Auth::routes();
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');

@@ -137,11 +137,27 @@
 
     <div class="container-fluid navbar-fixed-top large-nav-bar" style="background-color: #F5F7FA; padding: 10px 20px;">
         <div class="row">
-            <div class="col-xs-1 back-button">
-                <a href="{{ url()->previous() }}" class="btn btn-link">
-                    <img src="{{ asset('lesson_template/img/back_button.svg') }}" alt="Back"
-                         style="width: 57px; height: 57px;">
-                </a>
+            <div class="col-xs-1">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a id="statusBarBackButton" href="{{ url()->previous() }}">
+                            <img src="{{  asset('lesson_template/img/back_button_course_play.svg') }}" alt="Home" style="width:68px;height:68px;">
+                        </a>
+                    </div>
+                    <div class="col-xs-6">
+                        @php
+                            $url = '/'; // Default URL
+                            if (Auth::user()->role == "student") {
+                                $url = '/class/my-class';
+                            } elseif (Auth::user()->role == "mentor") {
+                                $url = '/lesson/manage_v2';
+                            }
+                        @endphp
+                        <a id="statusBarHomeButton" href="{{ url($url) }}">
+                            <img src="{{ asset('lesson_template/img/home_button_course_play.svg') }}" alt="Home" style="width:68px;height:68px;">
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="col-xs-10 text-center title-top">
                 <h3>{{ $lesson->course_title }}
@@ -181,7 +197,7 @@
                     <div class="page-header row no-gutters mb-4">
                         <div class="col-12 col-sm-12 text-center text-sm-left mb-0">
                             <h2 class="text-uppercase">Kelas {{ $lesson->course_title }} </h2>
-                            <h3 class="page-title">Materi Ke : {{ $sectionDetail->section_order }}</h3>
+                            {{-- <h3 class="page-title">Materi Ke : {{ $sectionDetail->section_order }}</h3> --}}
                             <h4 class="page-title">{{ $sectionDetail->section_title }}</h4>
                         </div>
                     </div>
@@ -200,10 +216,10 @@
                             @if(Str::contains(Storage::url('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
 
                                 @if(str_contains($sectionDetail->section_video,'course-s3'))
-                                    <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{"https://lms-modernland.s3.ap-southeast-3.amazonaws.com/"."$sectionDetail->section_video" }}#page=1"
-                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
-                                            webkitallowfullscreen=""></iframe>
+                                   <iframe id="pdfIframe"
+                                           src="{{ url('/') }}/library/viewerjs/src/#{{ env('AWS_BASE_URL') . $sectionDetail->section_video }}#page=1"
+                                           style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                           webkitallowfullscreen=""></iframe>
                                 @else
                                     <iframe id="pdfIframe"
                                             src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
@@ -322,40 +338,54 @@
                                             src="{{$sectionDetail->section_video}}">
                                     </video>
                                 @else
-                                    <h1>Unsupported file format</h1>
+                                    {{-- <h1>Unsupported file format</h1> --}}
                                 @endif
                             @endif
                         </div>
                     @endif
 
+
+                    @if($isSectionTaken == true)
                     <script>
                         function nextCuy() {
-                            var loaderContainer = document.querySelector('.loader-container');
-                            loaderContainer.style.display = 'flex'; // or 'flex' if it's a flex container
-                            var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
-                            window.location.href = nextUrl;
-                            return;
                             var videoPlayer = document.getElementById("myVideo");
                             var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
-                            var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
-
-                            if (progress >= 90) {
+                            // Handle case where videoPlayer element does not exist
+                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
                                 window.location.href = nextUrl;
-                                return;
-                            } else {
+                                console.error("Video player element not found.");
+                            }
+                    </script>
+                    @else
+                    <script>
+                        function nextCuy() {
+                            var videoPlayer = document.getElementById("myVideo");
+                            var nextUrl = "{{ url('/') . "/course/$courseId/section/$next_section" }}";
+                            if (videoPlayer) {
+                                var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
 
-                                // Prevent the default behavior of the button
-                                event.preventDefault();
-                                // Show a SweetAlert alert informing the user to complete the video first
-                                Swal.fire({
-                                    title: "Video Progress",
-                                    text: "Pengguna harus menyelesaikan video terlebih dahulu.",
-                                    icon: "warning",
-                                    confirmButtonText: "OK",
-                                });
+                                if (progress >= 90) {
+                                    document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                    window.location.href = nextUrl;
+                                } else {
+                                    event.preventDefault();
+                                    Swal.fire({
+                                        title: "Video Progress",
+                                        text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                        icon: "warning",
+                                        confirmButtonText: "OK",
+                                    });
+                                }
+                            } else {
+                                // Handle case where videoPlayer element does not exist
+                                document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                window.location.href = nextUrl;
+                                console.error("Video player element not found.");
                             }
                         }
                     </script>
+                    @endif
+
 
 
                     <div class="card mt-5">
@@ -365,7 +395,7 @@
 
                             <h4 class="card-title">{{ $lesson->course_title }}</h4>
 
-                            <p class="card-text">Materi Ke : {{ $sectionDetail->section_order }}</p>
+                            {{-- <p class="card-text">Materi Ke : {{ $sectionDetail->section_order }}</p> --}}
                             {!! $sectionDetail->section_content !!}
 
                             <div class="d-flex justify-content-between mt-2 mb-4">
@@ -376,7 +406,7 @@
                                 @if ($next_section != null)
                                     <button style="background-color: #39AA81" id="nextLessonButton"
                                             class="btn btn-primary" onclick="nextCuy();">
-                                        Next Lesson
+                                        Next Section
                                     </button>
 
                                     <!--<a href="{{ url('/') . "/course/$courseId/section/$next_section" }}" id="nextLessonButton"-->
@@ -396,25 +426,76 @@
     <!-- /#page-content-wrapper -->
 
     <!-- Sidebar -->
-    <div id="sidebar-wrapper" style="background-color: whitesmoke">
+    <div id="sidebar-wrapper" style="background-color: rgb(255, 255, 255)">
         <ul class="sidebar-nav">
-            <div class="container content-container">
+            <div class="container content-container" style="margin-bottom: 200px">
                 <div class="" style="max-width: 560px">
+
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
                         <div style="flex: 1; flex-shrink: 1;">
                             <div class="category-label-container"
-                                 style=" background-color: red; color: white"
-                            >Management Trainee
+                                 style=" background-color: {{$courseCategoryColor}}; color: white"
+                            >{{$courseCategory}}
                             </div>
                         </div>
                         <div style="flex-shrink: 1;">
-                            <img style="width: 12%; height: auto;"
-                                 src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}">
-                            Modernland Training
+                            <img style="width: 12%; height: auto;" src="{{ url('/home_icons/Toga_MDLNTraining.svg') }}"> {{ $lesson->mentor_name }}
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+                @if (Auth::user()->role=="student")
+                    @php
+                        $totalSections = count($sections);
+                        $sectionsTaken = count($sectionTakenByStudent);
+                        $percentage = $totalSections > 0 ? round(($sectionsTaken / $totalSections) * 100) : 0;
+
+                        // Determine progress bar color based on percentage
+                        if ($percentage > 50) {
+                            $progressBarColor = '#28a745'; // Green
+                        } elseif ($percentage >= 50) {
+                            $progressBarColor = '#ffc107'; // Yellow
+                        } else {
+                            $progressBarColor = '#007bff'; // Regular (Blue)
+                        }
+                        $finished = $sectionsTaken >= $totalSections;
+                    @endphp
+
+
+                <div class="" style="max-width: 560px">
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+                        <div style="flex: 1; flex-shrink: 1;">
+                            <h4 style="color: #000000; font-weight: bold">Learning Path</h4>
+                        </div>
+                        <div style="flex-shrink: 1;">
+                            <h4 style="color: #23BD33; font-weight: bold">{{$percentage}}% Completed</h4>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="max-width: 560px;">
+                    <div class="progress" style="height: 20px; background-color: #e9ecef;">
+                        <div class="progress-bar" role="progressbar"
+                            style="width: {{ $percentage }}%; background-color: {{ $progressBarColor }};"
+                            aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
                         </div>
                     </div>
                 </div>
+
+                @endif
+
+
+
+
+
 
                 <div
                     style="padding: 30px;  background-color: #F5F7FA; max-width: 560px; display: flex; justify-content: space-between; align-items: center;">
@@ -426,57 +507,123 @@
                     <div style="flex-shrink: 1;">
                         <span>
                             <img
-                                src="{{asset('lesson_template/img/')}}/section_folders_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">This is the middle section.</p>
+                                src="{{ asset('lesson_template/img/section_folders_icon.svg') }}" alt="Toggle Menu"/>
+                            <p style="display: inline;">
+                                {{ count($sections) }} section{{ count($sections) !== 1 ? 's' : '' }}
+                            </p>
                         </span>
                     </div>
 
-                    <!-- Third Section -->
-                    <div style="flex-shrink: 1; margin-left: 20px">
+                    @if (Auth::user()->role=="student")
+                      <!-- Third Section -->
+                      <div style="flex-shrink: 1; margin-left: 20px">
                         <span>
                             <img
                                 src="{{asset('lesson_template/img/')}}/section_finished_icon.svg" alt="Toggle Menu"/>
-                            <p style="display: inline;">This is the middle section.</p>
+                                <p style="display: inline;">
+                                    @php
+                                        $totalSections = count($sections);
+                                        $sectionsTaken = count($sectionTakenByStudent);
+                                        $percentage = round(($sectionsTaken / $totalSections) * 100);
+                                        $finished = $sectionsTaken >= $totalSections;
+                                    @endphp
+                                    <span>
+                                        {{ $percentage }}% finish (
+                                        <span style="color: {{ $finished ? 'green' : 'grey' }};">
+                                            {{ $sectionsTaken }}/{{ $totalSections }}
+                                        </span>)
+                                    </span>
+                                </p>
                         </span>
                     </div>
+                    @endif
+
+
                 </div>
 
+
+
+                @if ($isSectionTaken == true)
+                <script>
+                    function openSection(nextUrl) {
+                        document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            window.location.href = nextUrl;
+                            // Handle case where videoPlayer element does not exist
+                            console.error("Video player element not found.");
+                        }
+                </script>
+                @else
+                <script>
+                    function openSection(nextUrl) {
+                        var videoPlayer = document.getElementById("myVideo");
+                        if (videoPlayer) {
+                            var progress = (videoPlayer.currentTime / videoPlayer.duration * 100);
+
+                            if (progress >= 90) {
+                                document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                                window.location.href = nextUrl;
+                            } else {
+                                Swal.fire({
+                                    title: "Video Progress",
+                                    text: "Pengguna harus menyelesaikan video terlebih dahulu.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+                                });
+                            }
+                        } else {
+                            document.querySelector('.loader-container').style.display = 'flex'; // or 'flex'
+                            window.location.href = nextUrl;
+                            // Handle case where videoPlayer element does not exist
+                            console.error("Video player element not found.");
+                        }
+                    }
+                </script>
+                @endif
 
                 @forelse ($sections as $item)
 
                     <!--- Item Course Section Item -->
-                    <div
-                        style="padding: 20px;  background-color: #FFFFFF; max-width: 560px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.2px solid black;">
+                    <div style="padding: 20px;
+
+                    @if($item->section_id == $currentSectionId)
+                    background-color: #F8BFB9;
+                    @else
+                    background-color: #FFFFFF;
+                    @endif
+
+
+
+                    max-width: 560px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.2px solid #E9EAF0;">
                         <!-- First Section -->
-                        <div style="flex: 1; flex-shrink: 1;">
+                        <div style="flex: 1; flex-shrink: 1;" c >
                             @if (isset($item) && isset($item->isTaken))
                                 @php
                                     $isCurrent = $item->isCurrent ?? false; // Check if $item->isCurrent is set, if not, set it to false
                                 @endphp
 
-                                <a href="{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}"
-                                   class="loader-link"
-                                   style="text-decoration: none; color: inherit;">
+
+                                {{-- <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; {{ $item->status === 'Waiting to Start' ? 'pointer-events: none' : '' }}" onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" > --}}
+
+                                <a href="javascript:void(0)" class="" style="text-decoration: none; color: inherit; " onclick="openSection('{{ url('/') . "/course/$item->lesson_id/section/$item->section_id" }}')" >
                                     @if (Auth::user()->role!='mentor')
                                         {{-- Check if the item is marked as taken --}}
                                         @if ($item->isTaken)
                                             {{-- Display a checked checkbox icon indicating completion --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                 alt="Completed"/>
+                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}" alt="Completed"/>
                                             {{-- Check if it's the current section --}}
                                         @elseif ($item->section_id == $currentSectionId)
                                             {{-- Display a checked checkbox icon indicating completion --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_checked_icon.svg') }}"
-                                                 alt="Completed"/>
+                                            <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}" alt="Completed"/>
                                         @else
                                             {{-- Display an empty checkbox icon indicating incomplete --}}
-                                            <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}"
-                                                 alt="Incomplete"/>
+                                            <img src="{{ asset('lesson_template/img/checkbox_empty_icon.svg') }}" alt="Incomplete"/>
                                         @endif
                                         {{-- Display the section title --}}
                                     @endif
                                     <span style="display: inline-block;">
+                                        <span style='{{ $item->is_deleted === 'y' ? 'grey' : '' }}' >
                                         {{ $item->section_title }}
+                                         </span>
                                     </span>
                                 </a>
                             @endif
@@ -484,6 +631,7 @@
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
+
                                 var loaderLinks = document.querySelectorAll('.loader-link');
                                 loaderLinks.forEach(function (link) {
                                     link.addEventListener('click', function (event) {
@@ -492,11 +640,12 @@
                                         window.location.href = event.currentTarget.href;
                                     });
                                 });
+                                document.querySelector('.loader-container').style.display = 'none'; // or 'flex'
                             });
                         </script>
 
                         <!-- Third Section -->
-                        <div style="flex-shrink: 1; margin-left: 20px">
+                        <div style="flex-shrink: 1; margin-left: 20px" class="{{ $item->is_deleted === 'y' ? 'd-none' : '' }}">
                                 <span>
                                     @if($item->quiz_session_id!="-"&&$item->quiz_session_id!="")
                                         <img src="{{asset('lesson_template/img/')}}/timer_icon.svg"

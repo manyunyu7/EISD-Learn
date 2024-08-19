@@ -140,6 +140,7 @@
                                     <th scope="col">Icon</th>
                                     <th scope="col">Category Name</th>
                                     <th>Color</th>
+                                    <th></th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
                                 </tr>
@@ -152,6 +153,10 @@
                                         </td>
                                         <td>{{ $data->name }}</td>
                                         <td>{{ $data->color_of_categories }}</td>
+                                        <td>
+                                            <div style="width: 20px; height: 20px; background-color: {{ $data->color_of_categories }};"></div>
+                                        </td>
+                                        
                                         <td class="text-center">
                                             <form id="delete-post-form" action="{{ route('lesson_category.destroy', $data->id) }}" method="POST">
                                                 @csrf

@@ -7,10 +7,11 @@ use App\Models\ExamSession;
 use App\Models\ExamTaker;
 use App\Models\StudentSection;
 use App\Models\Exam;
-use Auth;
-use DB;
+use App\Models\StudentLesson;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use PhpParser\Node\Stmt\Return_;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -29,7 +30,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
 
         if (!Auth::check()) {
@@ -37,10 +38,10 @@ class HomeController extends Controller
         }
 
         $departments = DB::connection('ithub')
-                        ->table('m_departments')
-                        ->select('id', 'code', 'name')
-                        ->where('code', 'like', '%_NEW%')
-                        ->get();
+            ->table('m_departments')
+            ->select('id', 'code', 'name')
+            ->where('code', 'like', '%_NEW%')
+            ->get();
         // return response()->json($departments);
         // return response()->json($departments);
 
@@ -51,7 +52,9 @@ class HomeController extends Controller
 
         $leaderboardQuery = DB::table(DB::raw('student_section ss'))
             ->select(
-                'u.name as student_name', 'u.profile_url', 'u.id',
+                'u.name as student_name',
+                'u.profile_url',
+                'u.id',
                 DB::raw('SUM(ss.score) as total_score'),
                 'avg_subquery.average_score as average_score',
                 DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as highest_score'),
@@ -68,7 +71,8 @@ class HomeController extends Controller
         if ($studentSectionCount > 0) {
             $topThreeQuery = DB::table(DB::raw('student_section ss'))
                 ->select(
-                    'u.name as student_name', 'u.profile_url',
+                    'u.name as student_name',
+                    'u.profile_url',
                     DB::raw('SUM(ss.score) as total_score'),
                     DB::raw('(SELECT MAX(score) FROM student_section WHERE student_id = u.id) as lowest_score'),
                     DB::raw('(SELECT MIN(score) FROM student_section WHERE student_id = u.id) as highest_score')
@@ -93,132 +97,121 @@ class HomeController extends Controller
         if (Auth::check() && Auth::user()->role == 'mentor') {
             $userId = Auth::user()->id;
             $user_name = Auth::user()->name;
-            $blog = DB::select("select * from view_blog where user_id = $userId ");
             $classes = DB::select("select * from view_course where mentor_id = $userId");
             $classRegistered = DB::select("SELECT * from view_student_lesson where student_id=$userId");
             $projectCreatedCount = DB::table('view_project')
                 ->where('user_id', $userId)
                 ->count();
 
-            $classRegisteredCount = DB::table('view_course')
+            $classRegisteredCount = DB::table('lessons')
                 ->where('mentor_id', $userId)
+                ->whereNull('deleted_at')
                 ->count();
 
-            $studentCount = DB::table('view_student_lesson')
-                ->where('mentor_name', $user_name)
-                ->count();
 
-            // Hitung jumlah student yang telah menyelesaikan setiap course
-            $courseCompleteCount = DB::table('student_lesson')
-                ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
-                ->where('learn_status', [0, 1])
-                ->groupBy('lesson_id')
+            // $studentCount = DB::table('view_student_lesson')
+            //     ->where('mentor_name', $user_name)
+            //     ->count();
+
+            $studentLessonsWithMentor = DB::table('student_lesson')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->select('student_lesson.*', 'lessons.mentor_id')
+                ->where('lessons.mentor_id', $userId)
+                ->whereNull('lessons.deleted_at')
+                ->count();
+            // return $studentLessonsWithMentor;
+
+
+            $data_studentProgress = [];
+
+            $tabel_lesson = DB::table('lessons')
+                ->whereNull('lessons.deleted_at')
+                ->where('lessons.mentor_id', $userId)
                 ->get();
 
 
-            // Hitung jumlah total student dalam setiap course
-            $totalStudentsCount = DB::table('student_lesson')
-                ->select('lesson_id', DB::raw('COUNT(*) AS total_students'))
-                ->groupBy('lesson_id')
-                ->get();
+            foreach ($tabel_lesson as $data_lesson) {
+                $obj_class = new \stdClass();;
 
-            // Inisialisasi variabel untuk menghitung jumlah kelas yang sedang dalam status "On Progress Course"
-            $onProgressCount = 0;
-            $completedCourseCount = 0;
-            // Gabungkan kedua hasil perhitungan sebelumnya untuk menentukan apakah suatu course telah selesai
-            $courseStatus = [];
-            foreach ($courseCompleteCount as $course) {
-                $lessonId = $course->lesson_id;
-                $completedStudents = $course->completed_students;
-                $totalStudents = $totalStudentsCount->where('lesson_id', $lessonId)->first()->total_students;
+                $obj_class->naxme = $data_lesson->course_title;
+                $obj_class->completedCount = 0;
+                $obj_class->incompleteCount = 0;
 
-                // Simpan dalam variabel status masing-masing kelas
-                $courseStatus[$lessonId] = ($completedStudents == $totalStudents) ? 'Completed Course' : 'On Progress Course';
+                $studentCountInClass = StudentLesson::where('lesson_id', '=', $data_lesson->id)->count();
+                $obj_class->studentCount = $studentCountInClass;
 
-                // Hitung berapa banyak kelas yang sedang dalam status on progress course
-                if ($courseStatus[$lessonId] === 'On Progress Course') {
-                    $onProgressCount++;
-                }else{
-                    $completedCourseCount++;
+                $completedCount = StudentLesson::where('learn_status', '=', '1')
+                    ->where('lesson_id', '=', $data_lesson->id)->count();
+
+                $obj_class->completedCount = $completedCount;
+                $obj_class->unfinishedCount = $studentCountInClass - $completedCount;
+                array_push($data_studentProgress, $obj_class);
+            }
+
+            $countCourseInProgress = 0;
+            $countCourseCompleted = 0;
+
+            foreach ($data_studentProgress as $studentProgress) {
+
+                if ($studentProgress->studentCount == $studentProgress->completedCount) {
+                    $countCourseCompleted++;
+                } else {
+                    $countCourseInProgress++;
                 }
             }
+
+            $obj_dataProgress = new \stdClass();
+            $obj_dataProgress->completedClass = $countCourseCompleted;
+            $obj_dataProgress->inprogress = $countCourseInProgress;
+
 
             // Retrieve all records of exams taken by students
             $takenExamCourseSection = ExamTaker::all();
 
-            // Initialize an empty array to store unique exam sessions
-            $takenExamId = [];
-            $eligibleSessionId = [];
 
-            // Loop through each taken exam
-            foreach ($takenExamCourseSection as $mExamSection){
+            $locationId = $request->input('location') ?? "all";
+            $departmentId = $request->input('department') ?? "all";
+            $month = $request->input('month') ?? "all";
 
-                // Find the exam session related to the taken exam
-                $examSession = ExamSession::find($mExamSection->session_id);
-
-                // If the exam session exists
-                if($examSession!=null){
-
-                    // Find the exam related to the session
-                    $exam = Exam::find($examSession->exam_id);
-                    // If the exam exists
-                    if($exam!=null){
-                        // Add the exam ID to the list of taken exam sessions
-                        array_push($takenExamId, $exam->id);
+            $results = ExamTaker::selectRaw('
+                    e.title as exam_title,
+                    es.id AS exam_session_id,
+                    AVG(et.current_score) AS avg_score
+                ')
+                ->from('exam_takers as et')
+                ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
+                ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
+                ->leftJoin('users as u', 'et.user_id', '=', 'u.id')
+                ->where(function ($query) {
+                    $query->where('e.is_deleted', '!=', 'y')
+                        ->orWhereNull('e.is_deleted')
+                        ->orWhere('e.is_deleted', '');
+                })
+                ->where(function ($query) use ($month) {
+                    if ($month !== 'all') {
+                        $query->whereRaw('MONTH(es.created_at) = ?', [$month]);
                     }
-                }
-            }
-
-            // Filter out duplicate exam sessions and convert the array to numerical indexed array
-            $availableExamToFilter = (array_values(array_unique($takenExamId)));
-
-            // Retrieve the latest three exams based on their IDs
-            $latestExams = Exam::whereIn('id', $availableExamToFilter)->latest()->take(3)->get();
-
-            // Initialize an empty array to store average scores
-            $averageScoreArray = [];
-
-            // Retrieve the average scores of exams for the latest three exam sessions
-            $averageScores  = DB::table('exam_sessions')
-                ->rightJoin('exam_takers', 'exam_sessions.id', '=', 'exam_takers.session_id')
-                ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
-                ->select('exams.id', 'exams.title', DB::raw('ROUND(AVG(exam_takers.current_score)) as average_score'))
-                ->where('exam_sessions.exam_type', 'Post Test')
-                ->groupBy('exam_sessions.id')
-                ->take(3)
+                })
+                ->where(function ($query) use ($departmentId) {
+                    if (!empty($departmentId)) {
+                        if ($departmentId != "all") {
+                            $query->where('u.department_id', '=', $departmentId);
+                        }
+                    }
+                })
+                ->where(function ($query) use ($locationId) {
+                    if (!empty($locationId)) {
+                        if ($locationId !== 'all') {
+                            $query->whereJsonContains('u.location', ['site_id' => $locationId]);
+                        } else {
+                            return $query;
+                        }
+                    }
+                })
+                ->groupBy('es.id')
+                ->orderByDesc('es.created_at')
+                // ->limit(3)
                 ->get();
-
-            $arraySomething = [];
-
-
-
-            $results = DB::select("
-                        SELECT
-                            sub.exam_title,
-                            sub.exam_session_id,
-                            sub.avg_score
-                        FROM
-                            (SELECT
-                                e.title as exam_title,
-                                es.id AS exam_session_id,
-                                AVG(et.current_score) AS avg_score
-                            FROM
-                                exam_takers et
-                            LEFT JOIN
-                                exam_sessions es ON et.session_id = es.id
-                            LEFT JOIN
-                                course_section cs ON cs.id = et.course_section_flag
-                            LEFT JOIN
-                                exams e ON e.id = es.exam_id
-                            LEFT JOIN
-                                users u ON et.user_id = u.id
-                            GROUP BY
-                                es.id
-                            ORDER BY
-                                es.created_at DESC
-                            LIMIT 3)
-                        AS sub
-                    ");
 
             $averageScoreArray = [];
 
@@ -232,41 +225,126 @@ class HomeController extends Controller
 
             // return $averageScoreArray;
 
+
+            $learnStatus = request('learn_status');
+
+
+
+            $userLMS = DB::connection('mysql')
+                ->table('users')
+                ->select('mdln_username', 'name', 'users.department_id')
+                ->where('role', '=', 'student')
+                ->where(function ($query) use ($locationId) {
+                    if (!empty($locationId)) {
+                        if ($locationId !== 'all') {
+                            $query->whereJsonContains('location', ['site_id' => $locationId]);
+                        }
+                    }
+                })
+                ->where(function ($query) use ($departmentId) {
+                    if (!empty($departmentId)) {
+                        if ($departmentId != "all") {
+                            $query->where('users.department_id', '=', $departmentId);
+                        }
+                    }
+                })
+                ->leftJoin('student_lesson', 'users.id', '=', 'student_lesson.student_id') // Join with student_lesson table
+                ->leftJoin('lessons', 'lessons.id', '=', 'student_lesson.lesson_id') // Join with student_lesson table
+                ->where(function ($query) use ($learnStatus) {
+                    if (!empty($learnStatus) && $learnStatus !== 'all') {
+                        if ($learnStatus === 'finished') {
+                            $query->where('student_lesson.learn_status', '=', 1);
+                        } elseif ($learnStatus === 'not_finished') {
+                            $query->where('student_lesson.learn_status', '=', 0);
+                        }
+                    }
+                })
+                ->where(function ($query) {
+                    // Check that the lesson is not deleted
+                    $query->whereNull('lessons.deleted_at');
+                })
+                ->get();
+
+            // department for pie chart
+            $departments = DB::connection('ithub')
+                ->table('m_departments')
+                ->select('id', 'code', 'name')
+                // ->where('code', 'like', '%_NEW%')
+                ->get();
+
+            //Department for filter latest post test
+            $departmentsForFilter = DB::connection('ithub')
+                ->table('m_departments')
+                ->select('id', 'code', 'name')
+                ->where('code', 'like', '%_NEW%')
+                ->get();
+
+            $locations = DB::connection('ithub')
+                ->table('m_sites')
+                ->select('id', 'code', 'name')
+                ->get();
+
+            $users_departments = $userLMS->map(function ($userLMS) use ($departments) {
+                $userLMS->department = $departments->firstWhere('id', $userLMS->department_id);
+                return $userLMS;
+            });
+
+            // Kelompokkan berdasarkan nama departemen
+            $groupedByDepartment = $users_departments->groupBy(function ($userLMS) {
+                return $userLMS->department->name ?? 'Undefined Department';
+            })->map(function ($group) {
+                return $group->count();
+            });
+
+
             $myStudent = DB::select("select * from view_student_lesson where mentor_name = '$user_name' ");
-
-
-            $blogCreatedCount = DB::table('view_blog')
-                ->where('user_id', $userId)
-                ->count();
 
             if (!Auth::check()) {
                 return Redirect::away('/'); // Replace '/login' with the URL of your login page
             }
 
             MyHelper::addAnalyticEvent(
-                "Buka Dashboard Mentor", "Dashboard"
+                "Buka Dashboard Mentor",
+                "Dashboard"
             );
+
+
+            $compact = compact(
+                'groupedByDepartment',
+                'classes',
+                'classRegistered',
+                'locations',
+                'departments',
+                'departmentsForFilter',
+                'leaderboard',
+                'studentLessonsWithMentor',
+                'myStudent',
+                'topThree',
+                'countCourseInProgress',
+                'countCourseCompleted',
+                'projectCreatedCount',
+                'classRegisteredCount',
+                'averageScoreArray'
+            );
+
+            if ($request->dump == true) {
+                return $compact;
+            };
+
             return view('main.dashboard')
-                ->with(compact(
-                    'classes',
-                    'classRegistered',
-                    'blog',
-                    'blogCreatedCount',
-                    'leaderboard',
-                    'studentCount',
-                    'myStudent',
-                    'topThree',
-                    'projectCreatedCount',
-                    'classRegisteredCount',
-                    'onProgressCount',
-                    'completedCourseCount',
-                    'latestExams',
-                    'averageScoreArray'
-                ));
-        } 
-        else if (Auth::check() && Auth::user()->role == 'student') {
+                ->with($compact);
+        } else if (Auth::check() && Auth::user()->role == 'student') {
+
+            $currentMonth = date('n'); // Numeric representation of the current month (1-12)
+            $currentYear = date('Y');  // Full numeric representation of the current year (e.g., 2024)
+
+
+
             $userId = Auth::id();
             $blog = DB::select("select * from view_blog where user_id = $userId ");
+            $month = $request->input('month') ?? $currentMonth;
+            $year = $request->input('year') ?? $currentYear;
+
 
             $userScores = DB::table('student_section')
                 ->join('course_section', 'student_section.section_id', '=', 'course_section.id')
@@ -283,7 +361,9 @@ class HomeController extends Controller
                 ->count();
 
             $classRegisteredCount = DB::table('view_student_lesson')
-                ->where('student_id', $userId)
+                ->leftJoin('lessons', 'view_student_lesson.id', '=', 'lessons.id')
+                ->where('view_student_lesson.student_id', $userId)
+                ->whereNull('lessons.deleted_at')
                 ->count();
 
             $activeCourse = DB::table('student_lesson')
@@ -292,6 +372,7 @@ class HomeController extends Controller
                 ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
                 ->where('student_id', $userId)
                 ->where('learn_status', 0)
+                ->whereNull('lessons.deleted_at')
                 ->count();
 
             $completedCourse = DB::table('student_lesson')
@@ -300,6 +381,7 @@ class HomeController extends Controller
                 ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
                 ->where('student_id', $userId)
                 ->where('learn_status', 1)
+                ->whereNull('lessons.deleted_at')
                 ->count();
 
             $monthly_CompletedCourse = DB::table('student_lesson')
@@ -308,55 +390,60 @@ class HomeController extends Controller
                 ->select(DB::raw('YEAR(student_lesson.finished_at) as year, MONTH(student_lesson.finished_at) as month, COUNT(*) as completed_count'))
                 ->where('student_lesson.student_id', $userId)
                 ->where('student_lesson.learn_status', 1)
+                ->where('lessons.is_visible', 'y')
+                ->whereNull('lessons.deleted_at')
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();
-                        
-                $completedCourse_monthly = [];
 
-                // Loop untuk mengisi data per bulan
-                for ($i = 1; $i <= 12; $i++) {
-                    $found = false;
-                    foreach ($monthly_CompletedCourse as $course) {
-                        if ($course->month == $i) {
-                            // Simpan data per bulan sebagai objek
-                            $completedCourse_monthly[$i] = (object) [
-                                "year" => $course->year,
-                                "month" => $course->month,
-                                "completed_count" => $course->completed_count
-                            ];
-                            $found = true;
-                            break;
-                        }
-                    }
-                    // Jika tidak ada data untuk bulan tersebut, definisikan sebagai 0
-                    if (!$found) {
+            // return $completedCourse;
+
+
+            $completedCourse_monthly = [];
+
+            // Loop untuk mengisi data per bulan
+            for ($i = 1; $i <= 12; $i++) {
+                $found = false;
+                foreach ($monthly_CompletedCourse as $course) {
+                    if ($course->month == $i) {
+                        // Simpan data per bulan sebagai objek
                         $completedCourse_monthly[$i] = (object) [
-                            "year" => date("Y"),
-                            "month" => $i,
-                            "completed_count" => 0
+                            "year" => $course->year,
+                            "month" => $course->month,
+                            "completed_count" => $course->completed_count
                         ];
+                        $found = true;
+                        break;
                     }
                 }
-                
-                // Sortir array berdasarkan bulan
-                ksort($completedCourse_monthly);
-                
-                // Setelah data disiapkan, Anda dapat mengakses properti month dengan benar
-                $jan = $completedCourse_monthly[1];
-                $feb = $completedCourse_monthly[2];
-                $mar = $completedCourse_monthly[3];
-                $apr = $completedCourse_monthly[4];
-                $mei = $completedCourse_monthly[5];
-                $jun = $completedCourse_monthly[6];
-                $jul = $completedCourse_monthly[7];
-                $agt = $completedCourse_monthly[8];
-                $sep = $completedCourse_monthly[9];
-                $okt = $completedCourse_monthly[10];
-                $nov = $completedCourse_monthly[11];
-                $des = $completedCourse_monthly[12];
-                
-                
-            
+                // Jika tidak ada data untuk bulan tersebut, definisikan sebagai 0
+                if (!$found) {
+                    $completedCourse_monthly[$i] = (object) [
+                        "year" => date("Y"),
+                        "month" => $i,
+                        "completed_count" => 0
+                    ];
+                }
+            }
+
+            // Sortir array berdasarkan bulan
+            ksort($completedCourse_monthly);
+
+            // Setelah data disiapkan, Anda dapat mengakses properti month dengan benar
+            $jan = $completedCourse_monthly[1];
+            $feb = $completedCourse_monthly[2];
+            $mar = $completedCourse_monthly[3];
+            $apr = $completedCourse_monthly[4];
+            $mei = $completedCourse_monthly[5];
+            $jun = $completedCourse_monthly[6];
+            $jul = $completedCourse_monthly[7];
+            $agt = $completedCourse_monthly[8];
+            $sep = $completedCourse_monthly[9];
+            $okt = $completedCourse_monthly[10];
+            $nov = $completedCourse_monthly[11];
+            $des = $completedCourse_monthly[12];
+
+
+
             $blogCreatedCount = DB::table('view_blog')
                 ->where('user_id', $userId)
                 ->count();
@@ -370,6 +457,8 @@ class HomeController extends Controller
                     SELECT
                         RANK() OVER (PARTITION BY a.id ORDER BY cs.id ASC) AS ranking,
                         a.*,
+                        lc.color_of_categories as course_category_color,
+                        lc.name as course_category_name,
                         b.name AS mentor_name,
                         b.profile_url,
                         COUNT(c.student_id) AS num_students_registered,
@@ -382,17 +471,21 @@ class HomeController extends Controller
                         student_lesson c ON a.id = c.lesson_id
                     LEFT JOIN
                         course_section cs ON a.id = cs.course_id
+                    LEFT JOIN
+                        lesson_categories lc on a.category_id = lc.id
                     WHERE EXISTS (
                             SELECT 1
                             FROM student_lesson sl
                             WHERE sl.lesson_id = a.id
                             AND sl.student_id = $userID
                         )
+                    AND  a.deleted_at IS  NULL
                     GROUP BY
                         a.id, b.name, b.profile_url, cs.id
                 ) AS main_table
                 WHERE main_table.ranking = 1;
             ");
+
 
             // Append new attribute to each row
             foreach ($myClasses as &$class) {
@@ -409,67 +502,107 @@ class HomeController extends Controller
                 }
             }
 
-            $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+            // $lessonCategories = DB::table('lesson_categories')->get()->keyBy('name');
+            $lessonCategories = DB::table('lesson_categories')
+                ->select('id', 'name', 'color_of_categories')
+                ->get();
 
 
-            // BUILD QUERY POST TEST SCORE
-            $postTestScore = DB::select("
-                            SELECT 
-                                et.user_id AS userID,
-                                es.id AS exam_SessionId,
-                                es.exam_type AS examType,
-                                cs.section_title AS title_exam,
-                                exm.title AS materiExam,
-                                MAX(et.current_score) AS highest_currentScore,
-                                et.course_flag AS courseID,
-                                et.course_section_flag AS courseSectionID
-                            FROM 
-                                exam_takers AS et
-                            LEFT JOIN
-                                exam_sessions AS es ON et.session_id = es.id
-                            LEFT JOIN
-                                course_section AS cs ON es.id = cs.quiz_session_id
-                            LEFT JOIN
-                                exams AS exm ON es.exam_id = exm.id
-                            WHERE
-                                et.user_id = $userID
-                                AND
-                                es.exam_type = 'Post Test'
-                            GROUP BY
-                                et.user_id,
-                                es.exam_type,
-                                es.id,
-                                cs.section_title,
-                                exm.title,
-                                et.course_flag,
-                                et.course_section_flag
-            ");
+            //============== FOR THE SCORE CHART =========================
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            // Fetch all the exam taker data with scores
+            $examTakerData = DB::table('exam_takers as et')
+                ->select(
+                    'et.user_id as userID',
+                    'et.finished_at as time_finish',
+                    'et.session_id as exam_SessionId',
+                    'es.exam_type as examType',
+                    'exm.title as title_exam',
+                    'cs.section_title as materiExam',
+                    'et.course_flag as courseID',
+                    'et.course_section_flag as courseSectionID',
+                    'et.current_score' // Include the score column
+                )
+                ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
+                ->leftJoin('exams as exm', 'es.exam_id', '=', 'exm.id')
+                ->leftJoin('course_section as cs', 'et.course_section_flag', '=', 'cs.id')
+                ->where('et.user_id', $userID)
+                ->whereNotNull('et.finished_at')
+                ->where('et.is_finished', "y")
+                ->where('es.exam_type', 'Post Test');
 
-            // return $postTestScore;
+            // Add month and year filters if needed
+            if ($month !== 'all') {
+                $examTakerData->whereRaw('MONTH(et.created_at) = ?', [$month]);
+            }
+            if ($year !== 'all') {
+                $examTakerData->whereRaw('YEAR(et.created_at) = ?', [$year]);
+            }
+
+            // Get the exam taker data
+            $examTakerRecords = $examTakerData->get();
+
+
+            // Group by courseSectionID and determine the highest score for each section
+            $highestScores = [];
+
+            foreach ($examTakerRecords as $item) {
+                $courseSectionID = $item->courseSectionID;
+
+                // Check if this courseSectionID is already processed
+                if (!isset($highestScores[$courseSectionID]) || $item->current_score > $highestScores[$courseSectionID]->current_score) {
+                    // Update the highest score for this courseSectionID
+                    $highestScores[$courseSectionID] = $item;
+                }
+            }
+
+            // Convert the associative array to a simple array with unique courseSectionID
+            $postTestScore = array_values($highestScores);
+
+
 
             MyHelper::addAnalyticEvent(
-                "Buka Dashboard Student", "Dashboard"
+                "Buka Dashboard Student",
+                "Dashboard"
             );
+
+
             return view('main.dashboard')
-                ->with(compact(
-                    'classes',
-                    'myClasses',
-                    'userID',
-                    'classRegistered',
-                    'blog',
-                    'userScores',
-                    'topThree',
-                    'leaderboard',
-                    'blogCreatedCount',
-                    'projectCreatedCount',
-                    'classRegisteredCount',
-                    'activeCourse',
-                    'completedCourse', 
-                    'lessonCategories',
-                    'jan', 'feb', 'mar', 'apr', 'mei', 'jun',
-                    'jul', 'agt', 'sep', 'okt', 'nov', 'des',
-                    'postTestScore'
-                ));
+                ->with(
+                    compact(
+                        'classes',
+                        'myClasses',
+                        'userID',
+                        'classRegistered',
+                        'blog',
+                        'userScores',
+                        'topThree',
+                        'leaderboard',
+                        'blogCreatedCount',
+                        'projectCreatedCount',
+                        'classRegisteredCount',
+                        'activeCourse',
+                        'completedCourse',
+                        'lessonCategories',
+                        'jan',
+                        'feb',
+                        'mar',
+                        'apr',
+                        'mei',
+                        'jun',
+                        'jul',
+                        'agt',
+                        'sep',
+                        'okt',
+                        'nov',
+                        'des',
+                        'postTestScore'
+                    )
+                );
         }
     }
 }

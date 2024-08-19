@@ -6,8 +6,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
@@ -18,15 +19,22 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'id',
         'email',
+        'email_verified_at',
         'password',
-        'role',
         'profile_url',
+        'role',
         'contact',
-        'institute',
         'jobs',
+        'institute',
+        'mdln_username',
         'motto',
+        'university',
+        'major',
+        'interest',
+        'cv',
+        'sub_department',
+        'location',
         'url_personal_website',
         'url_facebook',
         'url_instagram',
@@ -34,7 +42,32 @@ class User extends Authenticatable
         'url_twitter',
         'url_whatsapp',
         'url_youtube',
+        'department_id',
+        'position_id',
     ];
+
+
+        // Other model properties and methods
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     /**
      * The attributes that should be hidden for arrays.

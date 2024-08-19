@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
+
 class MentorExamController extends Controller
 {
     public function viewCreateNew()
@@ -105,10 +106,10 @@ class MentorExamController extends Controller
     {
 
         $validatedData = $request->validate([
-                            //            'question' => 'required',
-                            //            'correct_answer' => 'required',
-                            //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
-                                        // Add other validation rules as needed
+            //            'question' => 'required',
+            //            'correct_answer' => 'required',
+            //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
+            // Add other validation rules as needed
         ]);
 
         // Create a new ExamQuestionAnswer instance and fill it with the validated data
@@ -153,10 +154,10 @@ class MentorExamController extends Controller
     {
 
         $validatedData = $request->validate([
-                            //            'question' => 'required',
-                            //            'correct_answer' => 'required',
-                            //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
-                                        // Add other validation rules as needed
+            //            'question' => 'required',
+            //            'correct_answer' => 'required',
+            //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
+            // Add other validation rules as needed
         ]);
 
 
@@ -176,8 +177,8 @@ class MentorExamController extends Controller
 
         // Cari entri terakhir untuk exam_id yang diberikan
         $lastOrder = ExamQuestionAnswers::where('exam_id', $request->exam_id)
-        ->orderBy('order', 'desc')
-        ->value('order');
+            ->orderBy('order', 'desc')
+            ->value('order');
         $questionAnswer->order = $lastOrder === null ? 1 : $lastOrder + 1;
 
         $choices = [];
@@ -234,10 +235,10 @@ class MentorExamController extends Controller
     {
 
         $validatedData = $request->validate([
-                            //            'question' => 'required',
-                                //            'correct_answer' => 'required',
-                                //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
-                                            // Add other validation rules as needed
+            //            'question' => 'required',
+            //            'correct_answer' => 'required',
+            //            'choices' => 'required|json', // Validate that 'choices' is a valid JSON string
+            // Add other validation rules as needed
         ]);
 
         // Create a new ExamQuestionAnswer instance and fill it with the validated data
@@ -387,26 +388,49 @@ class MentorExamController extends Controller
     }
     public function viewManageExam_v2(Request $request)
     {
-        $dayta = Exam::where("created_by", '=', Auth::id())
-            ->where("is_deleted", "<>", "y")
-            ->orWhereNull("is_deleted")
+        $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
+        $currentDateTime = Carbon::now($timezone)->toDateTimeString();
+        $dayta = DB::table('exams as e')
+            ->select(
+                'e.*',
+                'es.exam_type',
+                'es.start_date',
+                'es.end_date',
+                DB::raw('CASE
+                        WHEN cs.quiz_session_id IS NOT NULL THEN "Exam Used"
+                        ELSE "Exam Not Used"
+                    END as is_examUsed'),
+                DB::raw('CASE
+                        WHEN es.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
+                        WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
+                        ELSE "Finish"
+                    END as status')
+            )
+            ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
+            ->leftJoin('course_section as cs', 'es.id', '=', 'cs.quiz_session_id')
+            ->where("e.created_by", Auth::id())
+            ->where(function ($query) {
+                $query->where("e.is_deleted", "<>", "y")
+                    ->orWhereNull("e.is_deleted");
+            })
+            ->distinct() // Ensure distinct rows
             ->get();
+
         $compact = compact('dayta');
 
         if ($request->dump == true) {
             return $compact;
         }
-        // dd($dayta);
-        // return $dayta;
-
         return view("exam.manage_exam_versi_2")->with($compact);
     }
 
     public function viewCreateExam_v2(Request $request)
     {
-        $dayta = Exam::where("created_by", '=', Auth::id())
-            ->where("is_deleted", "<>", "y")
-            ->orWhereNull("is_deleted")
+        $dayta = Exam::where("created_by", Auth::id())
+            ->where(function ($query) {
+                $query->where("is_deleted", "<>", "y")
+                    ->orWhereNull("is_deleted");
+            })
             ->get();
         $compact = compact('dayta');
 
@@ -416,24 +440,76 @@ class MentorExamController extends Controller
         // dd($dayta);
         return view("exam.create_exam_versi_2")->with($compact);
     }
-    public function viewLoadExam_v2(Request $request, $examId)
+    public function viewCreateQuest_v2(Request $request, $examId)
     {
-        $dayta = Exam::where("created_by", '=', Auth::id())
-            ->where("is_deleted", "<>", "y")
-            ->orWhereNull("is_deleted")
-            ->get();
-        $questionAnswer = ExamQuestionAnswers::all();
-        $compact = compact('dayta', 'examId', 'questionAnswer');
+        $dayta = DB::table('exams as e')->select(
+            'e.*',
+            'es.start_date',
+            'es.end_date',
+            DB::raw('CASE
+                        WHEN es.start_date > NOW() AND es.end_date <= NOW() THEN "Waiting to Start"
+                        WHEN es.start_date <= NOW() AND es.end_date >= NOW() THEN "Ongoing"
+                        ELSE "Finish" END as status'),
+            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status'))
 
+            ->leftJoin('exam_sessions as es', 'e.id', '=', 'es.exam_id')
+            ->leftJoin('exam_takers as et', 'es.id', '=', 'et.session_id')
+        ->where("e.created_by",Auth::id())
+            ->where(function ($query) {
+            $query->where("is_deleted","<>","y")
+                    ->orWhereNull("is_deleted");
+            })
+            ->get();
+
+        // return $dayta;
+        $examSession_data = ExamSession::where("exam_id", $examId)->get();
+        $questionAnswer = ExamQuestionAnswers::all();
+        $compact = compact('dayta', 'examId', 'questionAnswer', 'examSession_data');
+
+        // return $examSession_data;
         if ($request->dump == true) {
             return $compact;
         }
         return view("exam.create_exam_v2_next_step")->with($compact);
     }
 
+    public function viewEditQuest_v2(Request $request, $examId)
+    {
+
+        $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
+        $currentDateTime = Carbon::now($timezone)->toDateTimeString();
+        $data_examSession = DB::table('exam_sessions as es')->select(
+            'es.*',
+            DB::raw('CASE
+                                            WHEN es.start_date > "' . $currentDateTime . '" THEN "Waiting to Start"
+                                            WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
+                                            ELSE "Finish"
+                                        END as status'),
+            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status')
+        )
+            ->where("es.exam_id", $examId)
+                            ->leftJoin("exam_takers as et","es.id","=","et.session_id")
+            ->first();
+
+        $examInfo = ExamSession::where("exam_id", $examId)->get();
+        $status_exam =  $data_examSession->status;
+        $examScore_status=  $data_examSession->score_status;
+
+        $questionAnswer = ExamQuestionAnswers::all();
+        // return $status_exam;
+
+        // return $examInfo;
+
+        $compact = compact('examId', 'questionAnswer', 'data_examSession', 'status_exam', 'examScore_status', 'examInfo');
+
+        if ($request->dump == true) {
+            return $compact;
+        }
+        return view("exam.edit_exam_v2")->with($compact);
+    }
     public function downloadExam($examId){
         $data_exam = DB::select("
-                        SELECT 
+                        SELECT
                             e.id as exam_id,
                             e.title as exam_title,
                             l.course_title as course,
@@ -444,22 +520,22 @@ class MentorExamController extends Controller
                             cs.section_title as course_section_title,
                             es.id as exam_session_id,
                             cs.id as course_section_id
-                        FROM 
+                        FROM
                             exam_takers et
-                        LEFT JOIN 
+                        LEFT JOIN
                             exam_sessions es ON et.session_id = es.id
-                        LEFT JOIN 
+                        LEFT JOIN
                             course_section cs ON cs.id = et.course_section_flag
-                        LEFT JOIN 
+                        LEFT JOIN
                             exams e ON e.id = es.exam_id
-                        LEFT JOIN 
+                        LEFT JOIN
                             users u ON et.user_id = u.id
-                        LEFT JOIN 
+                        LEFT JOIN
                             lessons l ON l.id = cs.course_id
                         WHERE
                             e.id = $examId
                     ");
-                    
+
         // return $data_exam;
         return view("exam.download_exam_pages", compact('data_exam'));
     }
@@ -498,6 +574,7 @@ class MentorExamController extends Controller
     {
         $user_id = Auth::id();
 
+
         // Insert to Table Exam
         $exam = new Exam();
         $exam->title = $request->title;
@@ -528,15 +605,22 @@ class MentorExamController extends Controller
             $examSession->start_date = $request->start_date;
             $examSession->end_date = $request->end_date;
             $examSession->instruction = $request->instruction;
-            $examSession->description = 'Test';
-            $examSession->can_access = 'Test';
+            $examSession->description = 'n/a';
+            $examSession->can_access = 'n/a';
             $examSession->time_limit_minute = $request->times_limit;
 
-            $examSession->public_access = $request->public_access;
-            $examSession->allow_review = $request->allow_review;
+            //translate user input to y and n for positive and negative case
+            $mapping = [
+                'Aktif' => 'y',
+                'Tidak Aktif' => 'n',
+            ];
+
+            $examSession->public_access = $mapping[$request->public_access] ?? '';
+            $examSession->allow_review = $mapping[$request->allow_review] ?? '';
+            $examSession->show_result_on_end = $mapping[$request->show_result_on_end] ?? '';
+            $examSession->allow_multiple = $mapping[$request->allow_multiple] ?? '';
+
             $examSession->show_score_on_review = 'y/n';
-            $examSession->show_result_on_end = $request->show_result_on_end;
-            $examSession->allow_multiple = $request->allow_multiple;
 
             $examSession->exam_id = $exam->id;
             $examSession->created_by = $user_id;
@@ -550,7 +634,7 @@ class MentorExamController extends Controller
 
 
             // return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
-            return redirect(url("/exam/manage-exam-v2/$examId/load-exam"))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+            return redirect(url("/exam/manage-exam-v2/$examId/create-question"))->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
 
         } else {
             //redirect dengan pesan error

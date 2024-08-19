@@ -293,44 +293,15 @@
             <!-- End Logo Header -->
 
             <!-- Navbar Header -->
+            @include('main.nav_bar')
 
-            <!-- Navbar Header -->
-            @auth
-                @include('main.nav_bar')
-            @endauth
+            @guest
+                {{-- Contoh penanganan untuk pengguna tamu --}}
+                <p>Please log in to access the navigation bar.</p>
+            @endguest
 
 
-            <!-- End Navbar -->
         </div>
-
-        {{--        <div class="main-header">--}}
-        {{--            <!-- Logo Header -->--}}
-        {{--            <div class="logo-header" style="background-color: #1D2026">--}}
-        {{--                <a href="{{url('/home')}}" class="logo">--}}
-        {{--                    <div style="text-align: center;">--}}
-        {{--                        <img src="{{URL::to('/')}}/home_assets/img/ic_LearningMDLN.svg"--}}
-        {{--                             style="width: 80%;--}}
-        {{--                                    height: auto;--}}
-        {{--                                    display: flex;--}}
-        {{--                                    margin-top: 5px;--}}
-        {{--                             "--}}
-        {{--                        >--}}
-        {{--                    </div>--}}
-        {{--                </a>--}}
-
-        {{--                <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>--}}
-        {{--                <div class="nav-toggle">--}}
-        {{--                    <button class="btn btn-toggle toggle-sidebar">--}}
-        {{--                        <i class="icon-menu"></i>--}}
-        {{--                    </button>--}}
-        {{--                </div>--}}
-        {{--            </div>--}}
-        {{--            <!-- End Logo Header -->--}}
-
-
-
-        {{--            <!-- End Navbar -->--}}
-        {{--        </div>--}}
 
         <!-- Sidebar -->
         @include('main.side-bar')
@@ -339,8 +310,8 @@
     @endif
 
     @if(!isset($showCompact))
-        <div class="main-panel">
-            @endif
+    <div class="main-panel" style="background-color:white">
+        @endif
             <div class="content">
                 @yield('breadcumb')
                 <div class="mt-5">

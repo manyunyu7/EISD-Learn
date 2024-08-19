@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="form-group">
-                                <h5>Multiple Attempt: {{$session->allow_multiple === 'y' ? 'Ya' : 'Tidak'}}</h5>
+                                <h5>Multiple Attempt: {{$session->allow_multiple === 'y' || $session->allow_multiple === 'Aktif' ? 'Ya' : 'Tidak'}}</h5>
                             </div>
 
 
@@ -151,91 +151,106 @@
             @endif
         </section>
 
+        @if ($examSession->show_result == 'y' || $examSession->show_result != 'n')
         <div class="mt-4">
             <hr>
             <h4>Riwayat Hasil Ujian : </h4>
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
-                    <tr>
-                        {{--                        <th>ID</th>--}}
-                        {{--                        <th>User ID</th>--}}
-                        <th>Guest Name</th>
-                        <th>Current Score</th>
-                        <th>Finished At</th>
-                        <th>Actions</th>
-                    </tr>
+                        <tr>
+                            <th>Guest Name</th>
+                            <th>Current Score</th>
+                            <th>Finished At</th>
+                            @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
+                                <th>Actions</th>
+                            @endif
+                        </tr>
                     </thead>
                     <tbody>
-                    @forelse($examResults->reverse() as $result)
-                        <tr>
-                            {{--                            <td>{{ $result['id'] }}</td>--}}
-                            {{--                            <td>{{ $result['user_id'] }}</td>--}}
-                            <td>{{ $result['guest_name'] }}</td>
-                            <td>{{ $result['current_score'] }}</td>
-                            <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}</td>
-                            <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{ $result['id'] }}">
-                                    Show Answers
-                                </button>
-                            </td>
+                        @forelse($examResults->reverse() as $result)
+                            <tr>
+                                <td>{{ $result['guest_name'] }}</td>
+                                <td>{{ $result['current_score'] }}</td>
+                                <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}
+                                </td>
+                                @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
+                                    <td>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#exampleModal{{ $result['id'] }}">
+                                            Show Answers
+                                        </button>
+                                    </td>
 
-                            <!-- Modal -->
-                            <!-- Modal -->
-                            <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">User Answers</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            @foreach(json_decode($result['user_answers'], true) as $answer)
-                                                <div>
-                                                    <strong>Question:</strong> {{ $answer['question_text'] ?? '' }}
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">User Answers</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-                                                <div>
-                                                    <strong>Answer:</strong><br>
-                                                    @if(isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
-                                                        Multiple Choice: {{ $answer['values'][0] ?? '' }}
-                                                    @else
-                                                        Single Choice: {{ $answer['values'][0] ?? '' }}
-                                                    @endif
+                                                <div class="modal-body">
+                                                    @foreach (json_decode($result['user_answers'], true) as $answer)
+                                                        <div style="margin-top: 20px">
+                                                            <strong>Question:</strong><br>
+                                                            {{ $answer['question_text'] ?? '' }}
+                                                        </div>
+                                                        <div>
+                                                            <strong>Jawaban Pengguna:</strong><br>
+                                                            @if (isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
+                                                                Multiple Choice:
+                                                                @if (is_array($answer['values']))
+                                                                    <ul>
+                                                                        @foreach ($answer['values'] as $value)
+                                                                            <li>{{ $value }}</li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @else
+                                                                    {{ $answer['values'] ?? '' }}
+                                                                @endif
+                                                            @else
+                                                                Single Choice: {{ $answer['values'][0] ?? '' }}
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <strong>Jawaban Benar:</strong><br>
+                                                            @if(is_array($answer['correct_answer']))
+                                                                <ul>
+                                                                    @foreach($answer['correct_answer'] as $item)
+                                                                        <li>{{ $item }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @else
+                                                                {{ $answer['correct_answer'] ?? '' }}
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
                                                 </div>
-                                                <div>
-                                                    <strong>Jawaban Pengguna:</strong><br>{{ $answer['correct_answer'] ?? '' }}
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
                                                 </div>
-                                                {{--                                                <div>--}}
-                                                {{--                                                    <strong>Jawaban Benar:</strong><br>{{ $answer['correct_score'] ?? '' }}--}}
-                                                {{--                                                </div>--}}
-                                                {{--                                                <div>--}}
-                                                {{--                                                    <strong>Descriptive Score:</strong> {{ $answer['descriptive_score'] ?? '' }}--}}
-                                                {{--                                                </div>--}}
-                                                {{--                                                <div>--}}
-                                                {{--                                                    <strong>User Choice Score:</strong> {{ $answer['user_choice_score'] ?? '' }}--}}
-                                                {{--                                                </div>--}}
-                                                <hr> <!-- Add a horizontal line between each answer -->
-                                            @endforeach
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5">No exam results found.</td>
-                        </tr>
-                    @endforelse
+                                @endif
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5">No exam results found.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
         </div>
+    @endif
     </div>
 
 </div>

@@ -62,7 +62,8 @@
     </script>
 
 
-    <div class="container-fluid mt-3">
+<div class="page-inner">
+    <div class="container-fluid mt-3" style="margin-top: ">
         <div class="main-content-container container-fluid px-4">
 
             <div class="page-header  row no-gutters mb-4">
@@ -110,11 +111,9 @@
                     <div class="card card-small mb-3">
                         <div class="card-body">
 
-                            <a href="{{url("/")."/exam/".$exam->id."/question"}}" class="btn btn-info" role="button">Edit
-                                Pertanyaan Quiz</a>
+                            <a href="{{url("/")."/exam/".$exam->id."/question"}}" class="btn btn-info d-none" role="button">Edit Pertanyaan Quiz</a>
                             <a href="{{url("/")."/exam/".$exam->id."/session"}}"
-                               class="btn btn-info" role="button">Edit
-                                Sesi Quiz</a>
+                               class="btn btn-info d-none" role="button">Edit Sesi Quiz</a>
 
                             <form action="{{ url('/exam/update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
@@ -232,59 +231,13 @@
                     </div>
 
                 </div>
-                {{-- Side Bar --}}
-                <div class="col-lg-4 col-md-12">
-                    {{-- Card Preview --}}
-                    <div class="card card-post card-round">
-                        <img class="card-img-top" id="imgPreview"
-                             src="{{$exam->img_full_path}}" alt="Card image cap">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <div class="avatar">
-                                    <img src="{{ Storage::url('public/profile/'). Auth::user()->profile_url }}"
-                                         alt="..."
-                                         class="avatar-img rounded-circle">
-                                </div>
-                                <div class="info-post ml-2">
-                                    <p class="username">{{ Auth::user()->name }}</p>
-                                    <p class="date text-muted">20 Jan 18</p>
-                                </div>
-                            </div>
-                            <div class="separator-solid"></div>
-                            <p class="card-category text-info mb-1"><a href="#">Design</a></p>
-                            <h3 class="card-title" id="previewName">
-                                <a href="#">
-                                    Judul Quiz Anda Ditampilkan Disini
-                                </a>
-                            </h3>
-                            <p class="card-text">Deskripsi Exam.</p>
-                            <a href="#" class="btn btn-primary btn-rounded btn-sm">Read More</a>
-                        </div>
-                    </div>
-
-                    <!-- Post Overview -->
-                    <div class='card card-small mb-3 d-none'>
-                        <div class="card-header border-bottom">
-                            <h6 class="m-0">Preview</h6>
-                        </div>
-                        <div class='card-body'>
-                            <p class="card-text">Ketik tag dan enter untuk memasukkan tag blog</p>
-                            <div class="form-group">
-                                <input type="text" id="tagsinput" class="form-control" value="Blog"
-                                       data-role="tagsinput">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- / Post Overview -->
-                    <!-- Post Overview -->
-
-                    <!-- / Post Overview -->
-                </div>
             </div>
 
 
         </div>
     </div>
+</div>
+
 
 
     <script>

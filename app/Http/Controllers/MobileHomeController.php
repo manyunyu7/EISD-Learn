@@ -52,7 +52,7 @@ class MobileHomeController extends Controller
         // Add a new attribute to each item in the $classes array
         foreach ($classes as $class) {
 
-            if ($class->new_class == "Aktif") {
+            if ($class->new_class == "Aktif" || $class->new_class == "y") {
                 $class->new_class = true;
             } else {
                 $class->new_class = false;
@@ -67,15 +67,7 @@ class MobileHomeController extends Controller
         // Fetching lesson categories if not already available
         $lessonCategories = LessonCategory::all()->pluck('color_of_categories', 'id')->toArray();
 
-        // Adding full image path to each class
-        $section = CourseSection::where("course_id", "=", $classes->id)
-            ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
-            ->first();
-        if ($section != null) {
-            $classes->first_section = (string)$section->id;
-        } else {
-            $classes->first_section = null;
-        }
+
 
         $sections = CourseSection::select(
             'lessons.id as lesson_id',
@@ -136,8 +128,6 @@ class MobileHomeController extends Controller
         );
     }
 
-   
- 
     public function claimAccount(Request $request)
     {
         // Extracting data from the request
@@ -220,15 +210,17 @@ class MobileHomeController extends Controller
             WHERE a.deleted_at IS NULL AND a.id = ?
             LIMIT 1;
         ", [$mdlnUserId]);
- 
+
         $u_structure_employee = DB::connection('ithub')->selectOne(
             "SELECT a.group_user_employee_id, c.name
             FROM u_structure_user a
             JOIN users b ON a.user_employee_id = b.id
             LEFT JOIN m_group_employees c ON a.group_user_employee_id = c.id
             WHERE b.deleted_at IS NULL AND b.id = ?
-            LIMIT 1;", [$mdlnUserId]);
-        
+            LIMIT 1;",
+            [$mdlnUserId]
+        );
+
         // $u_site_employee = DB::connection('ithub')->selectOne(
         //     "SELECT a.
         //     FROM u_site_user a
@@ -239,20 +231,46 @@ class MobileHomeController extends Controller
 
         // return $user;
 
- 
+
         // return $u_structure_employee;
 
         $department = json_decode($user->department);
 
         $division = json_decode($user->division);
-        $subDepartment = json_decode($user->sub_department);
-        $location = json_decode($user->sites);
-        
+        $locations = json_decode($user->sites, true);
+
+        $userSavedLocation = null;
+        // Periksa jika $locations berhasil di-decode
+        if (json_last_error() === JSON_ERROR_NONE) {
+            // Array untuk menyimpan data yang akan diubah menjadi JSON
+            $output = [];
+
+            // Jika $locations bukan array, ubah menjadi array yang berisi satu objek
+            if (!is_array($locations)) {
+                $locations = [$locations];
+            }
+
+            // Loop melalui data locations
+            foreach ($locations as $location) {
+                $output[] = [
+                    // "ID" => $location['id'],
+                    "site_id" => $location['site_id'],
+                    // "Name" => $location['name'],
+                    // "Code" => $location['code']
+                ];
+            }
+            // Encode array output menjadi JSON string
+            $userSavedLocation = json_encode($output);
+        } else {
+            // Tampilkan pesan error JSON
+            // echo "Error decoding JSON: " . json_last_error_msg();
+        }
+
+
         // Extracting IDs
         $divisionId = $division->id;
         $departmentId = $department->id ?? null;
         $departmentName = $department->name ?? null;
-        $subDepartmentId = $subDepartment->id ?? null;
         $positionId = $u_structure_employee->group_user_employee_id ?? null;
         if (is_array($location) && isset($location[0])) {
             // Mengakses site_id dari elemen pertama
@@ -280,11 +298,11 @@ class MobileHomeController extends Controller
             // Updating account details
             $account->mdln_username = $mdlnUserId;
             $account->department_id = $departmentId;
-            $account->department = $departmentName;
+            // $account->department = $departmentName;
             $account->position_id = $positionId;
-            
-            $account->location = $locationId;
-            $account->jabatan = $positionId;
+
+            $account->location = json_decode($userSavedLocation);
+            // $account->jabatan = $positionId;
             $account->save();
 
             MyHelper::addAnalyticEventMobile(
@@ -437,24 +455,32 @@ class MobileHomeController extends Controller
             ->select(
                 'a.*', // Select all columns from the lessons table
                 'b.name AS mentor_name', // Select mentor's name and alias it as mentor_name
+                'lc.name as course_category',
                 'b.profile_url', // Select mentor's profile URL
                 DB::raw('COUNT(c.student_id) AS num_students_registered'), // Count the number of registered students for each class and alias it as num_students_registered
                 DB::raw('COUNT(DISTINCT d.student_id) AS num_students'), // Count the total number of students for each class (excluding duplicates) and alias it as num_students
                 DB::raw('CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered') // Check if the current user is registered for each class and alias it as is_registered
             )
             ->leftJoin('users AS b', 'a.mentor_id', '=', 'b.id') // Left join the users table to get mentor information
+            ->leftJoin('lesson_categories AS lc', 'lc.id', '=', 'a.category_id') // Left join the users table to get mentor information
             ->leftJoin('student_lesson AS c', function ($join) use ($userID) { // Left join the student_lesson table to check if the user is registered for each class
                 $join->on('a.id', '=', 'c.lesson_id')
                     ->where('c.student_id', '=', $userID); // Filter the join by the current user ID
             })
             ->leftJoin('student_lesson AS d', 'a.id', '=', 'd.lesson_id') // Left join the student_lesson table again to count the total number of students for each class
-            ->whereNull('a.deleted_at'); // Filter out deleted records from the lessons table
+            ->whereNull('a.deleted_at') // Filter out deleted records from the lessons table
+            ->where(function ($query) {
+                $query->where('is_visible', '=', 'y')
+                    ->orWhere('is_visible', '=', 'Aktif')
+                    ->orWhereNull('is_visible')
+                    ->orWhere('is_visible', '=', '');
+            });
 
 
         if ($request->category != null) {
 
             if ($request->category != "Semua") {
-                $classes = $classes->where("a.course_category", "=", $request->category);
+                $classes = $classes->where("lc.name", "=", $request->category);
             }
         }
 
@@ -469,9 +495,6 @@ class MobileHomeController extends Controller
         // Group the results by lesson ID, mentor name, and mentor profile URL// Execute the query and get the result set
         $classes = $classes->groupBy('a.id', 'b.name', 'b.profile_url')->get();
 
-        // Fetching lesson categories if not already available
-        $lessonCategories = LessonCategory::all()->pluck('color_of_categories', 'id')->toArray();
-
         // Adding full image path to each class
         foreach ($classes as $data) {
 
@@ -479,7 +502,7 @@ class MobileHomeController extends Controller
                 ->orderByRaw("CAST(section_order AS UNSIGNED) ASC")
                 ->first();
 
-            if ($data->new_class == "Aktif") {
+            if ($data->new_class == "Aktif" || $data->new_class == "y") {
                 $data->new_class = true;
             } else {
                 $data->new_class = false;
@@ -500,13 +523,26 @@ class MobileHomeController extends Controller
             }
         }
 
-        // Filter classes based on user's registration status
-        $shownClass = $classes->filter(function ($data) use ($isMyClass, $userID) {
-            $checkCount = StudentLesson::where("student_id", $userID)
-                ->where("lesson_id", $data->id)
+
+        // Filter classes based on whether the user is registered for them
+        $shownClass = $classes->filter(function ($class) use ($isMyClass, $userID) {
+            // Count how many times the user is registered for this class
+            $registrationCount = StudentLesson::where('student_id', $userID)
+                ->where('lesson_id', $class->id)
                 ->count();
-            return ($isMyClass == "true" && $checkCount > 0) || ($isMyClass != "true" && $checkCount == 0);
+
+            // If $isMyClass is 'true', show classes the user is registered for
+            // Otherwise, show classes the user is not registered for
+            $shouldShow = ($isMyClass === 'true' && $registrationCount > 0) ||
+                ($isMyClass !== 'true' && $registrationCount === 0);
+
+            return $shouldShow;
         });
+
+
+        if($request->search_query!=""){
+            $shownClass = $classes;
+        }
 
         // Return success response with filtered classes
         return MyHelper::responseSuccessWithData(
@@ -517,5 +553,70 @@ class MobileHomeController extends Controller
             "success",
             $shownClass->values()->all()
         );
+    }
+
+    public function registerClass(Request $request)
+    {
+        try {
+            $user_id = $request->lms_user_id;
+
+            $course = Lesson::findOrFail($request->course_id);
+            $coursePassword = $course->pin;
+
+            if ($request->password != $coursePassword) {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Password Kelas Salah",
+                    "Password Kelas Salah",
+                    null
+                );
+            }
+
+            $registerLesson = StudentLesson::create([
+                'student_id' => $user_id,
+                'lesson_id' => $request->course_id,
+                'learn_status' => 0,
+                'certificate_file' => "",
+                'student-lesson' => "$user_id-$request->course_id",
+            ]);
+
+            if ($registerLesson) {
+
+                MyHelper::addAnalyticEventMobile(
+                    "Mendaftar Kelas",
+                    "Course Section",
+                    $user_id
+                );
+
+                return MyHelper::responseSuccessWithData(
+                    200,
+                    200,
+                    2,
+                    "Berhasil Mendaftar Kelas $course->course_title!",
+                    "Berhasil Mendaftar Kelas $course->course_title",
+                    $registerLesson
+                );
+            } else {
+                return MyHelper::responseErrorWithData(
+                    400,
+                    400,
+                    0,
+                    "Gagal Mendaftar Kelas",
+                    "Gagal Mendaftar Kelas",
+                    null
+                );
+            }
+        } catch (QueryException $e) {
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                0,
+                "Anda Sudah Mendaftar di Kelas $course->course_title",
+                "Anda Sudah Mendaftar di Kelas Ini",
+                null
+            );
+        }
     }
 }
