@@ -16,7 +16,8 @@ class DatabaseBackupController extends Controller
 
         // Backup file path
         $date = now()->format('Y-m-d_H-i-s');
-        $backupFilePath = public_path("mysql/backup/{$date}/file.sql");
+        $backupFileName = "file_{$date}.sql";
+        $backupFilePath = public_path("mysql/backup/{$backupFileName}");
 
         // Create the backup directory if it doesn't exist
         $backupDir = dirname($backupFilePath);
@@ -35,6 +36,9 @@ class DatabaseBackupController extends Controller
             return response()->json(['message' => 'Database backup failed', 'output' => implode("\n", $output)], 500);
         }
 
-        return response()->json(['message' => 'Database backup completed', 'file' => $backupFilePath], 200);
+        // Generate public URL
+        $publicUrl = url("mysql/backup/{$backupFileName}");
+
+        return response()->json(['message' => 'Database backup completed', 'file' => $publicUrl], 200);
     }
 }

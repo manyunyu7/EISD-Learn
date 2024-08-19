@@ -85,16 +85,23 @@ class LaravelEstriController extends Controller
 
                 // If user does not exist yet in LMS table
                 if ($check == null) {
-                    // Check if a user with the same email already exists
-                    $existingUserWithEmail = User::where('email', $ithubUser->email)->first();
 
-                    if ($existingUserWithEmail != null) {
-                        // If email already exists, append '_temp_' and current datetime
-                        $ithubUser->email = $ithubUser->email . '_temp_' . now()->format('Ymd_His');
+                    $email = $ithubUser->email;
+                    $existingUser = User::where('email', $email)->first();
+
+                    if ($existingUser) {
+                        // Generate a random string manually
+                        $emailParts = explode('@', $email);
+                        $emailPrefix = $emailParts[0];
+                        $emailSuffix = $emailParts[1];
+                        $randomString = substr(md5(mt_rand()), 0, 8); // Generate a random string of 8 characters
+                        $newEmail = $emailPrefix . '+' . $randomString . '@' . $emailSuffix; // Append random string to make it unique
+
+                        $email = $newEmail;
                     }
 
                     $user = new User();
-                    $user->email = $ithubUser->email;
+                    $user->email = $email;
                     $user->name = $ithubUser->name;
                     $user->mdln_username = $ithubUser->id;
                     $user->role = "student";
@@ -131,20 +138,12 @@ class LaravelEstriController extends Controller
                         }
 
                         // Convert the array to a JSON string
-                        $user->sites = json_encode($siteIds);
+                        $user->location = json_encode($siteIds);
                     }
 
-                    // Check if any site_id contains "xyz" before saving
-                    if (isset($ithubUser->sites)) {
-                        $sites = json_decode($ithubUser->sites, true);
-                        foreach ($sites as $site) {
-                            if (strpos($site['site_id'], '8997302f-0d4f-49ce-8d1d-b4a556d88291') !== false) {
-                                $user->save(); // Save the user if site_id contains "xyz"
-                                $addedUsers[] = $user;
-                                break; // Exit loop after saving
-                            }
-                        }
-                    }
+                    $user->save(); // Save the user if site_id contains "xyz"
+                    $addedUsers[] = $user;
+
                 }
             }
         }
