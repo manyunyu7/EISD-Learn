@@ -138,7 +138,7 @@ class LaravelEstriController extends Controller
                     if (isset($ithubUser->sites)) {
                         $sites = json_decode($ithubUser->sites, true);
                         foreach ($sites as $site) {
-                            if (strpos($site['site_id'], 'xyz') !== false) {
+                            if (strpos($site['site_id'], '8997302f-0d4f-49ce-8d1d-b4a556d88291') !== false) {
                                 $user->save(); // Save the user if site_id contains "xyz"
                                 $addedUsers[] = $user;
                                 break; // Exit loop after saving
