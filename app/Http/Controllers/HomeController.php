@@ -152,8 +152,7 @@ class HomeController extends Controller
             $countCourseCompleted = 0;
 
             foreach ($data_studentProgress as $studentProgress) {
-
-                if ($studentProgress->studentCount == $studentProgress->completedCount) {
+                if ($studentProgress->studentCount == $studentProgress->completedCount && $studentProgress->studentCount > 0) {
                     $countCourseCompleted++;
                 } else {
                     $countCourseInProgress++;
