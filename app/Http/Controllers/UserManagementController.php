@@ -10,7 +10,32 @@ class UserManagementController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        // Fetch departments and locations
+        $departments = DB::connection('ithub')
+            ->table('m_departments')
+            ->select('id', 'code', 'name')
+            ->get()
+            ->keyBy('id'); // Convert to associative array for quick lookup
+
+        $locations = DB::connection('ithub')
+            ->table('m_unit_businesses')
+            ->select('id', 'code', 'name')
+            ->get()
+            ->keyBy('id'); // Convert to associative array for quick lookup
+
+        // Fetch users
+        $users = User::all()->map(function ($user) use ($departments, $locations) {
+            // Map department name
+            $user->department_name = $departments->get($user->department_id)->name ?? 'Unknown';
+
+            // Parse location JSON and map location names
+            $user->location_names = collect(json_decode($user->location, true))->map(function ($loc) use ($locations) {
+                return $locations->get($loc['site_id'])->name ?? 'Unknown';
+            });
+
+            return $user;
+        });
+
         return view('users.index', compact('users'));
     }
 
@@ -18,10 +43,10 @@ class UserManagementController extends Controller
     {
 
         $departments = DB::connection('ithub')
-        ->table('m_departments')
-        ->whereNull('deleted_at')
-        ->where('code', 'like', '%_NEW%')
-        ->get();
+            ->table('m_departments')
+            ->whereNull('deleted_at')
+            ->where('code', 'like', '%_NEW%')
+            ->get();
 
         return view('users.create')->with(compact('departments'));
     }
@@ -71,12 +96,12 @@ class UserManagementController extends Controller
     public function edit(User $user)
     {
         $departments = DB::connection('ithub')
-        ->table('m_departments')
-        ->whereNull('deleted_at')
-        ->where('code', 'like', '%_NEW%')
-        ->get();
+            ->table('m_departments')
+            ->whereNull('deleted_at')
+            ->where('code', 'like', '%_NEW%')
+            ->get();
 
-        return view('users.edit', compact('user','departments'));
+        return view('users.edit', compact('user', 'departments'));
     }
 
     public function update(Request $request, User $user)

@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card border-0 shadow rounded">
-                        @if(session()->has('success'))
+                        @if (session()->has('success'))
                             <div class="alert alert-primary alert-dismissible fade show mx-2 my-2" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -48,32 +48,37 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Role</th>
-                                        <th>Contact</th>
-                                        <th>Jobs</th>
-                                        <th>Institute</th>
+                                        <th>Department</th>
+                                        <th>Locations</th>
                                         <th>Is Testing</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($users as $user)
+                                    @foreach ($users as $user)
                                         <tr>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->role }}</td>
-                                            <td>{{ $user->contact }}</td>
-                                            <td>{{ $user->jobs }}</td>
-                                            <td>{{ $user->institute }}</td>
-                                            <td>{{ $user->is_testing }}</td>
+                                            <td>{{ $user->department_name }}</td>
+                                            <td>
+                                                @foreach ($user->location_names as $location)
+                                                    {{ $location }}<br>
+                                                @endforeach
+                                            </td>
+                                            <td>{{ $user->is_testing ? 'Yes' : 'No' }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                                    <a href="{{ route('users.edit', $user->id) }}"
+                                                        class="btn btn-sm btn-warning" title="Edit">
                                                         <i class="fa fa-edit"></i> Edit
                                                     </a>
-                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
+                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                        style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')" title="Delete">
+                                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                            onclick="return confirm('Are you sure?')" title="Delete">
                                                             <i class="fa fa-trash"></i> Delete
                                                         </button>
                                                     </form>
