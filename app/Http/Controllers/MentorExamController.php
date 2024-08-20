@@ -196,7 +196,7 @@ class MentorExamController extends Controller
 
         $choices = [];
         // Iterasi melalui request untuk mengambil nilai pilihan jawaban dan skornya
-        for ($i = 1; $i <= 4; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
             // Cek apakah input dengan nama "stm_$i" dan "scr_$i" ada dalam request
             if ($request->has("stm_$i") && $request->has("scr_$i")) {
                 // Tambahkan data pilihan jawaban dan skor ke dalam array
@@ -492,6 +492,8 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
+
+        // return $questionAnswer;
 
         // return $questionAnswer;
         return view("exam.create_exam_v2_next_step")->with($compact);

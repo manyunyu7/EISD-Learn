@@ -149,7 +149,7 @@
 
                 {{-- Input Judul Ujian --}}
                 <div class="mb-3">
-                    <label for="title" class="mb-2">Judul Ujian</label>
+                    <label for="title" class="mb-2">Judul Ujian<span style="color: red">*</span></label>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
                             name="title" value="{{ old('title') }}" aria-label="Recipient's username"
@@ -162,7 +162,7 @@
 
                 {{-- Input Jenis Soal --}}
                 <div class="mb-3">
-                    <label for="" class="mb-2">Jenis Ujian</label>
+                    <label for="" class="mb-2">Jenis Ujian<span style="color: red">*</span></label>
                     <div class="input-group mb-3">
                         <select name="exam_type" class="form-control form-select-lg" aria-label="Default select example">
                             <option value="Pre Test">Pre Test</option>
@@ -174,7 +174,7 @@
                 </div>
                 {{-- Input Batas Waktu --}}
                 <div class="mb-3">
-                    <label for="" class="mb-2">Batas Waktu (Menit)</label>
+                    <label for="" class="mb-2">Batas Waktu (Menit)<span style="color: red">*</span></label>
                     <div class="input-group mb-3">
                         <input name="times_limit" type="text"
                             class="form-control @error('times_limit') is-invalid @enderror"
@@ -187,7 +187,7 @@
                 {{-- Input Start and End Date --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="start_date" class="mb-2">Start Date</label>
+                        <label for="start_date" class="mb-2">Start Date<span style="color: red">*</span></label>
                         <div class="input-group mb-3">
                             <input type="datetime-local" class="form-control @error('start_date') is-invalid @enderror"
                                 id="start_date" name="start_date"
@@ -199,7 +199,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="end_date" class="mb-2">End Date</label>
+                        <label for="end_date" class="mb-2">End Date<span style="color: red">*</span></label>
                         <div class="input-group mb-3">
                             <input type="datetime-local" class="form-control @error('end_date') is-invalid @enderror"
                                 id="end_date" name="end_date"
@@ -212,7 +212,7 @@
                 </div>
                 {{-- Input Instruksi Exam --}}
                 <div class="mb-3">
-                    <label for="instruction" class="mb-2">Instruksi Exam</label>
+                    <label for="instruction" class="mb-2">Instruksi Exam<span style="color: red">*</span></label>
                     <textarea id="editor" class="form-control @error('instruction') is-invalid @enderror" name="instruction">{{ old('instruction') }}</textarea>
 
                     @error('instruction')

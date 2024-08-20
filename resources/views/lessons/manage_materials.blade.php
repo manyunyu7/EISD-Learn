@@ -223,17 +223,25 @@
 
                             {{-- Deskripsi Kelas --}}
                             <div class="mb-3">
-                                <label for="" class="mb-2">Deskripsi Kelas<span
-                                        style="color: red">*</span></label>
-                                <textarea style="min-height: 500px" id="editor" class="form-control" name="content"></textarea>
+                                <label for="content" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
+                                <textarea id="editor_content" name="content_area" style="min-height: 500px" class="form-control @error('content_area') is-invalid @enderror" required>{{ old('content_area') }}</textarea>
+
+                                @error('content_area')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+
                                 <script>
-                                    ClassicEditor
-                                        .create(document.querySelector('#editor'))
-                                        .catch(error => {
-                                            console.error(error);
-                                        });
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        ClassicEditor
+                                            .create(document.querySelector('#editor_content'))
+                                            .catch(error => {
+                                                console.error(error);
+                                            });
+                                    });
                                 </script>
                             </div>
+
+
 
                             {{-- Embedded File --}}
                             <div class="mb-3 d-none">

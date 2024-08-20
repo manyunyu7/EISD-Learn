@@ -422,7 +422,7 @@
                         {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
-                            <textarea id="editor" class="form-control" name="content">{{ old('content') }}</textarea>
+                            <textarea id="editor" class="form-control" name="content" required>{{ old('content') }}</textarea>
                             <div id="error-message" style="color: red; display: none; font-size: 0.9em;"></div>
                             <script>
                                 ClassicEditor

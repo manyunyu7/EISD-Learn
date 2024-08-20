@@ -129,6 +129,14 @@ class CourseSectionController extends Controller
 
     public function store_materials(Request $request, Lesson $lesson)
     {
+        $this->validate($request, [
+            'content_area' => 'required|string',
+        ], [
+            'content_area.required' => 'Deskripsi Kelas wajib diisi.',
+        ]);
+
+
+
         $lessonId = $request->lessonId;
 
         $insert_to_CourseSection = new CourseSection();
@@ -153,7 +161,7 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection->section_title = $request->title;
         $insert_to_CourseSection->section_order = '';
-        $insert_to_CourseSection->section_content = $request->content;
+        $insert_to_CourseSection->section_content = $request->content_area;
         $insert_to_CourseSection->course_id = $request->lessonId;
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
         $insert_to_CourseSection->quiz_session_id = $request->is_examId;

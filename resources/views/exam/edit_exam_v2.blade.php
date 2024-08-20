@@ -4,6 +4,8 @@
     <!-- Datatables -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         ClassicEditor
             .create( document.querySelector( '#editor' ) )
@@ -260,7 +262,12 @@
                             divInputGroup.appendChild(deleteButton);
                             segmentMultipleChoices.appendChild(divInputGroup);
                         } else {
-                            alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                            // alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Anda telah mencapai batas maksimal penambahan Opsi Jawaban.',
+                            });
                         }
                     });
                 </script>
@@ -350,6 +357,22 @@
             @empty
             @endforelse
         </div>
+
+
+        <div class="col-12">
+            <button id="testAlert">Test Alert</button>
+
+            <script>
+                document.getElementById("testAlert").addEventListener("click", function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'SweetAlert2 is working!',
+                        text: 'This is a test alert.',
+                    });
+                });
+            </script>
+        </div>
+
 
     </div>
 
