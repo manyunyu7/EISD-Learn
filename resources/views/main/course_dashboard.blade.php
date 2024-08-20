@@ -30,7 +30,7 @@
     <div class="container">
         @if (count($list_studentTaken) >= 3)
             @foreach ($class as $data)
-                <div class="page-inner"
+                <div class="page-inner">
                     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                         <ol class="breadcrumb bg-white">
                             <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
@@ -361,12 +361,12 @@
                                                                                                                                 ORDER BY
                                                                                                                                     cs.created_at DESC
                                                                                                             ");
-                                    
+
                                     // Kondisional Segmentasi QUIZ
                                     if (!empty($quiz_students)) {
                                         $quiz_SessionId = $quiz_students[0]->exam_session_id;
                                         $quiz_SectionId = $quiz_students[0]->section_id;
-                                    
+
                                         $students_takeQuiz = DB::select("
                                                                                                                                     SELECT
                                                                                                                                         u.name,
@@ -397,12 +397,12 @@
                                                                                                                                         highest_score ASC
                                                                                                                 ");
                                     }
-                                    
+
                                     // Kondisional Segmentasi PRE TEST
                                     if (!empty($preTest_students)) {
                                         $preTest_SessionId = $preTest_students[0]->exam_session_id;
                                         $preTest_SectionId = $preTest_students[0]->section_id;
-                                    
+
                                         $students_takePreTest = DB::select("
                                                                                                                                         SELECT
                                                                                                                                             u.name,
@@ -433,7 +433,7 @@
                                                                                                                                             highest_score ASC
                                                                                                                 ");
                                     }
-                                    
+
                                     ?>
                                     <tr class="text-center">
                                         <td>{{ $loop->iteration }}</td>
