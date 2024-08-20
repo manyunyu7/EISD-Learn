@@ -272,7 +272,7 @@
                     });
                 </script>
 
-
+ 
                 {{-- BUTTONS --}}
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">
                     <div style="flex-grow: 1;"></div>
