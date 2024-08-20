@@ -32,7 +32,7 @@ Route::get('/backup-database', [DatabaseBackupController::class, 'backup']);
 
 Route::any('/check-qrcode-authentication', [QRLoginController::class, 'checkQRCodeAuthentication'])->name('check.qrcode.authentication');
 Route::post('/generate-qr-code', [QRLoginController::class, 'generateQRCode'])->name('generate.qrcode');
-
+Route::post('/qr-login', [QRLoginController::class, 'processQRCodeLogin'])->name('qr.login');
 
 Route::get('mobile/course/{lesson}/section/{section}', 'MobileSeeCourseController@seeSection');
 Route::get('/lms/users', [ModernlandIntegrationController::class, 'getLearningUsers']);
