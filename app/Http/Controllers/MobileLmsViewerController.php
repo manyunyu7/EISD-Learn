@@ -53,7 +53,6 @@ class MobileLmsViewerController extends Controller
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
             ->leftJoin('lesson_categories', 'lesson_categories.id', '=', 'lessons.category_id') // Left join to quiz_session
             ->where('course_section.course_id', $lessonId)
-            // ->where('users.is_testing', '=', 'n')
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
@@ -185,7 +184,6 @@ class MobileLmsViewerController extends Controller
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
             ->where('users.id', Auth::id())
             ->where('lessons.id', $lessonId)
-            // ->where('users.is_testing', '=', 'n')
             ->get();
 
         $studentTakenSectionIds = $studentTakenSections->pluck('section_id')->toArray();
@@ -224,7 +222,6 @@ class MobileLmsViewerController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', Auth::user()->id)
                     ->where('lessons.id', $lessonId) // Add the condition lessons.id = 5
-                    // ->where('users.is_testing', '=', 'n')
                     ->pluck('ss.section_id')
                     ->toArray();
 
@@ -234,7 +231,6 @@ class MobileLmsViewerController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', Auth::user()->id)
                     ->where('lessons.id', $lessonId)
-                    // ->where('users.is_testing', '=', 'n')
                     ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
                     ->first();
             }
@@ -252,7 +248,6 @@ class MobileLmsViewerController extends Controller
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
             ->where('ss.student_id', Auth::id())
             ->where('lessons.id', $lessonId)
-            // ->where('users.is_testing', '=', 'n')
             ->count();
 
         // $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
@@ -279,7 +274,6 @@ class MobileLmsViewerController extends Controller
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
             ->where('course_section.course_id', $lessonId)
-            // ->where('users.is_testing', '=', 'n')
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
@@ -617,7 +611,6 @@ class MobileLmsViewerController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', Auth::id())
                     ->where('lessons.id', $lessonId)
-                    // ->where('users.is_testing', '=', 'n')
                     ->count();
 
                 if ($sectionTakenOnCourseCount == $sectionCount) {
