@@ -181,6 +181,7 @@ class HomeController extends Controller
                 ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
                 ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
                 ->leftJoin('users as u', 'et.user_id', '=', 'u.id')
+                ->where('e.created_by', '=', $userId)
                 ->where(function ($query) {
                     $query->where('e.is_deleted', '!=', 'y')
                         ->orWhereNull('e.is_deleted')
