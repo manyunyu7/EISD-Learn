@@ -17,6 +17,43 @@
 
 @section('script')
     <script>
+        let formSubmit = false;
+
+        function showLoadingDialog(event) {
+            // event.preventDefault(); // Prevent default form submission
+
+            Swal.fire({
+                title: 'Uploading...',
+                text: 'Please wait while your class is being created.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showCancelButton: true,
+                cancelButtonText: 'Cancel Upload',
+                didOpen: () => {
+                    Swal.showLoading();
+                    document.getElementById("saveEditBtn").disabled = true; // Disable submit button
+                }
+            }).then((result) => {
+                if (result.isDismissed) {
+                    window.stop();
+                    document.execCommand('Stop');
+                    // If cancel button is clicked
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Upload Cancelled',
+                        text: 'The upload has been cancelled.',
+                    });
+                    document.getElementById("saveEditBtn").disabled = false; // Re-enable submit button
+                } else {
+                    // If user confirms the upload
+                    formSubmit = true;
+                    document.getElementById("addSessionForm").submit();
+                }
+            });
+        }
+    </script>
+
+    <script>
         $(document).on('click', '.button', function(e) {
             e.preventDefault();
             var id = $(this).data('id');
@@ -256,7 +293,7 @@
 
 
 @section('main')
-    <div class="page-inner"  style="background-color: white !important">
+    <div class="page-inner" style="background-color: white !important">
 
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -272,7 +309,7 @@
 
         <div class="container-fluid load-soal">
             <form id="addSessionForm" action="{{ url('/lesson/create_class') }}" method="POST"
-                enctype="multipart/form-data" onsubmit="">
+                enctype="multipart/form-data" onsubmit="showLoadingDialog(event)">
                 @csrf
                 {{-- <input hidden name="exam_id" type="text" value="{{ $examId }}"> --}}
                 <div class="row">
@@ -412,8 +449,8 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Akses Kelas</label>
                             <div class="input-group mb-3">
-                                <input readonly type="text" value="Tidak Aktif" name="akses_kelas" id="btn-akses-kelas"
-                                    class="btn btn-danger" style="width: 100%">
+                                <input readonly type="text" value="Tidak Aktif" name="akses_kelas"
+                                    id="btn-akses-kelas" class="btn btn-danger" style="width: 100%">
                             </div>
                         </div>
 
@@ -475,16 +512,18 @@
                                 <div class="text-center">
                                     <div class="card" style="width: 100%; max-width: 1080px;">
                                         <img id="imgPreview" src="{{ Storage::url('public/class/cover/') }}"
-                                             onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
-                                             class="rounded"
-                                             style="max-width:3840px; max-height: 2160px; object-fit: contain;"
-                                             alt="...">
+                                            onerror="this.onerror=null; this.src='{{ url('/default/ratio_default.png') }}'; this.alt='Alternative Image';"
+                                            class="rounded"
+                                            style="max-width:3840px; max-height: 2160px; object-fit: contain;"
+                                            alt="...">
                                     </div>
-                        
+
                                     <div class="input-group mb-3">
-                                        <input required type="file"  name="image" class="form-control" id="inFile_coverCourse" accept="image/*" onchange="validateImage()">
+                                        <input required type="file" name="image" class="form-control"
+                                            id="inFile_coverCourse" accept="image/*" onchange="validateImage()">
                                     </div>
-                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be 16:9<span style="color: red">*</span></small>
+                                    <small width="100%">Image size should be under 1 MB and image ratio needs to be
+                                        16:9<span style="color: red">*</span></small>
                                 </div>
                             </div>
                         </div>
@@ -526,11 +565,11 @@
                                 return; // Hentikan eksekusi lebih lanjut
                             }
 
-                            reader.onload = function (e) {
+                            reader.onload = function(e) {
                                 var img = new Image();
                                 img.src = e.target.result;
 
-                                img.onload = function () {
+                                img.onload = function() {
                                     var width = this.width;
                                     var height = this.height;
                                     var ratio = width / height;
@@ -554,8 +593,6 @@
                             reader.readAsDataURL(file);
                         }
                     }
-
-
                 </script>
 
 
