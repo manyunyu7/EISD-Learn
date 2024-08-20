@@ -255,6 +255,27 @@
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
 
+
+                                                <!-- BTN EDIT EXAM META -->
+                                                <button class="btn mr-2"
+                                                    {{ ($data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'disabled' : '' }}
+                                                    style="background-color: #FFE600;
+                                                       border-radius: 15px;
+                                                       width:45px;
+                                                       height: 40px;
+                                                       position: relative;
+                                                       padding: 0;
+                                                       display: flex;
+                                                       align-items: center;
+                                                       justify-content: center;"
+                                                    onclick="redirectToSection_edit('{{ url('/exam/' . $data->id . '/edit') }}')"
+                                                    title="{{ $data->takers_count != 0 ? 'Exam Ini Tidak Dapat Diedit Karena Telah Digunakan' : 'Edit jadwal, akses, dan lainnya' }}"
+                                                    data-toggle="tooltip">
+                                                    <img src="{{ url('icons/edit_exam_meta_icon.svg') }}"
+                                                        style="max-width: 100%; max-height: 100%;">
+                                                </button>
+
+
                                                 <!-- BTN EDIT EXAM -->
                                                 <button class="btn mr-2"
                                                     style="background-color: #208DBB;
@@ -278,21 +299,29 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn delete-btn" data-id="{{ $data->id }}"
-                                                        {{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'disabled' : '' }}
-                                                        style="background-color: #FC1E01;
-                                                           border-radius: 15px;
-                                                           width:45px;
-                                                           height: 40px;
-                                                           position: relative;
-                                                           padding: 0;
-                                                           display: flex;
-                                                           align-items: center;
-                                                           justify-content: center;"
+                                                        {{ $data->status === 'Finish' || $data->is_examUsed === 'Exam Used' ? 'disabled' : '' }}
+                                                        style="
+                                                        background-color: {{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? '#DFDFDF' : '#FC1E01' }};
+                                                        border-radius: 15px;
+                                                        width: 45px;
+                                                        height: 40px;
+                                                        position: relative;
+                                                        padding: 0;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;
+                                                    "
                                                         data-toggle="tooltip"
-                                                        title="{{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'Exam tidak dapat dihapus karena telah digunakan di Course atau sedang berlangsung' : 'Hapus Exam' }}
-">
-                                                        <img src="{{ url('/icons/Delete.svg') }}"
-                                                            style="max-width: 100%; max-height: 100%;">
+                                                        title="{{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used'
+                                                            ? 'Exam tidak dapat dihapus karena telah digunakan di Course atau sedang berlangsung'
+                                                            : 'Hapus Exam' }}">
+                                                        <img src="{{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used'
+                                                            ? url('/icons/disabled_delete_button.svg')
+                                                            : url('/icons/Delete.svg') }}"
+                                                            style="
+                                                        max-width: 100%;
+                                                        max-height: 100%;
+                                                    ">
                                                     </button>
                                                 </form>
                                             </div>

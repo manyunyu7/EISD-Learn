@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Exam;
 use App\Models\ExamQuestionAnswers;
 use App\Models\ExamSession;
+use App\Models\ExamTaker;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class MentorExamController extends Controller
 {
@@ -21,13 +23,22 @@ class MentorExamController extends Controller
 
     public function viewEditExam(Request $request, $id)
     {
-        $data = Exam::findOrFail($id);
-        $exam = $data;
-        $compact = compact('data', 'exam');
+        $exam = Exam::findOrFail($id);
+        $examSession = ExamSession::where("exam_id", '=', $id)->first();
+
+        if ($examSession == null) {
+            abort("404", "Exam Session Tidak Ditemukan!");
+        }
+
+
+        $data = new stdClass();
+        $data->exam = $exam;
+        $data->exam_session = $examSession;
+        $compact = compact('data');
         if ($request->dump == true) {
             return $compact;
         }
-        return view("exam.edit_exam")->with($compact);
+        return view("exam.edit_exam_meta")->with($compact);
     }
 
 
@@ -392,6 +403,7 @@ class MentorExamController extends Controller
         $dayta = DB::table('exams as e')
             ->select(
                 'e.*',
+                'es.id as session_id',
                 'es.exam_type',
                 'es.start_date',
                 'es.end_date',
@@ -416,6 +428,14 @@ class MentorExamController extends Controller
             ->get();
 
         $compact = compact('dayta');
+
+        foreach ($dayta as $data) {
+            $examTaker = Examtaker::where("session_id", $data->session_id)
+            ->whereNotNull("finished_at")
+            ->count();
+
+            $data->takers_count = $examTaker;
+        }
 
         if ($request->dump == true) {
             return $compact;
@@ -545,33 +565,89 @@ class MentorExamController extends Controller
         return view("exam.download_exam_pages", compact('data_exam'));
     }
 
-    public function updateExam(Request $request)
+    public function updateExam(Request $request, $examId)
     {
-        $exam = Exam::findOrFail($request->id);
-        $user_id = Auth::id();
-        $exam->title = $request->title;
-        $exam->randomize = $request->randomize;
-        $exam->can_access = $request->can_access;
-        $exam->start_date = $request->startDate;
-        $exam->end_date = $request->endDate;
-        $exam->instruction = $request->instruction;
-        $exam->description = $request->description;
-        $exam->created_by = $user_id;
+        // Validate the request
+        $this->validate($request, [
+            'times_limit' => 'required|integer|min:1',
+            'title' => 'required|string|min:1',
+            'start_date' => 'required|date|before:end_date',
+            'end_date' => 'required|date|after:start_date',
+            'instruction' => 'required|string',
+        ], [
+            'times_limit.required' => 'Batas waktu wajib diisi.',
+            'times_limit.integer' => 'Batas waktu harus berupa angka.',
+            'times_limit.min' => 'Batas waktu minimal adalah 1.',
+            'title.required' => 'Judul wajib diisi.',
+            'title.string' => 'Judul harus berupa teks.',
+            'title.min' => 'Judul minimal adalah 1 karakter.',
+            'start_date.required' => 'Tanggal mulai wajib diisi.',
+            'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid.',
+            'start_date.before' => 'Tanggal mulai harus sebelum tanggal akhir.',
+            'end_date.required' => 'Tanggal akhir wajib diisi.',
+            'end_date.date' => 'Tanggal akhir harus berupa tanggal yang valid.',
+            'end_date.after' => 'Tanggal akhir harus setelah tanggal mulai.',
+            'instruction.required' => 'Instruksi wajib diisi.',
+            'instruction.string' => 'Instruksi harus berupa teks.',
+        ]);
 
-        if ($request->file('image') != "") {
-            Storage::disk('local')->delete('public/exam/cover/' . $exam->image);
+        // Find the exam to update
+        $exam = Exam::findOrFail($examId);
+        $user_id = Auth::id();
+
+        // Update exam details
+        $exam->title = $request->title;
+
+        if ($request->hasFile('image')) {
+            // Handle image upload
             $image = $request->file('image');
             $name = $image->hashName();
-            $image->storeAs('public/exam/cover/', $name);
+            $image->storeAs('public/exam/question/', $name);
             $exam->image = $name;
         }
 
+        $exam->start_date = $request->start_date;
+        $exam->end_date = $request->end_date;
+        $exam->instruction = $request->instruction;
+        $exam->description = $request->description;
+        $exam->randomize = $request->randomize;
+        $exam->can_access = $request->can_access;
+        $exam->created_by = $user_id;
+
+        // Save updated exam record
         if ($exam->save()) {
-            //redirect dengan pesan sukses
-            return redirect('exam/manage')->with(['success' => 'Berhasil Menyimpan Exam, Tambah soal di detail exam!']);
+            // Find or create the exam session
+            $examSession = ExamSession::where('exam_id', $examId)->first();
+
+            // Update exam session details
+            $examSession->start_date = $request->start_date;
+            $examSession->end_date = $request->end_date;
+            $examSession->instruction = $request->instruction;
+            $examSession->description = 'n/a';
+            $examSession->can_access = 'n/a';
+            $examSession->time_limit_minute = $request->times_limit;
+
+            // Translate user input to 'y' and 'n'
+            $mapping = [
+                'Aktif' => 'y',
+                'Tidak Aktif' => 'n',
+            ];
+
+            $examSession->public_access = $mapping[$request->public_access] ?? '';
+            $examSession->allow_review = $mapping[$request->allow_review] ?? '';
+            $examSession->show_result_on_end = $mapping[$request->show_result_on_end] ?? '';
+            $examSession->allow_multiple = $mapping[$request->allow_multiple] ?? '';
+
+            $examSession->show_score_on_review = 'y/n';
+
+            // Save exam session record
+            $examSession->save();
+
+            // Redirect with success message
+            return redirect(url("/exam/manage-exam-v2"))->with(['success' => 'Berhasil Memperbarui Exam, Tambah soal di detail exam!']);
         } else {
-            //redirect dengan pesan error
-            return redirect('exam/new')->with(['error' => 'Gagal Menyimpan Exam']);
+            // Redirect with error message
+            return redirect("/exam/manage-exam-v2")->with(['error' => 'Gagal Memperbarui Exam']);
         }
     }
 
