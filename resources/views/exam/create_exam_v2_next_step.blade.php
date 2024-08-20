@@ -232,8 +232,8 @@
                             <p>{{ $data->question }}</p>
 
                             @if ($data->image !== null)
-                                <div class="text-center">
-                                    <img src="{{ Storage::url('public/exam/question/' . $data->image) }}"
+                                <div class="text-center"> 
+                                    <img src="{{ asset('storage/exam/question/'. $data->image) }}"
                                         style="width: auto; height:350px"
                                         class="rounded"
                                         alt="...">

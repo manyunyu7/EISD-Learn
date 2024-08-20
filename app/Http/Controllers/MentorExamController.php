@@ -420,6 +420,8 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
+
+        // return $dayta;
         return view("exam.manage_exam_versi_2")->with($compact);
     }
 
@@ -470,6 +472,8 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
+
+        // return $questionAnswer;
         return view("exam.create_exam_v2_next_step")->with($compact);
     }
 
@@ -607,7 +611,7 @@ class MentorExamController extends Controller
         if ($request->file('image') != "") {
             $image = $request->file('image');
             $name = $image->hashName();
-            $image->storeAs('public/exam/cover/', $name);
+            $image->storeAs('public/exam/question/', $name);
             $exam->image = $name;
         }
         $exam->start_date = $request->startDate;
