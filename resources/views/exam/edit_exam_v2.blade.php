@@ -337,14 +337,53 @@
                                             </script>
                                             <form id="delete-post-form" action="{{ url('exam/delete-question-from-db/'. $data->id) }}" method="POST">
                                                 @csrf
-                                                <button type="submit"
+                                                <button type="button"
                                                         id="saveEditBtn"
                                                         data-question-id="{{ $data->id }}"
                                                         class="btn btn-danger pull-left"
-                                                        style="width: auto; margin-left: 5px;"
-                                                        onclick="return confirm('Are you sure?')">
+                                                        style="width: auto; margin-left: 5px;">
                                                     <img src="{{ url('/icons/Delete.svg') }}">
                                                 </button>
+
+                                                <script>
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        document.querySelectorAll('#saveEditBtn').forEach(button => {
+                                                            button.addEventListener('click', function (e) {
+                                                                e.preventDefault();
+                                    
+                                                                const questionId = this.getAttribute('data-question-id');
+                                    
+                                                                Swal.fire({
+                                                                    icon: 'warning',
+                                                                    title: 'Are you sure?',
+                                                                    text: 'This action cannot be undone!',
+                                                                    showCancelButton: true,
+                                                                    confirmButtonColor: '#3085d6',
+                                                                    cancelButtonColor: '#d33',
+                                                                    confirmButtonText: 'Yes, delete it!',
+                                                                    cancelButtonText: 'Cancel'
+                                                                }).then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        // Create form and submit it programmatically
+                                                                        const form = document.createElement('form');
+                                                                        form.method = 'POST';
+                                                                        form.action = `/exam/delete-question-from-db/${questionId}`;
+                                    
+                                                                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                                                                        const csrfInput = document.createElement('input');
+                                                                        csrfInput.type = 'hidden';
+                                                                        csrfInput.name = '_token';
+                                                                        csrfInput.value = csrfToken;
+                                                                        form.appendChild(csrfInput);
+                                    
+                                                                        document.body.appendChild(form);
+                                                                        form.submit();
+                                                                    }
+                                                                });
+                                                            });
+                                                        });
+                                                    });
+                                                </script>
                                             </form>
                                         </div>
                                     </div>
@@ -357,23 +396,6 @@
             @empty
             @endforelse
         </div>
-
-
-        <div class="col-12">
-            <button id="testAlert">Test Alert</button>
-
-            <script>
-                document.getElementById("testAlert").addEventListener("click", function() {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'SweetAlert2 is working!',
-                        text: 'This is a test alert.',
-                    });
-                });
-            </script>
-        </div>
-
-
     </div>
 
 @endsection
