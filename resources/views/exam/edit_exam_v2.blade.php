@@ -279,7 +279,8 @@
                     <div style="width: 200px;">
                         <div class="input-group mb-3">
                             <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
-                            <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
+                            {{-- <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button> --}}
+                            <button type="submit"  class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -326,9 +327,10 @@
                                             {{-- BUTTON MODALS FOR EDIT --}}
                                             <button type="button"
                                                     class="btn btn-primary"
-                                                    onclick="openEditWindow('{{ url('exam/question/'.$data->id.'/edit') }}')">
+                                                    onclick="openEditWindow('{{ route('edit.question', ['examId' => $data->exam_id, 'id' => $data->id]) }}')">
                                                 <img src="{{ url('/icons/Edit.svg') }}" alt="Edit Icon">
                                             </button>
+
                                             <script>
                                                 function openEditWindow(url) {
                                                     // Open a new window with the provided URL

@@ -423,14 +423,8 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
                             <textarea id="editor" class="form-control" name="content" required>{{ old('content') }}</textarea>
-                            <div id="error-message" style="color: red; display: none; font-size: 0.9em;"></div>
-                            <script>
-                                ClassicEditor
-                                    .create(document.querySelector('#editor'))
-                                    .catch(error => {
-                                        console.error(error);
-                                    });
-                            </script>
+                            <div id="error-message" style="color: red; font-size: 0.9em;"></div>
+                            
                             @error('content')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -593,8 +587,13 @@
                             reader.readAsDataURL(file);
                         }
                     }
+                
+                    // ClassicEditor
+                    //     .create(document.querySelector('#editor'))
+                    //     .catch(error => {
+                    //         console.error(error);
+                    //     });
                 </script>
-
 
 
                 {{-- BUTTONS --}}

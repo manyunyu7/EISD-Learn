@@ -70,7 +70,8 @@
             <h2 style="text-align: center"><b>Edit Soal Ujian</b></h2>
         </div>
 
-        <form id="addSessionForm" method="post" action="{{ route('exam.update-question') }}" enctype="multipart/form-data">
+        <form id="addSessionForm" method="post" action="{{ route('exam.update-question_v2', ['examId' => $exam, 'id' => $id]) }}" enctype="multipart/form-data">
+        {{-- <form id="addSessionForm" method="post" enctype="multipart/form-data"> --}}
             @csrf
             @method('POST')
 

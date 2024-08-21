@@ -5,17 +5,17 @@
 
     <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'))
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
 
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
     <script>
         let formSubmit = false;
 
@@ -223,22 +223,24 @@
 
                             {{-- Deskripsi Kelas --}}
                             <div class="mb-3">
-                                <label for="content" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
-                                <textarea id="editor_content" name="content_area" style="min-height: 500px" class="form-control @error('content_area') is-invalid @enderror" required>{{ old('content_area') }}</textarea>
+                                {{-- <label for="editor" class="mb-2">Deskripsi Kelas<span style="color: red">*</span></label>
+                                <textarea id="editor" name="content_area" style="min-height: 500px" class="form-control @error('content_area') is-invalid @enderror" required>{{ old('content_area') }}</textarea> --}}
 
+                                <textarea id="editor" class="form-control" name="content_area" style="display: none;">{{ old('content_area') }}</textarea>
+                                <div id="error-message" style="color: red; font-size: 0.9em;"></div>
                                 @error('content_area')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
 
-                                <script>
+                                {{-- <script>
                                     document.addEventListener('DOMContentLoaded', function() {
                                         ClassicEditor
-                                            .create(document.querySelector('#editor_content'))
+                                            .create(document.querySelector('#content_area'))
                                             .catch(error => {
                                                 console.error(error);
                                             });
                                     });
-                                </script>
+                                </script> --}}
                             </div>
 
 

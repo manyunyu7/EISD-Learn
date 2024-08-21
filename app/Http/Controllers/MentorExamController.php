@@ -77,9 +77,19 @@ class MentorExamController extends Controller
         }
         return view("exam.edit_question")->with($compact);
     }
-    public function viewEditQuestion_v2(Request $request, $id)
+    public function viewEditQuestion_v2(Request $request, $examId, $id)
     {
         $question = ExamQuestionAnswers::findOrFail($id);
+
+        // dd($examId, $id);
+        $question = DB::table('exam_question_answers as eqa')
+                  ->select('eqa.*', 'e.*')
+                  ->leftJoin('exams as e', 'eqa.exam_id', '=', 'e.id')
+                  ->where('eqa.id', '=', $id)
+                  ->where('e.id', '=', $examId)
+                  ->first();
+
+
         $exam = Exam::findOrFail($question->exam_id);
         $choices = json_decode($question->choices, true);
         $showCompact = true;
@@ -87,6 +97,7 @@ class MentorExamController extends Controller
         if ($request->dump == true) {
             return $compact;
         }
+        // return $examId;
         return view("exam.edit_question_v2")->with($compact);
     }
 
