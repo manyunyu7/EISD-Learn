@@ -285,7 +285,7 @@
                                     <div>
                                         <div class="card-head-row card-tools-still-right">
                                             <h1 style="color: black;"><b>{{ Auth::user()->name }}</b></h1>
-                                            <p class="card-category">Digital Management</p>
+                                            <p class="card-category">{{ $name_dept }}</p>
                                         </div>
                                     </div>
                                 </div>

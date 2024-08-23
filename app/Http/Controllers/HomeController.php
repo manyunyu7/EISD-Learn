@@ -348,6 +348,28 @@ class HomeController extends Controller
             $year = $request->input('year') ?? $currentYear;
 
 
+            // Read Department
+            $id_dept = Auth::user()->department_id;
+            $query_department = DB::connection('ithub')
+                ->table('m_departments')
+                ->select('name')
+                ->where('id', '=', $id_dept)
+                ->get();
+            $value_dept = "";
+            if ($query_department && count($query_department) > 0) {
+                $department = json_decode($query_department, true);
+                // Periksa apakah hasil decode adalah array dan memiliki key 'name'
+                if (is_array($department) && isset($department)) {
+                    $value_dept = $department[0]['name'] ?? null; // Mengembalikan nilai dari key 'name'
+                } else {
+                    $value_dept =  "-";
+                }
+            } else {
+                $value_dept = "-";
+            }
+            $name_dept = $value_dept;
+
+
             $userScores = DB::table('student_section')
                 ->join('course_section', 'student_section.section_id', '=', 'course_section.id')
                 ->select('course_section.section_title', DB::raw('COALESCE(student_section.score, 0) as score'))
@@ -581,7 +603,7 @@ class HomeController extends Controller
                     compact(
                         'classes',
                         'myClasses',
-                        'userID',
+                        'userID', 'name_dept',
                         'classRegistered',
                         'blog',
                         'userScores',
