@@ -309,16 +309,18 @@ class MentorExamController extends Controller
 
         return response()->json(['message' => 'Question stored successfully'], 200);
     }
-    public function updateQuestion_v2(Request $request)
+    public function updateQuestion_v2(Request $request, $examId, $id)
     {
-        // Create a new ExamQuestionAnswer instance and fill it with the validated data
-        $questionAnswer = ExamQuestionAnswers::findOrFail($request->question_id);
-        $questionAnswer->exam_id = $request->exam_id;
+        $questionAnswer = ExamQuestionAnswers::where('id', $id)
+            ->where('exam_id', $examId)
+            ->firstOrFail();
+
+        $questionAnswer->exam_id = $examId;
         $questionAnswer->question_type = $request->type_questions;
         $questionAnswer->question = $request->question;
         $questionAnswer->created_by = auth()->user()->id;
 
-        if ($request->file('question_images') != "") {
+        if ($request->hasFile('question_images')) {
             $image = $request->file('question_images');
             $name = $image->hashName();
             $image->storeAs('public/exam/question/', $name);
@@ -326,11 +328,8 @@ class MentorExamController extends Controller
         }
 
         $choices = [];
-        // Iterasi melalui request untuk mengambil nilai pilihan jawaban dan skornya
-        for ($i = 1; $i <= 4; $i++) {
-            // Cek apakah input dengan nama "stm_$i" dan "scr_$i" ada dalam request
+        for ($i = 1; $i <= 5; $i++) {
             if ($request->has("stm_$i") && $request->has("scr_$i")) {
-                // Tambahkan data pilihan jawaban dan skor ke dalam array
                 $choices[] = [
                     'text' => $request->input("stm_$i"),
                     'score' => $request->input("scr_$i"),
@@ -338,33 +337,23 @@ class MentorExamController extends Controller
             }
         }
 
-        // Konversi array pilihan jawaban menjadi JSON
-        $questionAnswer->choices    = json_encode($choices);
+        $questionAnswer->choices = json_encode($choices);
         $questionAnswer->correct_answer = null;
 
-
-        $compact = compact('questionAnswer');
-        // Save the question
+        // dd($questionAnswer->id);
         if ($questionAnswer->save()) {
-
-            // Fetch sessions and question answers
-            $sessions = ExamSession::where("exam_id", "=", $request->exam_id)->get();
-            $questionsAnswers = ExamQuestionAnswers::where("exam_id", "=", $request->exam_id)->get();
-
-            // Loop through each session
+            $sessions = ExamSession::where("exam_id", $examId)->get();
             foreach ($sessions as $session) {
-                // Filter question answers for this session
-                $sessionQuestionAnswers = $questionsAnswers->where('session_id', $session->id);
-
-                $session->questions_answers = $questionsAnswers;
+                // $session->questions_answers = $questionAnswer->id;
+                $session->questions_answers = json_encode([$questionAnswer->id]);
                 $session->save();
             }
-
             return redirect()->back()->with('success', 'Berhasil Update Soal!');
         } else {
             return redirect()->back()->with('error', 'Gagal Update Soal!');
         }
     }
+
 
 
     public function updateQuestionOrder(Request $request)

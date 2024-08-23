@@ -70,8 +70,7 @@
             <h2 style="text-align: center"><b>Edit Soal Ujian</b></h2>
         </div>
 
-        <form id="addSessionForm" method="post" action="{{ route('exam.update-question_v2', ['examId' => $exam, 'id' => $id]) }}" enctype="multipart/form-data">
-        {{-- <form id="addSessionForm" method="post" enctype="multipart/form-data"> --}}
+        <form id="addSessionForm" method="POST" action="{{ route('exam.updateQuestion_v2', ['examId' => $exam, 'id' => $id]) }}" enctype="multipart/form-data">
             @csrf
             @method('POST')
 
@@ -191,21 +190,6 @@
     </div>
 
 @endsection
-{{-- <script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var choicesDiv = document.getElementById('choices');
-        var choicesContainer = document.getElementById('choices');
-
-        choicesContainer.appendChild(choiceDiv);
-
-        var removeChoiceButton = choiceDiv.querySelector('.remove-choice');
-
-        removeChoiceButton.addEventListener('click', function () {
-            choicesContainer.removeChild(choiceDiv);
-        });
-    });
-</script> --}}
 
 
 @section("script")

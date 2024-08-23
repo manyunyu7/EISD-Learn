@@ -222,7 +222,7 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::post('store/quiz', 'MentorExamController@storeNewExam')->name('store.quiz');
             Route::post('update', 'MentorExamController@updateExam');
             // Route::post('update-question', 'MentorExamController@updateQuestion');
-            Route::post('update-question', 'MentorExamController@updateQuestion_v2')->name('exam.update-question_v2');
+            Route::post('update-question/{examId}/{id}', 'MentorExamController@updateQuestion_v2')->name('exam.updateQuestion_v2');
             Route::post('{examId}/edit/', 'MentorExamController@viewEditExam')->name('exam.update-question');
             Route::post('{examId}/update/', 'MentorExamController@updateExam')->name('update-quiz-new');
             Route::get('manage', 'MentorExamController@viewManageExam');

@@ -337,6 +337,8 @@
                                                     window.open(url, '_blank', 'width=600,height=800,resizable=no');
                                                 }
                                             </script>
+
+                                            {{-- BUTTON DELET SOAL EXAM --}}
                                             <form id="delete-post-form" action="{{ url('exam/delete-question-from-db/'. $data->id) }}" method="POST">
                                                 @csrf
                                                 <button type="button"
