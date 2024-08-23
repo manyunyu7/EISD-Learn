@@ -258,7 +258,7 @@
 
                                                 <!-- BTN EDIT EXAM META -->
                                                 <button class="btn mr-2"
-                                                    {{ ($data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'disabled' : '' }}
+                                                    {{ ($data->takers_count != 0) ? 'disabled' : '' }}
                                                     style="background-color: #FFE600;
                                                        border-radius: 15px;
                                                        width:45px;
