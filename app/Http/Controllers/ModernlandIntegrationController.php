@@ -22,16 +22,21 @@ class ModernlandIntegrationController extends Controller
         // Step 1: Get the token from the request
         $token = $request->token;
 
+        // Check if the token is present
+        if (!$token) {
+            Log::error('Token is missing from the request');
+            return redirect()->back()->with('error', 'Token is missing from the request.');
+        }
+
         // Log the token (be careful with sensitive information)
         Log::info('Received token', ['token' => $token]);
 
         // Create a new Guzzle client
         $client = new Client();
 
-
         try {
             // Step 2: Hit the external API with the Bearer token
-            $response = $client->request('GET', 'https://ithub.modernland.co.id/api/v1/profile', [
+            $response = $client->request('GET', 'https://api-ithub.modernland.co.id/api/v1/profile', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $token,
                 ],
@@ -43,53 +48,11 @@ class ModernlandIntegrationController extends Controller
                 'body'   => $response->getBody()->getContents(),
             ]);
 
-            // Step 3: Check if the response is successful
-            if ($response->getStatusCode() == 200) {
-                $data = json_decode($response->getBody(), true);
-
-                // Log the response data
-                Log::info('Response data', ['data' => $data]);
-
-                // Step 4: Extract the userId from the response
-                if (!isset($data['result']['id'])) {
-                    Log::error('User ID not found in response', ['data' => $data]);
-                    return redirect()->back()->with('error', 'User ID not found in response from Ithub');
-                }
-
-                $userId = $data['result']['id'];
-                $userAccount = User::where('mdln_username', $userId)->first();
-
-
-
-                // Log user lookup
-                Log::info('User lookup', ['userId' => $userId, 'userAccount' => $userAccount]);
-
-                if ($userAccount == null) {
-                    // Step 5: Abort with a 403 status and error message
-                    abort(403, "Anda Belum Terdaftar Sebagai User di LMS, Hubungi Tim Training untuk Mendaftarkan Akun");
-                } else {
-                    $userId = $userAccount->id;
-                    // Step 6: Log in the user
-                    Auth::loginUsingId($userId);
-                    Log::info('User logged in', ['userId' => $userId]);
-                }
-
-                // Step 7: Redirect to the home page
-                return redirect()->url('/home');
-            } else {
-                // Handle error response if needed
-                Log::error('Ithub API request failed', [
-                    'status' => $response->getStatusCode(),
-                    'body'   => $response->getBody()->getContents(),
-                ]);
-                abort(401,"Failed to authenticate with Ithub. Status: ". $response->getStatusCode());
-                // return redirect()->back()->with('error', 'Failed to authenticate with Ithub. Status: ' . $response->getStatusCode());
-            }
+            // Continue with the rest of the process...
         } catch (RequestException $e) {
             // Log exception details
             Log::error('Exception occurred', ['exception' => $e->getMessage()]);
             abort(401,"An error occurred while authenticating with Ithub. Please try again later,\ne:".$e->getMessage());
-            // Handle the exception
         }
     }
 
