@@ -257,22 +257,28 @@
 
 
                                                 <!-- BTN EDIT EXAM META -->
-                                                <button class="btn mr-2"
-                                                    {{ ($data->takers_count != 0) ? 'disabled' : '' }}
-                                                    style="background-color: #FFE600;
-                                                       border-radius: 15px;
-                                                       width:45px;
-                                                       height: 40px;
-                                                       position: relative;
-                                                       padding: 0;
-                                                       display: flex;
-                                                       align-items: center;
-                                                       justify-content: center;"
+                                                @php
+                                                    $isDisabled = ($data->status === 'Finish' && ($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0;
+                                                    $buttonColor = $isDisabled ? '#DFDFDF' : '#FFE500';
+                                                    $iconSrc = $data->takers_count != 0 ? 'icons/Edit_disabled.svg' : 'icons/edit_exam_meta_icon.svg';
+                                                    $tooltipTitle = $data->takers_count != 0 ? 'Exam Ini Tidak Dapat Diedit Karena Telah Digunakan' : 'Edit jadwal, akses, dan lainnya';
+                                                @endphp
+                                                <button 
+                                                    class="btn mr-2"
+                                                    {{ $isDisabled ? 'disabled' : '' }}
+                                                    style="background-color: {{ $buttonColor }};
+                                                        border-radius: 15px;
+                                                        width:45px;
+                                                        height: 40px;
+                                                        position: relative;
+                                                        padding: 0;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;"
                                                     onclick="redirectToSection_edit('{{ url('/exam/' . $data->id . '/edit') }}')"
-                                                    title="{{ $data->takers_count != 0 ? 'Exam Ini Tidak Dapat Diedit Karena Telah Digunakan' : 'Edit jadwal, akses, dan lainnya' }}"
+                                                    title="{{ $tooltipTitle }}"
                                                     data-toggle="tooltip">
-                                                    <img src="{{ url('icons/edit_exam_meta_icon.svg') }}"
-                                                        style="max-width: 100%; max-height: 100%;">
+                                                    <img src="{{ url($iconSrc) }}" style="max-width: 100%; max-height: 100%;">
                                                 </button>
 
 
@@ -299,7 +305,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn delete-btn" data-id="{{ $data->id }}"
-                                                        {{ $data->status === 'Finish' || $data->is_examUsed === 'Exam Used' ? 'disabled' : '' }}
+                                                        {{ $data->status === 'Finish' && $data->is_examUsed === 'Exam Used' ? 'disabled' : ''}}
                                                         style="
                                                         background-color: {{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? '#DFDFDF' : '#FC1E01' }};
                                                         border-radius: 15px;
@@ -309,8 +315,7 @@
                                                         padding: 0;
                                                         display: flex;
                                                         align-items: center;
-                                                        justify-content: center;
-                                                    "
+                                                        justify-content: center;"
                                                         data-toggle="tooltip"
                                                         title="{{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used'
                                                             ? 'Exam tidak dapat dihapus karena telah digunakan di Course atau sedang berlangsung'
