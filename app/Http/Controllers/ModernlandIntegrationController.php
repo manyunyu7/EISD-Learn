@@ -29,7 +29,8 @@ class ModernlandIntegrationController extends Controller
 
 
         try {
-            $url = "http://192.168.1.148:8888/api/v1/";
+            $url = "https://api-ithub.modernland.co.id/api/v1/";
+            // $url = "http://192.168.1.148:8888/api/v1/";
             // Step 2: Hit the external API with the Bearer token
             $response = $client->request('GET', "$url"."profile", [
                 'headers' => [
