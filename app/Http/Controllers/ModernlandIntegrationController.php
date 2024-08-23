@@ -294,7 +294,7 @@ class ModernlandIntegrationController extends Controller
         $user->name = $request->input('name');
         $user->email = $request->input('email', $user->email);
         $user->password = $user->exists ? $user->password : bcrypt($request->password);
-        $user->role = $request->input('role', $user->role);
+        $user->role = $request->input('role', "student");
         $user->contact = $request->input('contact', $user->contact);
         $user->sub_department = $request->input('sub_department', $user->sub_department);
         $user->department_id = $request->input('department_id', $user->department_id);
