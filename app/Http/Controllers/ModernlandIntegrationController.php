@@ -301,6 +301,10 @@ class ModernlandIntegrationController extends Controller
         $user->position_id = $request->input('position_id', $user->position_id);
         $user->location = json_encode($request->input('location', $user->location));
 
+        $location = json_encode($request->input('location', $user->location));
+        //remove \ or / characters from location
+        $location = str_replace(['\\', '/'], '', $location);
+        $user->location = $location;
         // Save user
         $user->save();
 
