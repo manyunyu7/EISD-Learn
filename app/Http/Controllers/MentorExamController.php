@@ -348,7 +348,7 @@ class MentorExamController extends Controller
                 $session->questions_answers = json_encode([$questionAnswer->id]);
                 $session->save();
             }
-            return redirect()->back()->with('success', 'Berhasil Update Soal!');
+            return redirect()->route('exam.edit-exam_v2', ['examId' => $examId])->with('success', 'Berhasil Update Soal!');
         } else {
             return redirect()->back()->with('error', 'Gagal Update Soal!');
         }

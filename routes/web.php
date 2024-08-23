@@ -229,7 +229,7 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
             Route::get('manage-exam-v2/{examId}/create-question', 'MentorExamController@viewCreateQuest_v2');
-            Route::get('manage-exam-v2/{examId}/edit-question', 'MentorExamController@viewEditQuest_v2');
+            Route::get('manage-exam-v2/{examId}/edit-question', 'MentorExamController@viewEditQuest_v2')->name('exam.edit-exam_v2');
             // Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
             Route::get('download-exam/{examId}', 'MentorExamController@downloadExam');
 
