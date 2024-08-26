@@ -13,80 +13,161 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModernlandIntegrationController extends Controller
 {
 
+    public function proceedLoginFromIthub(Request $request)
+    {
+        // Step 1: Retrieve the JWT token from the request
+        $token = $request->input('jwt'); // Use `input` to retrieve data from request body or query parameters
+
+        if (!$token) {
+            // If no token is provided, return an error response
+            abort('401',"JWT Token is required')");
+        }
+
+        try {
+            // Step 2: Verify and decode the JWT token
+            $user = JWTAuth::setToken($token)->toUser();
+
+            // Step 3: Check if the user exists and is valid
+            if ($user) {
+                // Log in the user
+                Auth::login($user);
+                Log::info('User successfully logged in', ['userId' => $user->id]);
+                return redirect("/home");
+            } else {
+                // If user is not found or the token is invalid, return an error response
+                abort('401',"Invalid JWT token or user not found");
+            }
+        } catch (JWTException $e) {
+            // Handle any JWT related exceptions
+            abort('401','Failed to authenticate with JWT, Unknown error occured');
+            Log::error('JWT authentication failed', ['exception' => $e->getMessage()]);
+        }
+    }
+
     public function loginFromIthub(Request $request)
     {
-        // Step 1: Get the token from the request
+        // Step 1: Retrieve the Authorization token from the request headers
         $token = $request->header('Authorization');
-        // Log the token (be careful with sensitive information)
         Log::info('Received token', ['token' => $token]);
 
-        // Create a new Guzzle client
+        // Create a new Guzzle client to make HTTP requests
         $client = new Client();
-
 
         try {
             $url = "https://api-ithub.modernland.co.id/api/v1/";
-            // $url = "http://192.168.1.148:8888/api/v1/";
-            // Step 2: Hit the external API with the Bearer token
-            $response = $client->request('GET', "$url"."profile", [
+            // Step 2: Make a GET request to the Ithub API to fetch user profile data
+            $response = $client->request('GET', "$url" . "profile", [
                 'headers' => [
                     'Authorization' => $token,
                 ],
             ]);
 
-            // Log the response status and body
             Log::info('Ithub API response', [
                 'status' => $response->getStatusCode(),
                 'body'   => $response->getBody()->getContents(),
             ]);
 
-            // Step 3: Check if the response is successful
+            // Step 3: Check if the response from Ithub API is successful
             if ($response->getStatusCode() == 200) {
                 $data = json_decode($response->getBody(), true);
-
-                // Log the response data
                 Log::info('Response data', ['data' => $data]);
 
-                // Step 4: Extract the userId from the response
+                // Step 4: Verify if the user ID is present in the response
                 if (!isset($data['result']['id'])) {
                     Log::error('User ID not found in response', ['data' => $data]);
-                    return redirect()->back()->with('error', 'User ID not found in response from Ithub');
+                    return response()->json([
+                        'meta' => [
+                            'success' => false,
+                            'status' => 400,
+                            'message' => 'User ID not found in response from Ithub'
+                        ],
+                        'result' => []
+                    ], 400);
                 }
 
                 $userId = $data['result']['id'];
+                // Step 5: Look up the user in the local database
                 $userAccount = User::where('mdln_username', $userId)->first();
-                // Log user lookup
                 Log::info('User lookup', ['userId' => $userId, 'userAccount' => $userAccount]);
 
+                // Step 6: If the user does not exist in the local database, return a 403 error response
                 if ($userAccount == null) {
-                    // Step 5: Abort with a 403 status and error message
-                    abort(403, "Anda Belum Terdaftar Sebagai User di LMS, Hubungi Tim Training untuk Mendaftarkan Akun");
+                    return response()->json([
+                        'meta' => [
+                            'success' => false,
+                            'status' => 403,
+                            'message' => 'Anda Belum Terdaftar Sebagai User di LMS, Hubungi Tim Training untuk Mendaftarkan Akun'
+                        ],
+                        'result' => []
+                    ], 403);
                 } else {
                     $userId = $userAccount->id;
-                    // Step 6: Log in the user
+                    // Step 7: Log in the user
                     Auth::loginUsingId($userId);
                     Log::info('User logged in', ['userId' => $userId]);
+
+                    // Step 8: Generate a JWT token for the logged-in user
+                    try {
+                        $jwtToken = JWTAuth::fromUser($userAccount);
+                        Log::info('JWT generated', ['token' => $jwtToken]);
+
+                        // Generate the URL with the JWT token
+                        $homeUrl = "https://learning.modernland.co.id/open-lms-from-ithub?jwt=" . $jwtToken;
+                        // Step 9: Return a JSON response with the JWT token included in the URL
+                        return response()->json([
+                            'meta' => [
+                                'success' => true,
+                                'status' => 200,
+                                'message' => 'Get data successfully'
+                            ],
+                            'result' => array_merge($data['result'], [
+                                'redirect_url' => $homeUrl
+                            ])
+                        ]);
+                    } catch (JWTException $e) {
+                        Log::error('JWT generation failed', ['exception' => $e->getMessage()]);
+                        return response()->json([
+                            'meta' => [
+                                'success' => false,
+                                'status' => 500,
+                                'message' => 'Failed to generate JWT'
+                            ],
+                            'result' => []
+                        ], 500);
+                    }
                 }
-                // Step 7: Redirect to the home page
-                return redirect('/home');
             } else {
-                // Handle error response if needed
+                // Step 10: Handle error responses from Ithub API
                 Log::error('Ithub API request failed', [
                     'status' => $response->getStatusCode(),
                     'body'   => $response->getBody()->getContents(),
                 ]);
-                abort(401,"Failed to authenticate with Ithub. Status: ". $response->getStatusCode());
-                // return redirect()->back()->with('error', 'Failed to authenticate with Ithub. Status: ' . $response->getStatusCode());
+                return response()->json([
+                    'meta' => [
+                        'success' => false,
+                        'status' => $response->getStatusCode(),
+                        'message' => 'Failed to authenticate with Ithub'
+                    ],
+                    'result' => []
+                ], $response->getStatusCode());
             }
         } catch (RequestException $e) {
-            // Log exception details
+            // Step 11: Handle any exceptions that occur during the request
             Log::error('Exception occurred', ['exception' => $e->getMessage()]);
-            abort(401,"An error occurred while authenticating with Ithub. Please try again later,\ne:".$e->getMessage());
-            // Handle the exception
+            return response()->json([
+                'meta' => [
+                    'success' => false,
+                    'status' => 500,
+                    'message' => 'An error occurred while authenticating with Ithub. Please try again later.'
+                ],
+                'result' => []
+            ], 500);
         }
     }
 
@@ -306,7 +387,7 @@ class ModernlandIntegrationController extends Controller
         $location = str_replace(['\\', '/'], '', $location);
 
 
-        if($request->location== null || $request->location == 'null' || $request->location == '[]'){
+        if ($request->location == null || $request->location == 'null' || $request->location == '[]') {
             $location = "[]";
         }
 

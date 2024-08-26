@@ -104,7 +104,7 @@ Route::get('/visualization/main-pie-chart-details', [VisualizationDetailControll
 
 
 Route::get('/login-with-ithub','ModernlandIntegrationController@loginFromIthub');
-
+Route::get('/open-lms-from-ithub','ModernlandIntegrationController@proceedLoginFromIthub');
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
 
