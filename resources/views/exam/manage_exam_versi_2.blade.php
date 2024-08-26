@@ -258,10 +258,10 @@
 
                                                 <!-- BTN EDIT EXAM META -->
                                                 @php
-                                                    $isDisabled = ($data->status === 'Finish' && ($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0;
+                                                    $isDisabled = (($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0;
                                                     $buttonColor = $isDisabled ? '#DFDFDF' : '#FFE500';
-                                                    $iconSrc = $data->takers_count != 0 ? 'icons/Edit_disabled.svg' : 'icons/edit_exam_meta_icon.svg';
-                                                    $tooltipTitle = $data->takers_count != 0 ? 'Exam Ini Tidak Dapat Diedit Karena Telah Digunakan' : 'Edit jadwal, akses, dan lainnya';
+                                                    $iconSrc = (($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0 ? 'icons/Edit_disabled.svg' : 'icons/edit_exam_meta_icon.svg';
+                                                    $tooltipTitle = (($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0 ? 'Exam Ini Tidak Dapat Diedit Karena Telah Digunakan' : 'Edit jadwal, akses, dan lainnya';
                                                 @endphp
                                                 <button 
                                                     class="btn mr-2"
@@ -305,7 +305,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn delete-btn" data-id="{{ $data->id }}"
-                                                        {{ $data->status === 'Finish' && $data->is_examUsed === 'Exam Used' ? 'disabled' : ''}}
+                                                        {{ $data->is_examUsed === 'Exam Used' ? 'disabled' : ''}}
                                                         style="
                                                         background-color: {{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? '#DFDFDF' : '#FC1E01' }};
                                                         border-radius: 15px;
