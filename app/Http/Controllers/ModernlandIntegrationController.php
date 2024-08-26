@@ -19,6 +19,37 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class ModernlandIntegrationController extends Controller
 {
 
+    public function proceedLoginFromIthub(Request $request)
+    {
+        // Step 1: Retrieve the JWT token from the request
+        $token = $request->input('jwt'); // Use `input` to retrieve data from request body or query parameters
+
+        if (!$token) {
+            // If no token is provided, return an error response
+            abort('401',"JWT Token is required')");
+        }
+
+        try {
+            // Step 2: Verify and decode the JWT token
+            $user = JWTAuth::setToken($token)->toUser();
+
+            // Step 3: Check if the user exists and is valid
+            if ($user) {
+                // Log in the user
+                Auth::login($user);
+                Log::info('User successfully logged in', ['userId' => $user->id]);
+                return redirect("/home");
+            } else {
+                // If user is not found or the token is invalid, return an error response
+                abort('401',"Invalid JWT token or user not found");
+            }
+        } catch (JWTException $e) {
+            // Handle any JWT related exceptions
+            abort('401','Failed to authenticate with JWT, Unknown error occured');
+            Log::error('JWT authentication failed', ['exception' => $e->getMessage()]);
+        }
+    }
+
     public function loginFromIthub(Request $request)
     {
         // Step 1: Retrieve the Authorization token from the request headers
@@ -87,7 +118,7 @@ class ModernlandIntegrationController extends Controller
                         Log::info('JWT generated', ['token' => $jwtToken]);
 
                         // Generate the URL with the JWT token
-                        $homeUrl = "https://ithub.modernland.co.id/home?jwt=" . $jwtToken;
+                        $homeUrl = "https://learning.modernland.co.id/open-lms-from-ithub?jwt=" . $jwtToken;
                         // Step 9: Return a JSON response with the JWT token included in the URL
                         return response()->json([
                             'meta' => [
