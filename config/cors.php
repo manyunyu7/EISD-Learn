@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*'],
+    'paths' => ['api/*', '/login-with-ithub','/','/home'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['https://ithub.modernland.co.id', 'http://192.168.1.137:3000', 'http://localhost:3000'],
 
     'allowed_origins_patterns' => [],
 
