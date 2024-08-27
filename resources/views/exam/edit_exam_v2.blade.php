@@ -319,7 +319,8 @@
 
 
 
-                           <li class="list-group-item {{ ($status_exam === 'Ongoing' OR ($status_exam === 'Finish' AND ($examScore_status === 'Scored' OR $examScore_status === 'Not Scored'))) ? 'd-none' : '' }}">
+                           <li class="list-group-item {{ !(($status_exam === 'Ongoing' AND $examScore_status === 'Not Scored' AND $is_examUsed === 'Exam Not Used')  OR 
+                            ($status_exam === 'Waiting to Start' AND $examScore_status === 'Not Scored' AND $is_examUsed === 'Exam Not Used')) ? 'd-none' : '' }}">
                                 <div class="mb-3" style="">
                                     <div></div>
                                     <div style="width: 200px;">

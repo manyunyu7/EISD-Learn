@@ -511,22 +511,28 @@ class MentorExamController extends Controller
                                             WHEN es.start_date <= "' . $currentDateTime . '" AND es.end_date >= "' . $currentDateTime . '" THEN "Ongoing"
                                             ELSE "Finish"
                                         END as status'),
-            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status')
-        )
+            DB::raw('CASE WHEN et.current_score IS NOT NULL THEN "Scored" ELSE "Not Scored" END as score_status'),
+            DB::raw('CASE
+                        WHEN cs.quiz_session_id IS NOT NULL THEN "Exam Used"
+                        ELSE "Exam Not Used"
+                    END as is_examUsed')
+            )
             ->where("es.exam_id", $examId)
             ->leftJoin("exam_takers as et", "es.id", "=", "et.session_id")
+            ->leftJoin('course_section as cs', 'es.id', '=', 'cs.quiz_session_id')
             ->first();
 
         $examInfo = ExamSession::where("exam_id", $examId)->get();
         $status_exam =  $data_examSession->status;
         $examScore_status =  $data_examSession->score_status;
+        $is_examUsed = $data_examSession->is_examUsed;
 
         $questionAnswer = ExamQuestionAnswers::all();
         // return $status_exam;
-
         // return $examInfo;
+        // return $data_examSession;
 
-        $compact = compact('examId', 'questionAnswer', 'data_examSession', 'status_exam', 'examScore_status', 'examInfo');
+        $compact = compact('examId', 'questionAnswer', 'data_examSession', 'status_exam', 'examScore_status', 'examInfo', 'is_examUsed');
 
         if ($request->dump == true) {
             return $compact;
