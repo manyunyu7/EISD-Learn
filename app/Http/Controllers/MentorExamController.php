@@ -342,10 +342,13 @@ class MentorExamController extends Controller
 
         // dd($questionAnswer->id);
         if ($questionAnswer->save()) {
+            $questionsAnswers = ExamQuestionAnswers::where("exam_id", "=", $request->exam_id)->get();
             $sessions = ExamSession::where("exam_id", $examId)->get();
             foreach ($sessions as $session) {
-                // $session->questions_answers = $questionAnswer->id;
-                $session->questions_answers = json_encode([$questionAnswer->id]);
+                // Filter question answers for this session
+                $sessionQuestionAnswers = $questionsAnswers->where('session_id', $session->id);
+
+                $session->questions_answers = $questionsAnswers;
                 $session->save();
             }
             return redirect()->route('exam.edit-exam_v2', ['examId' => $examId])->with('success', 'Berhasil Update Soal!');
