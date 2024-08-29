@@ -26,7 +26,7 @@ class ModernlandIntegrationController extends Controller
 
         if (!$token) {
             // If no token is provided, return an error response
-            abort('401',"JWT Token is required')");
+            abort('401', "JWT Token is required')");
         }
 
         try {
@@ -41,11 +41,11 @@ class ModernlandIntegrationController extends Controller
                 return redirect("/home");
             } else {
                 // If user is not found or the token is invalid, return an error response
-                abort('401',"Invalid JWT token or user not found");
+                abort('401', "Invalid JWT token or user not found");
             }
         } catch (JWTException $e) {
             // Handle any JWT related exceptions
-            abort('401','Failed to authenticate with JWT, Unknown error occured');
+            abort('401', 'Failed to authenticate with JWT, Unknown error occured');
             Log::error('JWT authentication failed', ['exception' => $e->getMessage()]);
         }
     }
@@ -276,6 +276,8 @@ class ModernlandIntegrationController extends Controller
 
     public function createOrUpdateLMSUser(Request $request)
     {
+
+        // return $request->all();
         // Get the API credentials header
         $apiCredentials = $request->header('lms');
         if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
@@ -298,7 +300,7 @@ class ModernlandIntegrationController extends Controller
 
         if ($request->position_id)
             $positionExists = DB::connection('ithub')
-                ->table('m_positions')
+                ->table('m_group_employees')
                 ->where('id', '=', $request->position_id)
                 ->exists();
 
@@ -311,10 +313,11 @@ class ModernlandIntegrationController extends Controller
 
         if ($request->position_id)
             $positions = DB::connection('ithub')
-                ->table('m_positions')
+                ->table('m_group_employees')
                 ->whereNull('deleted_at')
                 // ->where('code', 'like', '%_NEW%')
                 ->get();
+
 
         if ($request->department_id)
             if (!$departmentExists) {
@@ -357,6 +360,8 @@ class ModernlandIntegrationController extends Controller
             'email' => 'nullable|string|email|max:255', // Ensure email is validated
         ]);
 
+
+
         if ($validator->fails()) {
             return response()->json([
                 'meta' => [
@@ -374,7 +379,11 @@ class ModernlandIntegrationController extends Controller
         // Set user attributes
         $user->name = $request->input('name');
         $user->email = $request->input('email', $user->email);
-        $user->password = $user->exists ? $user->password : bcrypt($request->password);
+
+        if($request->password!= null || $request->password != '' || $request->password){
+            $user->password = bcrypt($request->password);
+        }
+
         $user->role = $request->input('role', "student");
         $user->contact = $request->input('contact', $user->contact);
         $user->sub_department = $request->input('sub_department', $user->sub_department);
@@ -393,9 +402,11 @@ class ModernlandIntegrationController extends Controller
 
         $user->location = $location;
         // Save user
+
         $user->save();
 
-        $user->location = json_decode($user->location);
+        if ($user->location != null && $user->location != '[]' && $user->location != 'null')
+            $user->location = json_decode($user->location);
 
         // Specify the attributes you want to return
         $attributesToReturn = ['name', 'email', 'role', 'contact', 'department_id', 'position_id', 'location', 'mdln_username'];

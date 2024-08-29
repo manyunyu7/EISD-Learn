@@ -51,9 +51,9 @@ class LaravelEstriController extends Controller
                           JOIN m_sub_departments c ON b.sub_department_id = c.id
                           WHERE b.user_id = a.id
                           LIMIT 1) AS sub_department"),
-                DB::raw("(SELECT json_build_object('id', b.position_id, 'name', c.name)
+                DB::raw("(SELECT json_build_object('id', b.group_employee_id, 'name', c.name)
                           FROM u_employees b
-                          JOIN m_positions c ON b.position_id = c.id
+                          JOIN m_group_employees c ON b.group_employee_id = c.id
                           WHERE b.user_id = a.id
                           LIMIT 1) AS position"),
                 DB::raw("(SELECT json_agg(json_build_object('id', b.id, 'role_id', b.role_id, 'name', c.name))
