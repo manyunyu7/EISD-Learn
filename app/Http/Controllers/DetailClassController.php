@@ -89,14 +89,14 @@ class DetailClassController extends Controller
         $preview_url = url('/')."/course/$id/section/$first_section";
 
         $time_limit_minute = null;
-        foreach ($dayta as $section){
+        foreach ($dayta as $section) {
             $examSession = ExamSession::where('id', $section->quiz_session_id)->first();
-            if($examSession!=null){
-                $time_limit_minute = $examSession->time_limit_minute;
-                $section->time_limit_minute = $time_limit_minute;
+            if ($examSession != null) {
+                $section->time_limit_minute = $examSession->time_limit_minute;
+            } else {
+                $section->time_limit_minute = null; // Optional: set to null if exam session is not found
             }
         }
-
         $compact = compact("dayta", "data", "jumlahSection", "first_section", "preview_url", "jumlahDuration");
         if($request->dump==true){
             return $compact;
