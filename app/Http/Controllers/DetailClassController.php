@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\ExamSession;
 use Illuminate\Pagination\Paginator;
 use App\Models\Lesson;
 use App\Models\User;
@@ -65,7 +67,6 @@ class DetailClassController extends Controller
             'c.created_at',
             'c.updated_at',
             'c.can_be_accessed',
-            'd.time_limit_minute'
         )
         ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
         ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
@@ -85,6 +86,14 @@ class DetailClassController extends Controller
             $first_section = $dayta->first()->section_id;
         }
         $preview_url = url('/')."/course/$id/section/$first_section";
+
+        $time_limit_minute = null;
+        foreach ($dayta as $section){
+            $examSession = ExamSession::where('id', $section->quiz_session_id)->first();
+            if($examSession!=null){
+                $time_limit_minute = $examSession->time_limit_minute;
+            }
+        }
 
         $compact = compact("dayta", "data", "jumlahSection", "first_section", "preview_url", "jumlahDuration");
         if($request->dump==true){
