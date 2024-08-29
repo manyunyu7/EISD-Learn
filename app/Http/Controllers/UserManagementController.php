@@ -17,9 +17,11 @@ class UserManagementController extends Controller
             ->get()
             ->keyBy('id'); // Convert to associative array for quick lookup
 
-        $positions = DB::connection('ithub')
+            $positions = DB::connection('ithub')
             ->table('m_group_employees')
-            ->get();
+            ->select('id', 'name')
+            ->get()
+            ->keyBy('id'); // Convert to associative array for quick lookup
 
 
         $locations = DB::connection('ithub')
