@@ -49,7 +49,7 @@ class DetailClassController extends Controller
         return view("lessons.view_class")->with($compact);
     }
 
-    public function mentor_viewClass($id){
+    public function mentor_viewClass(Request $request,$id){
         $data = Lesson::findOrFail($id);
         $dayta = DB::table('course_section as c')
         ->select(
@@ -86,9 +86,14 @@ class DetailClassController extends Controller
         }
         $preview_url = url('/')."/course/$id/section/$first_section";
 
+        $compact = compact("dayta", "data", "jumlahSection", "first_section", "preview_url", "jumlahDuration");
+        if($request->dump==true){
+            return $compact;
+        }
+
         // return $dayta;
 
-        return view("lessons.mentor_view_class")->with(compact("dayta", "data", "jumlahSection", "first_section", "preview_url", "jumlahDuration"));
+        return view("lessons.mentor_view_class")->with($compact);
     }
 
 
