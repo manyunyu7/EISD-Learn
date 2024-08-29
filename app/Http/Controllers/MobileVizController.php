@@ -153,9 +153,6 @@ class MobileVizController extends Controller
             $unfinishedClassCount = $totalLessonsCount; // All lessons are unfinished
         }
 
-        if($finishedClassCount == 1 && $unfinishedClassCount == 0) {
-            $unfinishedClassCount = 1; // Only one unfinished class exists, which is the last one taken by the student
-        }
 
         return MyHelper::responseSuccessWithData(
             200,
