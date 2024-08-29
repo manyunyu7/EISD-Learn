@@ -185,8 +185,7 @@
                             <div class="dropdown">
                                 <select class="form-control" id="learnStatusSelect" style="border: none;"
                                     onchange="updateLearnStatus()">
-                                    <option value="all" {{ request('learn_status') == 'all' ? 'selected' : '' }}>All
-                                        Status</option>
+                                    --}}
                                     <option value="finished" {{ request('learn_status') == 'finished' ? 'selected' : '' }}>
                                         Finished</option>
                                     <option value="not_finished"

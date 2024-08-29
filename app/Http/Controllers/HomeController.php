@@ -537,11 +537,6 @@ class HomeController extends Controller
 
             //============== FOR THE SCORE CHART =========================
             // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
             $examTakerData = DB::table('exam_takers as et')
                 ->select(
                     'et.user_id as userID',
