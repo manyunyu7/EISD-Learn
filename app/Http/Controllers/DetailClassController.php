@@ -93,6 +93,7 @@ class DetailClassController extends Controller
             $examSession = ExamSession::where('id', $section->quiz_session_id)->first();
             if($examSession!=null){
                 $time_limit_minute = $examSession->time_limit_minute;
+                $section->time_limit_minute = $time_limit_minute;
             }
         }
 
