@@ -97,6 +97,9 @@ class DetailClassController extends Controller
                 $section->time_limit_minute = null; // Optional: set to null if exam session is not found
             }
         }
+
+        $jumlahDuration = $dayta->sum('time_limit_minute');
+
         $compact = compact("dayta", "data", "jumlahSection", "first_section", "preview_url", "jumlahDuration");
         if($request->dump==true){
             return $compact;
