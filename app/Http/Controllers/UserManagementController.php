@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserManagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Fetch departments and locations
         $departments = DB::connection('ithub')
@@ -17,6 +17,11 @@ class UserManagementController extends Controller
             ->get()
             ->keyBy('id'); // Convert to associative array for quick lookup
 
+        $positions = DB::connection('ithub')
+            ->table('m_group_employees')
+            ->get();
+
+
         $locations = DB::connection('ithub')
             ->table('m_unit_businesses')
             ->select('id', 'code', 'name')
@@ -24,10 +29,11 @@ class UserManagementController extends Controller
             ->keyBy('id'); // Convert to associative array for quick lookup
 
         // Fetch users
-        $users = User::all()->map(function ($user) use ($departments, $locations) {
+        $users = User::all()->map(function ($user) use ($departments, $locations,$positions) {
             // Map department name
             $user->department_name = $departments->get($user->department_id)->name ?? 'Unknown';
-
+            // Map position name
+            $user->position_name = $positions->get($user->position_id)->name ?? 'Unknown';
             // Parse location JSON and map location names
             $user->location_names = collect(json_decode($user->location, true))->map(function ($loc) use ($locations) {
                 return $locations->get($loc['site_id'])->name ?? 'Unknown';
@@ -35,6 +41,10 @@ class UserManagementController extends Controller
 
             return $user;
         });
+
+        if ($request->dump == true) {
+            return $users;
+        }
 
         return view('users.index', compact('users'));
     }

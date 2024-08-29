@@ -48,6 +48,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Role</th>
+                                        <th>Positions</th>
                                         <th>Department</th>
                                         <th>Locations</th>
                                         <th>Is Testing</th>
@@ -60,14 +61,22 @@
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->role }}</td>
+                                            <td>{{ $user->position_name }}</td>
                                             <td>{{ $user->department_name }}</td>
                                             <td>
                                                 @foreach ($user->location_names as $location)
                                                     {{ $location }}<br>
                                                 @endforeach
                                             </td>
-                                            <td>{{ $user->is_testing ? 'Yes' : 'No' }}</td>
-                                            <td class="text-center">
+                                            <td>
+                                                @if($user->is_testing === 'y')
+                                                    <span class="badge bg-success">Yes</span>
+                                                @elseif($user->is_testing === 'n')
+                                                    <span class="badge bg-danger">No</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Not Specified</span>
+                                                @endif
+                                            </td>                                            <td class="text-center">
                                                 <div class="btn-group">
                                                     <a href="{{ route('users.edit', $user->id) }}"
                                                         class="btn btn-sm btn-warning" title="Edit">
