@@ -62,6 +62,7 @@ class DetailClassController extends Controller
             'c.id as section_id',
             'c.section_order',
             'c.section_title',
+            'c.quiz_session_id',
             'c.section_content',
             'c.section_video',
             'c.created_at',
