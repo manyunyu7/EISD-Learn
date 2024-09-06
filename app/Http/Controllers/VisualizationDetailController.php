@@ -54,8 +54,7 @@ class VisualizationDetailController extends Controller
 
         $classes = DB::table('lessons')
             ->where(function ($query) {
-                $query->whereNull('deleted_at')
-                    ->orWhere('deleted_at', '');
+                $query->whereNull('deleted_at');
             })
             ->where('mentor_id', '=', Auth::user()->id)
             ->get();
