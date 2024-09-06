@@ -96,6 +96,7 @@ class VisualizationDetailController extends Controller
                     }
                 }
             })
+            ->where('lessons.mentor_id', '=', Auth::user()->id)
             ->where(function ($query) {
                 // Check that the lesson is not deleted
                 $query->whereNull('lessons.deleted_at');
