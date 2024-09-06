@@ -8,6 +8,7 @@ use App\Models\ExamSession;
 use App\Models\Lesson;
 use App\Models\StudentLesson;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -56,6 +57,7 @@ class VisualizationDetailController extends Controller
                 $query->whereNull('deleted_at')
                     ->orWhere('deleted_at', '');
             })
+            ->where('mentor_id', '=', Auth::user()->id)
             ->get();
 
         $userFilters = DB::connection('mysql')
