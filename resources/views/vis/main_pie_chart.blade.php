@@ -551,74 +551,76 @@
 
                 </div>
 
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Daftar Siswa
-                                @if (!Request::has('class') || Request::query('class') !== 'all')
-                                    Terdaftar
-                                @endif
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="basic-exam-tables"
-                                    class="table table-bordered  @if (count($userFilters) < 1) d-none @endif">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">No</th>
-                                            <th scope="col">Nama</th>
-                                            <th scope="col">Department</th>
-                                            <th scope="col">Position</th>
-                                            <th scope="col">Kelas</th>
-                                            <th scope="col">Lokasi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($userFilters as $data)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $data->name }}</td>
-                                                <td>{{ $data->department_name }}</td>
-                                                <td>{{ $data->position_name }}</td>
-                                                <td>{{ $data->course_title }}</td>
-                                                @php
-                                                    $colors = [
-                                                        '#FF5733', // Color 1
-                                                        '#4CAF50', // Color 2
-                                                        '#3498DB', // Color 3
-                                                        '#FFC300', // Color 4
-                                                        '#9B59B6', // Color 5
-                                                        '#E74C3C', // Color 6
-                                                        '#2ECC71', // Color 7
-                                                        '#F39C12', // Color 8
-                                                    ]; // Add more if needed
-                                                @endphp
 
-                                                <td class="text-center">
-                                                    @foreach ($data->locations as $location)
-                                                        @php
-                                                            $color = $colors[$loop->index % count($colors)]; // Rotate through colors based on index
-                                                        @endphp
-                                                        <span class="badge"
-                                                            style="background-color: {{ $color }}; color: white;">
-                                                            {{ $location->site_name }}
-                                                        </span>
-                                                    @endforeach
-                                                </td>
+                @if (count($userFilters) > 1)
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Daftar Siswa
+                                    @if (!Request::has('class') || Request::query('class') !== 'all')
+                                        Terdaftar
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="basic-exam-tables"
+                                        class="table table-bordered  @if (count($userFilters) < 1) d-none @endif">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col">Nama</th>
+                                                <th scope="col">Department</th>
+                                                <th scope="col">Position</th>
+                                                <th scope="col">Kelas</th>
+                                                <th scope="col">Lokasi</th>
                                             </tr>
-                                        @empty
-                                            <div class="alert alert-danger">
-                                                Anda Belum Memiliki Kelas
-                                            </div>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($userFilters as $data)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $data->name }}</td>
+                                                    <td>{{ $data->department_name }}</td>
+                                                    <td>{{ $data->position_name }}</td>
+                                                    <td>{{ $data->course_title }}</td>
+                                                    @php
+                                                        $colors = [
+                                                            '#FF5733', // Color 1
+                                                            '#4CAF50', // Color 2
+                                                            '#3498DB', // Color 3
+                                                            '#FFC300', // Color 4
+                                                            '#9B59B6', // Color 5
+                                                            '#E74C3C', // Color 6
+                                                            '#2ECC71', // Color 7
+                                                            '#F39C12', // Color 8
+                                                        ]; // Add more if needed
+                                                    @endphp
+
+                                                    <td class="text-center">
+                                                        @foreach ($data->locations as $location)
+                                                            @php
+                                                                $color = $colors[$loop->index % count($colors)]; // Rotate through colors based on index
+                                                            @endphp
+                                                            <span class="badge"
+                                                                style="background-color: {{ $color }}; color: white;">
+                                                                {{ $location->site_name }}
+                                                            </span>
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <div class="alert alert-danger">
+                                                    Anda Belum Memiliki Kelas
+                                                </div>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                @endif
 
                 @if ($lastPostTestDetail != null)
                     {{-- <div class="col-12">
@@ -854,7 +856,7 @@
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="basic-main-tables"
-                                        class="table table-bordered  @if (count($userFilters) < 1) d-none @endif">
+                                        class="table table-bordered  @if (count($listExamInClass) < 1) d-none @endif">
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>

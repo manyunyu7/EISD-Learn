@@ -100,7 +100,7 @@ Route::get('/loginz', function () {
 
 
 Route::get('/open-lms-from-ithub','CourseSectionController@viewStudents');
-Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail'])->name('qr-login');
+Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail']);
 
 
 Route::get('/login-with-ithub','ModernlandIntegrationController@loginFromIthub');

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\ExamSession;
 use Illuminate\Pagination\Paginator;
 use App\Models\Lesson;
 use App\Models\User;
@@ -49,8 +51,7 @@ class DetailClassController extends Controller
         return view("lessons.view_class")->with($compact);
     }
 
-    public function mentor_viewClass($id){
-        return $id;
+    public function mentor_viewClass(Request $request,$id){
         $data = Lesson::findOrFail($id);
         $dayta = DB::table('course_section as c')
         ->select(
@@ -61,13 +62,12 @@ class DetailClassController extends Controller
             'c.id as section_id',
             'c.section_order',
             'c.section_title',
+            'c.quiz_session_id',
             'c.section_content',
             'c.section_video',
             'c.created_at',
             'c.updated_at',
             'c.can_be_accessed',
-            'd.time_limit_minute',
-            'd.exam_id'
         )
         ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
         ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
@@ -88,9 +88,26 @@ class DetailClassController extends Controller
         }
         $preview_url = url('/')."/course/$id/section/$first_section";
 
+        $time_limit_minute = null;
+        foreach ($dayta as $section) {
+            $examSession = ExamSession::where('id', $section->quiz_session_id)->first();
+            if ($examSession != null) {
+                $section->time_limit_minute = $examSession->time_limit_minute;
+            } else {
+                $section->time_limit_minute = null; // Optional: set to null if exam session is not found
+            }
+        }
+
+        $jumlahDuration = $dayta->sum('time_limit_minute');
+
+        $compact = compact("dayta", "data", "jumlahSection", "first_section", "preview_url", "jumlahDuration");
+        if($request->dump==true){
+            return $compact;
+        }
+
         // return $dayta;
 
-        return view("lessons.mentor_view_class")->with(compact("dayta", "data", "jumlahSection", "first_section", "preview_url", "jumlahDuration"));
+        return view("lessons.mentor_view_class")->with($compact);
     }
 
 
