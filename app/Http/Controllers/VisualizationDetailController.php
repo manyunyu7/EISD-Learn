@@ -64,7 +64,7 @@ class VisualizationDetailController extends Controller
         $userFilters = [];
 
         //if class id is null, then we use users table as the main table
-        if ($classId == null) {
+        if ($classId != "all") {
             $userFilters = DB::table('users')
                 ->select('mdln_username', 'name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
                 ->where('role', '=', 'student')
