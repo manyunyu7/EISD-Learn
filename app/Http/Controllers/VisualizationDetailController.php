@@ -126,7 +126,7 @@ class VisualizationDetailController extends Controller
                 ->where(function ($query) use ($classId) {
                     if (!empty($classId)) {
                         if ($classId != 'all') {
-                            $query->where('lessons.id', '=', $classId);
+                            $query->where('student_lesson.lesson_id', '=', $classId);
                         }
                     }
                 })
@@ -141,12 +141,8 @@ class VisualizationDetailController extends Controller
                         }
                     }
                 })
-                ->where(function ($query) {
-                    // Check that the lesson is not deleted
-                    $query->whereNull('lessons.deleted_at');
-                })
                 ->where('users.role', '=', 'student')
-                ->where('users.is_testing', '=', 'n')
+                ->where('users.is_testing', '!=', 'y')
                 ->get();
         }
 
