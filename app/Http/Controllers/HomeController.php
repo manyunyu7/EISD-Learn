@@ -228,7 +228,7 @@ class HomeController extends Controller
 
             $learnStatus = request('learn_status');
 
-            if($learnStatus == 'all'){
+            if($learnStatus == null || $learnStatus == ''){
                 $learnStatus = 'finished';
             }
 
