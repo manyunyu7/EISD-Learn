@@ -50,6 +50,7 @@ class DetailClassController extends Controller
     }
 
     public function mentor_viewClass($id){
+        return $id;
         $data = Lesson::findOrFail($id);
         $dayta = DB::table('course_section as c')
         ->select(
@@ -65,7 +66,8 @@ class DetailClassController extends Controller
             'c.created_at',
             'c.updated_at',
             'c.can_be_accessed',
-            'd.time_limit_minute'
+            'd.time_limit_minute',
+            'd.exam_id'
         )
         ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
         ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
