@@ -228,6 +228,10 @@ class HomeController extends Controller
 
             $learnStatus = request('learn_status');
 
+            if($learnStatus == 'all'){
+                $learnStatus = 'finished';
+            }
+
 
 
             $userLMS = DB::connection('mysql')
