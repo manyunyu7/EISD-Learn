@@ -3,6 +3,9 @@
 @section('head-section')
     <!-- Datatables -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     <script>
         ClassicEditor
@@ -106,7 +109,7 @@
 @section('main')
 
 
-    <div class="page-inner">
+    <div class="page-inner"  style="background-color: white !important">
 
         <div class="col-md-12 mt-2">
             {{-- BREADCRUMB --}}
@@ -202,7 +205,12 @@
                             divInputGroup.appendChild(deleteButton);
                             segmentMultipleChoices.appendChild(divInputGroup);
                         } else {
-                            alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                            // alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Anda telah mencapai batas maksimal penambahan Opsi Jawaban.',
+                            });
                         }
                     });
                 </script>
@@ -219,6 +227,10 @@
                     </div>
                 </div>
             </form>
+
+            
+
+
         </div>
 
 
@@ -232,8 +244,8 @@
                             <p>{{ $data->question }}</p>
 
                             @if ($data->image !== null)
-                                <div class="text-center">
-                                    <img src="{{ Storage::url('public/exam/question/' . $data->image) }}"
+                                <div class="text-center"> 
+                                    <img src="{{ asset('storage/exam/question/'. $data->image) }}"
                                         style="width: auto; height:350px"
                                         class="rounded"
                                         alt="...">
@@ -246,6 +258,7 @@
                                 $jsonData = $data->choices;
                                 $examQuestionAnswers = json_decode($jsonData, true);
                             @endphp
+                            
                             @foreach ($examQuestionAnswers as $answer)
                                 <li class="list-group-item">{{ $answer['text'] }}  (Score: {{ $answer['score'] }})</li>
                             @endforeach
@@ -290,7 +303,6 @@
             @empty
             @endforelse
         </div>
-
     </div>
 
 @endsection

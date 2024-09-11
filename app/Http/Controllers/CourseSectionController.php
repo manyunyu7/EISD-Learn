@@ -129,11 +129,20 @@ class CourseSectionController extends Controller
 
     public function store_materials(Request $request, Lesson $lesson)
     {
+        $this->validate($request, [
+            'content_area' => 'required|string',
+        ], [
+            'content_area.required' => 'Deskripsi Kelas wajib diisi.',
+        ]);
+
+
+
         $lessonId = $request->lessonId;
 
         $insert_to_CourseSection = new CourseSection();
 
-
+        ini_set('upload_max_filesize', '500M');
+        ini_set('post_max_size', '500M');
         $materials = $request->file('question_images');
 
         if ($materials) {
@@ -152,7 +161,7 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection->section_title = $request->title;
         $insert_to_CourseSection->section_order = '';
-        $insert_to_CourseSection->section_content = $request->content;
+        $insert_to_CourseSection->section_content = $request->content_area;
         $insert_to_CourseSection->course_id = $request->lessonId;
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
         $insert_to_CourseSection->quiz_session_id = $request->is_examId;
@@ -298,6 +307,7 @@ class CourseSectionController extends Controller
                 'student_section.created_at as taken_at',
             ])
             ->leftJoin('users', 'student_section.student_id', '=', 'users.id')
+            // ->where('users.is_testing', '=', 'n')
             ->leftJoin('course_section', 'student_section.section_id', '=', 'course_section.id')
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
             ->where('course_section.id', $sectionId)
@@ -451,6 +461,7 @@ class CourseSectionController extends Controller
         $lesson = Lesson::leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
         ->select('lessons.*', 'users.name as mentor_name')
         ->where('lessons.id', $lessonId)
+        // ->where('users.is_testing', '=', 'n')
         ->firstOrFail();
 
 
@@ -561,6 +572,7 @@ class CourseSectionController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
                     ->where('lessons.id', $lessonId) // Add the condition lessons.id = 5
+                    // ->where('users.is_testing', '=', 'n')
                     ->pluck('ss.section_id')
                     ->toArray();
 
@@ -570,6 +582,7 @@ class CourseSectionController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
                     ->where('lessons.id', $lessonId)
+                    // ->where('users.is_testing', '=', 'n')
                     ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
                     ->first();
             }
@@ -592,6 +605,7 @@ class CourseSectionController extends Controller
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
             ->where('ss.student_id', Auth::id())
+            // ->where('users.is_testing', '=', 'n')
             ->where('lessons.id', $lessonId)
             ->count();
 
@@ -630,6 +644,7 @@ class CourseSectionController extends Controller
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
             ->leftJoin('exams', 'exam_sessions.exam_id', '=', 'exams.id')
             ->where('course_section.course_id', $lessonId)
+            // ->where('users.is_testing', '=', 'n')
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
@@ -860,6 +875,7 @@ class CourseSectionController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', Auth::id())
                     ->where('lessons.id', $lessonId)
+                    // ->where('users.is_testing', '=', 'n')
                     ->count();
 
                 if ($sectionTakenOnCourseCount == $total_section) {

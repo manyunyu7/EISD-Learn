@@ -285,6 +285,7 @@ class LessonController extends Controller
             ->leftJoin('users', 'lessons.mentor_id', '=', 'users.id')
             ->where('users.role', 'mentor')
             ->where('lessons.id', $lesson_id)
+            // ->where('users.is_testing', '=', 'n')
             ->first(); // Ambil baris pertama dari hasil query
 
         $deptId = $myClass->department_id;
@@ -477,6 +478,7 @@ class LessonController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
                     ->where('lessons.id', $lesson_id) // Add the condition lessons.id = 5
+                    // ->where('users.is_testing', '=', 'n')
                     ->count();
 
                 $lastSectionTaken = FacadesDB::table('student_section as ss')
@@ -486,6 +488,7 @@ class LessonController extends Controller
                     ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
                     ->where('lessons.id', $lesson_id)
                     ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
+                    // ->where('users.is_testing', '=', 'n')
                     ->first();
             }
         }
@@ -824,7 +827,7 @@ class LessonController extends Controller
         // Hitung jumlah student yang telah menyelesaikan setiap course
         $courseCompleteCount = DB::table('student_lesson')
             ->select('lesson_id', DB::raw('COUNT(*) AS completed_students'))
-            ->where('learn_status', [0, 1])
+            ->where('learn_status', '<>', 0)
             ->groupBy('lesson_id')
             ->get();
 
@@ -901,6 +904,8 @@ class LessonController extends Controller
                     cs.created_at DESC
             ");
         }
+
+        // return $course;
 
         // dd($class);
         Paginator::useBootstrap();

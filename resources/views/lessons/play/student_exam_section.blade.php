@@ -17,7 +17,7 @@
 
                             <h5 style="font-size: 22px; color: slategray;">
                                 {{ 'Anda Sudah Mengambil Quiz ini : ' . count($examResults) . ' Kali' }}</h5>
-                            <h5 style="font-size: 21px; margin-top: 20px">{!! $session->instruction !!}</h5>
+                            <h5 style="font-size: 21px; margin-top: 20px">{!! $sectionDetail->section_content !!}</h5>
 
                             <!-- Time -->
                             <div class="form-group">

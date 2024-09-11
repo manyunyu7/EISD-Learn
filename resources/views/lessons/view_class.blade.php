@@ -12,7 +12,7 @@
         $(document).ready(function() {
             $('#submitPinForm').on('submit', function(e) {
                 e.preventDefault(); // Prevent form submission
-                
+
                 let pin = $('#pin').val();
                 let idClass = $('#hiddenField').val();
 
@@ -55,13 +55,13 @@
                 });
             });
         });
-        
+
     </script>
 @endsection
 
 @section('main')
     <br><br>
-    <div class="col-md-12">
+    <div class="col-md-12" style="background: white">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href={{url('/home')}}>Home</a></li>
@@ -71,7 +71,7 @@
         </nav>
     </div>
 
-    <div class="row mt--2 border-primary col-md-12">
+    <div class="row mt--2 border-primary col-md-12" style="background: white">
         <div class="col-md-10">
             <div class="col-md-12">
                 <h1><b>{{ $data->course_title }}</b></h1>

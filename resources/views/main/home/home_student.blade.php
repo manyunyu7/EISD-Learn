@@ -285,7 +285,7 @@
                                     <div>
                                         <div class="card-head-row card-tools-still-right">
                                             <h1 style="color: black;"><b>{{ Auth::user()->name }}</b></h1>
-                                            <p class="card-category">Digital Management</p>
+                                            <p class="card-category">{{ $name_dept }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -524,6 +524,12 @@
                                 <!-- Badge and favorite -->
                                 <div
                                     style="width: 100%; display: flex; flex-wrap: wrap; justify-content: left; align-items: flex-start; margin-bottom: .5rem;">
+                                    @if ($data->new_class == 'y')
+                                        <div class="class-badge"
+                                            style="color: white; margin-bottom: 5px; margin-right: 10px; background-color: rgb(31, 65, 151); padding: 2px 10px;">
+                                            NEW
+                                        </div>
+                                    @endif
                                     <div class="class-badge"
                                         style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $data->course_category_color }}; padding: 2px 10px;">
                                         <strong>{{ $data->course_category_name }}</strong>

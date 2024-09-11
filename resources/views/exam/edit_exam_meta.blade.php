@@ -143,16 +143,16 @@
                     </div>
                 @endif
             </div>
-            <form id="addSessionForm" method="post" action="{{ route('store.quiz') }}">
+            <form id="addSessionForm" method="post" action="{{ route('update-quiz-new', ['examId' => $data->exam->id]) }}">
                 @csrf
                 @method('POST')
 
                 {{-- Input Judul Ujian --}}
                 <div class="mb-3">
-                    <label for="title" class="mb-2">Judul Ujian<span style="color: red">*</span></label>
+                    <label for="title" class="mb-2">Judul Ujian</label>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
-                            name="title" value="{{ old('title') }}" aria-label="Recipient's username"
+                            name="title" value="{{ old('title', $data->exam->title) }}" aria-label="Recipient's username"
                             aria-describedby="basic-addon2">
                     </div>
                     @error('title')
@@ -160,25 +160,35 @@
                     @enderror
                 </div>
 
-                {{-- Input Jenis Soal --}}
+                {{-- Input Jenis Ujian --}}
                 <div class="mb-3">
-                    <label for="" class="mb-2">Jenis Ujian<span style="color: red">*</span></label>
+                    <label for="exam_type" class="mb-2">Jenis Ujian</label>
                     <div class="input-group mb-3">
-                        <select name="exam_type" class="form-control form-select-lg" aria-label="Default select example">
-                            <option value="Pre Test">Pre Test</option>
-                            <option value="Post Test">Post Test</option>
-                            <option value="Quiz">Quiz</option>
-                            <option value="Evaluation">Evaluation</option>
+                        <select name="exam_type" id="exam_type" class="form-control form-select-lg"
+                            aria-label="Default select example">
+                            <option value="Pre Test"
+                                {{ old('exam_type', $data->exam_session->exam_type) == 'Pre Test' ? 'selected' : '' }}>Pre
+                                Test</option>
+                            <option value="Post Test"
+                                {{ old('exam_type', $data->exam_session->exam_type) == 'Post Test' ? 'selected' : '' }}>
+                                Post Test</option>
+                            <option value="Quiz"
+                                {{ old('exam_type', $data->exam_session->exam_type) == 'Quiz' ? 'selected' : '' }}>Quiz
+                            </option>
+                            <option value="Evaluation"
+                                {{ old('exam_type', $data->exam_session->exam_type) == 'Evaluation' ? 'selected' : '' }}>
+                                Evaluation</option>
                         </select>
                     </div>
                 </div>
                 {{-- Input Batas Waktu --}}
                 <div class="mb-3">
-                    <label for="" class="mb-2">Batas Waktu (Menit)<span style="color: red">*</span></label>
+                    <label for="times_limit" class="mb-2">Batas Waktu (Menit)</label>
                     <div class="input-group mb-3">
                         <input name="times_limit" type="text"
                             class="form-control @error('times_limit') is-invalid @enderror"
-                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            aria-label="Recipient's username" aria-describedby="basic-addon2"
+                            value="{{ old('times_limit', $data->exam_session->time_limit_minute ?? '') }}">
                     </div>
                     @error('times_limit')
                         <div class="text-danger">{{ $message }}</div>
@@ -187,11 +197,11 @@
                 {{-- Input Start and End Date --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="start_date" class="mb-2">Start Date<span style="color: red">*</span></label>
+                        <label for="start_date" class="mb-2">Start Date</label>
                         <div class="input-group mb-3">
                             <input type="datetime-local" class="form-control @error('start_date') is-invalid @enderror"
                                 id="start_date" name="start_date"
-                                value="{{ old('start_date') ? \Carbon\Carbon::parse(old('start_date'))->format('Y-m-d\TH:i') : '' }}">
+                                value="{{ old('start_date') ? \Carbon\Carbon::parse(old('start_date'))->format('Y-m-d\TH:i') : \Carbon\Carbon::parse($data->exam_session->start_date)->format('Y-m-d\TH:i') }}">
                         </div>
                         @error('start_date')
                             <div class="text-danger">{{ $message }}</div>
@@ -199,11 +209,11 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="end_date" class="mb-2">End Date<span style="color: red">*</span></label>
+                        <label for="end_date" class="mb-2">End Date</label>
                         <div class="input-group mb-3">
                             <input type="datetime-local" class="form-control @error('end_date') is-invalid @enderror"
                                 id="end_date" name="end_date"
-                                value="{{ old('end_date') ? \Carbon\Carbon::parse(old('end_date'))->format('Y-m-d\TH:i') : '' }}">
+                                value="{{ old('end_date') ? \Carbon\Carbon::parse(old('end_date'))->format('Y-m-d\TH:i') : \Carbon\Carbon::parse($data->exam_session->end_date)->format('Y-m-d\TH:i') }}">
                         </div>
                         @error('end_date')
                             <div class="text-danger">{{ $message }}</div>
@@ -212,8 +222,10 @@
                 </div>
                 {{-- Input Instruksi Exam --}}
                 <div class="mb-3">
-                    <label for="instruction" class="mb-2">Instruksi Exam<span style="color: red">*</span></label>
-                    <textarea id="editor" class="form-control @error('instruction') is-invalid @enderror" name="instruction">{{ old('instruction') }}</textarea>
+                    <label for="instruction" class="mb-2">Instruksi Exam</label>
+                    <textarea id="editor" class="form-control @error('instruction')
+                    is-invalid @enderror"
+                        name="instruction">{{ old('instruction', $data->exam->instruction) }}</textarea>
 
                     @error('instruction')
                         <div class="text-danger">{{ $message }}</div>
@@ -236,29 +248,41 @@
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Public Access</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="public_access" id="public-access-btn"
-                                class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text"
+                                value="{{ $data->exam_session->public_access == 'n' ? 'Tidak Aktif' : 'Aktif' }}"
+                                name="public_access" id="public-access-btn"
+                                class="btn {{ $data->exam_session->public_access == 'n' ? 'btn-danger' : 'btn-success' }}"
+                                style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Show Result</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="show_result_on_end"
-                                id="show-result-btn" class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text"
+                                value="{{ $data->exam_session->show_result_on_end == 'n' ? 'Tidak Aktif' : 'Aktif' }}"
+                                name="show_result_on_end" id="show-result-btn"
+                                class="btn {{ $data->exam_session->show_result_on_end == 'n' ? 'btn-danger' : 'btn-success' }}"
+                                style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Allow Review</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="allow_review" id="allow-review-btn"
-                                class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text"
+                                value="{{ $data->exam_session->allow_review == 'n' ? 'Tidak Aktif' : 'Aktif' }}"
+                                name="allow_review" id="allow-review-btn"
+                                class="btn {{ $data->exam_session->allow_review == 'n' ? 'btn-danger' : 'btn-success' }}"
+                                style="width: 100%">
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="" class="mb-2">Allow Multiple</label>
                         <div class="input-group mb-3">
-                            <input readonly type="text" value="Tidak Aktif" name="allow_multiple"
-                                id="allow-multiple-btn" class="btn btn-danger" style="width: 100%">
+                            <input readonly type="text"
+                                value="{{ $data->exam_session->allow_multiple == 'n' ? 'Tidak Aktif' : 'Aktif' }}"
+                                name="allow_multiple" id="allow-multiple-btn"
+                                class="btn {{ $data->exam_session->allow_multiple == 'n' ? 'btn-danger' : 'btn-success' }}"
+                                style="width: 100%">
                         </div>
                     </div>
                     <script>
@@ -268,94 +292,49 @@
                             var btn_allow_review = document.getElementById('allow-review-btn');
                             var btn_allow_multiple = document.getElementById('allow-multiple-btn');
 
-                            var isActive_PA = false;
-                            var isActive_SR = false;
-                            var isActive_AR = false;
-                            var isActive_AM = false;
+                            // Toggle button states
+                            function toggleButton(btn, state) {
+                                if (state) {
+                                    btn.classList.remove('btn-danger');
+                                    btn.classList.add('btn-success');
+                                    btn.value = 'Aktif';
+                                    btn.textContent = 'Aktif';
+                                } else {
+                                    btn.classList.remove('btn-success');
+                                    btn.classList.add('btn-danger');
+                                    btn.value = 'Tidak Aktif';
+                                    btn.textContent = 'Tidak Aktif';
+                                }
+                            }
+
+                            // Set initial states
+                            toggleButton(btn_public_access, '{{ $data->exam_session->public_access }}' === 'y');
+                            toggleButton(btn_show_result, '{{ $data->exam_session->show_result_on_end }}' === 'y');
+                            toggleButton(btn_allow_review, '{{ $data->exam_session->allow_review }}' === 'y');
+                            toggleButton(btn_allow_multiple, '{{ $data->exam_session->allow_multiple }}' === 'y');
 
                             // Public Access Setup
                             btn_public_access.addEventListener('click', function() {
-                                // Tidak Aktif
-                                if (isActive_PA) {
-                                    btn_public_access.classList.remove('btn-success');
-                                    btn_public_access.classList.add('btn-danger');
-                                    btn_public_access.textContent = 'Tidak Aktif';
-                                    btn_public_access.value = 'Tidak Aktif';
-                                    isActive_PA = false;
-                                }
-                                // Aktif
-                                else {
-                                    btn_public_access.classList.remove('btn-danger');
-                                    btn_public_access.classList.add('btn-success');
-                                    btn_public_access.textContent = 'Aktif';
-                                    btn_public_access.value = 'Aktif';
-                                    isActive_PA = true;
-                                }
+                                toggleButton(btn_public_access, btn_public_access.value === 'Tidak Aktif');
                             });
 
                             // Show Result Setup
                             btn_show_result.addEventListener('click', function() {
-                                // Tidak Aktif
-                                if (isActive_SR) {
-                                    btn_show_result.classList.remove('btn-success');
-                                    btn_show_result.classList.add('btn-danger');
-                                    btn_show_result.textContent = 'Tidak Aktif';
-                                    btn_show_result.value = 'Tidak Aktif';
-                                    isActive_SR = false;
-                                }
-                                // Aktif
-                                else {
-                                    btn_show_result.classList.remove('btn-danger');
-                                    btn_show_result.classList.add('btn-success');
-                                    btn_show_result.textContent = 'Aktif';
-                                    btn_show_result.value = 'Aktif';
-                                    isActive_SR = true;
-                                }
+                                toggleButton(btn_show_result, btn_show_result.value === 'Tidak Aktif');
                             });
 
                             // Allow Review Setup
                             btn_allow_review.addEventListener('click', function() {
-                                // Tidak Aktif
-                                if (isActive_AR) {
-                                    btn_allow_review.classList.remove('btn-success');
-                                    btn_allow_review.classList.add('btn-danger');
-                                    btn_allow_review.textContent = 'Tidak Aktif';
-                                    btn_allow_review.value = 'Tidak Aktif';
-                                    isActive_AR = false;
-                                }
-                                // Aktif
-                                else {
-                                    btn_allow_review.classList.remove('btn-danger');
-                                    btn_allow_review.classList.add('btn-success');
-                                    btn_allow_review.textContent = 'Aktif';
-                                    btn_allow_review.value = 'Aktif';
-                                    isActive_AR = true;
-                                }
+                                toggleButton(btn_allow_review, btn_allow_review.value === 'Tidak Aktif');
                             });
 
                             // Allow Multiple Setup
                             btn_allow_multiple.addEventListener('click', function() {
-                                // Tidak Aktif
-                                if (isActive_AM) {
-                                    btn_allow_multiple.classList.remove('btn-success');
-                                    btn_allow_multiple.classList.add('btn-danger');
-                                    btn_allow_multiple.textContent = 'Tidak Aktif';
-                                    btn_allow_multiple.value = 'Tidak Aktif';
-                                    isActive_AM = false;
-                                }
-                                // Aktif
-                                else {
-                                    btn_allow_multiple.classList.remove('btn-danger');
-                                    btn_allow_multiple.classList.add('btn-success');
-                                    btn_allow_multiple.textContent = 'Aktif';
-                                    btn_allow_multiple.value = 'Aktif';
-                                    isActive_AM = true;
-                                }
+                                toggleButton(btn_allow_multiple, btn_allow_multiple.value === 'Tidak Aktif');
                             });
                         });
                     </script>
                 </div>
-
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">
                     <div style="flex-grow: 1;"></div>
                     <div style="width: 200px;">

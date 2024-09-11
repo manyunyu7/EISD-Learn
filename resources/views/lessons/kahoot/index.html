@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahoot-like Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quiz Title</h1>
+        </header>
+
+        <main>
+            <div class="quiz-container" id="quizContainer">
+                <div class="question-type" id="questionType">Question Type</div>
+                <div class="question-container" id="questionContainer">
+                    <h2 id="questionText">Question will appear here</h2>
+                    <form id="quizForm"></form>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Kahoot-like App</p>
+        </footer>
+
+        <!-- Sounds -->
+        <audio id="correctSound" src="correct.mp3"></audio>
+        <audio id="incorrectSound" src="incorrect.mp3"></audio>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
