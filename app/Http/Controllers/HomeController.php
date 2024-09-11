@@ -238,7 +238,12 @@ class HomeController extends Controller
                 ->table('users')
                 ->select('mdln_username', 'name', 'users.department_id')
                 ->where('role', '=', 'student')
-                ->where('is_testing', '=', 'n')
+                ->where(function ($query) {
+                    $query->where('users.is_testing', '=', 'n')
+                          ->orWhere('users.is_testing', '=', '')
+                          ->orWhere('users.is_testing', '!=', 'y')
+                          ->orWhereNull('users.is_testing');
+                });
                 ->where(function ($query) use ($locationId) {
                     if (!empty($locationId)) {
                         if ($locationId !== 'all') {
