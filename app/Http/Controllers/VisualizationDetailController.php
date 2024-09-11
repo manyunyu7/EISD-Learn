@@ -70,7 +70,12 @@ class VisualizationDetailController extends Controller
             $query = DB::table('users')
                 ->select('mdln_username', 'name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
                 ->where('role', '=', 'student')
-                ->where('users.is_testing', '=', 'n')
+                ->where(function ($query) {
+                    $query->where('users.is_testing', '=', 'n')
+                          ->orWhere('users.is_testing', '=', '')
+                          ->orWhere('users.is_testing', '!=', 'y')
+                          ->orWhereNull('users.is_testing');
+                })
                 ->where(function ($query) use ($locationId) {
                     if (!empty($locationId) && $locationId !== 'all') {
                         $query->whereJsonContains('location', ['site_id' => $locationId]);
@@ -134,7 +139,12 @@ class VisualizationDetailController extends Controller
                     }
                 })
                 ->where('users.role', '=', 'student')
-                ->where('users.is_testing', '!=', 'y');
+                ->where(function ($query) {
+                    $query->where('users.is_testing', '=', 'n')
+                          ->orWhere('users.is_testing', '=', '')
+                          ->orWhere('users.is_testing', '!=', 'y')
+                          ->orWhereNull('users.is_testing');
+                });
 
             // Capture the raw SQL query
             $userFiltersQuery = $query->toSql();
