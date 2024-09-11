@@ -114,7 +114,7 @@
 @endsection
 
 @section('main')
-    <div class="page-inner" style="margin-top: 50px">
+    <div class="page-inner" style="margin-top: 50px; background-color:white!important;">
         <div class="row mt-2 border-primary">
             {{-- PROFILE USER --}}
             <div class="col-md-5">
@@ -185,8 +185,7 @@
                             <div class="dropdown">
                                 <select class="form-control" id="learnStatusSelect" style="border: none;"
                                     onchange="updateLearnStatus()">
-                                    <option value="all" {{ request('learn_status') == 'all' ? 'selected' : '' }}>All
-                                        Status</option>
+                                    --}}
                                     <option value="finished" {{ request('learn_status') == 'finished' ? 'selected' : '' }}>
                                         Finished</option>
                                     <option value="not_finished"

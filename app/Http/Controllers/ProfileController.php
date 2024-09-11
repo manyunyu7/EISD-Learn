@@ -96,7 +96,7 @@ class ProfileController extends Controller
             if (!empty($site_ids)) {
                 // Query menggunakan whereIn
                 $locations = DB::connection('ithub')
-                                ->table('m_sites')
+                                ->table('m_unit_businesses')
                                 ->whereIn('id', $site_ids)
                                 ->get();
                 $name_sites = $locations->pluck('code')->implode(', ');

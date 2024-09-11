@@ -152,8 +152,7 @@ class HomeController extends Controller
             $countCourseCompleted = 0;
 
             foreach ($data_studentProgress as $studentProgress) {
-
-                if ($studentProgress->studentCount == $studentProgress->completedCount) {
+                if ($studentProgress->studentCount == $studentProgress->completedCount && $studentProgress->studentCount > 0) {
                     $countCourseCompleted++;
                 } else {
                     $countCourseInProgress++;
@@ -182,6 +181,7 @@ class HomeController extends Controller
                 ->leftJoin('exam_sessions as es', 'et.session_id', '=', 'es.id')
                 ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
                 ->leftJoin('users as u', 'et.user_id', '=', 'u.id')
+                ->where('e.created_by', '=', $userId)
                 ->where(function ($query) {
                     $query->where('e.is_deleted', '!=', 'y')
                         ->orWhereNull('e.is_deleted')
@@ -228,12 +228,22 @@ class HomeController extends Controller
 
             $learnStatus = request('learn_status');
 
+            if($learnStatus == null || $learnStatus == ''){
+                $learnStatus = 'finished';
+            }
+
 
 
             $userLMS = DB::connection('mysql')
                 ->table('users')
                 ->select('mdln_username', 'name', 'users.department_id')
                 ->where('role', '=', 'student')
+                ->where(function ($query) {
+                    $query->where('users.is_testing', '=', 'n')
+                          ->orWhere('users.is_testing', '=', '')
+                          ->orWhere('users.is_testing', '!=', 'y')
+                          ->orWhereNull('users.is_testing');
+                })
                 ->where(function ($query) use ($locationId) {
                     if (!empty($locationId)) {
                         if ($locationId !== 'all') {
@@ -265,6 +275,7 @@ class HomeController extends Controller
                 })
                 ->get();
 
+
             // department for pie chart
             $departments = DB::connection('ithub')
                 ->table('m_departments')
@@ -280,7 +291,7 @@ class HomeController extends Controller
                 ->get();
 
             $locations = DB::connection('ithub')
-                ->table('m_sites')
+                ->table('m_unit_businesses')
                 ->select('id', 'code', 'name')
                 ->get();
 
@@ -346,6 +357,28 @@ class HomeController extends Controller
             $year = $request->input('year') ?? $currentYear;
 
 
+            // Read Department
+            $id_dept = Auth::user()->department_id;
+            $query_department = DB::connection('ithub')
+                ->table('m_departments')
+                ->select('name')
+                ->where('id', '=', $id_dept)
+                ->get();
+            $value_dept = "";
+            if ($query_department && count($query_department) > 0) {
+                $department = json_decode($query_department, true);
+                // Periksa apakah hasil decode adalah array dan memiliki key 'name'
+                if (is_array($department) && isset($department)) {
+                    $value_dept = $department[0]['name'] ?? null; // Mengembalikan nilai dari key 'name'
+                } else {
+                    $value_dept =  "-";
+                }
+            } else {
+                $value_dept = "-";
+            }
+            $name_dept = $value_dept;
+
+
             $userScores = DB::table('student_section')
                 ->join('course_section', 'student_section.section_id', '=', 'course_section.id')
                 ->select('course_section.section_title', DB::raw('COALESCE(student_section.score, 0) as score'))
@@ -373,6 +406,7 @@ class HomeController extends Controller
                 ->where('student_id', $userId)
                 ->where('learn_status', 0)
                 ->whereNull('lessons.deleted_at')
+                // ->where('users.is_testing', '=', 'n')
                 ->count();
 
             $completedCourse = DB::table('student_lesson')
@@ -382,6 +416,7 @@ class HomeController extends Controller
                 ->where('student_id', $userId)
                 ->where('learn_status', 1)
                 ->whereNull('lessons.deleted_at')
+                // ->where('users.is_testing', '=', 'n')
                 ->count();
 
             $monthly_CompletedCourse = DB::table('student_lesson')
@@ -391,6 +426,7 @@ class HomeController extends Controller
                 ->where('student_lesson.student_id', $userId)
                 ->where('student_lesson.learn_status', 1)
                 ->where('lessons.is_visible', 'y')
+                // ->where('users.is_testing', '=', 'n')
                 ->whereNull('lessons.deleted_at')
                 ->groupBy(DB::raw('YEAR(student_lesson.finished_at), MONTH(student_lesson.finished_at)'))
                 ->get();
@@ -510,11 +546,6 @@ class HomeController extends Controller
 
             //============== FOR THE SCORE CHART =========================
             // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
-            // Fetch all the exam taker data with scores
             $examTakerData = DB::table('exam_takers as et')
                 ->select(
                     'et.user_id as userID',
@@ -576,7 +607,7 @@ class HomeController extends Controller
                     compact(
                         'classes',
                         'myClasses',
-                        'userID',
+                        'userID', 'name_dept',
                         'classRegistered',
                         'blog',
                         'userScores',

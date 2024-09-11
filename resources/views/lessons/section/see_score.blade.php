@@ -101,7 +101,7 @@
         $lessonzURI = "/lesson/$lesson->course_id";
     @endphp
 
-    <div class="page-inner">
+    <div class="page-inner" style="background-color: white !important">
         <div class="page-header">
             <h4 class="page-title">Nilai Quiz</h4>
             <ul class="breadcrumbs">

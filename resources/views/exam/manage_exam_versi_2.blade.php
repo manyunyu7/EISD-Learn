@@ -4,6 +4,8 @@
     <!-- Datatables -->
 
     <script src="{{ asset('atlantis/examples') }}/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @endsection
 
 @section('script')
@@ -255,6 +257,33 @@
                                                         style="max-width: 100%; max-height: 100%;">
                                                 </button>
 
+
+                                                <!-- BTN EDIT EXAM META -->
+                                                @php
+                                                    $isDisabled = (($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0;
+                                                    $buttonColor = $isDisabled ? '#DFDFDF' : '#FFE500';
+                                                    $iconSrc = (($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0 ? 'icons/Edit_disabled.svg' : 'icons/edit_exam_meta_icon.svg';
+                                                    $tooltipTitle = (($data->is_examUsed === 'Exam Used')) || $data->takers_count != 0 ? 'Exam Ini Tidak Dapat Diedit Karena Telah Digunakan' : 'Edit jadwal, akses, dan lainnya';
+                                                @endphp
+                                                <button 
+                                                    class="btn mr-2"
+                                                    {{ $isDisabled ? 'disabled' : '' }}
+                                                    style="background-color: {{ $buttonColor }};
+                                                        border-radius: 15px;
+                                                        width:45px;
+                                                        height: 40px;
+                                                        position: relative;
+                                                        padding: 0;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;"
+                                                    onclick="redirectToSection_edit('{{ url('/exam/' . $data->id . '/edit') }}')"
+                                                    title="{{ $tooltipTitle }}"
+                                                    data-toggle="tooltip">
+                                                    <img src="{{ url($iconSrc) }}" style="max-width: 100%; max-height: 100%;">
+                                                </button>
+
+
                                                 <!-- BTN EDIT EXAM -->
                                                 <button class="btn mr-2"
                                                     style="background-color: #208DBB;
@@ -273,28 +302,69 @@
                                                 </button>
 
                                                 <!-- BTN DELETE -->
-                                                <form id="deleteForm_{{ $data->id }}"
+                                                {{-- <form id="deleteForm_{{ $data->id }}"
                                                     action="{{ route('exam.delete', $data->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn delete-btn" data-id="{{ $data->id }}"
-                                                        {{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'disabled' : '' }}
-                                                        style="background-color: #FC1E01;
-                                                           border-radius: 15px;
-                                                           width:45px;
-                                                           height: 40px;
-                                                           position: relative;
-                                                           padding: 0;
-                                                           display: flex;
-                                                           align-items: center;
-                                                           justify-content: center;"
+                                                        {{ $data->is_examUsed === 'Exam Used' ? 'disabled' : ''}}
+                                                        style=" background-color: {{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? '#DFDFDF' : '#FC1E01' }};
+                                                        border-radius: 15px;
+                                                        width: 45px;
+                                                        height: 40px;
+                                                        position: relative;
+                                                        padding: 0;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;"
                                                         data-toggle="tooltip"
-                                                        title="{{ ($data->status === 'Ongoing' or $data->status === 'Finish' or $data->is_examUsed === 'Exam Used') ? 'Exam tidak dapat dihapus karena telah digunakan di Course atau sedang berlangsung' : 'Hapus Exam' }}
-">
-                                                        <img src="{{ url('/icons/Delete.svg') }}"
-                                                            style="max-width: 100%; max-height: 100%;">
+                                                        title="{{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? 'Exam tidak dapat dihapus karena telah digunakan di Course atau sedang berlangsung' : 'Hapus Exam' }}">
+                                                        <img src="{{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? url('/icons/disabled_delete_button.svg') : url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
+                                                    </button>
+                                                </form> --}}
+                                                <form id="deleteForm_{{ $data->id }}" action="#" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn delete-btn" data-id="{{ $data->id }}"
+                                                        {{ $data->is_examUsed === 'Exam Used' ? 'disabled' : ''}}
+                                                        style=" background-color: {{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? '#DFDFDF' : '#FC1E01' }};
+                                                        border-radius: 15px;
+                                                        width: 45px;
+                                                        height: 40px;
+                                                        position: relative;
+                                                        padding: 0;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;"
+                                                        data-toggle="tooltip"
+                                                        title="{{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? 'Exam tidak dapat dihapus karena telah digunakan di Course atau sedang berlangsung' : 'Hapus Exam' }}">
+                                                        <img src="{{ $data->takers_count != 0 || $data->is_examUsed === 'Exam Used' ? url('/icons/disabled_delete_button.svg') : url('/icons/Delete.svg') }}" style="max-width: 100%; max-height: 100%;">
                                                     </button>
                                                 </form>
+                                                <script>
+                                                    // Setiap tombol hapus memiliki kelas .delete-btn
+                                                    document.querySelectorAll('.delete-btn').forEach(item => {
+                                                        item.addEventListener('click', function() {
+                                                            const sectionId = this.getAttribute('data-id');
+            
+                                                            Swal.fire({
+                                                                title: 'Are you sure?',
+                                                                text: "You won't be able to revert this!",
+                                                                icon: 'warning',
+                                                                showCancelButton: true,
+                                                                confirmButtonColor: '#3085d6',
+                                                                cancelButtonColor: '#d33',
+                                                                confirmButtonText: 'Yes, delete it!'
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    // Set action form dengan menggunakan sectionId
+                                                                    document.getElementById('deleteForm_' + sectionId).action = sectionId + "/delete";;
+                                                                    document.getElementById('deleteForm_' + sectionId).submit();
+                                                                }
+                                                            });
+                                                        });
+                                                    });
+                                                </script>
                                             </div>
                                         </td>
                                         <td style="text-align: center;">

@@ -153,6 +153,7 @@ class MobileVizController extends Controller
             $unfinishedClassCount = $totalLessonsCount; // All lessons are unfinished
         }
 
+
         return MyHelper::responseSuccessWithData(
             200,
             200,

@@ -15,7 +15,6 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QRLoginController;
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TestEmailController;
-use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\VisualizationDetailController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -100,10 +99,12 @@ Route::get('/loginz', function () {
 });
 
 
+Route::get('/open-lms-from-ithub','CourseSectionController@viewStudents');
+Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail']);
 
-Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail'])->name('qr-login');
 
-
+Route::get('/login-with-ithub','ModernlandIntegrationController@loginFromIthub');
+Route::get('/open-lms-from-ithub','ModernlandIntegrationController@proceedLoginFromIthub');
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
 
@@ -116,7 +117,6 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
     Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
     Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
-
 
     // List all files (index)
     Route::get('/filemanager/s3', [FileOnS3Controller::class, 'index'])->name('filemanager.s3.index');
@@ -222,12 +222,14 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::post('store/quiz', 'MentorExamController@storeNewExam')->name('store.quiz');
             Route::post('update', 'MentorExamController@updateExam');
             // Route::post('update-question', 'MentorExamController@updateQuestion');
-            Route::post('update-question', 'MentorExamController@updateQuestion_v2')->name('exam.update-question');
+            Route::post('update-question/{examId}/{id}', 'MentorExamController@updateQuestion_v2')->name('exam.updateQuestion_v2');
+            Route::post('{examId}/edit/', 'MentorExamController@viewEditExam')->name('exam.update-question');
+            Route::post('{examId}/update/', 'MentorExamController@updateExam')->name('update-quiz-new');
             Route::get('manage', 'MentorExamController@viewManageExam');
             Route::get('manage-exam-v2', 'MentorExamController@viewManageExam_v2');
             Route::get('manage-exam-v2/create-exam', 'MentorExamController@viewCreateExam_v2');
             Route::get('manage-exam-v2/{examId}/create-question', 'MentorExamController@viewCreateQuest_v2');
-            Route::get('manage-exam-v2/{examId}/edit-question', 'MentorExamController@viewEditQuest_v2');
+            Route::get('manage-exam-v2/{examId}/edit-question', 'MentorExamController@viewEditQuest_v2')->name('exam.edit-exam_v2');
             // Route::get('manage-exam-v2/{examId}/load-exam', 'MentorExamController@viewLoadExam_v2');
             Route::get('download-exam/{examId}', 'MentorExamController@downloadExam');
 
@@ -254,7 +256,9 @@ Route::group(['middleware’' => ['auth']], function () {
             Route::post('delete-exam-session', 'MentorExamSessionController@destroyExamSession');
 
             // Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion');
-            Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion_v2');
+            // Route::get('question/{id}/edit', 'MentorExamController@viewEditQuestion_v2');
+            Route::get('{examId}/question/{id}/edit', 'MentorExamController@viewEditQuestion_v2')->name('edit.question');
+
             Route::post('question/{id}/delete', 'MentorExamController@deleteQuestion');
 
             Route::get('{id}/question-order', 'MentorExamController@viewManageQuestionOrder');

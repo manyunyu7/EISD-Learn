@@ -8,6 +8,7 @@ use App\Models\ExamSession;
 use App\Models\Lesson;
 use App\Models\StudentLesson;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -47,58 +48,112 @@ class VisualizationDetailController extends Controller
             ->get();
 
         $locations = DB::connection('ithub')
-            ->table('m_sites')
+            ->table('m_unit_businesses')
             ->select('id', 'code', 'name')
             ->get();
 
         $classes = DB::table('lessons')
             ->where(function ($query) {
-                $query->whereNull('deleted_at')
-                    ->orWhere('deleted_at', '');
+                $query->whereNull('deleted_at');
             })
+            ->where('mentor_id', '=', Auth::user()->id)
             ->get();
 
-        $userFilters = DB::connection('mysql')
-            ->table('users')
-            ->select('mdln_username', 'name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
-            ->where('role', '=', 'student')
-            ->where(function ($query) use ($locationId) {
-                if (!empty($locationId)) {
-                    if ($locationId !== 'all') {
+
+        // Initialize userFilters as empty array
+        $userFilters = [];
+
+        $userFiltersQuery = "";
+
+        // If classId is "all", we use the users table as the main table
+        if ($classId == "all") {
+            $query = DB::table('users')
+                ->select('mdln_username', 'name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
+                ->where('role', '=', 'student')
+                ->where(function ($query) {
+                    $query->where('users.is_testing', '=', 'n')
+                          ->orWhere('users.is_testing', '=', '')
+                          ->orWhere('users.is_testing', '!=', 'y')
+                          ->orWhereNull('users.is_testing');
+                })
+                ->where(function ($query) use ($locationId) {
+                    if (!empty($locationId) && $locationId !== 'all') {
                         $query->whereJsonContains('location', ['site_id' => $locationId]);
                     }
-                }
-            })
-            ->where(function ($query) use ($departmentId) {
-                if (!empty($departmentId)) {
-                    if ($departmentId != "all") {
+                })
+                ->where(function ($query) use ($departmentId) {
+                    if (!empty($departmentId) && $departmentId != "all") {
                         $query->where('users.department_id', '=', $departmentId);
                     }
-                }
-            })
-            ->where(function ($query) use ($classId) {
-                if (!empty($classId)) {
-                    if ($classId != "all") {
+                })
+                ->where(function ($query) use ($classId) {
+                    if (!empty($classId) && $classId != "all") {
                         $query->where('lessons.id', '=', $classId);
                     }
-                }
-            })
-            ->leftJoin('student_lesson', 'users.id', '=', 'student_lesson.student_id') // Join with student_lesson table
-            ->leftJoin('lessons', 'lessons.id', '=', 'student_lesson.lesson_id') // Join with student_lesson table
-            ->where(function ($query) use ($learnStatus) {
-                if (!empty($learnStatus) && $learnStatus !== 'all') {
-                    if ($learnStatus === 'finished') {
-                        $query->where('student_lesson.learn_status', '=', 1);
-                    } elseif ($learnStatus === 'not_finished') {
-                        $query->where('student_lesson.learn_status', '=', 0);
+                })
+                ->leftJoin('student_lesson', 'users.id', '=', 'student_lesson.student_id')
+                ->leftJoin('lessons', 'lessons.id', '=', 'student_lesson.lesson_id')
+                ->where(function ($query) use ($learnStatus) {
+                    if (!empty($learnStatus) && $learnStatus !== 'all') {
+                        if ($learnStatus === 'finished') {
+                            $query->where('student_lesson.learn_status', '=', 1);
+                        } elseif ($learnStatus === 'not_finished') {
+                            $query->where('student_lesson.learn_status', '=', 0);
+                        }
                     }
-                }
-            })
-            ->where(function ($query) {
-                // Check that the lesson is not deleted
-                $query->whereNull('lessons.deleted_at');
-            })
-            ->get();
+                })
+                ->whereNull('lessons.deleted_at'); // Check that the lesson is not deleted
+
+            // Capture the raw SQL query
+            $userFiltersQuery = $query->toSql();
+
+            // Execute the query and get the results
+            $userFilters = $query->get();
+        } else {
+            $query = DB::table('student_lesson')
+                ->select('users.mdln_username', 'users.name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
+                ->where(function ($query) use ($locationId) {
+                    if (!empty($locationId) && $locationId !== 'all') {
+                        $query->whereJsonContains('users.location', ['site_id' => $locationId]);
+                    }
+                })
+                ->where(function ($query) use ($departmentId) {
+                    if (!empty($departmentId) && $departmentId != 'all') {
+                        $query->where('users.department_id', '=', $departmentId);
+                    }
+                })
+                ->where(function ($query) use ($classId) {
+                    if (!empty($classId) && $classId != 'all') {
+                        $query->where('student_lesson.lesson_id', '=', $classId);
+                    }
+                })
+                ->leftJoin('users', 'student_lesson.student_id', '=', 'users.id')
+                ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
+                ->where(function ($query) use ($learnStatus) {
+                    if (!empty($learnStatus) && $learnStatus !== 'all') {
+                        if ($learnStatus === 'finished') {
+                            $query->where('student_lesson.learn_status', '=', 1);
+                        } elseif ($learnStatus === 'not_finished') {
+                            $query->where('student_lesson.learn_status', '=', 0);
+                        }
+                    }
+                })
+                ->where('users.role', '=', 'student')
+                ->where(function ($query) {
+                    $query->where('users.is_testing', '=', 'n')
+                          ->orWhere('users.is_testing', '=', '')
+                          ->orWhere('users.is_testing', '!=', 'y')
+                          ->orWhereNull('users.is_testing');
+                });
+
+            // Capture the raw SQL query
+            $userFiltersQuery = $query->toSql();
+
+            // Execute the query and get the results
+            $userFilters = $query->get();
+        }
+
+
 
         $users_departments = $userFilters->map(function ($userLMS) use ($departments) {
             $userLMS->department = $departments->firstWhere('id', $userLMS->department_id);
@@ -119,7 +174,6 @@ class VisualizationDetailController extends Controller
 
         // Create an associative array of positions for quick lookup
         $positionMap = $positions->pluck('name', 'id')->toArray();
-
 
 
         // Add department names to user filters
@@ -145,7 +199,7 @@ class VisualizationDetailController extends Controller
         foreach ($userFilters as $key) {
             unset($key->location);
 
-            if($key->locations==null || $key->locations==""){
+            if ($key->locations == null || $key->locations == "") {
                 $key->locations = [];
             }
         }
@@ -183,6 +237,7 @@ class VisualizationDetailController extends Controller
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id')
             ->where('course_section.course_id', $classId)
+            // ->where('users.is_testing', '=', 'n')
             ->orderByRaw('CAST(course_section.section_order AS UNSIGNED) ASC')
             ->get();
 
@@ -444,6 +499,7 @@ class VisualizationDetailController extends Controller
             'examResults',
             'summaryPrePost',
             'userFilters',
+            'userFiltersQuery',
             'mainPieChartData',
             'departmentsForFilter',
             'locations',

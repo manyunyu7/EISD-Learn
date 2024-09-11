@@ -4,6 +4,8 @@
     <!-- Datatables -->
     <script src="{{asset('atlantis/examples')}}/assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         ClassicEditor
             .create( document.querySelector( '#editor' ) )
@@ -106,7 +108,7 @@
 @section('main')
 
 
-    <div class="page-inner">
+    <div class="page-inner"  style="background-color: white !important">
 
         <div class="col-md-12 mt-2">
             {{-- BREADCRUMB --}}
@@ -260,19 +262,25 @@
                             divInputGroup.appendChild(deleteButton);
                             segmentMultipleChoices.appendChild(divInputGroup);
                         } else {
-                            alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                            // alert("Anda telah mencapai batas maksimal penambahan Opsi Jawaban.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Anda telah mencapai batas maksimal penambahan Opsi Jawaban.',
+                            });
                         }
                     });
                 </script>
 
-
+ 
                 {{-- BUTTONS --}}
                 <div class="mb-3" style="display: flex; justify-content: flex-end;">
                     <div style="flex-grow: 1;"></div>
                     <div style="width: 200px;">
                         <div class="input-group mb-3">
                             <button type="button" class="btn btn-danger" style="width: 45%; margin-right: 5px;">Cancel</button>
-                            <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
+                            {{-- <button type="submit" id="saveEditBtn" class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button> --}}
+                            <button type="submit"  class="btn btn-success" style="width: 45%; margin-left: 5px;">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -311,7 +319,8 @@
 
 
 
-                           <li class="list-group-item {{ ($status_exam === 'Ongoing' OR ($status_exam === 'Finish' AND ($examScore_status === 'Scored' OR $examScore_status === 'Not Scored'))) ? 'd-none' : '' }}">
+                           <li class="list-group-item {{ !(($status_exam === 'Ongoing' AND $examScore_status === 'Not Scored' AND $is_examUsed === 'Exam Not Used')  OR 
+                            ($status_exam === 'Waiting to Start' AND $examScore_status === 'Not Scored' AND $is_examUsed === 'Exam Not Used')) ? 'd-none' : '' }}">
                                 <div class="mb-3" style="">
                                     <div></div>
                                     <div style="width: 200px;">
@@ -319,25 +328,67 @@
                                             {{-- BUTTON MODALS FOR EDIT --}}
                                             <button type="button"
                                                     class="btn btn-primary"
-                                                    onclick="openEditWindow('{{ url('exam/question/'.$data->id.'/edit') }}')">
+                                                    onclick="openEditWindow('{{ route('edit.question', ['examId' => $data->exam_id, 'id' => $data->id]) }}')">
                                                 <img src="{{ url('/icons/Edit.svg') }}" alt="Edit Icon">
                                             </button>
+
                                             <script>
                                                 function openEditWindow(url) {
                                                     // Open a new window with the provided URL
                                                     window.open(url, '_blank', 'width=600,height=800,resizable=no');
                                                 }
                                             </script>
+
+                                            {{-- BUTTON DELET SOAL EXAM --}}
                                             <form id="delete-post-form" action="{{ url('exam/delete-question-from-db/'. $data->id) }}" method="POST">
                                                 @csrf
-                                                <button type="submit"
+                                                <button type="button"
                                                         id="saveEditBtn"
                                                         data-question-id="{{ $data->id }}"
                                                         class="btn btn-danger pull-left"
-                                                        style="width: auto; margin-left: 5px;"
-                                                        onclick="return confirm('Are you sure?')">
+                                                        style="width: auto; margin-left: 5px;">
                                                     <img src="{{ url('/icons/Delete.svg') }}">
                                                 </button>
+
+                                                <script>
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        document.querySelectorAll('#saveEditBtn').forEach(button => {
+                                                            button.addEventListener('click', function (e) {
+                                                                e.preventDefault();
+                                    
+                                                                const questionId = this.getAttribute('data-question-id');
+                                    
+                                                                Swal.fire({
+                                                                    icon: 'warning',
+                                                                    title: 'Are you sure?',
+                                                                    text: 'This action cannot be undone!',
+                                                                    showCancelButton: true,
+                                                                    confirmButtonColor: '#3085d6',
+                                                                    cancelButtonColor: '#d33',
+                                                                    confirmButtonText: 'Yes, delete it!',
+                                                                    cancelButtonText: 'Cancel'
+                                                                }).then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        // Create form and submit it programmatically
+                                                                        const form = document.createElement('form');
+                                                                        form.method = 'POST';
+                                                                        form.action = `/exam/delete-question-from-db/${questionId}`;
+                                    
+                                                                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                                                                        const csrfInput = document.createElement('input');
+                                                                        csrfInput.type = 'hidden';
+                                                                        csrfInput.name = '_token';
+                                                                        csrfInput.value = csrfToken;
+                                                                        form.appendChild(csrfInput);
+                                    
+                                                                        document.body.appendChild(form);
+                                                                        form.submit();
+                                                                    }
+                                                                });
+                                                            });
+                                                        });
+                                                    });
+                                                </script>
                                             </form>
                                         </div>
                                     </div>
@@ -350,7 +401,6 @@
             @empty
             @endforelse
         </div>
-
     </div>
 
 @endsection

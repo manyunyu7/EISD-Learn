@@ -27,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
         'contact',
         'jobs',
         'institute',
+        'is_testing',
         'mdln_username',
         'motto',
         'university',

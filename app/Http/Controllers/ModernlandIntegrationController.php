@@ -2,14 +2,174 @@
 
 namespace App\Http\Controllers;
 
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use App\Models\User;
 use Google\Service\CloudSourceRepositories\Repo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModernlandIntegrationController extends Controller
 {
+
+    public function proceedLoginFromIthub(Request $request)
+    {
+        // Step 1: Retrieve the JWT token from the request
+        $token = $request->input('jwt'); // Use `input` to retrieve data from request body or query parameters
+
+        if (!$token) {
+            // If no token is provided, return an error response
+            abort('401', "JWT Token is required')");
+        }
+
+        try {
+            // Step 2: Verify and decode the JWT token
+            $user = JWTAuth::setToken($token)->toUser();
+
+            // Step 3: Check if the user exists and is valid
+            if ($user) {
+                // Log in the user
+                Auth::login($user);
+                Log::info('User successfully logged in', ['userId' => $user->id]);
+                return redirect("/home");
+            } else {
+                // If user is not found or the token is invalid, return an error response
+                abort('401', "Invalid JWT token or user not found");
+            }
+        } catch (JWTException $e) {
+            // Handle any JWT related exceptions
+            abort('401', 'Failed to authenticate with JWT, Unknown error occured');
+            Log::error('JWT authentication failed', ['exception' => $e->getMessage()]);
+        }
+    }
+
+    public function loginFromIthub(Request $request)
+    {
+        // Step 1: Retrieve the Authorization token from the request headers
+        $token = $request->header('Authorization');
+        Log::info('Received token', ['token' => $token]);
+
+        // Create a new Guzzle client to make HTTP requests
+        $client = new Client();
+
+        try {
+            $url = "https://api-ithub.modernland.co.id/api/v1/";
+            // Step 2: Make a GET request to the Ithub API to fetch user profile data
+            $response = $client->request('GET', "$url" . "profile", [
+                'headers' => [
+                    'Authorization' => $token,
+                ],
+            ]);
+
+            Log::info('Ithub API response', [
+                'status' => $response->getStatusCode(),
+                'body'   => $response->getBody()->getContents(),
+            ]);
+
+            // Step 3: Check if the response from Ithub API is successful
+            if ($response->getStatusCode() == 200) {
+                $data = json_decode($response->getBody(), true);
+                Log::info('Response data', ['data' => $data]);
+
+                // Step 4: Verify if the user ID is present in the response
+                if (!isset($data['result']['id'])) {
+                    Log::error('User ID not found in response', ['data' => $data]);
+                    return response()->json([
+                        'meta' => [
+                            'success' => false,
+                            'status' => 400,
+                            'message' => 'User ID not found in response from Ithub'
+                        ],
+                        'result' => []
+                    ], 400);
+                }
+
+                $userId = $data['result']['id'];
+                // Step 5: Look up the user in the local database
+                $userAccount = User::where('mdln_username', $userId)->first();
+                Log::info('User lookup', ['userId' => $userId, 'userAccount' => $userAccount]);
+
+                // Step 6: If the user does not exist in the local database, return a 403 error response
+                if ($userAccount == null) {
+                    return response()->json([
+                        'meta' => [
+                            'success' => false,
+                            'status' => 403,
+                            'message' => 'Anda Belum Terdaftar Sebagai User di LMS, Hubungi Tim Training untuk Mendaftarkan Akun'
+                        ],
+                        'result' => []
+                    ], 403);
+                } else {
+                    $userId = $userAccount->id;
+                    // Step 7: Log in the user
+                    Auth::loginUsingId($userId);
+                    Log::info('User logged in', ['userId' => $userId]);
+
+                    // Step 8: Generate a JWT token for the logged-in user
+                    try {
+                        $jwtToken = JWTAuth::fromUser($userAccount);
+                        Log::info('JWT generated', ['token' => $jwtToken]);
+
+                        // Generate the URL with the JWT token
+                        $homeUrl = "https://learning.modernland.co.id/open-lms-from-ithub?jwt=" . $jwtToken;
+                        // Step 9: Return a JSON response with the JWT token included in the URL
+                        return response()->json([
+                            'meta' => [
+                                'success' => true,
+                                'status' => 200,
+                                'message' => 'Get data successfully'
+                            ],
+                            'result' => array_merge($data['result'], [
+                                'redirect_url' => $homeUrl
+                            ])
+                        ]);
+                    } catch (JWTException $e) {
+                        Log::error('JWT generation failed', ['exception' => $e->getMessage()]);
+                        return response()->json([
+                            'meta' => [
+                                'success' => false,
+                                'status' => 500,
+                                'message' => 'Failed to generate JWT'
+                            ],
+                            'result' => []
+                        ], 500);
+                    }
+                }
+            } else {
+                // Step 10: Handle error responses from Ithub API
+                Log::error('Ithub API request failed', [
+                    'status' => $response->getStatusCode(),
+                    'body'   => $response->getBody()->getContents(),
+                ]);
+                return response()->json([
+                    'meta' => [
+                        'success' => false,
+                        'status' => $response->getStatusCode(),
+                        'message' => 'Failed to authenticate with Ithub'
+                    ],
+                    'result' => []
+                ], $response->getStatusCode());
+            }
+        } catch (RequestException $e) {
+            // Step 11: Handle any exceptions that occur during the request
+            Log::error('Exception occurred', ['exception' => $e->getMessage()]);
+            return response()->json([
+                'meta' => [
+                    'success' => false,
+                    'status' => 500,
+                    'message' => 'An error occurred while authenticating with Ithub. Please try again later.'
+                ],
+                'result' => []
+            ], 500);
+        }
+    }
 
     public function getLearningUsers(Request $request)
     {
@@ -116,6 +276,8 @@ class ModernlandIntegrationController extends Controller
 
     public function createOrUpdateLMSUser(Request $request)
     {
+
+        // return $request->all();
         // Get the API credentials header
         $apiCredentials = $request->header('lms');
         if ($apiCredentials != "$2a$12$19qKjda8n9dqzygyzr3/sOvU/uhztedmcfyWOaLiqbzmidN.AI3K.") {
@@ -138,7 +300,7 @@ class ModernlandIntegrationController extends Controller
 
         if ($request->position_id)
             $positionExists = DB::connection('ithub')
-                ->table('m_positions')
+                ->table('m_group_employees')
                 ->where('id', '=', $request->position_id)
                 ->exists();
 
@@ -151,10 +313,11 @@ class ModernlandIntegrationController extends Controller
 
         if ($request->position_id)
             $positions = DB::connection('ithub')
-                ->table('m_positions')
+                ->table('m_group_employees')
                 ->whereNull('deleted_at')
                 // ->where('code', 'like', '%_NEW%')
                 ->get();
+
 
         if ($request->department_id)
             if (!$departmentExists) {
@@ -197,6 +360,8 @@ class ModernlandIntegrationController extends Controller
             'email' => 'nullable|string|email|max:255', // Ensure email is validated
         ]);
 
+
+
         if ($validator->fails()) {
             return response()->json([
                 'meta' => [
@@ -214,18 +379,34 @@ class ModernlandIntegrationController extends Controller
         // Set user attributes
         $user->name = $request->input('name');
         $user->email = $request->input('email', $user->email);
-        $user->password = $user->exists ? $user->password : bcrypt($request->password);
-        $user->role = $request->input('role', $user->role);
+
+        if($request->password!= null || $request->password != '' || $request->password){
+            $user->password = bcrypt($request->password);
+        }
+
+        $user->role = $request->input('role', "student");
         $user->contact = $request->input('contact', $user->contact);
         $user->sub_department = $request->input('sub_department', $user->sub_department);
         $user->department_id = $request->input('department_id', $user->department_id);
         $user->position_id = $request->input('position_id', $user->position_id);
         $user->location = json_encode($request->input('location', $user->location));
 
+        $location = json_encode($request->input('location', $user->location));
+        //remove \ or / characters from location
+        $location = str_replace(['\\', '/'], '', $location);
+
+
+        if ($request->location == null || $request->location == 'null' || $request->location == '[]') {
+            $location = "[]";
+        }
+
+        $user->location = $location;
         // Save user
+
         $user->save();
 
-        $user->location = json_decode($user->location);
+        if ($user->location != null && $user->location != '[]' && $user->location != 'null')
+            $user->location = json_decode($user->location);
 
         // Specify the attributes you want to return
         $attributesToReturn = ['name', 'email', 'role', 'contact', 'department_id', 'position_id', 'location', 'mdln_username'];

@@ -157,7 +157,7 @@
 @section('main')
 
 
-    <div class="page-inner">
+    <div class="page-inner"  style="background-color: white !important">
         <div class="col-md-12 mt-2">
             {{-- BREADCRUMB --}}
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -186,6 +186,7 @@
                                         <th><h3><b>Judul Exam Dalam Kelas</b></h3></th>
                                         <th><h3><b>Tipe Exam</b></h3></th>
                                         <th><h3><b>Skor</b></h3></th>
+                                        <th><h3><b>Tanggal Penyelesaian</b></h3></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -208,6 +209,9 @@
                                         </td>
                                         <td style="overflow: hidden; white-space: nowrap;">
                                             {{ $data->exam_score }}
+                                        </td>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->finished_at }}
                                         </td>
                                     </tr>
                                     @empty
