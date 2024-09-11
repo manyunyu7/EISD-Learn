@@ -243,7 +243,7 @@ class HomeController extends Controller
                           ->orWhere('users.is_testing', '=', '')
                           ->orWhere('users.is_testing', '!=', 'y')
                           ->orWhereNull('users.is_testing');
-                });
+                })
                 ->where(function ($query) use ($locationId) {
                     if (!empty($locationId)) {
                         if ($locationId !== 'all') {
