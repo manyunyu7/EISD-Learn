@@ -107,7 +107,7 @@ class VisualizationDetailController extends Controller
                 })
                 ->get();
         } else {
-            $$serFilters = DB::table('student_lesson')
+            $userFilters = DB::table('student_lesson')
                 ->select('users.mdln_username', 'users.name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
                 ->where(function ($query) use ($locationId) {
                     if (!empty($locationId)) {
