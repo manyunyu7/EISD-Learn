@@ -11,6 +11,56 @@ class GraphController extends Controller
     private $baseUrl = 'https://graph.microsoft.com/v1.0';
 
 
+     // Method to list all users
+     public function listUsers()
+     {
+         $accessToken = GraphHelper::getAccessToken();
+         $url = "{$this->baseUrl}/users";
+
+         try {
+             $response = Http::withToken($accessToken)->get($url);
+
+             if ($response->successful()) {
+                 $users = $response->json()['value'];
+                 return view('graph.users', compact('users'));
+             } else {
+                 return back()->withErrors(['error' => 'Failed to fetch users: ' . $response->status()]);
+             }
+         } catch (\Exception $e) {
+             return back()->withErrors(['error' => 'Failed to fetch users: ' . $e->getMessage()]);
+         }
+     }
+
+    public function listOneDriveFolders()
+    {
+        $accessToken = GraphHelper::getAccessToken();
+        $url = "{$this->baseUrl}/me/drive/root/children";
+
+        try {
+            $response = Http::withToken($accessToken)->get($url);
+
+            if ($response->successful()) {
+                $folders = $response->json()['value'];
+                return view('graph.onedrive_folders', compact('folders'));
+            } else {
+                return response()->json(
+                    [
+                        'error' => 'Failed to fetch folders: ' . $response->status()
+                    ]
+                );
+                return back()->withErrors(['error' => 'Failed to fetch folders: ' . $response->status()]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' => 'Failed to fetch folders: ' . $e->getMessage()
+                ]
+            );
+            return back()->withErrors(['error' => 'Failed to fetch folders: ' . $e->getMessage()]);
+        }
+    }
+
+
     public function listSites()
     {
         $accessToken = GraphHelper::getAccessToken();
@@ -72,6 +122,56 @@ class GraphController extends Controller
         $files = $response->json();
 
         return view('graph.files', compact('files'));
+    }
+
+    public function downloadFile($driveId, $fileId)
+    {
+        $accessToken = GraphHelper::getAccessToken();
+        $url = "https://graph.microsoft.com/v1.0/drives/{$driveId}/items/{$fileId}/content";
+
+        $response = Http::withToken($accessToken)->get($url);
+
+        if ($response->successful()) {
+            $contentType = $response->header('Content-Type');
+            $contentDisposition = $response->header('Content-Disposition');
+            $fileName = $this->extractFileName($contentDisposition) ?? 'downloaded_file';
+
+            return response($response->body())
+                ->header('Content-Type', $contentType)
+                ->header('Content-Disposition', "attachment; filename=\"{$fileName}\"");
+        }
+
+        return back()->withErrors(['message' => 'File download failed.']);
+    }
+
+    private function extractFileName($contentDisposition)
+    {
+        if (preg_match('/filename="(.+?)"/', $contentDisposition, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    }
+
+    public function create(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'folderName' => 'required|string|max:255',
+        ]);
+
+        // Assuming you have a service to handle the folder creation
+        $folderName = $request->input('folderName');
+        $siteId = $request->siteId;
+        $driveId = $request->driveId;
+
+        // Make API call or logic to create the folder
+        $response = FolderService::createFolder($siteId, $driveId, $folderName);
+
+        if ($response->successful()) {
+            return redirect()->back()->with('success', 'Folder created successfully.');
+        } else {
+            return redirect()->back()->withErrors('Failed to create folder.');
+        }
     }
 
     public function uploadFile(Request $request, $siteId, $driveId, $folderId)
