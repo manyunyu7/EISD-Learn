@@ -43,7 +43,7 @@
                                             <label>Username</label>
                                             <input type="text"
                                                    class="form-control @error('username') is-invalid has-error @enderror"
-                                                   name="username" 
+                                                   name="username"
                                                    value="{{ $username }}" readonly>
                                         </div>
                                     </div>
@@ -121,7 +121,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
 
                         <script>
                             function previewImage() {
@@ -151,7 +151,7 @@
                             }
                         </script>
 
-                        
+
                     </div>
                 </form>
             </div>

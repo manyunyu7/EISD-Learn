@@ -111,8 +111,16 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('sync', [LaravelEstriController::class, 'syncDataWithIthub']);
     // Route to create a new folder (this is triggered by the modal form)
     Route::post('/folders/create', [GraphController::class, 'create'])->name('folders.create');
-    Route::get('/onedrive/folders', [GraphController::class, 'listOneDriveFolders']);
+    Route::get('/onedrive/', [GraphController::class, 'listOneDriveFolders']);
     Route::get('/365/users', [GraphController::class, 'listUsers']);
+    Route::get('/365/all-memories', [GraphController::class, 'listAllMemories'])->name('listAllMemories');
+    Route::get('/365/users/show-all', [GraphController::class, 'listAllUsersWithPagination']);
+    Route::view('/365/search-documents','graph.search.search');
+    Route::post('/365/search-documents', [GraphController::class, 'searchDocuments']);
+
+    Route::get('/onedrive/folder/{driveId}/{folderId}', [GraphController::class, 'openFolder'])
+    ->name('onedrive.folder.open');
+
     Route::get('/download-file/{driveId}/{fileId}', [GraphController::class, 'downloadFile'])
     ->name('download-file-graph');
     Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');

@@ -37,19 +37,39 @@
         <table class="table table-striped table-bordered" id="usersTable">
             <thead class="thead-dark">
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Job Title</th>
+                    <th>Mobile Phone</th>
+                    <th>Office Location</th>
+                    <th>OneDrive Folder</th> <!-- OneDrive Folder button column -->
                 </tr>
             </thead>
             <tbody>
-                @forelse ($users as $user)
+                @forelse ($allUsers as $user)
                     <tr>
-                        <td>{{ $user['displayName'] }}</td>
+                        <td>{{ $user['id'] }}</td> <!-- User ID -->
+                        <td>
+                            <!-- User name as a clickable link to OneDrive folder -->
+                            <a href="{{ request()->root() }}/onedrive?userId={{ $user['id'] }}" target="_blank">
+                                {{ $user['displayName'] ?? 'N/A' }}
+                            </a>
+                        </td>
                         <td>{{ $user['mail'] ?? 'N/A' }}</td>
+                        <td>{{ $user['jobTitle'] ?? 'N/A' }}</td>
+                        <td>{{ $user['mobilePhone'] ?? 'N/A' }}</td>
+                        <td>{{ $user['officeLocation'] ?? 'N/A' }}</td>
+                        <td>
+                            <!-- Button to open OneDrive folder in a new tab -->
+                            <a href="{{request()->root()}}/onedrive?userId={{ $user['id'] }}" class="btn btn-primary btn-sm" target="_blank">
+                                View Folder
+                            </a>
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2" class="text-center">No users found.</td>
+                        <td colspan="7" class="text-center">No users found.</td> <!-- Updated colspan -->
                     </tr>
                 @endforelse
             </tbody>
@@ -72,8 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         rows.forEach(row => {
             const cells = row.getElementsByTagName('td');
-            const name = cells[0].textContent.toLowerCase();
-            const email = cells[1].textContent.toLowerCase();
+            const name = cells[1].textContent.toLowerCase(); // Index 1 for Name
+            const email = cells[2].textContent.toLowerCase(); // Index 2 for Email
 
             if (name.includes(query) || email.includes(query)) {
                 row.style.display = '';
