@@ -123,6 +123,8 @@ class CourseSectionController extends Controller
             })
             ->get();
 
+        // return $dayta;
+
         $compact = compact('dayta', 'lesson_id', 'examSessions', 'student_info');
         return view('lessons.manage_materials', $compact);
     }
@@ -159,8 +161,15 @@ class CourseSectionController extends Controller
             $insert_to_CourseSection->section_video = "";
         }
 
+        $lastSectionOrder = $insert_to_CourseSection ->where('course_id', $lessonId) ->max('section_order');
+
         $insert_to_CourseSection->section_title = $request->title;
-        $insert_to_CourseSection->section_order = '';
+        if($lastSectionOrder != ''){
+            $insert_to_CourseSection->section_order = $lastSectionOrder + 1;
+        }else{
+            $insert_to_CourseSection->section_order = '';
+        }
+        
         $insert_to_CourseSection->section_content = $request->content_area;
         $insert_to_CourseSection->course_id = $request->lessonId;
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
