@@ -24,12 +24,12 @@ class DetailClassController extends Controller
                 'c.id as section_id',
                 'c.section_order',
                 'c.section_title',
+                'c.quiz_session_id',
                 'c.section_content',
                 'c.section_video',
                 'c.created_at',
                 'c.updated_at',
                 'c.can_be_accessed',
-                'd.time_limit_minute'
             )
             ->leftJoin('lessons as a', 'a.id', '=', 'c.course_id')
             ->leftJoin('users as b', 'a.mentor_id', '=', 'b.id')
@@ -42,6 +42,19 @@ class DetailClassController extends Controller
         $jumlahSection = $dayta->count();
         $jumlahDuration = $dayta->sum('time_limit_minute');
 
+        // return $dayta;
+
+        $time_limit_minute = null;
+        foreach ($dayta as $section) {
+            $examSession = ExamSession::where('id', $section->quiz_session_id)->first();
+            if ($examSession != null) {
+                $section->time_limit_minute = $examSession->time_limit_minute;
+            } else {
+                $section->time_limit_minute = null; // Optional: set to null if exam session is not found
+            }
+        }
+
+        $jumlahDuration = $dayta->sum('time_limit_minute');
 
         $compact = compact("data","dayta", "jumlahSection", "jumlahDuration");
         if($request->dump==true){
