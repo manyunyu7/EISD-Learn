@@ -325,9 +325,13 @@ class MentorExamController extends Controller
 
         if ($request->hasFile('question_images')) {
             $image = $request->file('question_images');
-            $name = $image->hashName();
-            $image->storeAs('public/exam/question/', $name);
-            $questionAnswer->image = $name;
+            $imgPath = 'question-img-s3/'.$image->hashName();
+            
+            // Simpan gambar ke S3
+            Storage::disk('s3')->put($imgPath, file_get_contents($image));
+            
+            // Simpan path gambar di database
+            $questionAnswer->image = 'question-img-s3/'.$image->hashName();
         }
 
         $choices = [];
