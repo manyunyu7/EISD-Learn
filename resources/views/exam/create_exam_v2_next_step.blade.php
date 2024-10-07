@@ -245,7 +245,7 @@
 
                             @if ($data->image !== null)
                                 <div class="text-center"> 
-                                    <img src="{{ asset('storage/exam/question/'. $data->image) }}"
+                                    <img src="{{ url('https://lms-modernland.s3.ap-southeast-3.amazonaws.com') . '/' . $data->image }}"
                                         style="width: auto; height:350px"
                                         class="rounded"
                                         alt="...">
