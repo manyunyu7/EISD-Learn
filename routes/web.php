@@ -99,17 +99,22 @@ Route::get('/loginz', function () {
 });
 
 
-Route::get('/open-lms-from-ithub','CourseSectionController@viewStudents');
-Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail']);
+Route::get('/open-lms-from-ithub', 'CourseSectionController@viewStudents');
+Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class, 'seeMainPieChartDetail']);
 
 
-Route::get('/login-with-ithub','ModernlandIntegrationController@loginFromIthub');
-Route::get('/open-lms-from-ithub','ModernlandIntegrationController@proceedLoginFromIthub');
+Route::get('/login-with-ithub', 'ModernlandIntegrationController@loginFromIthub');
+Route::get('/open-lms-from-ithub', 'ModernlandIntegrationController@proceedLoginFromIthub');
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
 
-    Route::get('sync',[LaravelEstriController::class,'syncDataWithIthub']);
-
+    Route::get('sync', [LaravelEstriController::class, 'syncDataWithIthub']);
+    // Route to create a new folder (this is triggered by the modal form)
+    Route::post('/folders/create', [GraphController::class, 'create'])->name('folders.create');
+    Route::get('/onedrive/folders', [GraphController::class, 'listOneDriveFolders']);
+    Route::get('/365/users', [GraphController::class, 'listUsers']);
+    Route::get('/download-file/{driveId}/{fileId}', [GraphController::class, 'downloadFile'])
+    ->name('download-file-graph');
     Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
     Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
     Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
