@@ -12,6 +12,7 @@ use App\Http\Controllers\FileOnS3Controller;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\Microsoft365AuthController;
 use App\Http\Controllers\QRLoginController;
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TestEmailController;
@@ -98,6 +99,20 @@ Route::get('/loginz', function () {
     return view('neo_login');
 });
 
+
+// Route for Microsoft 365 login and callback
+Route::get('365/login', [Microsoft365AuthController::class, 'redirectToProvider'])->name('microsoft365.login');
+Route::get('365/self-search', [GraphController::class, 'ourDrive']);
+Route::get('365/me/read-inboxes', [GraphController::class, 'readInbox']);
+Route::get('365/ropc', [Microsoft365AuthController::class, 'ropc']);
+Route::any('microsoft365/callback', [Microsoft365AuthController::class, 'handleProviderCallback']);
+// Authenticated routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', function () {
+        return view('home');
+    });
+    Route::post('/microsoft365/search', [GraphController::class, 'searchDocuments'])->name('microsoft365.search');
+});
 
 Route::get('/open-lms-from-ithub', 'CourseSectionController@viewStudents');
 Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class, 'seeMainPieChartDetail']);

@@ -12,6 +12,7 @@ class GraphController extends Controller
 {
     private $baseUrl = 'https://graph.microsoft.com/v1.0';
 
+
     public function searchDocuments(Request $request)
     {
         $query = $request->input('query');
@@ -59,6 +60,87 @@ class GraphController extends Controller
         }
 
         return response()->json(['error' => 'Unable to fetch search results.', 'details' => $response->json()], 500);
+    }
+
+    public function readInbox(Request $request)
+    {
+        // Step 1: Retrieve the access token from the session
+        $accessToken = session('microsoft_access_token');
+
+        // Check if the access token is present
+        if (!$accessToken) {
+            return response()->json(['error' => 'Access token not found.'], 401);
+        }
+
+        // Step 2: Make a request to the Microsoft Graph API to get messages from the inbox
+        $response = Http::withToken($accessToken)
+            ->get('https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages');
+
+        // Step 3: Check if the request was successful
+        if ($response->successful()) {
+            // Return the inbox messages as JSON
+            return response()->json($response->json(), 200);
+        } else {
+            // Log the error details for better debugging
+            \Log::error('Outlook API Error:', [
+                'status' => $response->status(),
+                'body' => $response->body(), // Log the entire response body
+                'error' => $response->json('error', 'Unknown error'),
+                'error_description' => $response->json('error_description', 'No description available')
+            ]);
+
+            // Return a more detailed error message
+            return response()->json([
+                'error' => 'Could not retrieve inbox messages.',
+                'details' => [
+                    'status' => $response->status(),
+                    'body' => $response->body(), // Include body for debugging
+                    'error' => $response->json('error', 'Unknown error'),
+                    'error_description' => $response->json('error_description', 'No description available')
+                ]
+            ], 500);
+        }
+    }
+
+
+    public function ourDrive(Request $request)
+    {
+        // Step 1: Retrieve the access token from the session
+        $accessToken = session('microsoft_access_token');
+
+        // Check if the access token is present
+        if (!$accessToken) {
+            return response()->json(['error' => 'Access token not found.'], 401);
+        }
+
+        // Step 2: Make a request to the Microsoft Graph API to get OneDrive items
+        $response = Http::withToken($accessToken)
+            ->get('https://graph.microsoft.com/v1.0/me/drive/root/children');
+
+        // Step 3: Check if the request was successful
+        // Step 3: Check if the request was successful
+        if ($response->successful()) {
+            // Return the OneDrive items as JSON
+            return response()->json($response->json(), 200);
+        } else {
+            // Log the full response for debugging
+            \Log::error('OneDrive API Error:', [
+                'status' => $response->status(),
+                'body' => $response->body(), // Log the body of the response
+                'error' => $response->json('error', 'Unknown error'),
+                'error_description' => $response->json('error_description', 'No description available')
+            ]);
+
+            // Return detailed error message if request fails
+            return response()->json([
+                'error' => 'Could not retrieve OneDrive items.',
+                'details' => [
+                    'status' => $response->status(),
+                    'error' => $response->json('error', 'Unknown error'),
+                    'error_description' => $response->json('error_description', 'No description available')
+                ]
+            ], 500);
+        }
     }
 
 

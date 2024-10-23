@@ -14,10 +14,12 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^8.12",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.1",
         "league/flysystem-aws-s3-v3": "^1.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
+        "socialiteproviders/microsoft": "^4.5",
         "tymon/jwt-auth": "^1.0@dev",
         "unisharp/laravel-filemanager": "^2.2"
     },

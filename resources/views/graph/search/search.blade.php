@@ -174,7 +174,7 @@
                                 // Constructing URL
                                 const baseUrl = window.location.origin; // Get current URL base
                                 const driveId = hit.resource.parentReference.driveId; // Get drive ID
-                                const itemId = hit.resource.parentReference.itemId; // Get item ID
+                                const itemId = hit.resource.parentReference.id; // Get item ID
                                 const fileName = hit.resource.name; // Get file name
                                 const fileUrl = `${baseUrl}/365/all-memories?driveId=${driveId}&itemId=${itemId}&filename=${fileName}`;
 
