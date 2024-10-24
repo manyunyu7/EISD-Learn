@@ -56,7 +56,7 @@ Route::any("/register-class", [MobileHomeController::class, 'registerClass']);
 Route::any("/coba", [MobileHomeController::class, 'completedStudent']);
 
 
-Route::get("/partner/login", [MitraController::class, 'login']);
+Route::post("/partner/login", [MitraController::class, 'login']);
 
 
 
