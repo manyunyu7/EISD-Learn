@@ -107,36 +107,44 @@ class MitraController extends Controller
 
     public function register(Request $request)
     {
-
         $name = $request->name;
-        $ktp = $request->no_ktp;
-        $instagram = $request->instagram;
+        $contact = $request->contact;
         $email = $request->email;
-
-
+        $password = $request->password;
 
         //validate field
         $this->validate($request, [
             'name' => 'required',
-            'no_ktp' => 'required|unique:users',
-            'instagram' => 'required|unique:users',
             'email' => 'required|unique:users',
+            'contact' => 'required',
+            'password' => 'required',
         ]);
 
         //custom error response for validation
         $user = new User();
+        $user->name = $name;
+        $user->email = $email;
+        $user->contact = $contact;
 
+        if($user->save()){
+            return MyHelper::responseSuccessWithData(
+                200,
+                200,
+                2,
+                "success",
+                "success",
+                $user
+            );
+        }else{
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                0,
+                "Error creating user",
+                "Error creating user",
+                null
+            );
+        }
 
-
-
-
-        return MyHelper::responseSuccessWithData(
-            200,
-            200,
-            2,
-            "success",
-            "success",
-            $user
-        );
     }
 }
