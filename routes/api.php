@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\DatabaseBackupController;
+use App\Http\Controllers\MitraController;
 use App\Http\Controllers\MobileProfileController;
 use App\Http\Controllers\MobileVizController;
 use Illuminate\Http\Request;
@@ -53,6 +54,10 @@ Route::get("/search-unclaimed-account", [MobileHomeController::class, 'searchUnc
 Route::any("/claim-account", [MobileHomeController::class, 'claimAccount']);
 Route::any("/register-class", [MobileHomeController::class, 'registerClass']);
 Route::any("/coba", [MobileHomeController::class, 'completedStudent']);
+
+
+Route::get("/partner/login", [MitraController::class, 'login']);
+
 
 
 Route::get("/class-list", [MobileHomeController::class, 'classList']);

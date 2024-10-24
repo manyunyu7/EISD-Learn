@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\MitraController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\CourseSectionController;
 use App\Http\Controllers\DropzoneController;
@@ -101,6 +102,9 @@ Route::get('/loginz', function () {
 
 Route::get('/open-lms-from-ithub', 'CourseSectionController@viewStudents');
 Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class, 'seeMainPieChartDetail']);
+
+
+Route::get("/mitra/registration/",'MitraController@register');
 
 
 Route::get('/login-with-ithub', 'ModernlandIntegrationController@loginFromIthub');
