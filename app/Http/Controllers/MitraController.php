@@ -124,6 +124,7 @@ class MitraController extends Controller
         $user = new User();
         $user->name = $name;
         $user->email = $email;
+        $user->password =  Hash::make($password);
         $user->contact = $contact;
 
         if($user->save()){
