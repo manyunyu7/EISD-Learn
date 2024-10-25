@@ -16,6 +16,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QRLoginController;
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TestEmailController;
+use UserManagementController; // Import the controller
 use App\Http\Controllers\VisualizationDetailController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -169,6 +170,8 @@ Route::group(['middleware’' => ['auth']], function () {
     // ROUTING KHUSUS MENTOR
     Route::group(['middleware' => ['mentor']], function () {
 
+
+        Route::get("registration-code-management', 'RegistrationCodeController@index');");
 
         Route::resource('users', UserManagementController::class);
 
