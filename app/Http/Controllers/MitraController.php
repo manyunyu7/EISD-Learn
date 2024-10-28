@@ -19,7 +19,7 @@ class MitraController extends Controller
         $password = $request->password;
 
         //validate both field must not empty and valid
-        if (!$username ||!$password) {
+        if (!$username || !$password) {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
@@ -116,49 +116,53 @@ class MitraController extends Controller
         $registrationCode = $request->registration_code;
         $checkRegistrationCode = RegistrationCode::where('registration_code', $registrationCode)->first();
 
-        if($checkRegistrationCode==null){
+        // Check if registration code is valid
+        if ($checkRegistrationCode === null) {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
                 1,
                 "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
                 "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
-                null);
+                null
+            );
         }
 
-        if($registrationCode->is_active=="n"){
+        // Check if registration code is active
+        if ($checkRegistrationCode->is_active == "n") {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
                 1,
                 "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
                 "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
-                null);
+                null
+            );
         }
 
-        //validate field
+        // Validate required fields
         $this->validate($request, [
             'name' => 'required',
-            'email' => 'required|unique:users',
+            'email' => 'required|email|unique:users',
             'contact' => 'required',
-            'password' => 'required',
+            'password' => 'required|min:6', // Recommend setting a minimum length for passwords
         ]);
 
-        // new object to save user registration
+        // Create new user object
         $user = new User();
         $user->name = $name;
         $user->email = $email;
-        $user->password =  Hash::make($password); // dont forget to hash the password
+        $user->password = Hash::make($password); // Hash the password
         $user->contact = $contact;
 
-        if($registrationCode!=null || $registrationCode!=""){
-            $user->department_id = $registrationCode->department_id;
-            $user->location=$registrationCode->location;
-            $user->registration_code = $registrationCode->registration_code;
-            $user->position_id=$registrationCode->position_id;
-        }
+        // Set additional fields from registration code data
+        $user->department_id = $checkRegistrationCode->department_id;
+        $user->location = $checkRegistrationCode->location;
+        $user->registration_code = $checkRegistrationCode->registration_code;
+        $user->position_id = $checkRegistrationCode->position_id;
 
-        if($user->save()){
+        // Save user and return response
+        if ($user->save()) {
             return MyHelper::responseSuccessWithData(
                 200,
                 200,
@@ -167,7 +171,7 @@ class MitraController extends Controller
                 "success",
                 $user
             );
-        }else{
+        } else {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
@@ -177,6 +181,5 @@ class MitraController extends Controller
                 null
             );
         }
-
     }
 }
