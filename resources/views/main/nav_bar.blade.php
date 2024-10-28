@@ -68,7 +68,7 @@
                             <a class="dropdown-item" href="{{ url('/profile') }}">Account Setting</a>
                             @if (Auth::user()->role == 'mentor')
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ url('/profile') }}">Registration Code</a>
+                                <a class="dropdown-item" href="{{ url('/registration-code-management') }}">Registration Code</a>
                             @endif
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ route('logout') }}"

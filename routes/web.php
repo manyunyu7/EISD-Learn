@@ -14,9 +14,9 @@ use App\Http\Controllers\GraphController;
 use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QRLoginController;
+use App\Http\Controllers\RegistrationCodeController;
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TestEmailController;
-use UserManagementController; // Import the controller
 use App\Http\Controllers\VisualizationDetailController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -105,7 +105,7 @@ Route::get('/open-lms-from-ithub', 'CourseSectionController@viewStudents');
 Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class, 'seeMainPieChartDetail']);
 
 
-Route::get("/mitra/registration/",'MitraController@register');
+Route::get("/mitra/registration/", 'MitraController@register');
 
 
 Route::get('/login-with-ithub', 'ModernlandIntegrationController@loginFromIthub');
@@ -119,7 +119,7 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/onedrive/folders', [GraphController::class, 'listOneDriveFolders']);
     Route::get('/365/users', [GraphController::class, 'listUsers']);
     Route::get('/download-file/{driveId}/{fileId}', [GraphController::class, 'downloadFile'])
-    ->name('download-file-graph');
+        ->name('download-file-graph');
     Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
     Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
     Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
@@ -171,7 +171,14 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::group(['middleware' => ['mentor']], function () {
 
 
-        Route::get("registration-code-management', 'RegistrationCodeController@index');");
+        Route::prefix('registration-code-management')->group(function () {
+            Route::get('/', ['uses' => 'RegistrationCodeController@index']);
+            Route::get('/create', ['uses' => 'RegistrationCodeController@create']);
+            Route::post('/store', ['uses' => 'RegistrationCodeController@store'])->name('registration_code.store');
+            Route::any('/destroy', ['uses' => 'RegistrationCodeController@store'])->name('registration_code.store');
+            Route::get('/{id}/edit', [RegistrationCodeController::class, 'edit'])->name('registration_code.edit');
+            Route::put('/registration-code/{id}', [RegistrationCodeController::class, 'update'])->name('registration_code.update');
+        });
 
         Route::resource('users', UserManagementController::class);
 
