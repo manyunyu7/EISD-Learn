@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\MyHelper;
+use App\Models\RegistrationCode;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -112,6 +113,29 @@ class MitraController extends Controller
         $email = $request->email;
         $password = $request->password;
 
+        $registrationCode = $request->registration_code;
+        $checkRegistrationCode = RegistrationCode::where('registration_code', $registrationCode)->first();
+
+        if($checkRegistrationCode==null){
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                1,
+                "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
+                "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
+                null);
+        }
+
+        if($registrationCode->is_active=="n"){
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                1,
+                "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
+                "Kode Registrasi Tidak Ditemukan atau Sudah Expired",
+                null);
+        }
+
         //validate field
         $this->validate($request, [
             'name' => 'required',
@@ -120,12 +144,19 @@ class MitraController extends Controller
             'password' => 'required',
         ]);
 
-        //custom error response for validation
+        // new object to save user registration
         $user = new User();
         $user->name = $name;
         $user->email = $email;
-        $user->password =  Hash::make($password);
+        $user->password =  Hash::make($password); // dont forget to hash the password
         $user->contact = $contact;
+
+        if($registrationCode!=null || $registrationCode!=""){
+            $user->department_id = $registrationCode->department_id;
+            $user->location=$registrationCode->location;
+            $user->registration_code = $registrationCode->registration_code;
+            $user->position_id=$registrationCode->position_id;
+        }
 
         if($user->save()){
             return MyHelper::responseSuccessWithData(
