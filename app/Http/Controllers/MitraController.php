@@ -116,6 +116,31 @@ class MitraController extends Controller
         $registrationCode = $request->registration_code;
         $checkRegistrationCode = RegistrationCode::where('registration_code', $registrationCode)->first();
 
+
+        //check if email, contact, or name is already taken
+        if (User::where('email', $email)->first()) {
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                1,
+                "Email sudah terdaftar",
+                "Email sudah terdaftar",
+                null
+            );
+        }
+
+        if (User::where('contact', $contact)->first()) {
+            return MyHelper::responseErrorWithData(
+                400,
+                400,
+                1,
+                "Nomor Kontak sudah terdaftar",
+                "Nomor Kontak sudah terdaftar",
+                null
+            );
+        }
+
+
         // Check if registration code is valid
         if ($checkRegistrationCode === null) {
             return MyHelper::responseErrorWithData(
