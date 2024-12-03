@@ -127,10 +127,12 @@ class ExamTakerController extends Controller
 
         // Load the exam session
         $session = ExamSession::findOrFail($sessionId);
+        $examType = $session->exam_type; // Ambil jenis ujian
 
         // Initialize a variable to store the user's score
         $userScore = 0;
         $originalQuestions = json_decode($session->questions_answers);
+
 
         // Loop through the user's answers
         foreach ($answers as &$answer) { // Note the "&" to make $answer mutable
@@ -189,6 +191,15 @@ class ExamTakerController extends Controller
                 $answer['question_text'] = $question->question;
                 // Add descriptive score
                 $answer['isCorrect'] = $descriptiveScore;
+            }
+        }
+
+        if ($examType === 'Evaluation') {
+            // Tambahkan logika khusus untuk Evaluation jika diperlukan
+            $totalQuestions = count($originalQuestions);
+            if ($totalQuestions > 0) {
+                $userScore = $userScore / $totalQuestions; // Bagi skor dengan jumlah soal
+                $userScore = number_format($userScore, 1);
             }
         }
 
