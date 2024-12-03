@@ -181,7 +181,7 @@
 
         <br><br>
         {{-- SOAL UJIAN --}}
-        <div class="col-12 {{ ($status_exam === 'Ongoing' OR ($status_exam === 'Finish' AND ($examScore_status === 'Scored' OR $examScore_status === 'Not Scored'))) ? 'd-none' : '' }}">
+        <div class="col-12 {{ ($is_examUsed === 'Exam Not Used' && $examScore_status === 'Not Scored') ? '' : 'd-none' }}">
             <div class="page-header">
                 <h2><b>Soal Ujian</b></h2>
             </div>
