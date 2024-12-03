@@ -42,6 +42,9 @@ Route::post('/lms/user/create', [ModernlandIntegrationController::class, 'create
 Route::post('/lms/user/update', [ModernlandIntegrationController::class, 'updateLMSUser']);
 
 
+Route::post('/login-with-ithub', 'ModernlandIntegrationController@loginFromIthub');
+
+
 Route::post('/upload', [MobileUploaderController::class, 'upload']);
 Route::any('/check', [MobileUploaderController::class, 'check']);
 Route::any('/close-ticket', [MobileUploaderController::class, 'closeTicket']);

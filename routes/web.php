@@ -16,6 +16,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QRLoginController;
 use App\Http\Controllers\RegistrationCodeController;
 use App\Http\Controllers\SendEmailController;
+use App\Http\Controllers\TeamsPlannerController;
 use App\Http\Controllers\TestEmailController;
 use App\Http\Controllers\VisualizationDetailController;
 use Illuminate\Support\Facades\Auth;
@@ -101,14 +102,12 @@ Route::get('/loginz', function () {
 });
 
 
-Route::get('/open-lms-from-ithub', 'CourseSectionController@viewStudents');
 Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class, 'seeMainPieChartDetail']);
 
 
 Route::get("/mitra/registration/", 'MitraController@register');
 
 
-Route::get('/login-with-ithub', 'ModernlandIntegrationController@loginFromIthub');
 Route::get('/open-lms-from-ithub', 'ModernlandIntegrationController@proceedLoginFromIthub');
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
@@ -127,6 +126,13 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
     Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
     Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
+
+
+    // Prefix Planner group
+    Route::prefix("planner")->group(function () {
+        Route::get('my-teams', [TeamsPlannerController::class, 'listUserTeams']);
+    });
+
 
     // List all files (index)
     Route::get('/filemanager/s3', [FileOnS3Controller::class, 'index'])->name('filemanager.s3.index');

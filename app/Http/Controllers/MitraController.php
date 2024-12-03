@@ -179,6 +179,7 @@ class MitraController extends Controller
         $user->email = $email;
         $user->password = Hash::make($password); // Hash the password
         $user->contact = $contact;
+        $user->role = "student";
 
         // Set additional fields from registration code data
         $user->department_id = $checkRegistrationCode->department_id;
