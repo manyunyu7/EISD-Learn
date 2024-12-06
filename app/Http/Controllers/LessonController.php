@@ -708,6 +708,11 @@ class LessonController extends Controller
                 $insert_to_Lesson->position_id = "[]";
             }
 
+            $insert_to_Lesson->rating_course = $request->rating;
+
+
+            // $insert_to_Lesson->rating_course = 0;
+
 
             if ($insert_to_Lesson->save()) {
                 //redirect dengan pesan sukses

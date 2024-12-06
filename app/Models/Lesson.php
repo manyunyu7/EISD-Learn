@@ -62,6 +62,7 @@ class Lesson extends Model
         'new_class',
         'department_id',
         'position_id',
-        'tipe'
+        'tipe',
+        'rating_course'
     ];
 }
