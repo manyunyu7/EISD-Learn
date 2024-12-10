@@ -379,7 +379,7 @@
             }
         });
 
-        fetch(" ", {
+        fetch("/exam/save-user-answer", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
