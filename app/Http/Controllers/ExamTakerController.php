@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ExamTakerController extends Controller
 {
@@ -321,21 +322,13 @@ class ExamTakerController extends Controller
             $examResult->token_exam = $examToken;
             if($examResult->save()){
                 // Hitung rata-rata rating baru
-                $sumRating = ExamTaker::where(
-                    "course_flag",
-                    "=",
-                    $courseId
-                )->where(
-                    "course_section_flag",
-                    "=",
-                    $sectionId
-                )->where(
-                    "is_finished",
-                    "!=",
-                    NULL,
-                )->sum('current_score');
-
-
+                $sumRating = DB::table('exam_takers')
+                ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                ->where('exam_takers.course_flag', '=', $courseId)
+                ->where('exam_takers.course_section_flag', '=', $sectionId)
+                ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                ->whereNotNull('exam_takers.is_finished')
+                ->sum('exam_takers.current_score');
 
                 $totalStudent = StudentLesson::where(
                     "lesson_id",
@@ -353,8 +346,6 @@ class ExamTakerController extends Controller
             }
             $dimanaYa = "yessy";
         }
-
-
 
         //if not finished and not first attempt
         if ($request->isFinished != true && $isFirstUnfinishedAttempt != true) {
@@ -378,21 +369,13 @@ class ExamTakerController extends Controller
             $examResult->guest_name = $name;
             if($examResult->save()){
                 // Hitung rata-rata rating baru
-                $sumRating = ExamTaker::where(
-                    "course_flag",
-                    "=",
-                    $courseId
-                )->where(
-                    "course_section_flag",
-                    "=",
-                    $sectionId
-                )->where(
-                    "is_finished",
-                    "!=",
-                    NULL
-                )->sum('current_score');
-
-
+                $sumRating = DB::table('exam_takers')
+                ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                ->where('exam_takers.course_flag', '=', $courseId)
+                ->where('exam_takers.course_section_flag', '=', $sectionId)
+                ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                ->whereNotNull('exam_takers.is_finished')
+                ->sum('exam_takers.current_score');
 
                 $totalStudent = StudentLesson::where(
                     "lesson_id",
@@ -440,21 +423,13 @@ class ExamTakerController extends Controller
                 $examResult->is_finished = "y";
                 if($examResult->save()){
                     // Hitung rata-rata rating baru
-                    $sumRating = ExamTaker::where(
-                        "course_flag",
-                        "=",
-                        $courseId
-                    )->where(
-                        "course_section_flag",
-                        "=",
-                        $sectionId
-                    )->where(
-                        "is_finished",
-                        "!=",
-                        NULL
-                    )->sum('current_score');
-    
-    
+                    $sumRating = DB::table('exam_takers')
+                    ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                    ->where('exam_takers.course_flag', '=', $courseId)
+                    ->where('exam_takers.course_section_flag', '=', $sectionId)
+                    ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                    ->whereNotNull('exam_takers.is_finished')
+                    ->sum('exam_takers.current_score');
     
                     $totalStudent = StudentLesson::where(
                         "lesson_id",
@@ -495,21 +470,13 @@ class ExamTakerController extends Controller
                 $examResult->finished_at = Carbon::now();
                 if($examResult->save()){
                     // Hitung rata-rata rating baru
-                    $sumRating = ExamTaker::where(
-                        "course_flag",
-                        "=",
-                        $courseId
-                    )->where(
-                        "course_section_flag",
-                        "=",
-                        $sectionId
-                    )->where(
-                        "is_finished",
-                        "!=",
-                        NULL
-                    )->sum('current_score');
-    
-    
+                    $sumRating = DB::table('exam_takers')
+                    ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                    ->where('exam_takers.course_flag', '=', $courseId)
+                    ->where('exam_takers.course_section_flag', '=', $sectionId)
+                    ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                    ->whereNotNull('exam_takers.is_finished')
+                    ->sum('exam_takers.current_score');
     
                     $totalStudent = StudentLesson::where(
                         "lesson_id",
