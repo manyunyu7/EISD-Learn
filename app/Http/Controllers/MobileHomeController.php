@@ -474,7 +474,8 @@ class MobileHomeController extends Controller
                     ->orWhere('is_visible', '=', 'Aktif')
                     ->orWhereNull('is_visible')
                     ->orWhere('is_visible', '=', '');
-            });
+            })
+            ->orderBy('id','DESC');
 
 
         if ($request->category != null) {
