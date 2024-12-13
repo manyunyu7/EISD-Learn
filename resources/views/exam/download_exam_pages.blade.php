@@ -183,6 +183,7 @@
                                         <th><h3><b>Judul Exam</b></h3></th>
                                         <th><h3><b>Kelas</b></h3></th>
                                         <th><h3><b>Nama Siswa</b></h3></th>
+                                        <th><h3><b>Department</b></h3></th>
                                         <th><h3><b>Judul Exam Dalam Kelas</b></h3></th>
                                         <th><h3><b>Tipe Exam</b></h3></th>
                                         <th><h3><b>Skor</b></h3></th>
@@ -200,6 +201,9 @@
                                         </td>
                                         <td style="overflow: hidden; white-space: nowrap;">
                                             {{ $data->takers_name }}
+                                        </td>
+                                        <td style="overflow: hidden; white-space: nowrap;">
+                                            {{ $data->dept_name }}
                                         </td>
                                         <td style="overflow: hidden; white-space: nowrap;">
                                             {{ $data->course_section_title }}

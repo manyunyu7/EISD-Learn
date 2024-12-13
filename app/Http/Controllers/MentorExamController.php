@@ -564,6 +564,7 @@ class MentorExamController extends Controller
                 'l.id as course_id',
                 'et.current_score as exam_score',
                 'u.name as takers_name',
+                'u.department_id as dept_id',
                 'es.exam_type as type',
                 'cs.section_title as course_section_title',
                 'es.id as exam_session_id',
@@ -579,8 +580,24 @@ class MentorExamController extends Controller
             ->where('e.id', $examId)
             ->get();
 
+        $query_department = DB::connection('ithub')
+            ->table('m_departments')
+            ->select('name', 'id')
+            ->get();
+
+        foreach($data_exam as $item){
+            $dept_id_student = $item->dept_id;
+            $dept_name = '';
+
+            foreach($query_department as $dept){
+                if($dept_id_student == $dept->id){
+                    $dept_name = $dept->name;
+                }
+            }
+            $item->dept_name = $dept_name;
+        }
         // return $data_exam;
-        return view("exam.download_exam_pages", compact('data_exam'));
+        return view("exam.download_exam_pages", compact('data_exam', 'query_department'));
     }
 
     public function updateExam(Request $request, $examId)
