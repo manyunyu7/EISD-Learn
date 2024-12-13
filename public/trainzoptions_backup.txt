@@ -1,0 +1,16 @@
+-Disablerailjointsound
+-DepthBits=64
+-cabinfov=20
+-driverfov=750
+-surveyorfov=750
+-framerate=200
+-width=800
+-height=600
+-znear=1
+-HighQuality=1988
+-Shader=shaderOn
+-Reshade=On
+-DynamicLighting=On
+-freeintcam=25
+-DynamicVertexBufferSize=4194304
+-DynamicIndexBufferSize=196608
