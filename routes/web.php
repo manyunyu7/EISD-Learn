@@ -105,7 +105,7 @@ Route::get('/loginz', function () {
 Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class, 'seeMainPieChartDetail']);
 
 
-Route::get("/mitra/registration/", 'MitraController@register');
+Route::post("/mitra/registration/", 'MitraController@registerOnWeb')->name('partner-register');
 
 
 Route::get('/open-lms-from-ithub', 'ModernlandIntegrationController@proceedLoginFromIthub');

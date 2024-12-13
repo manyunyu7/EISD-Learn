@@ -6,11 +6,78 @@ use App\Helper\MyHelper;
 use App\Models\RegistrationCode;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use stdClass;
 
 class MitraController extends Controller
 {
+
+    public function registerOnWeb(Request $request)
+    {
+        $name = $request->name;
+        $contact = $request->contact;
+        $email = $request->email;
+        $password = $request->password;
+
+        $registrationCode = $request->registration_code;
+        $checkRegistrationCode = RegistrationCode::where('registration_code', $registrationCode)->first();
+
+        $errors = [];
+
+        // Check if email is already taken
+        if (User::where('email', $email)->first()) {
+            $errors['email'] = 'Email sudah terdaftar';
+        }
+
+        // Check if contact is already taken
+        if (User::where('contact', $contact)->first()) {
+            $errors['contact'] = 'Nomor Kontak sudah terdaftar';
+        }
+
+        // Check if contact start with 0 or 62
+        if (substr($contact, 0, 1) != "0" && substr($contact, 0, 2) != "62") {
+            $errors['contact'] = 'Nomor Kontak harus diawali dengan 0 atau 62';
+        }
+
+        // Check if registration code is valid
+        if ($checkRegistrationCode === null) {
+            $errors['registration_code'] = 'Kode Registrasi Tidak Ditemukan atau Sudah Expired';
+        }
+
+        // Check if registration code is active
+        if ($checkRegistrationCode && $checkRegistrationCode->is_active == "n") {
+            $errors['registration_code'] = 'Kode Registrasi Tidak Ditemukan atau Sudah Expired';
+        }
+
+        // If there are any errors, redirect back with the errors
+        // If there are any errors, redirect back with the errors and old input
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors($errors)->withInput($request->all());
+        }
+
+        // Create new user object
+        $user = new User();
+        $user->name = $name;
+        $user->email = $email;
+        $user->password = Hash::make($password); // Hash the password
+        $user->contact = $contact;
+        $user->role = "student";
+
+        // Set additional fields from registration code data
+        $user->department_id = $checkRegistrationCode->department_id;
+        $user->location = $checkRegistrationCode->location;
+        $user->registration_code = $checkRegistrationCode->registration_code;
+        $user->position_id = $checkRegistrationCode->position_id;
+
+        // Save user and return response
+        if ($user->save()) {
+            Auth::loginUsingId($user->id);
+            return redirect('/login');
+        } else {
+            return redirect()->back()->with(['error' => 'Data Gagal Diupdate!']);
+        }
+    }
 
     public function login(Request $request)
     {
