@@ -4,6 +4,7 @@ namespace App\Helper;
 
 
 use App\Models\MyAnalyticEvent;
+use App\Models\User;
 use App\Models\UserMNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MyHelper
 {
@@ -82,6 +84,14 @@ class MyHelper
         return response($response, $http_code);
     }
 
+
+    public static function generateJwtToken($user_id)
+    {
+        $token = JWTAuth::fromUser(User::find($user_id), ['exp' => Carbon::now()->addDays(168)->timestamp]);
+        return $token;
+    }
+
+
     public static function responseErrorWithData(
         $http_code,
         $status_code,
@@ -117,7 +127,6 @@ class MyHelper
                     unlink($absolute_path);
                 }
             } catch (Exception $e) {
-
             }
         }
     }
@@ -136,32 +145,35 @@ class MyHelper
     }
 
     public static function addAnalyticEventMobile(
-        $event,$page,$userId
-    ){
+        $event,
+        $page,
+        $userId
+    ) {
         $data = new MyAnalyticEvent();
         $is_logged_in = false;
-        $data->user_id=$userId;
-        $data->event=$event;
-        $data->is_logged_in=$is_logged_in;
-        $data->page=$page;
+        $data->user_id = $userId;
+        $data->event = $event;
+        $data->is_logged_in = $is_logged_in;
+        $data->page = $page;
 
         $data->save();
     }
 
     public static function addAnalyticEvent(
-        $event,$page
-    ){
+        $event,
+        $page
+    ) {
         $data = new MyAnalyticEvent();
         $userId = "";
         $is_logged_in = false;
-        if(Auth::check()){
-            $is_logged_in=true;
+        if (Auth::check()) {
+            $is_logged_in = true;
             $userId = Auth::id();
         }
-        $data->user_id=$userId;
-        $data->event=$event;
-        $data->is_logged_in=$is_logged_in;
-        $data->page=$page;
+        $data->user_id = $userId;
+        $data->event = $event;
+        $data->is_logged_in = $is_logged_in;
+        $data->page = $page;
 
         $data->save();
     }
@@ -169,7 +181,6 @@ class MyHelper
     public static function error($code, $message)
     {
         return response()->json(["code" => $code, 'message' => "$message"], $code);
-
     }
 
     public static function error3($code, $statusCode, $message)
@@ -242,14 +253,14 @@ class MyHelper
     private static function generateResponse($success, $data, $message, $status)
     {
         $statusCode = 0;
-        if($success){
-            $statusCode=1;
-        }else{
-            $statusCode=0;
+        if ($success) {
+            $statusCode = 1;
+        } else {
+            $statusCode = 0;
         }
         return response()->json([
-            'http_response'=>$status,
-            'status_code'=>$statusCode,
+            'http_response' => $status,
+            'status_code' => $statusCode,
             'meta' => [
                 'success' => $success,
                 'status' => $status,
@@ -258,5 +269,4 @@ class MyHelper
             'result' => $data,
         ], $status);
     }
-
 }

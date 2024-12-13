@@ -324,7 +324,9 @@
                                     <select class="form-control" name="category_id">
                                         @forelse($categories as $item)
                                             <option value="{{ $item->id }}"
-                                                {{ $item->name == $category_selected->course_category ? 'selected' : '' }}>
+                                                
+                                                {{ $item->id == $id_category ? 'selected' : '' }}>
+                                                {{-- {{ $item->name == $category_selected->course_category ? 'selected' : '' }}> --}}
                                                 {{ $item->name }}
                                             </option>
                                         @empty

@@ -9,12 +9,9 @@ use Illuminate\Support\Facades\Storage;
 class MobileUploaderController extends Controller
 {
 
-
     public function check()
     {
-        $folder = 'CobaHelpdesk';
-        $files = Storage::files($folder);
-        return $files;
+        return "hello world";
     }
 
     public function upload(Request $request)

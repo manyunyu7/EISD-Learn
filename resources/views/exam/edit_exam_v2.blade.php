@@ -181,7 +181,7 @@
 
         <br><br>
         {{-- SOAL UJIAN --}}
-        <div class="col-12 {{ ($status_exam === 'Ongoing' OR ($status_exam === 'Finish' AND ($examScore_status === 'Scored' OR $examScore_status === 'Not Scored'))) ? 'd-none' : '' }}">
+        <div class="col-12 {{ ($is_examUsed === 'Exam Not Used' && $examScore_status === 'Not Scored') ? '' : 'd-none' }}">
             <div class="page-header">
                 <h2><b>Soal Ujian</b></h2>
             </div>
@@ -295,11 +295,13 @@
                     <div class="card">
                         <div class="card-header" style="background-color: #eaeaea; color: black">
                             <p>Soal :</p>
+                            <p>{{ $data->image }}</p>
                             <p>{{ $data->question }}</p>
 
                             @if ($data->image !== null)
                                 <div class="text-center">
-                                    <img src="{{ Storage::url('public/exam/question/' . $data->image) }}"
+                                    {{-- src="{{ Storage::url('public/exam/question/' . $data->image) }}"  --}}
+                                    <img src="{{ Storage::disk('s3')->url($data->image) }}"
                                         style="width: auto; height:350px"
                                         class="rounded"
                                         alt="...">

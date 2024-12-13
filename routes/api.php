@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\DatabaseBackupController;
+use App\Http\Controllers\MitraController;
 use App\Http\Controllers\MobileProfileController;
 use App\Http\Controllers\MobileVizController;
 use Illuminate\Http\Request;
@@ -41,6 +42,9 @@ Route::post('/lms/user/create', [ModernlandIntegrationController::class, 'create
 Route::post('/lms/user/update', [ModernlandIntegrationController::class, 'updateLMSUser']);
 
 
+Route::post('/login-with-ithub', 'ModernlandIntegrationController@loginFromIthub');
+
+
 Route::post('/upload', [MobileUploaderController::class, 'upload']);
 Route::any('/check', [MobileUploaderController::class, 'check']);
 Route::any('/close-ticket', [MobileUploaderController::class, 'closeTicket']);
@@ -53,6 +57,10 @@ Route::get("/search-unclaimed-account", [MobileHomeController::class, 'searchUnc
 Route::any("/claim-account", [MobileHomeController::class, 'claimAccount']);
 Route::any("/register-class", [MobileHomeController::class, 'registerClass']);
 Route::any("/coba", [MobileHomeController::class, 'completedStudent']);
+
+
+Route::post("/partner/login", [MitraController::class, 'login']);
+Route::post("/partner/register", [MitraController::class,'register']);
 
 
 Route::get("/class-list", [MobileHomeController::class, 'classList']);

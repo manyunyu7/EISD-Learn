@@ -89,6 +89,11 @@
                                     style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $data->course_category_color }}; padding: 2px 10px;">
                                     <strong>{{ $data->course_category_name }}</strong>
                                 </div>
+                                <div class="class-badge"
+                                    style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
+                                    <img src="{{ url('/icons/rating_class.svg') }}" style="margin-right: 4px;">
+                                    <p style="font-size: 15px; margin-bottom: 0;"><strong>{{ $data->rating_course }}</strong></p>
+                                </div>
                             </div>
                             <!-- Title -->
                             <h5 class="card-title"><a href="#">{{ $data->course_title }}</a></h5>
@@ -108,21 +113,6 @@
                                 <p id="progressCourse" class="h6 mb-0 {{ $data->first_section ? '' : 'd-none' }}">
                                     {{ $progressPercentage }}% Completed</p>
                             </div>
-
-                            <!-- Rating star -->
-                            <ul class="list-inline mb-0 d-none">
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i>
-                                </li>
-                                <li class="list-inline-item ms-2 h6 fw-light mb-0">4.0/5.0</li>
-                            </ul>
                         </div>
                         <!-- Card footer -->
                         <div class="card-footer pt-0 pb-3">

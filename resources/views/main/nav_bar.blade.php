@@ -1,8 +1,9 @@
 <nav class="navbar navbar-header navbar-expand-lg" style="background-color: #1D2026">
     <div class="container-fluid">
         <div class="collapse" id="search-nav" style="">
-            @if(Auth::user()->role == 'mentor')
-                <form class="navbar-left navbar-form nav-search mr-md-3" method="POST" action="{{ route('lesson.search') }}" enctype="multipart/form-data">
+            @if (Auth::user()->role == 'mentor')
+                <form class="navbar-left navbar-form nav-search mr-md-3" method="POST"
+                    action="{{ route('lesson.search') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -10,11 +11,13 @@
                                 <i class="fa fa-search search-icon"></i>
                             </button>
                         </div>
-                        <input type="text" name="search_keyword" placeholder="Search Class..." class="form-control" required>
+                        <input type="text" name="search_keyword" placeholder="Search Class..." class="form-control"
+                            required>
                     </div>
                 </form>
             @elseif(Auth::user()->role == 'student')
-                <form class="navbar-left navbar-form nav-search mr-md-3" method="POST" action="{{ route('lesson.search') }}" enctype="multipart/form-data">
+                <form class="navbar-left navbar-form nav-search mr-md-3" method="POST"
+                    action="{{ route('lesson.search') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -22,26 +25,25 @@
                                 <i class="fa fa-search search-icon"></i>
                             </button>
                         </div>
-                        <input type="text" name="search_keyword" placeholder="Search Class List..." class="form-control">
+                        <input type="text" name="search_keyword" placeholder="Search Class List..."
+                            class="form-control">
                     </div>
                 </form>
             @endif
         </div>
         <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
             <li class="nav-item toggle-nav-search hidden-caret submenu">
-                <a class="nav-link collapsed" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+                <a class="nav-link collapsed" data-toggle="collapse" href="#search-nav" role="button"
+                    aria-expanded="false" aria-controls="search-nav">
                     <i class="fa fa-search"></i>
                 </a>
             </li>
             <li class="nav-item dropdown hidden-caret">
                 <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                     <div class="avatar-sm">
-                        <img
-                            src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
-                            alt="..."
+                        <img src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}" alt="..."
                             class="avatar-img rounded-circle"
-                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
-                        >
+                            onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
                     </div>
                 </a>
 
@@ -50,23 +52,27 @@
                         <li>
                             <div class="user-box">
                                 <div class="avatar-sm">
-                                    <img
-                                        src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}"
-                                        alt="..."
+                                    <img src="{{ env('AWS_BASE_URL') . Auth::user()->profile_url }}" alt="..."
                                         class="avatar-img rounded-circle"
-                                        onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';"
-                                    >
-                                </div>                                <div class="u-text">
+                                        onerror="this.onerror=null; this.src='{{ url('/default/default_profile.png') }}'; this.alt='Alternative Image';">
+                                </div>
+                                <div class="u-text">
                                     <h4>{{ Auth::user()->name }}</h4>
-                                    <p class="text-muted">{{ Auth::user()->email }}</p><a href="{{ url('/profile') }}" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                    <p class="text-muted">{{ Auth::user()->email }}</p><a href="{{ url('/profile') }}"
+                                        class="btn btn-xs btn-secondary btn-sm">View Profile</a>
                                 </div>
                             </div>
                         </li>
                         <li>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url('/profile') }}">Account Setting</a>
+                            {{-- @if (Auth::user()->role == 'mentor')
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ url('/registration-code-management') }}">Registration Code</a>
+                            @endif --}}
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
                                                       document.getElementById('logout-form').submit();">
                                 <span class="link-collapse">Logout</span>
                             </a>

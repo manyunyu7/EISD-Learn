@@ -245,7 +245,7 @@
 
                             @if ($data->image !== null)
                                 <div class="text-center"> 
-                                    <img src="{{ asset('storage/exam/question/'. $data->image) }}"
+                                    <img src="{{ url('https://lms-modernland.s3.ap-southeast-3.amazonaws.com') . '/' . $data->image }}"
                                         style="width: auto; height:350px"
                                         class="rounded"
                                         alt="...">
@@ -271,7 +271,7 @@
                                             {{-- BUTTON MODALS FOR EDIT --}}
                                             <button type="button"
                                                     class="btn btn-primary"
-                                                    onclick="openEditWindow('{{ url('exam/question/'.$data->id.'/edit') }}')">
+                                                    onclick="openEditWindow('{{ route('edit.question', ['examId' => $data->exam_id, 'id' => $data->id]) }}')">
                                                 <img src="{{ url('/icons/Edit.svg') }}" alt="Edit Icon">
                                             </button>
                                             <script>

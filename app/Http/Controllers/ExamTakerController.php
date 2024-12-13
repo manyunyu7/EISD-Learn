@@ -6,10 +6,13 @@ use App\Helper\MyHelper;
 use App\Models\Exam;
 use App\Models\ExamSession;
 use App\Models\ExamTaker;
+use App\Models\Lesson;
+use App\Models\StudentLesson;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ExamTakerController extends Controller
 {
@@ -127,10 +130,12 @@ class ExamTakerController extends Controller
 
         // Load the exam session
         $session = ExamSession::findOrFail($sessionId);
+        $examType = $session->exam_type; // Ambil jenis ujian
 
         // Initialize a variable to store the user's score
         $userScore = 0;
         $originalQuestions = json_decode($session->questions_answers);
+
 
         // Loop through the user's answers
         foreach ($answers as &$answer) { // Note the "&" to make $answer mutable
@@ -189,6 +194,15 @@ class ExamTakerController extends Controller
                 $answer['question_text'] = $question->question;
                 // Add descriptive score
                 $answer['isCorrect'] = $descriptiveScore;
+            }
+        }
+
+        if ($examType === 'Evaluation') {
+            // Tambahkan logika khusus untuk Evaluation jika diperlukan
+            $totalQuestions = count($originalQuestions);
+            if ($totalQuestions > 0) {
+                $userScore = $userScore / $totalQuestions; // Bagi skor dengan jumlah soal
+                $userScore = number_format($userScore, 1);
             }
         }
 
@@ -306,12 +320,32 @@ class ExamTakerController extends Controller
             $examResult->current_score = $userScore;
             $examResult->guest_name = $name;
             $examResult->token_exam = $examToken;
-            $examResult->save();
+            if($examResult->save()){
+                // Hitung rata-rata rating baru
+                $sumRating = DB::table('exam_takers')
+                ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                ->where('exam_takers.course_flag', '=', $courseId)
+                ->where('exam_takers.course_section_flag', '=', $sectionId)
+                ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                ->whereNotNull('exam_takers.is_finished')
+                ->sum('exam_takers.current_score');
+
+                $totalStudent = StudentLesson::where(
+                    "lesson_id",
+                    "=",
+                    $courseId
+                )->count('id');
+                
+
+                $avgClassRating = round($sumRating/$totalStudent, 2);
+                
+                // Update class_rating di tabel classes
+                Lesson::where('id', $courseId)
+                ->update(['rating_course' => $avgClassRating]);
+                
+            }
             $dimanaYa = "yessy";
         }
-
-
-        //        if(!$allowMultipleAttempt && !$isFirstAttempt)
 
         //if not finished and not first attempt
         if ($request->isFinished != true && $isFirstUnfinishedAttempt != true) {
@@ -333,7 +367,29 @@ class ExamTakerController extends Controller
             $examResult->course_section_flag = $sectionId;
             $examResult->current_score = $userScore;
             $examResult->guest_name = $name;
-            $examResult->save();
+            if($examResult->save()){
+                // Hitung rata-rata rating baru
+                $sumRating = DB::table('exam_takers')
+                ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                ->where('exam_takers.course_flag', '=', $courseId)
+                ->where('exam_takers.course_section_flag', '=', $sectionId)
+                ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                ->whereNotNull('exam_takers.is_finished')
+                ->sum('exam_takers.current_score');
+
+                $totalStudent = StudentLesson::where(
+                    "lesson_id",
+                    "=",
+                    $courseId
+                )->count('id');
+                
+                $avgClassRating = round($sumRating/$totalStudent, 2);
+                
+                // Update class_rating di tabel classes
+                Lesson::where('id', $courseId)
+                ->update(['rating_course' => $avgClassRating]);
+                
+            }
             $dimanaYa = "yossy";
         }
 
@@ -365,7 +421,30 @@ class ExamTakerController extends Controller
                 $examResult->course_section_flag = $sectionId;
                 $examResult->finished_at = $now;
                 $examResult->is_finished = "y";
-                $examResult->save();
+                if($examResult->save()){
+                    // Hitung rata-rata rating baru
+                    $sumRating = DB::table('exam_takers')
+                    ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                    ->where('exam_takers.course_flag', '=', $courseId)
+                    ->where('exam_takers.course_section_flag', '=', $sectionId)
+                    ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                    ->whereNotNull('exam_takers.is_finished')
+                    ->sum('exam_takers.current_score');
+    
+                    $totalStudent = StudentLesson::where(
+                        "lesson_id",
+                        "=",
+                        $courseId
+                    )->count('id');
+                    
+    
+                    $avgClassRating = round($sumRating/$totalStudent, 2);
+                    
+                    // Update class_rating di tabel classes
+                    Lesson::where('id', $courseId)
+                    ->update(['rating_course' => $avgClassRating]);
+                    
+                }
 
                 $dimanaYa = "priskilla";
             } else {
@@ -389,7 +468,30 @@ class ExamTakerController extends Controller
                 $examResult->guest_name = $name;
                 $examResult->is_finished = "y";
                 $examResult->finished_at = Carbon::now();
-                $examResult->save();
+                if($examResult->save()){
+                    // Hitung rata-rata rating baru
+                    $sumRating = DB::table('exam_takers')
+                    ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'exam_takers.session_id')
+                    ->where('exam_takers.course_flag', '=', $courseId)
+                    ->where('exam_takers.course_section_flag', '=', $sectionId)
+                    ->where('exam_sessions.exam_type', '=', 'Evaluation')
+                    ->whereNotNull('exam_takers.is_finished')
+                    ->sum('exam_takers.current_score');
+    
+                    $totalStudent = StudentLesson::where(
+                        "lesson_id",
+                        "=",
+                        $courseId
+                    )->count('id');
+                    
+    
+                    $avgClassRating = round($sumRating/$totalStudent, 2);
+                    
+                    // Update class_rating di tabel classes
+                    Lesson::where('id', $courseId)
+                    ->update(['rating_course' => $avgClassRating]);
+                    
+                }
                 $dimanaYa = "yoxy";
             }
         }

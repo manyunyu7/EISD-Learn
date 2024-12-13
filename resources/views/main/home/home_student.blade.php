@@ -534,6 +534,10 @@
                                         style="color: white; margin-bottom: 5px; margin-right: 5px; background-color: {{ $data->course_category_color }}; padding: 2px 10px;">
                                         <strong>{{ $data->course_category_name }}</strong>
                                     </div>
+                                    <div class="class-badge" style="color: black; display: flex; align-items: center; margin-bottom: 5px; margin-left: auto;">
+                                        <img src="{{ url('/icons/rating_class.svg') }}" style="margin-right: 4px;">
+                                        <p style="font-size: 15px; margin-bottom: 0;"><strong>{{ $data->rating_course }}</strong></p>
+                                    </div>
                                 </div>
                                 <!-- Title -->
                                 <h5 class="card-title"><a href="#">{{ $data->course_title }}</a></h5>

@@ -56,15 +56,18 @@ class ModernlandIntegrationController extends Controller
         $token = $request->header('Authorization');
         Log::info('Received token', ['token' => $token]);
 
+
         // Create a new Guzzle client to make HTTP requests
         $client = new Client();
 
         try {
             $url = "https://api-ithub.modernland.co.id/api/v1/";
+            // $url = "http://192.168.30.125/api/v1/";
+            // $url = "https://github.modernland.co.id/api/v1/";
             // Step 2: Make a GET request to the Ithub API to fetch user profile data
             $response = $client->request('GET', "$url" . "profile", [
                 'headers' => [
-                    'Authorization' => $token,
+                    'Authorization' => "Bearer ".$token,
                 ],
             ]);
 
@@ -164,7 +167,7 @@ class ModernlandIntegrationController extends Controller
                 'meta' => [
                     'success' => false,
                     'status' => 500,
-                    'message' => 'An error occurred while authenticating with Ithub. Please try again later.'
+                    'message' => 'An error occurred while authenticating with Ithub. Please try again later.'.$e->getMessage()
                 ],
                 'result' => []
             ], 500);

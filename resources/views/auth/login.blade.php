@@ -110,6 +110,9 @@
                                         {{ __('Forgot Password?') }}
                                     </a>
                                 </div>
+                                <a class="btn btn-link" href="{{ url('register') }}">
+                                    {{ __('Belum Punya Akun ? Daftar Disini') }}
+                                </a>
                             </form>
                         </div>
                     </div>
@@ -119,7 +122,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/dist/qrcode.min.js"></script>
     {{-- @extends('layouts.app') --}}
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var myQrToken = '';
