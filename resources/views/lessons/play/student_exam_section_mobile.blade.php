@@ -108,8 +108,8 @@
                             <p style="font-size: 18px"><strong>{{ $index + 1 }}.</strong> <span
                                     style="font-size: 18px">{{ $question->question }}</span></p>
                             @if (!empty($question->image))
-                                <img src="{{ Storage::url('public/exam/question')."/".$question->image }}"
-                                     alt="Question Image" style="max-width: 100%;">
+                                <img src="{{ url('https://lms-modernland.s3.ap-southeast-3.amazonaws.com') . '/' . $question->image }}"
+                                alt="Question Image" style="max-width: 100%;">
                             @endif
 
                             @if (stripos($question->question_type, 'single') !== false)
