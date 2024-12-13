@@ -74,6 +74,7 @@ class MyClassController extends Controller
                 'lessons.id as lesson_id',
                 'lessons.course_title as lessons_title',
                 'lessons.mentor_id',
+                'lessons.rating_course',
                 'users.name as mentor_name',
                 'course_section.id as section_id',
                 'course_section.section_order',

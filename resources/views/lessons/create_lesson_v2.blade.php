@@ -334,6 +334,11 @@
                             </div>
                         </div>
 
+                        {{-- Default Rating Kelas --}}
+                        <div class="mb-3" hidden>
+                            <input name="rating" type="number" value="0">
+                        </div>
+
                         {{-- Kategori --}}
                         <div class="mb-3">
                             <label for="" class="mb-2">Kategori<span style="color: red">*</span></label>

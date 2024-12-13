@@ -96,17 +96,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
+        // Set the input type to 'text' (visible) by default
+        var passwordInput = document.getElementById('exampleInputPassword1');
+        passwordInput.setAttribute('type', 'text');
+
+        // Add event listener for toggling the password visibility
         document.getElementById('togglePassword').addEventListener('click', function () {
-            var passwordInput = document.getElementById('exampleInputPassword1');
             var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
 
             var eyeIcon = document.querySelector('#togglePassword i');
-            eyeIcon.classList.toggle('bi-eye');
-            eyeIcon.classList.toggle('bi-eye-slash');
+            eyeIcon.classList.toggle('bi-eye');          // Toggle the eye icon
+            eyeIcon.classList.toggle('bi-eye-slash');   // Toggle the eye-slash icon
         });
-
-       
     </script>
 
 </body>

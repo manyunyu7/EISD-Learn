@@ -287,15 +287,20 @@ class LessonController extends Controller
             ->where('lessons.id', $lesson_id)
             // ->where('users.is_testing', '=', 'n')
             ->first(); // Ambil baris pertama dari hasil query
+        $id_category = $myClass->category_id;
 
         $deptId = $myClass->department_id;
         $postId = $myClass->position_id;
 
-        $compact = compact('deptId', 'postId', 'categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id');
+        $compact = compact('deptId', 'postId', 'categories', 'myClass', 'category_selected', 'categoryID_selected', 'lesson_id', 'id_category');
 
         if($request->dump==true){
             return $compact;
         }
+
+        // return $myClass->category_id;
+        // return $category_selected->course_category;
+        // return $id_category;
 
         return view('lessons.edit_lesson_v2', $compact);
     }
@@ -702,6 +707,11 @@ class LessonController extends Controller
             if($request->position_id==null || $request->position_id==""){
                 $insert_to_Lesson->position_id = "[]";
             }
+
+            $insert_to_Lesson->rating_course = $request->rating;
+
+
+            // $insert_to_Lesson->rating_course = 0;
 
 
             if ($insert_to_Lesson->save()) {

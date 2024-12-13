@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\MitraController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\CourseSectionController;
 use App\Http\Controllers\DropzoneController;
@@ -13,7 +14,9 @@ use App\Http\Controllers\GraphController;
 use App\Http\Controllers\LaravelEstriController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\QRLoginController;
+use App\Http\Controllers\RegistrationCodeController;
 use App\Http\Controllers\SendEmailController;
+use App\Http\Controllers\TeamsPlannerController;
 use App\Http\Controllers\TestEmailController;
 use App\Http\Controllers\VisualizationDetailController;
 use Illuminate\Support\Facades\Auth;
@@ -99,17 +102,23 @@ Route::get('/loginz', function () {
 });
 
 
-Route::get('/open-lms-from-ithub','CourseSectionController@viewStudents');
-Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class,'seeMainPieChartDetail']);
+Route::get('/visualization/main-pie-chart-details', [VisualizationDetailController::class, 'seeMainPieChartDetail']);
 
 
-Route::get('/login-with-ithub','ModernlandIntegrationController@loginFromIthub');
-Route::get('/open-lms-from-ithub','ModernlandIntegrationController@proceedLoginFromIthub');
+Route::post("/mitra/registration/", 'MitraController@registerOnWeb')->name('partner-register');
+
+
+Route::get('/open-lms-from-ithub', 'ModernlandIntegrationController@proceedLoginFromIthub');
 // ROUTING SETELAH LOGIN
 Route::group(['middleware’' => ['auth']], function () {
 
-    Route::get('sync',[LaravelEstriController::class,'syncDataWithIthub']);
-
+    Route::get('sync', [LaravelEstriController::class, 'syncDataWithIthub']);
+    // Route to create a new folder (this is triggered by the modal form)
+    Route::post('/folders/create', [GraphController::class, 'create'])->name('folders.create');
+    Route::get('/onedrive/folders', [GraphController::class, 'listOneDriveFolders']);
+    Route::get('/365/users', [GraphController::class, 'listUsers']);
+    Route::get('/download-file/{driveId}/{fileId}', [GraphController::class, 'downloadFile'])
+        ->name('download-file-graph');
     Route::get('/sites', [GraphController::class, 'listSites'])->name('sites');
     Route::get('/sharepoint/{siteId}', 'GraphController@showSharePoint')->name('sharepoint');
     Route::get('/drives/{siteId}', [GraphController::class, 'showDrives'])->name('drives');
@@ -117,6 +126,13 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::get('/folders/{siteId}/{driveId}', [GraphController::class, 'readFolders'])->name('folders');
     Route::get('/files/{siteId}/{driveId}/{folderId}', [GraphController::class, 'readFiles'])->name('files');
     Route::post('/upload/{siteId}/{driveId}/{folderId}', [GraphController::class, 'uploadFile'])->name('upload');
+
+
+    // Prefix Planner group
+    Route::prefix("planner")->group(function () {
+        Route::get('my-teams', [TeamsPlannerController::class, 'listUserTeams']);
+    });
+
 
     // List all files (index)
     Route::get('/filemanager/s3', [FileOnS3Controller::class, 'index'])->name('filemanager.s3.index');
@@ -160,6 +176,15 @@ Route::group(['middleware’' => ['auth']], function () {
     // ROUTING KHUSUS MENTOR
     Route::group(['middleware' => ['mentor']], function () {
 
+
+        Route::prefix('registration-code-management')->group(function () {
+            Route::get('/', ['uses' => 'RegistrationCodeController@index']);
+            Route::get('/create', ['uses' => 'RegistrationCodeController@create']);
+            Route::post('/store', ['uses' => 'RegistrationCodeController@store'])->name('registration_code.store');
+            Route::any('/destroy', ['uses' => 'RegistrationCodeController@store'])->name('registration_code.store');
+            Route::get('/{id}/edit', [RegistrationCodeController::class, 'edit'])->name('registration_code.edit');
+            Route::put('/registration-code/{id}', [RegistrationCodeController::class, 'update'])->name('registration_code.update');
+        });
 
         Route::resource('users', UserManagementController::class);
 

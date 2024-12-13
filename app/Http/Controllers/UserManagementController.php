@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers; // Make sure this matches
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class UserManagementController extends Controller
 {
+
     public function index(Request $request)
     {
         // Fetch departments and locations
@@ -162,5 +163,4 @@ class UserManagementController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
-    }
-}
+    }}
