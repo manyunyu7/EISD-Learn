@@ -231,12 +231,12 @@ class MitraController extends Controller
         }
 
         // Validate required fields
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'contact' => 'required',
-            'password' => 'required|min:6', // Recommend setting a minimum length for passwords
-        ]);
+        // $this->validate($request, [
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:users',
+        //     'contact' => 'required',
+        //     'password' => 'required|min:6', // Recommend setting a minimum length for passwords
+        // ]);
 
         // Create new user object
         $user = new User();
