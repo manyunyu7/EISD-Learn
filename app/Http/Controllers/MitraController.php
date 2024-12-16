@@ -91,53 +91,51 @@ class MitraController extends Controller
                 400,
                 400,
                 1,
-                "All fields are required",
-                "All fields are required",
+                "Mohon periksa kembali semua inputan",
+                "Mohon periksa kembali semua inputan",
                 null
             );
         }
 
         //validate email format
-        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-            $user = User::where('email', $username)->first();
-        } else if (preg_match("/^[0-9]{10}$/", $username)) {
-            $user = User::where('contact', $username)->first();
-        } else {
-            return MyHelper::responseErrorWithData(
-                400,
-                400,
-                1,
-                "Invalid credentials",
-                "Invalid credentials",
-                null
-            );
-        }
+        // if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+        //     $user = User::where('email', $username)->first();
+        // } else if (preg_match("/^[0-9]{10}$/", $username)) {
+        //     $user = User::where('contact', $username)->first();
+        // } else {
+        //     return MyHelper::responseErrorWithData(
+        //         400,
+        //         400,
+        //         1,
+        //         "Invalid credentials",
+        //         "Invalid credentials",
+        //         null
+        //     );
+        // }
 
-        if (!$user) {
-            return MyHelper::responseErrorWithData(
-                400,
-                400,
-                1,
-                "Invalid credentials",
-                "Invalid credentials",
-                null
-            );
-        }
+        // if (!$user) {
+        //     return MyHelper::responseErrorWithData(
+        //         400,
+        //         400,
+        //         1,
+        //         "Invalid credentials",
+        //         "Invalid credentials",
+        //         null
+        //     );
+        // }
 
 
         //validate wether email,phone or username that being used by user
         $user = User::Where('email', $username)
-            ->orWhere('contact', $username)
             ->first();
-
 
         if (!$user) {
             return MyHelper::responseErrorWithData(
                 400,
                 400,
                 1,
-                "Invalid credentials",
-                "Invalid credentials",
+                "Email tidak ditemukan",
+                "Email tidak ditemukan",
                 null
             );
         }
@@ -148,8 +146,8 @@ class MitraController extends Controller
                 400,
                 400,
                 1,
-                "Invalid credentials",
-                "Invalid credentials",
+                "Password tidak sesuai, mohon coba kembali",
+                "Password tidak sesuai, mohon coba kembali",
                 null
             );
         }
@@ -190,8 +188,8 @@ class MitraController extends Controller
                 400,
                 400,
                 1,
-                "Email sudah terdaftar",
-                "Email sudah terdaftar",
+                "Email sudah terdaftar, silakan login dengan akun yang sudah dibuat",
+                "Email sudah terdaftar, silakan login dengan akun yang sudah dibuat",
                 null
             );
         }
@@ -201,8 +199,8 @@ class MitraController extends Controller
                 400,
                 400,
                 1,
-                "Nomor Kontak sudah terdaftar",
-                "Nomor Kontak sudah terdaftar",
+                "Nomor Kontak sudah terdaftar, silakan login dengan akun yang sudah dibuat",
+                "Nomor Kontak sudah terdaftar, silakan login dengan akun yang sudah dibuat",
                 null
             );
         }
@@ -233,12 +231,12 @@ class MitraController extends Controller
         }
 
         // Validate required fields
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'contact' => 'required',
-            'password' => 'required|min:6', // Recommend setting a minimum length for passwords
-        ]);
+        // $this->validate($request, [
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:users',
+        //     'contact' => 'required',
+        //     'password' => 'required|min:6', // Recommend setting a minimum length for passwords
+        // ]);
 
         // Create new user object
         $user = new User();
