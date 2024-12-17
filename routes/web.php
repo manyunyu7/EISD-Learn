@@ -187,6 +187,7 @@ Route::group(['middleware’' => ['auth']], function () {
         });
 
         Route::resource('users', UserManagementController::class);
+        Route::post('/users/{id}/reset-password', 'UserManagementController@resetPassword')->name('users.resetPassword');
 
         Route::prefix("lesson")->group(function () {
 

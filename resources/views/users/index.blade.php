@@ -42,65 +42,73 @@
                             <a href="{{ url('users/create') }}">
                                 <button class="btn btn-primary btn-border btn-round mb-3">Create New User</button>
                             </a>
-                            <table id="basic-datatables" class="table table-bordered table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Positions</th>
-                                        <th>Department</th>
-                                        <th>Locations</th>
-                                        <th>Is Testing</th>
-                                        <th>Actions</th>
-                                        <th>Created At</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($users as $user)
+                            <!-- Responsive Table -->
+                            <div class="table-responsive">
+                                <table id="basic-datatables" class="table table-bordered">
+                                    <thead class="text-center">
                                         <tr>
-                                            <td>{{ $user->id }}</td>
-                                            <td>{{ $user->name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->role }}</td>
-                                            <td>{{ $user->position_name }}</td>
-                                            <td>{{ $user->department_name }}</td>
-                                            <td>
-                                                @foreach ($user->location_names as $location)
-                                                    {{ $location }}<br>
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                @if($user->is_testing === 'y')
-                                                    <span class="badge bg-success">Yes</span>
-                                                @elseif($user->is_testing === 'n')
-                                                    <span class="badge bg-danger">No</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Not Specified</span>
-                                                @endif
-                                            </td>                                            <td class="text-center">
-                                                <div class="btn-group">
-                                                    <a href="{{ route('users.edit', $user->id) }}"
-                                                        class="btn btn-sm btn-warning" title="Edit">
-                                                        <i class="fa fa-edit"></i> Edit
-                                                    </a>
-                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                                        style="display:inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Are you sure?')" title="Delete">
-                                                            <i class="fa fa-trash"></i> Delete
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                            <td>{{ $user->created_at }}</td>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Positions</th>
+                                            <th>Department</th>
+                                            <th>Locations</th>
+                                            <th>Is Testing</th>
+                                            <th>Actions</th>
+                                            <th>Created At</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($users as $user)
+                                            <tr>
+                                                <td>{{ $user->id }}</td>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>{{ $user->role }}</td>
+                                                <td>{{ $user->position_name }}</td>
+                                                <td>{{ $user->department_name }}</td>
+                                                <td>
+                                                    @foreach ($user->location_names as $location)
+                                                        {{ $location }}<br>
+                                                    @endforeach
+                                                </td>
+                                                <td>
+                                                    @if($user->is_testing === 'y')
+                                                        <span class="badge bg-success">Yes</span>
+                                                    @elseif($user->is_testing === 'n')
+                                                        <span class="badge bg-danger">No</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Not Specified</span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="btn-group d-flex flex-wrap">
+                                                        <a href="{{ route('users.edit', $user->id) }}"
+                                                            class="btn btn-sm btn-warning m-1" title="Edit">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </a>
+                                                        <button type="button" class="btn btn-sm btn-info m-1"
+                                                                onclick="resetPassword({{ $user->id }})" title="Reset Password">
+                                                            <i class="fa fa-key"></i> Reset Password
+                                                        </button>
+                                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                            style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger m-1"
+                                                                    onclick="return confirm('Are you sure?')" title="Delete">
+                                                                <i class="fa fa-trash"></i> Delete
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                                <td>{{ $user->created_at }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- End Responsive Table -->
                         </div>
                     </div>
                 </div>
@@ -116,6 +124,57 @@
     <script src="{{ asset('atlantis/examples/assets/js/plugin/datatables/datatables.min.js') }}"></script>
     <!-- Toastr JS -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function resetPassword(userId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to reset the user's password!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, reset it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Proceed with the fetch request
+                    fetch(`/users/${userId}/reset-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                'Reset Successful!',
+                                'The user\'s password has been reset.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Reset Failed',
+                                data.message || 'There was an error resetting the password.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Error!',
+                            'An unexpected error occurred.',
+                            'error'
+                        );
+                    });
+                }
+            });
+        }
+    </script>
 
     <script>
         $(document).ready(function() {

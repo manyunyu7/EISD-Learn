@@ -5,9 +5,41 @@ namespace App\Http\Controllers; // Make sure this matches
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserManagementController extends Controller
 {
+
+        /**
+     * Reset the user's password.
+     */
+    public function resetPassword($id)
+    {
+        try {
+            // Find the user
+            $user = User::findOrFail($id);
+
+            // Generate a new default password
+            $newPassword = 'modern888'; // Replace with your default password logic if needed
+
+            // Update the user's password (hash it before saving)
+            $user->password = Hash::make($newPassword);
+            $user->save();
+
+            // Return JSON success response
+            return response()->json([
+                'success' => true,
+                'message' => 'Password has been reset successfully.',
+                'new_password' => $newPassword // Optional: for debugging or admin display
+            ]);
+        } catch (\Exception $e) {
+            // Return error response
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reset password. ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 
     public function index(Request $request)
     {
