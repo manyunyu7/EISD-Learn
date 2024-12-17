@@ -43,10 +43,10 @@
             <label for="institute">Institute:</label>
             <input type="text" class="form-control" id="institute" name="institute" value="{{ $user->institute }}">
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="mdln_username">MDLN Username:</label>
             <input type="text" class="form-control" id="mdln_username" name="mdln_username" value="{{ $user->mdln_username }}">
-        </div>
+        </div> --}}
         <div class="form-group">
             <label for="motto">Motto:</label>
             <input type="text" class="form-control" id="motto" name="motto" value="{{ $user->motto }}">
