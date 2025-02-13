@@ -105,6 +105,7 @@ class HomeController extends Controller
 
             $classRegisteredCount = DB::table('lessons')
                 ->where('mentor_id', $userId)
+                ->where('is_visible', 'y')
                 ->whereNull('deleted_at')
                 ->count();
 
@@ -117,6 +118,7 @@ class HomeController extends Controller
                 ->leftJoin('lessons', 'student_lesson.lesson_id', '=', 'lessons.id')
                 ->select('student_lesson.*', 'lessons.mentor_id')
                 ->where('lessons.mentor_id', $userId)
+                ->where('is_visible', 'y')
                 ->whereNull('lessons.deleted_at')
                 ->count();
             // return $studentLessonsWithMentor;
@@ -126,6 +128,7 @@ class HomeController extends Controller
 
             $tabel_lesson = DB::table('lessons')
                 ->whereNull('lessons.deleted_at')
+                ->where('is_visible', 'y')
                 ->where('lessons.mentor_id', $userId)
                 ->get();
 
@@ -397,6 +400,7 @@ class HomeController extends Controller
             $classRegisteredCount = DB::table('view_student_lesson')
                 ->leftJoin('lessons', 'view_student_lesson.id', '=', 'lessons.id')
                 ->where('view_student_lesson.student_id', $userId)
+                ->where('lessons.is_visible', 'y')
                 ->whereNull('lessons.deleted_at')
                 ->count();
 
@@ -406,6 +410,7 @@ class HomeController extends Controller
                 ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
                 ->where('student_id', $userId)
                 ->where('learn_status', 0)
+                ->where('lessons.is_visible', 'y')
                 ->whereNull('lessons.deleted_at')
                 // ->where('users.is_testing', '=', 'n')
                 ->count();
@@ -416,6 +421,7 @@ class HomeController extends Controller
                 ->select('student_lesson.student_id', 'users.name', 'student_lesson.lesson_id', 'student_lesson.learn_status', 'lessons.course_title')
                 ->where('student_id', $userId)
                 ->where('learn_status', 1)
+                ->where('lessons.is_visible', 'y')
                 ->whereNull('lessons.deleted_at')
                 // ->where('users.is_testing', '=', 'n')
                 ->count();
@@ -517,6 +523,7 @@ class HomeController extends Controller
                             AND sl.student_id = $userID
                         )
                     AND  a.deleted_at IS  NULL
+                    AND a.is_visible = 'y'
                     GROUP BY
                         a.id, b.name, b.profile_url, cs.id
                 ) AS main_table
