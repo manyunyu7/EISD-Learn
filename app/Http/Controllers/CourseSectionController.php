@@ -800,7 +800,9 @@ class CourseSectionController extends Controller
             $questions = json_decode($session->questions_answers);
             
             // Acak Urutan Soal
-            shuffle($questions);
+            if($examSession->random_sort_exam == "y"){
+                shuffle($questions);
+            }
 
             $totalScore = 0;
             $title = $exam->title;

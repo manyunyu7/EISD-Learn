@@ -661,6 +661,7 @@ class MentorExamController extends Controller
             $examSession->description = 'n/a';
             $examSession->can_access = 'n/a';
             $examSession->time_limit_minute = $request->times_limit;
+            $examSession->random_sort_exam = $request->randomize;
 
             // Translate user input to 'y' and 'n'
             $mapping = [
@@ -749,6 +750,7 @@ class MentorExamController extends Controller
             $examSession->description = 'n/a';
             $examSession->can_access = 'n/a';
             $examSession->time_limit_minute = $request->times_limit;
+            $examSession->random_sort_exam = $request->randomize;
 
             //translate user input to y and n for positive and negative case
             $mapping = [

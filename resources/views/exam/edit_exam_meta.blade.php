@@ -194,6 +194,18 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
+                {{-- Input Randomize Ujian --}}
+                <div class="mb-3">
+                    <label class="mb-2">Random Sort Ujian</label><br>
+                    <label class="form-radio-label">
+                        <input class="form-radio-input" type="radio" name="randomize" value="n" {{ $data->exam_session->random_sort_exam == 'n'? 'checked' : '' }}>
+                        <span class="form-radio-sign">Tidak</span>
+                    </label>
+                    <label class="form-radio-label ml-3">
+                        <input class="form-radio-input" type="radio" name="randomize" value="y" {{ $data->exam_session->random_sort_exam == 'y'? 'checked' : '' }}>
+                        <span class="form-radio-sign">Ya</span>
+                    </label>
+                </div>
                 {{-- Input Start and End Date --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">

@@ -172,6 +172,7 @@
                         </select>
                     </div>
                 </div>
+
                 {{-- Input Batas Waktu --}}
                 <div class="mb-3">
                     <label for="" class="mb-2">Batas Waktu (Menit)<span style="color: red">*</span></label>
@@ -184,6 +185,20 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
+
+                {{-- Input Randomize Ujian --}}
+                <div class="mb-3">
+                    <label class="mb-2">Random Sort Ujian</label><br>
+                    <label class="form-radio-label">
+                        <input class="form-radio-input" type="radio" name="randomize" value="n" checked="">
+                        <span class="form-radio-sign">Tidak</span>
+                    </label>
+                    <label class="form-radio-label ml-3">
+                        <input class="form-radio-input" type="radio" name="randomize" value="y">
+                        <span class="form-radio-sign">Ya</span>
+                    </label>
+                </div>
+
                 {{-- Input Start and End Date --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -210,9 +225,10 @@
                         @enderror
                     </div>
                 </div>
+
                 {{-- Input Instruksi Exam --}}
                 <div class="mb-3">
-                    <label for="instruction" class="mb-2">Instruksi Exam<span style="color: red">*</span></label>
+                    <label for="instruction" class="mb-2">Instruksi Ujian<span style="color: red">*</span></label>
                     <textarea id="editor" class="form-control @error('instruction') is-invalid @enderror" name="instruction">{{ old('instruction') }}</textarea>
 
                     @error('instruction')

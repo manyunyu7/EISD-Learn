@@ -173,6 +173,10 @@
                                 <th scope="row">Show Score</th>
                                 <td>{{ $examInfo->first()->show_score_on_review === 'y' ? 'Aktif' : 'Tidak Aktif'}}</td>
                             </tr>
+                            <tr>
+                                <th scope="row">Random Sort Ujian</th>
+                                <td>{{ $examInfo->first()->random_sort_exam === 'y' ? 'Aktif' : 'Tidak Aktif'}}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
