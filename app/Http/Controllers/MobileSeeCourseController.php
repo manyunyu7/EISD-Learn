@@ -361,6 +361,10 @@ class MobileSeeCourseController extends Controller
                     }
                 }
             }
+            // Acak Urutan Soal
+            if($examSession->random_sort_exam == "y"){
+                shuffle($questions);
+            }
             $question_count = count($questions);
         }
 
