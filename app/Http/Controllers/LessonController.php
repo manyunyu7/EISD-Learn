@@ -1079,4 +1079,23 @@ class LessonController extends Controller
             return view('main.course_dashboard');
         }
     }
+
+    public function view_trainingRequest(Request $request){
+        return view('training_request.create');
+    }
+    public function store_trainingRequest(Request $request){
+        $data = [
+            'id_creator' => $request->user_id,
+            'title_training' => $request->training_title,
+            'divisi' => $request->divisi,
+            'date_request' => $request->date_request,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'place' => $request->place,
+            'budget_fee' => $request->budget_fee,
+            'organizer' => $request->organizer,
+            'participant' => $request->participant,
+        ];
+        dd($data);
+    }
 }

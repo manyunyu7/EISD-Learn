@@ -59,3 +59,18 @@
            style="{{ Request::is('dashboard/*') ? 'color: white !important;' : '' }} margin-left: 10px;">Dashboard</p>
     </a>
 </li>
+
+{{-- TRAINING REQUEST --}}
+<li class="nav-item {{ Request::is('training-request/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('/training-request/mentor') }}"  style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/request_training.png"
+             class="nav-ok-logo"
+             style="width: 14%;
+                height: auto;
+                margin-top: 5px;
+                "
+        >
+        <p class="{{ Request::is('training-request/*') ? 'text-white' : ''}}"
+           style="{{ Request::is('training-request/*') ? 'color: white !important;' : '' }} margin-left: 10px;">Training Request</p>
+    </a>
+</li>
