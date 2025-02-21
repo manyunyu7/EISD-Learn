@@ -153,6 +153,7 @@ Route::group(['middleware’' => ['auth']], function () {
     Route::post('/dfef', 'ProfileController@updatePasswordz');
     Route::get('/class/class-list/view-class/{id}', 'DetailClassController@viewClass');
     Route::get('/class/class-list/mentor-view-class/{id}', 'DetailClassController@mentor_viewClass');
+    Route::get('/class/class-list/mentor-duplicate-class/{id}', 'DetailClassController@mentor_duplicateClass');
     Route::get('/class/class-list/students/{lessonId}', 'DetailClassController@viewStudents');
     Route::get('/class/students/{lessonId}', 'CourseSectionController@viewStudents');
     // Route::post('sortBy', 'CourseSectionController@sortBy')->name('sortBy');

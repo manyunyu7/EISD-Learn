@@ -272,6 +272,11 @@
                                                 href="{{ url('/class/class-list/mentor-view-class/' . $data->id) }}">
                                                 <span class="link-collapse">View Class</span>
                                             </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                                href="{{ url('/class/class-list/mentor-duplicate-class/' . $data->id) }}">
+                                                <span class="link-collapse">Duplicate Class</span>
+                                            </a>
                                         </li>
                                     </div>
                                 </ul>

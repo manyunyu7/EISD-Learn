@@ -358,6 +358,8 @@
                                                 style="max-width: 100%; max-height: 100%;">
                                         </button>
                                     </form>
+
+                                    {{-- btn Delete --}}
                                     @if ($student_info == null)
                                         {{-- Btn Delete --}}
                                         <form id="deleteForm_{{ $item->section_id }}" action="#" method="POST">

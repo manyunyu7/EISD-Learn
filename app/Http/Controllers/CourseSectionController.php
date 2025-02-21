@@ -76,6 +76,7 @@ class CourseSectionController extends Controller
     public function manage_section_v2(Request $request, Lesson $lesson)
     {
         $lesson_id = $lesson->id;
+        $flag_duplicate = $lesson->lesson_id_duplicate_by;
         $dayta = DB::table('course_section as c')
             ->select(
                 'a.id as lesson_id',
@@ -125,7 +126,7 @@ class CourseSectionController extends Controller
 
         // return $dayta;
 
-        $compact = compact('dayta', 'lesson_id', 'examSessions', 'student_info');
+        $compact = compact('dayta', 'lesson_id', 'examSessions', 'student_info', 'flag_duplicate');
         return view('lessons.manage_materials', $compact);
     }
 
