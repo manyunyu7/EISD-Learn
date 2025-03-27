@@ -178,6 +178,7 @@ class CourseSectionController extends Controller
         $insert_to_CourseSection->quiz_session_id = $request->is_examId;
         $insert_to_CourseSection->embedded_file = $request->embeded_file;
         // dd($insert_to_CourseSection);
+        $insert_to_CourseSection->save();
         
         // $u_student_lesson = StudentLesson::where('lesson_id', '=', $lessonId)->first();
         // if($insert_to_CourseSection->save()){
