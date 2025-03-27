@@ -217,14 +217,17 @@ class CourseSectionController extends Controller
         $lesson_id = $request->lessonId;
         $lessonId = $lesson_id;
         $update_to_CourseSection = CourseSection::findOrFail($section_id);
-        $materials = $request->file('question_images');
+        ini_set('upload_max_filesize', '1G');
+        ini_set('post_max_size', '1G');
+        ini_set('memory_limit', '1G'); // 1GB
+        $materials = $request->file('data_file');
 
         if ($materials != null) {
             Storage::disk('s3')->delete("profile-s3/$lessonId");
-            $image = $request->file('question_images');
-            $imagePath = "course-s3/$lessonId" . $image->hashName();
-            Storage::disk('s3')->put($imagePath, file_get_contents($image));
-            $update_to_CourseSection->section_video = $imagePath;
+            $dataFile = $request->file('data_file');
+            $dataFilePath = "course-s3/$lessonId" . $dataFile->hashName();
+            Storage::disk('s3')->put($dataFilePath, file_get_contents($dataFile));
+            $update_to_CourseSection->section_video = $dataFilePath;
         }
 
         $update_to_CourseSection->section_title = $request->update_title;

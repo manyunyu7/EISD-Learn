@@ -172,7 +172,7 @@
                             <div class="mb-3">
                                 <label for="" class="mb-2">Upload File<span style="color: red">*</span></label>
                                 <div class="mb-3">
-                                    <input name="question_images" value="{{ $data_course_section_to_edit->section_video }}"  class="form-control" type="file" id="formFileMultiple" multiple>
+                                    <input name="data_file" value="{{ $data_course_section_to_edit->section_video }}"  class="form-control" type="file" id="formFileMultiple" multiple>
                                 </div>
                             </div>
 
