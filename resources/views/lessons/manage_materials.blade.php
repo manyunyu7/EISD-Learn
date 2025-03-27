@@ -216,7 +216,7 @@
                             <div class="mb-3">
                                 <label for="" class="mb-2">Upload File<span style="color: red"></span></label>
                                 <div class="mb-3">
-                                    <input name="question_images" class="form-control" type="file" id="formFileMultiple"
+                                    <input name="data_file" class="form-control" type="file" id="formFileMultiple"
                                         multiple>
                                 </div>
                             </div>

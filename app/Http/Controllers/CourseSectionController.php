@@ -144,16 +144,19 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection = new CourseSection();
 
-        ini_set('upload_max_filesize', '500M');
-        ini_set('post_max_size', '500M');
-        $materials = $request->file('question_images');
+        ini_set('upload_max_filesize', '1G');
+        ini_set('post_max_size', '1G');
+        ini_set('memory_limit', '1G'); // 1GB
+        $materials = $request->file('data_file');
 
         if ($materials) {
             // Upload new video
             if ($materials != null) {
-                $image = $request->file('question_images');
+                $image = $request->file('data_file');
                 $imagePath = "course-s3/$lessonId" . $image->hashName();
-                Storage::disk('s3')->put($imagePath, file_get_contents($image));
+                // Storage::disk('s3')->put($imagePath, fopen($image->getRealPath(), 'r+'));
+                Storage::disk('s3')->put($filePath, $fileStream, 'public');
+                fclose($fileStream);
                 $insert_to_CourseSection->section_video = $imagePath;
             } else {
                 $insert_to_CourseSection->section_video = "";
