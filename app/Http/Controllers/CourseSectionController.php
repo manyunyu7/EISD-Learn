@@ -154,9 +154,7 @@ class CourseSectionController extends Controller
             if ($materials != null) {
                 $image = $request->file('data_file');
                 $imagePath = "course-s3/$lessonId" . $image->hashName();
-                // Storage::disk('s3')->put($imagePath, fopen($image->getRealPath(), 'r+'));
-                Storage::disk('s3')->put($filePath, $fileStream, 'public');
-                fclose($fileStream);
+                Storage::disk('s3')->put($imagePath, file_get_contents($image));
                 $insert_to_CourseSection->section_video = $imagePath;
             } else {
                 $insert_to_CourseSection->section_video = "";
