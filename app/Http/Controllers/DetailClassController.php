@@ -281,7 +281,7 @@ class DetailClassController extends Controller
                 // Looping untuk setiap soal di dalam Collection
                 foreach($qnaCollection as $data_exam_qna){
                     $copy_new_qna = new ExamQuestionAnswers();
-                    $copy_new_qna->question       = $data_exam_qna->question . "_COPY";
+                    $copy_new_qna->question       = $data_exam_qna->question;
                     $copy_new_qna->image          = $data_exam_qna->image;
                     $copy_new_qna->question_type  = $data_exam_qna->question_type;
                     $copy_new_qna->correct_answer = $data_exam_qna->correct_answer;
