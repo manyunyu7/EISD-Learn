@@ -1,0 +1,634 @@
+{
+    "meta": {
+      "status": 200,
+      "message": "OK",
+      "success": true
+    },
+    "result": {
+      "id": "0195c745-d62d-72a6-bc00-e8789b63cb70",
+      "reference_id": "0195b7ed-0af0-733a-b52d-d4538ef77ed2",
+      "nip": "0122122073",
+      "name": "Muhammad Arief",
+      "head_nip": "0115060840",
+      "head_name": "Bachtiar Brian",
+      "job_title": "IT Administration Officer",
+      "gender": "LAKI-LAKI",
+      "unit_business_id": "8997302f-0d4f-49ce-8d1d-b4a556d88291",
+      "unit_business": "CORP",
+      "division_id": "79838f7c-8af0-4635-9071-9f6b7f584617",
+      "division": "Digital Management (IT)",
+      "department_id": "aee89b40-db79-4807-a411-8d0aedb25fdc",
+      "department": "Support \u0026 Maintenance",
+      "group_employee_id": "c901c900-8598-4f29-9315-e48d9b835cbc",
+      "group_employee": "Unit Head",
+      "type": "KPI",
+      "status": "WAITING_APPROVAL",
+      "created_at": "2025-03-24T08:29:57.685339Z",
+      "updated_at": "2025-03-24T08:29:57.685339Z",
+      "period": {
+        "period_id": "0195b19b-b89d-7303-a916-1ee02e98dce3",
+        "period_detail_id": "0195b19b-b89f-7b85-aa49-d0481acc43a4",
+        "name": "Testing 2025",
+        "start_date": "2025-07-01",
+        "end_date": "2025-12-31"
+      },
+      "routine": {
+        "id": "0195b7ed-0af0-733a-b52d-d4538ef77ed2",
+        "name": "Muhammad Arief",
+        "value": 60.00,
+        "criteria": [
+          {
+            "id": "0195b7ed-0af9-7a9c-8dda-32579accca31",
+            "number": 1,
+            "name": "Indikator 1",
+            "value": 18.00,
+            "evaluation": [
+              {
+                "id": "0195c745-d638-7ca1-969a-ef097a596313",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0af9-7a9c-8dda-32579accca31",
+                "criteria": "Indikator 1",
+                "realization_id": "0195b7ed-0b03-79c9-af7a-e2beff04fa17",
+                "realization": "Sesuai dari target",
+                "achievement": 100.00,
+                "score": 10.80,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "0195c745-d638-7805-8d27-24238113f9da",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0af9-7a9c-8dda-32579accca31",
+                "criteria": "Indikator 1",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b7ed-0b03-7cbb-8a98-42a8120c2e92",
+                "number": 1,
+                "name": "lebih dari target",
+                "value": 110.00
+              },
+              {
+                "id": "0195b7ed-0b03-79c9-af7a-e2beff04fa17",
+                "number": 2,
+                "name": "Sesuai dari target",
+                "value": 100.00
+              },
+              {
+                "id": "0195b7ed-0b03-7310-8fb7-78eae448c0da",
+                "number": 3,
+                "name": "\u003c80% dari target",
+                "value": 80.00
+              },
+              {
+                "id": "0195b7ed-0b03-7ebf-be6f-992228b20e40",
+                "number": 4,
+                "name": "\u003c50% dari target",
+                "value": 50.00
+              },
+              {
+                "id": "0195b7ed-0b03-7ce3-aaec-13f871c5a1b0",
+                "number": 5,
+                "name": "\u003c25% dari target",
+                "value": 20.00
+              }
+            ]
+          },
+          {
+            "id": "0195b7ed-0afc-776d-83a3-4d033ddc16d9",
+            "number": 2,
+            "name": "Indikator 2",
+            "value": 20.00,
+            "evaluation": [
+              {
+                "id": "0195c745-d638-7d59-8cfc-34c7bd51c8b9",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0afc-776d-83a3-4d033ddc16d9",
+                "criteria": "Indikator 2",
+                "realization_id": "0195b7ed-0b03-7be3-b83b-b86c2f31a416",
+                "realization": "\u003c50% dari target",
+                "achievement": 50.00,
+                "score": 6.00,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "0195c745-d638-70ce-91e7-9fcc7ab956de",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0afc-776d-83a3-4d033ddc16d9",
+                "criteria": "Indikator 2",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b7ed-0b03-704a-afd5-ba27b3f93f6b",
+                "number": 1,
+                "name": "lebih dari target",
+                "value": 110.00
+              },
+              {
+                "id": "0195b7ed-0b03-7f3e-bacf-92d80ea7d90a",
+                "number": 2,
+                "name": "Sesuai dari target",
+                "value": 100.00
+              },
+              {
+                "id": "0195b7ed-0b03-7563-86c2-807a16647138",
+                "number": 3,
+                "name": "\u003c80% dari target",
+                "value": 80.00
+              },
+              {
+                "id": "0195b7ed-0b03-7be3-b83b-b86c2f31a416",
+                "number": 4,
+                "name": "\u003c50% dari target",
+                "value": 50.00
+              },
+              {
+                "id": "0195b7ed-0b03-73d4-a849-7c7ca7f3a46a",
+                "number": 5,
+                "name": "\u003c25% dari target",
+                "value": 20.00
+              }
+            ]
+          },
+          {
+            "id": "0195b7ed-0afd-7e9d-98b4-e70eea5fe6c9",
+            "number": 3,
+            "name": "Indikator 3",
+            "value": 20.00,
+            "evaluation": [
+              {
+                "id": "0195c745-d638-77bb-8b0a-f0b780661cfa",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0afd-7e9d-98b4-e70eea5fe6c9",
+                "criteria": "Indikator 3",
+                "realization_id": "0195b7ed-0b03-76bb-a6c7-08fdc7608569",
+                "realization": "Sesuai dari target",
+                "achievement": 100.00,
+                "score": 12.00,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "0195c745-d638-7a6d-8d27-374030ba8424",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0afd-7e9d-98b4-e70eea5fe6c9",
+                "criteria": "Indikator 3",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b7ed-0b03-7a28-80c1-7828cef7480a",
+                "number": 1,
+                "name": "lebih dari target",
+                "value": 110.00
+              },
+              {
+                "id": "0195b7ed-0b03-76bb-a6c7-08fdc7608569",
+                "number": 2,
+                "name": "Sesuai dari target",
+                "value": 100.00
+              },
+              {
+                "id": "0195b7ed-0b03-7d15-8554-12aa889738d5",
+                "number": 3,
+                "name": "\u003c80% dari target",
+                "value": 80.00
+              },
+              {
+                "id": "0195b7ed-0b03-7027-b615-18e549d18ee7",
+                "number": 4,
+                "name": "\u003c50% dari target",
+                "value": 50.00
+              },
+              {
+                "id": "0195b7ed-0b03-7426-9224-9d1b3c5882bd",
+                "number": 5,
+                "name": "\u003c25% dari target",
+                "value": 20.00
+              }
+            ]
+          },
+          {
+            "id": "0195b7ed-0afe-7a8a-81f9-9fba66ea39b9",
+            "number": 4,
+            "name": "Indikator 4",
+            "value": 10.00,
+            "evaluation": [
+              {
+                "id": "0195c745-d638-7b57-97a7-a1000d801504",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0afe-7a8a-81f9-9fba66ea39b9",
+                "criteria": "Indikator 4",
+                "realization_id": "0195b7ed-0b03-7eef-94a8-0c27a2bc99c2",
+                "realization": "lebih dari target",
+                "achievement": 110.00,
+                "score": 6.60,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "0195c745-d638-7eb2-ac72-733edbb72bf6",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0afe-7a8a-81f9-9fba66ea39b9",
+                "criteria": "Indikator 4",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b7ed-0b03-7eef-94a8-0c27a2bc99c2",
+                "number": 1,
+                "name": "lebih dari target",
+                "value": 110.00
+              },
+              {
+                "id": "0195b7ed-0b03-7623-9aa8-7f1c4ba6f676",
+                "number": 2,
+                "name": "Sesuai dari target",
+                "value": 100.00
+              },
+              {
+                "id": "0195b7ed-0b03-7055-a166-78f18b271ce3",
+                "number": 3,
+                "name": "\u003c80% dari target",
+                "value": 80.00
+              },
+              {
+                "id": "0195b7ed-0b03-74d3-8f1b-85217c69f900",
+                "number": 4,
+                "name": "\u003c50% dari target",
+                "value": 50.00
+              },
+              {
+                "id": "0195b7ed-0b03-7c79-83fe-47f913243fc2",
+                "number": 5,
+                "name": "\u003c25% dari target",
+                "value": 20.00
+              }
+            ]
+          },
+          {
+            "id": "0195b7ed-0aff-7536-a341-3cb19bb4498c",
+            "number": 5,
+            "name": "Indikator 5",
+            "value": 15.00,
+            "evaluation": [
+              {
+                "id": "0195c745-d638-70b4-9c86-ee9621f262ff",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0aff-7536-a341-3cb19bb4498c",
+                "criteria": "Indikator 5",
+                "realization_id": "0195b7ed-0b03-72ae-be71-59fe729b62d2",
+                "realization": "\u003c25% dari target",
+                "achievement": 20.00,
+                "score": 1.80,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "0195c745-d638-7326-9a68-e993cb5178be",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0aff-7536-a341-3cb19bb4498c",
+                "criteria": "Indikator 5",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b7ed-0b03-7a93-8722-329a3b2ec74e",
+                "number": 1,
+                "name": "lebih dari target",
+                "value": 110.00
+              },
+              {
+                "id": "0195b7ed-0b03-7f90-9a0c-610a8d128f13",
+                "number": 2,
+                "name": "Sesuai dari target",
+                "value": 100.00
+              },
+              {
+                "id": "0195b7ed-0b03-736a-acb1-cc8a5f66474b",
+                "number": 3,
+                "name": "\u003c80% dari target",
+                "value": 80.00
+              },
+              {
+                "id": "0195b7ed-0b03-7bfc-9f44-62a8dc4dd65d",
+                "number": 4,
+                "name": "\u003c50% dari target",
+                "value": 50.00
+              },
+              {
+                "id": "0195b7ed-0b03-72ae-be71-59fe729b62d2",
+                "number": 5,
+                "name": "\u003c25% dari target",
+                "value": 20.00
+              }
+            ]
+          },
+          {
+            "id": "0195b7ed-0b00-7e4f-988c-92134842c203",
+            "number": 6,
+            "name": "Indikator 6",
+            "value": 10.00,
+            "evaluation": [
+              {
+                "id": "0195c745-d638-762c-aee0-7a76812d3ced",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0b00-7e4f-988c-92134842c203",
+                "criteria": "Indikator 6",
+                "realization_id": "0195b7ed-0b03-7ec0-bf30-0a04b390b485",
+                "realization": "\u003c80% dari target",
+                "achievement": 80.00,
+                "score": 4.80,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "0195c745-d638-7a85-88c4-d3f57acd04f2",
+                "type": "ROUTINE",
+                "criteria_id": "0195b7ed-0b00-7e4f-988c-92134842c203",
+                "criteria": "Indikator 6",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b7ed-0b03-708d-b031-923c8ab8461c",
+                "number": 1,
+                "name": "lebih dari target",
+                "value": 110.00
+              },
+              {
+                "id": "0195b7ed-0b03-7012-a1d3-a7915671b54d",
+                "number": 2,
+                "name": "Sesuai dari target",
+                "value": 100.00
+              },
+              {
+                "id": "0195b7ed-0b03-7ec0-bf30-0a04b390b485",
+                "number": 3,
+                "name": "\u003c80% dari target",
+                "value": 80.00
+              },
+              {
+                "id": "0195b7ed-0b03-7a6d-ad53-a24c3b20486d",
+                "number": 4,
+                "name": "\u003c50% dari target",
+                "value": 50.00
+              },
+              {
+                "id": "0195b7ed-0b03-7a6f-b501-ed07036056a5",
+                "number": 5,
+                "name": "\u003c25% dari target",
+                "value": 20.00
+              }
+            ]
+          }
+        ]
+      },
+      "non_routine": {
+        "id": "0195b7ed-0af0-733a-b52d-d4538ef77ed2",
+        "name": "Muhammad Arief",
+        "value": 10.00,
+        "criteria": [
+          {
+            "id": "0195b7ed-0b01-7b8e-8c4d-22d7d6ee9092",
+            "number": 1,
+            "name": "Project 1",
+            "value": 80.00,
+            "evaluation": [
+              {
+                "id": "0195c745-d638-77f6-bb21-ac6919fb8a4b",
+                "type": "NON_ROUTINE",
+                "criteria_id": "0195b7ed-0b01-7b8e-8c4d-22d7d6ee9092",
+                "criteria": "Project 1",
+                "realization_id": "0195b7ed-0b03-7d43-8a1f-1915553fee84",
+                "realization": "100%",
+                "achievement": 100.00,
+                "score": 8.00,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "0195c745-d638-78de-aae6-2acb0e119e4f",
+                "type": "NON_ROUTINE",
+                "criteria_id": "0195b7ed-0b01-7b8e-8c4d-22d7d6ee9092",
+                "criteria": "Project 1",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b7ed-0b03-7d43-8a1f-1915553fee84",
+                "number": 1,
+                "name": "100%",
+                "value": 100.00
+              },
+              {
+                "id": "0195b7ed-0b03-7840-af07-d2939ae857a2",
+                "number": 2,
+                "name": "75%",
+                "value": 70.00
+              },
+              {
+                "id": "0195b7ed-0b03-703a-916d-2754e331665e",
+                "number": 3,
+                "name": "50%",
+                "value": 40.00
+              },
+              {
+                "id": "0195b7ed-0b03-7930-902b-c73bb8eadfa9",
+                "number": 4,
+                "name": "25%",
+                "value": 20.00
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [
+        {
+          "id": "0195c745-d63d-7481-b79e-57406829f185",
+          "things_to_leave": "test",
+          "positive_things": "test",
+          "assessor_number": 1,
+          "assessor_nip": "0115060840",
+          "assessor": "Bachtiar Brian"
+        },
+        {
+          "id": "0195c745-d63d-7b67-a2a8-2046d1a7bb73",
+          "things_to_leave": null,
+          "positive_things": null,
+          "assessor_number": 2,
+          "assessor_nip": "0112020490",
+          "assessor": "Tamara"
+        }
+      ],
+      "behavior": {
+        "id": "0195b69c-cbf4-7a6d-b24c-fd3f5b53d7b7",
+        "name": "Testing 2 Jul-Dec Behavior",
+        "value": 20,
+        "criteria": [
+          {
+            "id": "0195b69c-cbf6-7d0b-b69d-9aa8d5b8ea83",
+            "number": 1,
+            "name": "Indikator 1 ",
+            "evaluation": [
+              {
+                "id": "019619b4-bfd5-750e-aec2-8973549d51c1",
+                "type": "BEHAVIOR",
+                "criteria_id": "0195b69c-cbf6-7d0b-b69d-9aa8d5b8ea83",
+                "criteria": "Indikator 1 ",
+                "realization_id": "0195b69c-cbf7-7290-9988-67a0561de00d",
+                "realization": "Kriteria 5",
+                "achievement": 100,
+                "score": 4,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "019619b4-bfda-7ec0-b156-60fc98d60748",
+                "type": "BEHAVIOR",
+                "criteria_id": "0195b69c-cbf6-7d0b-b69d-9aa8d5b8ea83",
+                "criteria": "Indikator 1 ",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "0195b69c-cbf7-78ef-ab96-46c4d73657d7",
+                "name": "Kriteria 2",
+                "value": 1
+              },
+              {
+                "id": "0195b69c-cbf7-71f4-95e3-e6f8a8bf8771",
+                "name": "Kriteria 3",
+                "value": 3
+              },
+              {
+                "id": "0195b69c-cbf7-771c-bdf7-705dddc04d02",
+                "name": "Kriteria 4",
+                "value": 4
+              },
+              {
+                "id": "0195b69c-cbf7-7290-9988-67a0561de00d",
+                "name": "Kriteria 5",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
