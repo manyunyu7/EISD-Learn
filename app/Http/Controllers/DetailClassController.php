@@ -163,7 +163,7 @@ class DetailClassController extends Controller
         $copy_new_class->created_at = Carbon::now();
         $copy_new_class->updated_at = Carbon::now();
         $copy_new_class->can_be_accessed = $data->can_be_accessed;
-        $copy_new_class->is_visible = $data->is_visible;
+        $copy_new_class->is_visible = "t";
         $copy_new_class->category_id = $data->category_id;
         $copy_new_class->text_descriptions = $data->text_descriptions;
         $copy_new_class->pin = $data->pin;
