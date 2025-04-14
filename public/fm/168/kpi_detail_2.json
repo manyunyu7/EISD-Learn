@@ -1,0 +1,571 @@
+{
+    "meta": {
+      "status": 200,
+      "message": "KPI DETAIL 2",
+      "success": true
+    },
+    "result": {
+      "id": "01961d71-2c6b-76c4-9f59-a13398f2544e",
+      "reference_id": "01961ae5-0d98-728a-99d2-7868ff1a191a",
+      "nip": "0122122073",
+      "name": "Muhammad Arief",
+      "head_nip": "0115060840",
+      "head_name": "Bachtiar Brian",
+      "job_title": "IT Administration Officer",
+      "gender": "LAKI-LAKI",
+      "unit_business_id": "8997302f-0d4f-49ce-8d1d-b4a556d88291",
+      "unit_business": "CORP",
+      "division_id": "79838f7c-8af0-4635-9071-9f6b7f584617",
+      "division": "Digital Management (IT)",
+      "department_id": "aee89b40-db79-4807-a411-8d0aedb25fdc",
+      "department": "Support \u0026 Maintenance",
+      "group_employee_id": "c901c900-8598-4f29-9315-e48d9b835cbc",
+      "group_employee": "Unit Head",
+      "type": "KPI",
+      "status": "WAITING_APPROVAL",
+      "created_at": "2025-04-10T02:04:38.385557Z",
+      "updated_at": "2025-04-10T02:04:38.385557Z",
+      "period": {
+        "period_id": "019614a3-2c52-7466-95c9-90537904564f",
+        "period_detail_id": "019614a3-2c53-7141-bf4c-9bea2c240064",
+        "name": "Periode Q2",
+        "start_date": "2025-10-01",
+        "end_date": "2025-12-31"
+      },
+      "routine": {
+        "id": "01961ae5-0d98-728a-99d2-7868ff1a191a",
+        "name": "Muhammad Arief",
+        "value": 60.00,
+        "criteria": [
+          {
+            "id": "01961ae5-0da1-7e4a-afaa-7345ea44839c",
+            "number": 1,
+            "name": "Fuel Efficiency \u0026 Consumption Performance",
+            "value": 20.00,
+            "evaluation": [
+              {
+                "id": "01961d71-2c72-7a75-be1a-725cd97c67d8",
+                "type": "ROUTINE",
+                "criteria_id": "01961ae5-0da1-7e4a-afaa-7345ea44839c",
+                "criteria": "Fuel Efficiency \u0026 Consumption Performance",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "01961d71-2c72-7b1b-83e5-39879c254ecf",
+                "type": "ROUTINE",
+                "criteria_id": "01961ae5-0da1-7e4a-afaa-7345ea44839c",
+                "criteria": "Fuel Efficiency \u0026 Consumption Performance",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961d5a-13b8-760d-aee7-c6d6ef39c6a9",
+                "number": 1,
+                "name": "Bahan Bakar Tersisa Banyak",
+                "value": 110.00
+              },
+              {
+                "id": "01961d5a-13b8-790e-a686-71b052d1bc9f",
+                "number": 2,
+                "name": "Bahakn Bakar Pas",
+                "value": 100.00
+              },
+              {
+                "id": "01961d5a-13b8-7b03-ba53-35209c66003d",
+                "number": 3,
+                "name": "Bahan Bakar Kurang",
+                "value": 50.00
+              },
+              {
+                "id": "01961d5a-13b8-7c02-a817-d1bccacbc80a",
+                "number": 4,
+                "name": "Bahan Bakar Meledak",
+                "value": 20.00
+              }
+            ]
+          },
+          {
+            "id": "01961ae5-0da1-7084-87b6-9531e7c93ecd",
+            "number": 2,
+            "name": "Efisiensi Operasional \u0026 Optimalisasi Jadwal\t",
+            "value": 90.00,
+            "evaluation": [
+              {
+                "id": "01961d71-2c72-72c1-b9c7-c223bb872b7b",
+                "type": "ROUTINE",
+                "criteria_id": "01961ae5-0da1-7084-87b6-9531e7c93ecd",
+                "criteria": "Efisiensi Operasional \u0026 Optimalisasi Jadwal\t",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "01961d71-2c72-701f-94e0-2128d910149e",
+                "type": "ROUTINE",
+                "criteria_id": "01961ae5-0da1-7084-87b6-9531e7c93ecd",
+                "criteria": "Efisiensi Operasional \u0026 Optimalisasi Jadwal\t",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961d5a-13b8-7212-8b3f-3f7c83665382",
+                "number": 1,
+                "name": "Tepat Waktu",
+                "value": 110.00
+              },
+              {
+                "id": "01961d5a-13b8-73a6-b7a9-e9ca40fc6721",
+                "number": 2,
+                "name": "Selisih \u003c1 Jam dari Jadwal",
+                "value": 100.00
+              },
+              {
+                "id": "01961d5a-13b8-76d9-84fb-896b793b1b5d",
+                "number": 3,
+                "name": "Terlambat lebih dari 1 Jam",
+                "value": 50.00
+              },
+              {
+                "id": "01961d5a-13b8-7317-8e97-3ea5851152c4",
+                "number": 4,
+                "name": "10 Armada Tidak Berangkat",
+                "value": 20.00
+              }
+            ]
+          }
+        ]
+      },
+      "non_routine": {
+        "id": "01961ae5-0d98-728a-99d2-7868ff1a191a",
+        "name": "Muhammad Arief",
+        "value": 10.00,
+        "criteria": [
+          {
+            "id": "01961ae5-0d9b-7a5b-ab62-4d515c7d8843",
+            "number": 1,
+            "name": "Pembebasan Bungurasih",
+            "value": 50.00,
+            "evaluation": [
+              {
+                "id": "01961d71-2c72-7ca3-a7af-87beb157a35c",
+                "type": "NON_ROUTINE",
+                "criteria_id": "01961ae5-0d9b-7a5b-ab62-4d515c7d8843",
+                "criteria": "Pembebasan Bungurasih",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "01961d71-2c72-79ab-8039-b91f61edc9a9",
+                "type": "NON_ROUTINE",
+                "criteria_id": "01961ae5-0d9b-7a5b-ab62-4d515c7d8843",
+                "criteria": "Pembebasan Bungurasih",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961d5a-13c1-7f8f-aebf-bdab7c1f1969",
+                "number": 1,
+                "name": "Menguasai Terminal ",
+                "value": 110.00
+              },
+              {
+                "id": "01961d5a-13c1-7809-bcdb-6e30cba1b516",
+                "number": 2,
+                "name": "Berhasil Beroperasi",
+                "value": 100.00
+              },
+              {
+                "id": "01961d5a-13c1-7493-a578-b044f38103c6",
+                "number": 3,
+                "name": "Gagal Beroperasi ",
+                "value": 20.00
+              }
+            ]
+          },
+          {
+            "id": "01961ae5-0d9b-71c3-a9ab-be96f8825afb",
+            "number": 2,
+            "name": "Pembebasan Rawamangun",
+            "value": 60.00,
+            "evaluation": [
+              {
+                "id": "01961d71-2c72-7ad2-84a0-34af6588df1b",
+                "type": "NON_ROUTINE",
+                "criteria_id": "01961ae5-0d9b-71c3-a9ab-be96f8825afb",
+                "criteria": "Pembebasan Rawamangun",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": "01961d71-2c72-7947-b4ea-de8c1e4a9941",
+                "type": "NON_ROUTINE",
+                "criteria_id": "01961ae5-0d9b-71c3-a9ab-be96f8825afb",
+                "criteria": "Pembebasan Rawamangun",
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0.00,
+                "score": 0.00,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961d5a-13c1-7e71-bb7a-cc2af4dec941",
+                "number": 1,
+                "name": "Menguasai Terminal",
+                "value": 110.00
+              },
+              {
+                "id": "01961d5a-13c1-734c-a019-1adc2cee394f",
+                "number": 2,
+                "name": "Berhasil Beroperasi ",
+                "value": 100.00
+              },
+              {
+                "id": "01961d5a-13c1-7191-b616-8d3cc2bf7eae",
+                "number": 3,
+                "name": "Gagal Beroperasi",
+                "value": 20.00
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [
+        {
+          "id": "01961d71-2c76-73fc-82fc-17799892927a",
+          "things_to_leave": "Sit tempor quisquam ",
+          "positive_things": "Facilis quis placeat",
+          "assessor_number": 1,
+          "assessor_nip": "0115060840",
+          "assessor": "Bachtiar Brian"
+        },
+        {
+          "id": "01961d71-2c76-7d49-b583-42a7fef68cbb",
+          "things_to_leave": null,
+          "positive_things": null,
+          "assessor_number": 2,
+          "assessor_nip": "0112020490",
+          "assessor": "Tamara"
+        }
+      ],
+      "behavior": {
+        "id": "01961dbc-be39-7916-ab93-ea27d66b817b",
+        "name": "Template BH 1 Oktober 2025 - 31 Des 2025",
+        "value": 20,
+        "criteria": [
+          {
+            "id": "01961dbc-be3b-763d-b7b4-426c631e0e0e",
+            "number": 1,
+            "name": "Tepat Waktu",
+            "evaluation": [
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961dbc-be3d-785c-946a-9552fb9bfca4",
+                "name": "Sangat Iya",
+                "value": 4
+              },
+              {
+                "id": "01961dbc-be3d-7018-972b-60d2c3aff2ca",
+                "name": "Iya",
+                "value": 3
+              },
+              {
+                "id": "01961dbc-be3d-72e5-858b-cb4623aa6a47",
+                "name": "Tidak",
+                "value": 2
+              },
+              {
+                "id": "01961dbc-be3d-740f-84f9-c31e3d96d223",
+                "name": "Sangat Tidak",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "01961dbc-be3b-74fc-976e-62ce2d5e6292",
+            "number": 2,
+            "name": "Kerapihan dan Kesopanan Berpakaian",
+            "evaluation": [
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961dbc-be3d-71c6-8997-d4d1132a83e6",
+                "name": "Sangat Iya",
+                "value": 4
+              },
+              {
+                "id": "01961dbc-be3d-7421-b547-60c47093714b",
+                "name": "Iya",
+                "value": 3
+              },
+              {
+                "id": "01961dbc-be3d-7365-b5b9-e0cce8f84b07",
+                "name": "Tidak",
+                "value": 2
+              },
+              {
+                "id": "01961dbc-be3d-7a5a-a1de-00a01dc01ce6",
+                "name": "Sangat Tidak",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "01961dbc-be3b-74a8-8477-a3b607f17ca4",
+            "number": 3,
+            "name": "Kegigihan dalam Bekerja",
+            "evaluation": [
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961dbc-be3d-7e05-9562-01c5d7974292",
+                "name": "Sangat Iya",
+                "value": 4
+              },
+              {
+                "id": "01961dbc-be3d-7823-8899-652299e247fa",
+                "name": "Iya",
+                "value": 3
+              },
+              {
+                "id": "01961dbc-be3d-7080-932e-dd1e58aa09c4",
+                "name": "Tidak",
+                "value": 2
+              },
+              {
+                "id": "01961dbc-be3d-7a27-8c4c-a7f45becae47",
+                "name": "Sangat Tidak",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "01961dbc-be3b-7c09-9857-509de4e18fcd",
+            "number": 4,
+            "name": "Kemampuan Pidato",
+            "evaluation": [
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 1,
+                "assessor_nip": "0115060840",
+                "assessor": "Bachtiar Brian",
+                "is_active": true,
+                "is_last_assessor": false,
+                "processed_at": null
+              },
+              {
+                "id": null,
+                "type": "BEHAVIOR",
+                "criteria_id": null,
+                "criteria": null,
+                "realization_id": null,
+                "realization": null,
+                "achievement": 0,
+                "score": 0,
+                "assessor_number": 2,
+                "assessor_nip": "0112020490",
+                "assessor": "Tamara",
+                "is_active": false,
+                "is_last_assessor": true,
+                "processed_at": null
+              }
+            ],
+            "criteria_detail": [
+              {
+                "id": "01961dbc-be3d-786b-ac8d-e4c125bac252",
+                "name": "Sangat Iya",
+                "value": 4
+              },
+              {
+                "id": "01961dbc-be3d-7e2c-88e6-ad90f7d8a113",
+                "name": "Iya",
+                "value": 3
+              },
+              {
+                "id": "01961dbc-be3d-7a92-855a-26ec38574fab",
+                "name": "Tidak",
+                "value": 2
+              },
+              {
+                "id": "01961dbc-be3d-7960-a155-aba8aeb2715c",
+                "name": "Sangat Tidak",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
