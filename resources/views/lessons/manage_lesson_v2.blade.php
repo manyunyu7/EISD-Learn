@@ -407,7 +407,7 @@
                             
                                             Swal.fire({
                                                 title: "Konfirmasi Duplikasi",
-                                                text: "Apakah Anda ingin menduplikasi konten exam di dalamnya?",
+                                                text: "Apakah Anda ingin menduplikasi beserta konten exam yang ada di dalamnya?",
                                                 icon: "warning",
                                                 showCancelButton: true,
                                                 showDenyButton: true,
