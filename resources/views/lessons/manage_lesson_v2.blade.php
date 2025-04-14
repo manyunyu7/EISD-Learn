@@ -273,8 +273,11 @@
                                                 <span class="link-collapse">View Class</span>
                                             </a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item"
+                                            {{-- <a class="dropdown-item"
                                                 href="{{ url('/class/class-list/mentor-duplicate-class/' . $data->id) }}">
+                                                <span class="link-collapse">Duplicate Class</span>
+                                            </a> --}}
+                                            <a class="dropdown-item duplicateClassBtn" href="#" id="duplicateClassBtn" data-url="{{ url('/class/class-list/mentor-duplicate-class/' . $data->id) }}">
                                                 <span class="link-collapse">Duplicate Class</span>
                                             </a>
                                         </li>
@@ -394,6 +397,43 @@
                                 });
                             </script>
 
+                            {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    document.querySelectorAll(".duplicateClassBtn").forEach((btn) => {
+                                        btn.addEventListener("click", function (e) {
+                                            e.preventDefault();
+                                            let duplicateUrl = this.getAttribute("data-url");
+                            
+                                            Swal.fire({
+                                                title: "Konfirmasi Duplikasi",
+                                                text: "Apakah Anda ingin menduplikasi konten exam di dalamnya?",
+                                                icon: "warning",
+                                                showCancelButton: true,
+                                                showDenyButton: true,
+                                                confirmButtonText: "Ya",
+                                                denyButtonText: "Tidak",
+                                                cancelButtonText: "Batal",
+                                                confirmButtonColor: "#28a745",
+                                                denyButtonColor: "#dc3545",
+                                                cancelButtonColor: "#6c757d",
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    // Redirect ke URL
+                                                    window.location.href = duplicateUrl + "?confirmation=yes";
+                                                } else if (result.isDenied) {
+                                                    window.location.href = duplicateUrl + "?confirmation=no";
+                                                }else if (result.isCancaled) {
+                                                    Swal.fire("Aksi dibatalkan", "Konten tidak diduplikasi", "info");
+                                                }
+                                            });
+                                        });
+                                    });
+                                });
+                            </script>
+                            
+
+
                             <script>
                                 // Wait for the DOM to fully load
                                 document.addEventListener('DOMContentLoaded', function() {
@@ -440,7 +480,6 @@
                                     });
                                 });
                             </script>
-
                         </div>
                     </div>
                 </div>

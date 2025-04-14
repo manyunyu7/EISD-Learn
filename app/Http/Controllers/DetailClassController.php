@@ -149,6 +149,10 @@ class DetailClassController extends Controller
     public function mentor_duplicateClass(Request $request, $id){
         // Original Class --> lessons
         $data = Lesson::findOrFail($id);
+
+        // Confirmation Duplicates
+        $confirmation = $request->query('confirmation');
+
         // Create Duplicate Class
         $copy_new_class = new Lesson();
         $copy_new_class->course_title = $data->course_title."_COPY";
@@ -171,6 +175,7 @@ class DetailClassController extends Controller
         $copy_new_class->lesson_id_duplicate_by = $id;
 
         $data_course_section = CourseSection::where('course_id', $id)->orderBy('section_order')->get();
+
 
         // Find Exam Sessions Content
         $examSession_Ids = $data_course_section->pluck('quiz_session_id')->filter(fn($id) => $id != '-');
@@ -206,99 +211,124 @@ class DetailClassController extends Controller
         if($copy_new_class->save()){
             // $copy_new_course_section = new CourseSection();
             foreach ($data_course_section as $section) {
-                $copy_new_course_section = new CourseSection();
-                $copy_new_course_section->section_order = $section->section_order;
-                $copy_new_course_section->section_title = $section->section_title;
-                $copy_new_course_section->quiz_session_id = $section->quiz_session_id;
-                $copy_new_course_section->course_id = $copy_new_class->id;
-                $copy_new_course_section->section_content = $section->section_content;
-                $copy_new_course_section->section_video = $section->section_video;
-                $copy_new_course_section->created_at = Carbon::now();
-                $copy_new_course_section->updated_at = Carbon::now();
-                $copy_new_course_section->can_be_accessed = $section->can_be_accessed;
-                $copy_new_course_section->enable_absensi = $section->enable_absensi;
-                // Simpan data
-                if (!$copy_new_course_section->save()) {
-                    // Jika gagal menyimpan, kembalikan pesan error
-                    return redirect('lesson/manage_v2')->with(['error' => 'Duplikat Kelas Gagal Dibuat!']);
-                }
-            }
-
-
-            // Proses duplikasi to Exams Table
-            $newExamId = [];
-            foreach($examData as $data_exam){
-                $copy_new_exam = new Exam();
-                $copy_new_exam->title        = $data_exam->title . "_COPY";
-                $copy_new_exam->image        = $data_exam->image;
-                $copy_new_exam->start_date   = $data_exam->start_date;
-                $copy_new_exam->end_date     = $data_exam->end_date;
-                $copy_new_exam->instruction  = $data_exam->instruction;
-                $copy_new_exam->description  = $data_exam->description;
-                $copy_new_exam->randomize    = $data_exam->random_sort_exam;
-                $copy_new_exam->can_access   = $data_exam->can_access;
-                $copy_new_exam->is_deleted   = $data_exam->is_deleted;
-                $copy_new_exam->created_by   = $data_exam->created_by;
-                $copy_new_exam->created_at   = Carbon::now(); 
-                $copy_new_exam->updated_at   = Carbon::now();
-                if ($copy_new_exam->save()) {
-                    $newExamId[$data_exam->id] = $copy_new_exam->id; // Simpan ID baru
-                }
-
-            }
-
-            // Proses duplikasi to Exam Sessions Table
-            foreach($exam_ids as $data_examSession){
-                $copy_new_exam_session = new ExamSession();
-                $copy_new_exam_session->start_date = Carbon::now()->addDays(1);
-                $copy_new_exam_session->end_date        = Carbon::now()->addDays(8);
-                $copy_new_exam_session->instruction   = $data_examSession->instruction;
-                $copy_new_exam_session->description     = $data_examSession->description;
-                $copy_new_exam_session->can_access  = $data_examSession->can_access;
-                $copy_new_exam_session->public_access  = $data_examSession->public_access;
-                $copy_new_exam_session->show_result_on_end    = $data_examSession->show_result_on_end;
-                $copy_new_exam_session->time_limit_minute   = $data_examSession->time_limit_minute;
-                $copy_new_exam_session->allow_review   = $data_examSession->allow_review;
-                $copy_new_exam_session->show_score_on_review   = $data_examSession->show_score_on_review;
-                $copy_new_exam_session->allow_multiple   = $data_examSession->allow_multiple;
-                // $copy_new_exam_session->exam_id   = $newExamId;
-                $copy_new_exam_session->created_by   = $data_examSession->created_by;
-                $copy_new_exam_session->questions_answers   = $data_examSession->questions_answers;
-                $copy_new_exam_session->created_at   = Carbon::now(); 
-                $copy_new_exam_session->updated_at   = Carbon::now();
-                $copy_new_exam_session->exam_type   = $data_examSession->exam_type;
-                $copy_new_exam_session->random_sort_exam   = $data_examSession->random_sort_exam;
-                // Pastikan exam_id baru yang digunakan
-                if (isset($newExamId[$data_examSession->exam_id])) {
-                    $copy_new_exam_session->exam_id = $newExamId[$data_examSession->exam_id];
-                }
-                $copy_new_exam_session->save();
-            }
-
-
-            // Proses duplikasi to Exam Question Answers Table
-            foreach($examData_qna as $qnaCollection){
-                // Looping untuk setiap soal di dalam Collection
-                foreach($qnaCollection as $data_exam_qna){
-                    $copy_new_qna = new ExamQuestionAnswers();
-                    $copy_new_qna->question       = $data_exam_qna->question;
-                    $copy_new_qna->image          = $data_exam_qna->image;
-                    $copy_new_qna->question_type  = $data_exam_qna->question_type;
-                    $copy_new_qna->correct_answer = $data_exam_qna->correct_answer;
-                    $copy_new_qna->order          = $data_exam_qna->order;
-                    $copy_new_qna->choices        = $data_exam_qna->choices;
-                    // $copy_new_qna->exam_id        = $newExamId;
-                    $copy_new_qna->created_by     = $data_exam_qna->created_by;
-                    $copy_new_qna->created_at     = Carbon::now();
-                    $copy_new_qna->updated_at     = Carbon::now();
-                    // Gunakan exam_id yang baru
-                    if (isset($newExamId[$data_exam_qna->exam_id])) {
-                        $copy_new_qna->exam_id = $newExamId[$data_exam_qna->exam_id];
+                if($section->quiz_session_id == '-'){
+                    $copy_new_course_section = new CourseSection();
+                    $copy_new_course_section->section_order = $section->section_order;
+                    $copy_new_course_section->section_title = $section->section_title;
+                    $copy_new_course_section->quiz_session_id = $section->quiz_session_id;
+                    $copy_new_course_section->course_id = $copy_new_class->id;
+                    $copy_new_course_section->section_content = $section->section_content;
+                    $copy_new_course_section->section_video = $section->section_video;
+                    $copy_new_course_section->created_at = Carbon::now();
+                    $copy_new_course_section->updated_at = Carbon::now();
+                    $copy_new_course_section->can_be_accessed = $section->can_be_accessed;
+                    $copy_new_course_section->enable_absensi = $section->enable_absensi;
+                    // Simpan data
+                    if (!$copy_new_course_section->save()) {
+                        // Jika gagal menyimpan, kembalikan pesan error
+                        return redirect('lesson/manage_v2')->with(['error' => 'Duplikat Kelas Gagal Dibuat!']);
                     }
-                    $copy_new_qna->save();
                 }
             }
 
+
+            if($confirmation == "yes"){
+                // Proses duplikasi Material Content to course_sections Table
+                foreach ($data_course_section as $section) {
+                    if($section->quiz_session_id != '-'){
+                        $copy_new_course_section = new CourseSection();
+                        $copy_new_course_section->section_order = $section->section_order;
+                        $copy_new_course_section->section_title = $section->section_title;
+                        $copy_new_course_section->quiz_session_id = $section->quiz_session_id;
+                        $copy_new_course_section->course_id = $copy_new_class->id;
+                        $copy_new_course_section->section_content = $section->section_content;
+                        $copy_new_course_section->section_video = $section->section_video;
+                        $copy_new_course_section->created_at = Carbon::now();
+                        $copy_new_course_section->updated_at = Carbon::now();
+                        $copy_new_course_section->can_be_accessed = $section->can_be_accessed;
+                        $copy_new_course_section->enable_absensi = $section->enable_absensi;
+                        // Simpan data
+                        if (!$copy_new_course_section->save()) {
+                            // Jika gagal menyimpan, kembalikan pesan error
+                            return redirect('lesson/manage_v2')->with(['error' => 'Duplikat Kelas Gagal Dibuat!']);
+                        }
+                    }
+                }
+                // Proses duplikasi to Exams Table
+                $newExamId = [];
+                foreach($examData as $data_exam){
+                    $copy_new_exam = new Exam();
+                    $copy_new_exam->title        = $data_exam->title . "_COPY";
+                    $copy_new_exam->image        = $data_exam->image;
+                    $copy_new_exam->start_date   = $data_exam->start_date;
+                    $copy_new_exam->end_date     = $data_exam->end_date;
+                    $copy_new_exam->instruction  = $data_exam->instruction;
+                    $copy_new_exam->description  = $data_exam->description;
+                    $copy_new_exam->randomize    = $data_exam->random_sort_exam;
+                    $copy_new_exam->can_access   = $data_exam->can_access;
+                    $copy_new_exam->is_deleted   = $data_exam->is_deleted;
+                    $copy_new_exam->created_by   = $data_exam->created_by;
+                    $copy_new_exam->created_at   = Carbon::now(); 
+                    $copy_new_exam->updated_at   = Carbon::now();
+                    if ($copy_new_exam->save()) {
+                        $newExamId[$data_exam->id] = $copy_new_exam->id; // Simpan ID baru
+                    }
+
+                }
+
+                // Proses duplikasi to Exam Sessions Table
+                foreach($exam_ids as $data_examSession){
+                    $copy_new_exam_session = new ExamSession();
+                    $copy_new_exam_session->start_date = Carbon::now()->addDays(1);
+                    $copy_new_exam_session->end_date        = Carbon::now()->addDays(8);
+                    $copy_new_exam_session->instruction   = $data_examSession->instruction;
+                    $copy_new_exam_session->description     = $data_examSession->description;
+                    $copy_new_exam_session->can_access  = $data_examSession->can_access;
+                    $copy_new_exam_session->public_access  = $data_examSession->public_access;
+                    $copy_new_exam_session->show_result_on_end    = $data_examSession->show_result_on_end;
+                    $copy_new_exam_session->time_limit_minute   = $data_examSession->time_limit_minute;
+                    $copy_new_exam_session->allow_review   = $data_examSession->allow_review;
+                    $copy_new_exam_session->show_score_on_review   = $data_examSession->show_score_on_review;
+                    $copy_new_exam_session->allow_multiple   = $data_examSession->allow_multiple;
+                    // $copy_new_exam_session->exam_id   = $newExamId;
+                    $copy_new_exam_session->created_by   = $data_examSession->created_by;
+                    $copy_new_exam_session->questions_answers   = $data_examSession->questions_answers;
+                    $copy_new_exam_session->created_at   = Carbon::now(); 
+                    $copy_new_exam_session->updated_at   = Carbon::now();
+                    $copy_new_exam_session->exam_type   = $data_examSession->exam_type;
+                    $copy_new_exam_session->random_sort_exam   = $data_examSession->random_sort_exam;
+                    // Pastikan exam_id baru yang digunakan
+                    if (isset($newExamId[$data_examSession->exam_id])) {
+                        $copy_new_exam_session->exam_id = $newExamId[$data_examSession->exam_id];
+                    }
+                    $copy_new_exam_session->save();
+                }
+
+                // Proses duplikasi to Exam Question Answers Table
+                foreach($examData_qna as $qnaCollection){
+                    // Looping untuk setiap soal di dalam Collection
+                    foreach($qnaCollection as $data_exam_qna){
+                        $copy_new_qna = new ExamQuestionAnswers();
+                        $copy_new_qna->question       = $data_exam_qna->question;
+                        $copy_new_qna->image          = $data_exam_qna->image;
+                        $copy_new_qna->question_type  = $data_exam_qna->question_type;
+                        $copy_new_qna->correct_answer = $data_exam_qna->correct_answer;
+                        $copy_new_qna->order          = $data_exam_qna->order;
+                        $copy_new_qna->choices        = $data_exam_qna->choices;
+                        // $copy_new_qna->exam_id        = $newExamId;
+                        $copy_new_qna->created_by     = $data_exam_qna->created_by;
+                        $copy_new_qna->created_at     = Carbon::now();
+                        $copy_new_qna->updated_at     = Carbon::now();
+                        // Gunakan exam_id yang baru
+                        if (isset($newExamId[$data_exam_qna->exam_id])) {
+                            $copy_new_qna->exam_id = $newExamId[$data_exam_qna->exam_id];
+                        }
+                        $copy_new_qna->save();
+                    }
+                }
+            }
+
+            
             
 
             if($copy_new_course_section->save()){
