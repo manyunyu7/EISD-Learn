@@ -116,7 +116,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href={{ url('/home') }}>Home</a></li>
                     <li class="breadcrumb-item"><a href={{ url('/exam/manage-exam-v2') }}>Exam</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Exam Information</li>
                 </ol>
             </nav>
         </div>
@@ -354,7 +354,7 @@
                             <button type="button" class="btn btn-danger"
                                 style="width: 45%; margin-right: 5px;">Cancel</button>
                             <button type="submit" id="saveEditBtn" class="btn btn-primary"
-                                style="width: 45%; margin-left: 5px;">Next</button>
+                                style="width: 45%; margin-left: 5px;">Update</button>
                         </div>
                     </div>
                 </div>
