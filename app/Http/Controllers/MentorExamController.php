@@ -661,6 +661,7 @@ class MentorExamController extends Controller
             $examSession->description = 'n/a';
             $examSession->can_access = 'n/a';
             $examSession->time_limit_minute = $request->times_limit;
+            $examSession->exam_type = $request->exam_type;
             $examSession->random_sort_exam = $request->randomize;
 
             // Translate user input to 'y' and 'n'
