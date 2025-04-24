@@ -194,11 +194,7 @@ Route::group(['middleware’' => ['auth']], function () {
 
 
 
-        Route::resource('users', UserManagementController::class);
-        Route::post('/users/{id}/reset-password', 'UserManagementController@resetPassword')->name('users.resetPassword');
-        Route::get('/export-excel', 'UserManagementController@exportExcel')->name('users.export.excel');
-
-
+        
 
         Route::prefix("lesson")->group(function () {
 
@@ -316,6 +312,11 @@ Route::group(['middleware’' => ['auth']], function () {
 
     // ROUTING KHUSUS SUPERADMIN
     Route::group(['middleware' => ['superadmin']], function () {
+        Route::resource('users', UserManagementController::class);
+        Route::post('/users/{id}/reset-password', 'UserManagementController@resetPassword')->name('users.resetPassword');
+        Route::get('/export-excel', 'UserManagementController@exportExcel')->name('users.export.excel');
+
+
         Route::prefix("lesson")->group(function () {
             Route::get('/{id}/dashboard', 'ClassDashboardController@viewClassDashboard');
             Route::get('category', ['uses' => 'LessonCategoryController@manage']);

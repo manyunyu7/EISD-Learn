@@ -26,6 +26,18 @@
     </a>
 </li>
 
+{{-- Manage Mentor--}}
+<li class="nav-item {{ Request::is('users') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('users') }}" style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/manage_user.png"
+             class="nav-ok-logo"
+             style="width: 14%; height: auto; margin-top: 5px; margin-right: 10px; color: white;"
+        >
+        <p style="margin: 0; {{ (Request::is('users')) ? 'color: white !important;' : '' }}"
+           class="{{ (Request::is('users')) ? 'text-white active' : '' }}">Manage Users</p>
+    </a>
+</li>
+
 {{-- CLASS CATEGORY--}}
 <li class="nav-item {{ Request::is('lesson/category') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('lesson/category') }}" style="display: flex; align-items: center;">
