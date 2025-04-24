@@ -195,4 +195,55 @@ class UserManagementController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
-    }}
+    }
+
+    public function show(){
+
+    }
+
+    public function exportExcel(Request $request)
+    {
+        // Fetch departments, positions, locations
+        $departments = DB::connection('ithub')
+            ->table('m_departments')
+            ->select('id', 'code', 'name')
+            ->get()
+            ->keyBy('id');
+    
+        $positions = DB::connection('ithub')
+            ->table('m_group_employees')
+            ->select('id', 'name')
+            ->get()
+            ->keyBy('id');
+    
+        $locations = DB::connection('ithub')
+            ->table('m_unit_businesses')
+            ->select('id', 'code', 'name')
+            ->get()
+            ->keyBy('id');
+    
+        // Filter users if department is selected
+        $usersQuery = User::query();
+    
+        if ($request->filled('department')) {
+            $usersQuery->where('department_id', $request->department);
+        }
+    
+        // Fetch and map user data
+        $users = $usersQuery->get()->map(function ($user) use ($departments, $locations, $positions) {
+            $user->department_name = $departments->get($user->department_id)->name ?? 'Unknown';
+            $user->position_name = $positions->get($user->position_id)->name ?? 'Unknown';
+            $user->location_names = collect(json_decode($user->location, true))->map(function ($loc) use ($locations) {
+                return $locations->get($loc['site_id'])->name ?? 'Unknown';
+            });
+            return $user;
+        });
+    
+        if ($request->dump == true) {
+            return $users;
+        }
+    
+        return view('users.export_view', compact('users', 'departments'));
+    }
+    
+}

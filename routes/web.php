@@ -196,6 +196,9 @@ Route::group(['middleware’' => ['auth']], function () {
 
         Route::resource('users', UserManagementController::class);
         Route::post('/users/{id}/reset-password', 'UserManagementController@resetPassword')->name('users.resetPassword');
+        Route::get('/export-excel', 'UserManagementController@exportExcel')->name('users.export.excel');
+
+
 
         Route::prefix("lesson")->group(function () {
 

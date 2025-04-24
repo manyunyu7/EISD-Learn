@@ -42,6 +42,10 @@
                             <a href="{{ url('users/create') }}">
                                 <button class="btn btn-primary btn-border btn-round mb-3">Create New User</button>
                             </a>
+                            <a href="{{ route('users.export.excel') }}">
+                                <button class="btn btn-primary btn-border btn-round mb-3">Export</button>
+                            </a>
+                            
                             <!-- Responsive Table -->
                             <div class="table-responsive">
                                 <table id="basic-datatables" class="table table-bordered">
