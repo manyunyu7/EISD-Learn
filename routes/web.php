@@ -316,6 +316,9 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::post('/users/{id}/reset-password', 'UserManagementController@resetPassword')->name('users.resetPassword');
         Route::get('/export-excel', 'UserManagementController@exportExcel')->name('users.export.excel');
 
+        Route::get('/import-view', 'UserManagementController@showForm')->name('users.import.form');
+        Route::post('/import-excel', 'UserManagementController@importExcel')->name('users.import.excel');
+
 
         Route::prefix("lesson")->group(function () {
             Route::get('/{id}/dashboard', 'ClassDashboardController@viewClassDashboard');

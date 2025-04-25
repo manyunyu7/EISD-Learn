@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 
 class UserManagementController extends Controller
 {
@@ -244,6 +246,92 @@ class UserManagementController extends Controller
         }
     
         return view('users.export_view', compact('users', 'departments'));
+    }
+
+
+    public function showForm()
+    {
+        return view('users.import_excel');
+    }
+
+    public function importExcel(Request $request, User $user)
+    {
+        if($request->submit_type === 'preview'){
+            $request->validate([
+                'excel_file' => 'required|file|mimes:xlsx,xls',
+            ]);
+    
+            $file = $request->file('excel_file');
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+    
+            // Skip header row (index 0)
+            $data = array_slice($rows, 1);
+    
+            $db_learning_user = User::select('id', 'name')->get();
+    
+            $results = [];
+    
+            foreach($data as $i => $row){
+                $excel_id_learning = $row[0];
+                $excel_name = $row[2];
+                $excel_realta_code = $row[6];
+                $excel_valid_name = $row[4];
+                $excel_target = $row[7];
+                // $match = $db_learning_user->firstWhere('id',  $excel_id_learning);
+                // Ambil data user yang cocok berdasarkan ID
+                $user = User::find($excel_id_learning);
+                if($user){
+                    $results[] = [
+                        'excel_name' => $excel_name,
+                        'match' => $user ? $user->name : null,
+                        'realta_code' => $excel_realta_code,
+                        'valid_name' => $excel_valid_name,
+                        'adj_target' => $excel_target
+                    ];
+                }
+            }
+
+            return view('users.excel_preview', compact('results'));
+
+        }
+        elseif($request->submit_type === 'process'){
+            $results = unserialize(base64_decode($request->excel_data));
+
+            foreach($results as $i => $row){
+                $excel_id_learning = $row[0];
+
+                return($excel_id_learning);
+                $excel_name = $row[2];
+                $excel_realta_code = $row[6];
+                $excel_valid_name = $row[4];
+                $excel_target = $row[7];
+                // Ambil data user yang cocok berdasarkan ID
+                $user = User::find($excel_id_learning);
+                
+
+                if($excel_target == 'TRUE' && $user){
+                    // Matching record menggunakan ID
+                    if($user){
+                        // Jika Match, pada record tersbut tambahkan informasi $excel_realta_code pada kolom realta_code
+                        $user->realta_code = $excel_realta_code;
+                        $user->save();
+                    }
+                }
+                elseif($excel_target == 'FALSE' && $user){
+                    // Matching record menggunakan ID
+                    if($user){
+                        // Jika Match, update record pada kolom name dengan nilai $excel_valid_name dan tambahkan nilai b$excel_realta_code pada kolom realta_code
+                        $user->name = $excel_valid_name;
+                        $user->realta_code = $excel_realta_code;
+                        $user->save();
+                    }
+                }
+            }
+            return redirect()->route('users.excel_preview', compact('results'))->with('success', 'Integrasi data berhasil!');
+        }
+
     }
     
 }
