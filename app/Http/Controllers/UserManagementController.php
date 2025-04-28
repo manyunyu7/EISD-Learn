@@ -284,6 +284,7 @@ class UserManagementController extends Controller
                 $user = User::find($excel_id_learning);
                 if($user){
                     $results[] = [
+                        'id_learning' => $excel_id_learning,
                         'excel_name' => $excel_name,
                         'match' => $user ? $user->name : null,
                         'realta_code' => $excel_realta_code,
@@ -300,38 +301,47 @@ class UserManagementController extends Controller
             $results = unserialize(base64_decode($request->excel_data));
 
             foreach($results as $i => $row){
-                $excel_id_learning = $row[0];
+                $excel_id_learning = $row['id_learning'] ?? null;
+                $excel_realta_code = $row['realta_code'] ?? null;
+                $excel_name = $row['excel_name'] ?? null;
+                $excel_valid_name = $row['valid_name'] ?? null;
+                $excel_target = $row['adj_target'] ?? null;
 
-                return($excel_id_learning);
-                $excel_name = $row[2];
-                $excel_realta_code = $row[6];
-                $excel_valid_name = $row[4];
-                $excel_target = $row[7];
+                // Lakukan pengecekan null sebelum mencari user
+                if ($excel_id_learning === null) {
+                    continue; // Lewati baris ini jika ID tidak ada
+                }
+
                 // Ambil data user yang cocok berdasarkan ID
                 $user = User::find($excel_id_learning);
                 
 
-                if($excel_target == 'TRUE' && $user){
-                    // Matching record menggunakan ID
-                    if($user){
-                        // Jika Match, pada record tersbut tambahkan informasi $excel_realta_code pada kolom realta_code
-                        $user->realta_code = $excel_realta_code;
-                        $user->save();
-                    }
-                }
-                elseif($excel_target == 'FALSE' && $user){
-                    // Matching record menggunakan ID
-                    if($user){
-                        // Jika Match, update record pada kolom name dengan nilai $excel_valid_name dan tambahkan nilai b$excel_realta_code pada kolom realta_code
-                        $user->name = $excel_valid_name;
-                        $user->realta_code = $excel_realta_code;
-                        $user->save();
-                    }
-                }
-            }
-            return redirect()->route('users.excel_preview', compact('results'))->with('success', 'Integrasi data berhasil!');
-        }
+                // Hanya proses jika user ditemukan di database
+                if($user){
+                    // Bandingkan dengan string 'TRUE' atau 'FALSE' (sesuaikan jika di Excel beda)
+                    // Pertimbangkan case-insensitive dan trim spasi jika perlu
+                    $target_upper = strtoupper(trim((string)$excel_target));
 
+                    if($target_upper === 'TRUE'){
+                        $user->realta_code = $excel_realta_code;
+                        $user->save();
+                    }
+                    elseif($target_upper === 'FALSE'){
+                        // Hanya update jika excel_valid_name tidak kosong/null
+                        if (!empty($excel_valid_name)) {
+                             $user->name = $excel_valid_name;
+                        }
+                        $user->realta_code = $excel_realta_code;
+                        $user->save();
+                    }
+                     // else: apa yang terjadi jika adj_target bukan TRUE atau FALSE?
+                }
+                // else: apa yang terjadi jika user dengan ID tsb tidak ditemukan di DB?
+            }
+            // return redirect()->route('users.excel_preview', compact('results'))->with('success', 'Integrasi data berhasil!');
+            return redirect()->route('users.import.form')->with('success', 'Integrasi data berhasil!');
+        }
+        return redirect()->back()->withErrors(['msg' => 'Tipe submit tidak valid.']);
     }
     
 }
