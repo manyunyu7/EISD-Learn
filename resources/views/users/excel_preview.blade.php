@@ -10,10 +10,9 @@
                 @csrf
                 <input type="hidden" name="submit_type" value="process">
                 <input type="hidden" name="excel_data" value="{{ base64_encode(serialize($results)) }}">
-                <button type="submit">Proses Integrasi Sekarang</button>
+                <button type="submit" class="btn btn-primary">Proses Integrasi Sekarang</button>
             </form>
-            
-            <table class="table table-bordered">
+            <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
                         {{-- <th>ID Learning</th> --}}
