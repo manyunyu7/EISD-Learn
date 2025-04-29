@@ -244,6 +244,7 @@ class UserManagementController extends Controller
         if ($request->dump == true) {
             return $users;
         }
+
     
         return view('users.export_view', compact('users', 'departments'));
     }

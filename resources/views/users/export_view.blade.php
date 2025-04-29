@@ -207,6 +207,7 @@
                                     <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Realta Code</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Role</th>
@@ -220,6 +221,7 @@
                                         @foreach ($users as $user)
                                             <tr>
                                                 <td>{{ $user->id }}</td>
+                                                <td>{{ $user->realta_code }}</td>
                                                 <td>{{ $user->name }}</td>
                                                 <td>{{ $user->email }}</td>
                                                 <td>{{ $user->role }}</td>
