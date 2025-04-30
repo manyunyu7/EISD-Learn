@@ -569,6 +569,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
+                                                <th scope="col">ID Learning</th>
                                                 <th scope="col">Nama</th>
                                                 <th scope="col">Department</th>
                                                 <th scope="col">Position</th>
@@ -580,6 +581,7 @@
                                             @forelse ($userFilters as $data)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $data->id }}</td>
                                                     <td>{{ $data->name }}</td>
                                                     <td>{{ $data->department_name }}</td>
                                                     <td>{{ $data->position_name }}</td>
@@ -779,22 +781,25 @@
                                 <thead>
                                     <tr>
                                         <th style="background-color: #F8F8F8">
-                                            <h3><b>Rank</b></h3>
+                                            <h5><b>Rank</b></h5>
                                         </th>
                                         <th style="background-color: #F8F8F8">
-                                            <h3><b>Nama Siswa</b></h3>
+                                            <h5><b>ID Learning</b></h5>
                                         </th>
                                         <th style="background-color: #F8F8F8">
-                                            <h3><b>Penyelesaian Materi</b></h3>
+                                            <h5><b>Nama Siswa</b></h5>
                                         </th>
                                         <th style="background-color: #F8F8F8">
-                                            <h3><b>Pre-Test</b></h3>
+                                            <h5><b>Penyelesaian Materi</b></h5>
                                         </th>
                                         <th style="background-color: #F8F8F8">
-                                            <h3><b>Quiz</b></h3>
+                                            <h5><b>Pre-Test</b></h5>
                                         </th>
                                         <th style="background-color: #F8F8F8">
-                                            <h3><b>Post-Test</b></h3>
+                                            <h5><b>Quiz</b></h5>
+                                        </th>
+                                        <th style="background-color: #F8F8F8">
+                                            <h5><b>Post-Test</b></h5>
                                         </th>
                                         {{-- <th style="background-color: #F8F8F8"><h3><b>Total Score</b></h3></th> --}}
                                     </tr>
@@ -805,6 +810,7 @@
                                             <td>
                                                 {{ $data->rank }}
                                             </td>
+                                            <td>{{ $data->student_id }}</td>
                                             <td style="overflow: hidden; white-space: nowrap;">
                                                 <div style="display: flex; align-items: center;">
                                                     <div

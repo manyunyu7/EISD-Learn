@@ -111,7 +111,7 @@ class VisualizationDetailController extends Controller
             $userFilters = $query->get();
         } else {
             $query = DB::table('student_lesson')
-                ->select('users.mdln_username', 'users.name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
+                ->select('users.id', 'users.mdln_username', 'users.name', 'users.position_id', 'users.department_id', 'lessons.course_title', 'users.location')
                 ->where(function ($query) use ($locationId) {
                     if (!empty($locationId) && $locationId !== 'all') {
                         $query->whereJsonContains('users.location', ['site_id' => $locationId]);
@@ -203,8 +203,6 @@ class VisualizationDetailController extends Controller
                 $key->locations = [];
             }
         }
-
-
 
 
 
