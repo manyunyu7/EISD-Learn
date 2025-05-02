@@ -40,7 +40,6 @@ class Lesson extends Model
         return $fullImgPath;
     }
 
-
     protected $fillable = [
         'id',
         'course_title',

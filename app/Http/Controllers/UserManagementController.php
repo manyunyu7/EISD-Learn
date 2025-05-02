@@ -3,10 +3,15 @@
 namespace App\Http\Controllers; // Make sure this matches
 
 use App\Models\User;
+use App\Models\Lesson;
+use App\Models\StudentLesson;
+use App\Models\CourseSection;
+use App\Models\StudentSection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use StudentSectionCompleted;
 
 
 class UserManagementController extends Controller
@@ -343,6 +348,43 @@ class UserManagementController extends Controller
             return redirect()->route('users.import.form')->with('success', 'Integrasi data berhasil!');
         }
         return redirect()->back()->withErrors(['msg' => 'Tipe submit tidak valid.']);
+    }
+
+    public function moreInforUser(Request $request, $userID){
+        $user = User::findOrFail($userID);
+
+        // $studentLessons = StudentLesson::with(['lessons.id'])->where('student_id', $userID)->get();
+        $studentLessons = StudentLesson::where('student_id', $userID)->get();
+
+        $progress_class = [];
+        foreach($studentLessons as $itemLesson){
+            // lakukan join dengan course_section menggunakan course_section.course_id = itemLesson->course_id kemudian join lagi dengan tabel tudent _section menggunakan course_section.id = student_section.section_id
+            $lessonId = $itemLesson->lesson_id;
+            $lessonTitle = Lesson::where('id', $lessonId)->value('course_title');
+            $joinDate = Lesson::where('id', $lessonId)->value('created_at');
+            // Ambil semua section dari lesson ini
+            $sections = CourseSection::where('course_id', $lessonId)->get();
+            $totalSections = $sections->count();
+            $sectionIds = $sections->pluck('id');
+
+            // Hitung berapa section yang diselesaikan oleh user
+            $completedSections = StudentSection::where('student_id', $userID)->whereIn('section_id', $sectionIds)->count();
+
+            $progress = $totalSections > 0 ? round(($completedSections / $totalSections) * 100, 2) : 0 ;
+
+            $progress_class[] = [
+                'lesson_id' => $lessonId,
+                'lesson_title' => $lessonTitle,
+                'join_date' => $joinDate,
+                'progress' => $progress.'%',
+                'completed' => $completedSections,
+                'total' => $totalSections,
+            ];
+
+        }
+
+
+        return view('users.more_info', compact('user', 'progress_class'));
     }
     
 }
