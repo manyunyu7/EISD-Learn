@@ -320,6 +320,8 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::post('/import-excel', 'UserManagementController@importExcel')->name('users.import.excel');
 
         Route::get('/users/more-info/{userID}', 'UserManagementController@moreInforUser')->name('users.more.info');
+        Route::get('/export-view-itub', 'UserManagementController@showTable')->name('users.export.ithub');
+
 
         Route::prefix("lesson")->group(function () {
             Route::get('/{id}/dashboard', 'ClassDashboardController@viewClassDashboard');

@@ -48,6 +48,9 @@
                             <a href="{{ route('users.import.form') }}">
                                 <button class="btn btn-primary btn-border btn-round mb-3">Import</button>
                             </a>
+                            <a href="{{ route('users.export.ithub') }}">
+                                <button class="btn btn-primary btn-border btn-round mb-3">Export Ithub</button>
+                            </a>
                             
                             <!-- Responsive Table -->
                             <div class="table-responsive">

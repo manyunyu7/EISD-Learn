@@ -259,6 +259,7 @@ class UserManagementController extends Controller
     {
         return view('users.import_excel');
     }
+    
 
     public function importExcel(Request $request, User $user)
     {
@@ -348,6 +349,36 @@ class UserManagementController extends Controller
             return redirect()->route('users.import.form')->with('success', 'Integrasi data berhasil!');
         }
         return redirect()->back()->withErrors(['msg' => 'Tipe submit tidak valid.']);
+    }
+
+    public function showTable()
+    {
+
+        $users_learning = DB::connection('mysql')
+            ->table('users')
+            ->where(function ($query) {
+                $query->whereNull('mdln_username')
+                      ->orWhere('mdln_username', '');
+            })
+            ->select('id', 'name', 'mdln_username')
+            ->get();   
+
+        // Ambil semua mdln_username dari koneksi mysql/learning
+        $mdlnUsernames = DB::connection('mysql')
+            ->table('users')
+            ->pluck('mdln_username')
+            ->filter() // Menghapus null dan empty string
+            ->toArray();
+
+        // Ambil user dari itHub yang id-nya tidak ada di mdln_username
+        $data_user_unclear = DB::connection('ithub')
+            ->table('users')
+            ->whereNotIn('id', $mdlnUsernames)
+            ->select('id','name', 'email')
+            ->get();
+
+        
+        return view('users.export_view_ithub', compact('data_user_unclear', 'users_learning'));
     }
 
     public function moreInforUser(Request $request, $userID){
