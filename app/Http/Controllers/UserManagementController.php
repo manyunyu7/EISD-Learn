@@ -374,8 +374,9 @@ class UserManagementController extends Controller
         $data_user_unclear = DB::connection('ithub')
             ->table('users')
             ->whereNotIn('id', $mdlnUsernames)
-            ->select('id','name', 'email')
+            ->select('id','name', 'email', 'is_active')
             ->get();
+
 
         
         return view('users.export_view_ithub', compact('data_user_unclear', 'users_learning'));

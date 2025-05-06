@@ -188,6 +188,7 @@
                                         <th>ID ITHUB</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Status Active</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -196,6 +197,7 @@
                                                 <td>{{ $user->id }}</td>
                                                 <td>{{ $user->name }}</td>
                                                 <td>{{ $user->email }}</td>
+                                                <td>{{ $user->is_active ? 'Ya' : 'Tidak' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -208,7 +210,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Data Learning tanpa MDLN Username</div>
-                            <div><p>Tersedia di Database ITHUB namun belum terintegrasi dengan Database Learning</p></div>
+                            <div><p>Tersedia di Database Learning namun belum memiliki ID ITHUB</p></div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
