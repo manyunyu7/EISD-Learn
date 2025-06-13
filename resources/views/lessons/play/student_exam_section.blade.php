@@ -28,6 +28,10 @@
                                 <h5>Multiple Attempt: {{ $session->allow_multiple === 'y' ? 'Ya' : 'Tidak' }}</h5>
                             </div>
 
+                            <div class="form-group">
+                                <h5>Minimal Passing Score: {{ $session->standard_pass_score }}</h5>
+                            </div>
+
 
                             <!-- Number of Questions -->
                             <div class="form-group">

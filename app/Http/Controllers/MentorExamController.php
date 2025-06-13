@@ -693,6 +693,7 @@ class MentorExamController extends Controller
         $user_id = Auth::id();
         $this->validate($request, [
             'times_limit' => 'required|integer|min:1',
+            'standard_pass_score' => 'required|integer|min:1',
             'title' => 'required|string|min:1',
             'start_date' => 'required|date|before:end_date',
             'end_date' => 'required|date|after:start_date',
@@ -701,6 +702,10 @@ class MentorExamController extends Controller
             'times_limit.required' => 'Batas waktu wajib diisi.',
             'times_limit.integer' => 'Batas waktu harus berupa angka.',
             'times_limit.min' => 'Batas waktu minimal adalah 1.',
+
+            'standard_pass_score.required' => 'Batas waktu wajib diisi.',
+            'standard_pass_score.integer' => 'Batas waktu harus berupa angka.',
+            'standard_pass_score.min' => 'Batas waktu minimal adalah 1.',
 
             'title.required' => 'Judul wajib diisi.',
             'title.string' => 'Judul harus berupa teks.',
@@ -751,6 +756,7 @@ class MentorExamController extends Controller
             $examSession->description = 'n/a';
             $examSession->can_access = 'n/a';
             $examSession->time_limit_minute = $request->times_limit;
+            $examSession->standard_pass_score = $request->standard_pass_score;
             $examSession->random_sort_exam = $request->randomize;
 
             //translate user input to y and n for positive and negative case

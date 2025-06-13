@@ -721,14 +721,25 @@ class CourseSectionController extends Controller
             // Get the index of the current section in the sectionOrder array
             $currentSectionIndex = array_search($currentSectionId, $sectionOrder);
 
+            // Tambahkan ini untuk debugging:
+            // dd('Current Section ID: ' . $currentSectionId, 'Section Order: ', $sectionOrder);
+
+
             // Loop through the sectionOrder array from the beginning until the current section index
             for ($i = 0; $i < $currentSectionIndex; $i++) {
 
                 //active section within the loop
                 $currentIndexedSection = CourseSection::find($sectionOrder[$i]);
 
+                // Debugging: Pastikan section ini valid
+                // dd('Checking Preceding Section:', $currentIndexedSection->id, $currentIndexedSection->section_title);
+
+
                 if ($currentIndexedSection!=null && $currentIndexedSection->quiz_session_id!=null) {
                     $zquizSession = ExamSession::find($currentIndexedSection->quiz_session_id);
+
+                    // Debugging: Pastikan quiz session ditemukan
+                    // dd('Quiz Session Found:', $zquizSession);
 
                     if ($zquizSession) {
                         $now = Carbon::now($timezone)->toDateTimeString();
@@ -744,6 +755,13 @@ class CourseSectionController extends Controller
                         ->where('is_finished', 'y')
                         ->whereNotNull('finished_at')
                         ->get();
+
+                        $zcheckIfStudentAlreadyTake = $zquizResults->count();
+
+                        // Debugging: Lihat hasil query exam_takers
+                        // dd('Exam Takers Results for Section ' . $sectionOrder[$i] . ':', $zquizResults->toArray());
+                        // dd('Number of Attempts: ' . $zcheckIfStudentAlreadyTake);
+    
 
 
                         $zexam = Exam::find("$zquizSession->exam_id");
@@ -766,6 +784,37 @@ class CourseSectionController extends Controller
                                 'link' => $zlink
                             ], 401);
                         }
+
+
+                        // --- Tambahkan logika ini untuk mengecek standard_pass_score ---
+                        if ($zquizSession->standard_pass_score !== null) {
+                            $totalScoreAchieved = 0;
+                            if ($zcheckIfStudentAlreadyTake > 0) {
+                                // Ambil skor tertinggi jika siswa telah mengambil ujian lebih dari sekali
+                                $highestScore = $zquizResults->max('current_score');
+                                $totalScoreAchieved = $highestScore;
+                            }
+
+                            // Debugging: Periksa skor yang dicapai dan standar
+                            // dd('Section ID: ' . $zsectionId,
+                            //    'Section Title: ' . $zsectionTitle,
+                            //    'Standard Pass Score: ' . $zquizSession->standard_pass_score,
+                            //    'Achieved Score: ' . $totalScoreAchieved,
+                            //    'Comparison: ' . ($totalScoreAchieved < $zquizSession->standard_pass_score ? 'Failed' : 'Passed'));
+
+
+                            if ($totalScoreAchieved < $zquizSession->standard_pass_score) {
+                                $isEligibleStudent = false;
+                                $zlink = url()->to("/course/$lessonId/section/$zsectionId");
+                                $message = "Anda belum mencapai Skor Lulus Minimum (" . $zquizSession->standard_pass_score . ") pada Quiz Bagian **$zsectionTitle**. Mohon selesaikan quiz tersebut dengan skor yang memenuhi.";
+                                return response()->view('errors.sesval', [
+                                    'sectionTitle' => $zsectionTitle,
+                                    'message' => $message,
+                                    'link' => $zlink
+                                ], 401);
+                            }
+                        }
+                        // --- Akhir penambahan logika standard_pass_score ---
                     }
                 }
 
