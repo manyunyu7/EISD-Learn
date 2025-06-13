@@ -448,8 +448,8 @@
                 @if (Auth::user()->role=="student")
                     @php
                         $totalSections = count($sections);
-                        $sectionsTaken = count($sectionTakenByStudent);
-                        $percentage = $totalSections > 0 ? round(($sectionsTaken / $totalSections) * 100) : 0;
+                        // $sectionsTaken = count($sectionTakenByStudent);
+                        $percentage = $totalSections > 0 ? round(($completedAndPassedSectionsCount / $totalSections) * 100) : 0;
 
                         // Determine progress bar color based on percentage
                         if ($percentage > 50) {
@@ -459,7 +459,8 @@
                         } else {
                             $progressBarColor = '#007bff'; // Regular (Blue)
                         }
-                        $finished = $sectionsTaken >= $totalSections;
+                        // $finished = $sectionsTaken >= $totalSections;
+                        $finished = $completedAndPassedSectionsCount;
                     @endphp
 
 
@@ -519,7 +520,8 @@
                                 <p style="display: inline;">
                                     @php
                                         $totalSections = count($sections);
-                                        $sectionsTaken = count($sectionTakenByStudent);
+                                        // $sectionsTaken = count($sectionTakenByStudent);
+                                        $sectionsTaken = $completedAndPassedSectionsCount; 
                                         $percentage = round(($sectionsTaken / $totalSections) * 100);
                                         $finished = $sectionsTaken >= $totalSections;
                                     @endphp
@@ -624,6 +626,7 @@
                                 </a>
                             @endif
                         </div>
+                        
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {

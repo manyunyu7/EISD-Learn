@@ -614,23 +614,131 @@ class CourseSectionController extends Controller
             ->where('student_id', $user_id)
             ->exists();
 
+        // Fetch all sections for the lesson
+        $allSectionsInLesson = CourseSection::where('course_id', $lessonId)
+        ->orderByRaw("CAST(section_order AS UNSIGNED)")
+        ->get();
+
+        $completedAndPassedSectionsCount = 0;
+
+        foreach ($allSectionsInLesson as $section) {
+            // Cek apakah siswa sudah mengambil section ini
+            $isSectionTaken = StudentSection::where('section_id', $section->id)
+            ->where('student_id', Auth::id())
+            ->exists();
+
+            if ($isSectionTaken) {
+                // Jika section ini adalah kuis
+                if ($section->quiz_session_id != null && $section->quiz_session_id != "" && $section->quiz_session_id != "null" && $section->quiz_session_id != "-" && $section->quiz_session_id != "Tidak Ada Quiz") {
+                    $examSession = ExamSession::find($section->quiz_session_id);
+
+                    if ($examSession && $examSession->standard_pass_score !== null) {
+                        // Ambil skor tertinggi siswa untuk kuis ini
+                        $highestScoreAchieved = (int) ExamTaker::where('user_id', Auth::id())
+                                    ->where('course_section_flag', $section->id)
+                                    ->where('session_id', $section->quiz_session_id)
+                                    ->where('is_finished', 'y')
+                                    ->whereNotNull('finished_at')
+                                    // MODIFIKASI PENTING DI SINI:
+                                    ->selectRaw('MAX(CAST(current_score AS SIGNED)) as max_score')
+                                    ->value('max_score'); // Gunakan value() untuk mengambil satu nilai saja
+
+
+                        // Ambil skor tertinggi siswa untuk kuis ini
+                        $examTakerRecords = ExamTaker::where('user_id', Auth::id())
+                        ->where('course_section_flag', $section->id)
+                        ->where('is_finished', 'y')
+                        ->whereNotNull('finished_at')
+                        ->get(); // Ambil semua record untuk debugging
+
+                        
+                        // !!! DEBUGGING KRITIS DI SINI !!!
+                        // dd(
+                        //     '--- DEBUGGING QUIZ SECTION ---',
+                        //     'Section Title: ' . $section->section_title,
+                        //     'Section ID: ' . $section->id,
+                        //     'Quiz Session ID: ' . $section->quiz_session_id,
+                        //     'Standard Pass Score: ' . $examSession->standard_pass_score,
+                        //     'Raw Exam Taker Records for this Quiz:', $examTakerRecords->toArray(), // LIHAT ISINYA!
+                        //     'Highest Score Achieved (from ExamTakers): ' . $highestScoreAchieved,
+                        //     'Is Highest Score >= Standard Pass Score? ' . ($highestScoreAchieved >= $examSession->standard_pass_score ? 'TRUE' : 'FALSE')
+                        // );
+                        // !!! Hapus dd() ini setelah debugging !!!
+
+                        // Jika skor tertinggi mencapai passing score, hitung sebagai lulus
+                        if ($highestScoreAchieved >= $examSession->standard_pass_score) {
+                            $completedAndPassedSectionsCount++;
+                        }
+                        // dd('Checking Highest Score:', $completedAndPassedSectionsCount);
+                        
+                    } else {
+                        // Jika ini kuis tapi tidak ada passing score (atau examSession tidak ditemukan),
+                        // anggap lulus jika sudah diambil (sesuaikan dengan kebutuhan Anda)
+                        $completedAndPassedSectionsCount++;
+                    }
+                } else {
+                    // Jika bukan kuis, anggap lulus jika sudah diambil
+                    $completedAndPassedSectionsCount++;
+                }
+            }
+        }
+
         // Total Section dalam sebuah course
         $total_section = DB::table('course_section AS cs')
             ->where('cs.course_id', $lessonId)
             ->count();
+        
+        // --- DEBUGGING UTAMA SEBELUM MENYIMPAN STATUS KELAS ---
+        // dd(
+        //     "Final Check for Lesson Completion:",
+        //     "Lesson ID: " . $lessonId,
+        //     "Total Sections: " . $total_section,
+        //     "Completed & Passed Sections Count: " . $completedAndPassedSectionsCount. " of ". $total_section . " sections",
+        //     "Are all sections completed and passed? " . ($completedAndPassedSectionsCount == $total_section ? 'TRUE' : 'FALSE')
+        // );
 
         // Total Section yang telah diambil/dikerjakan student
-        $sectionTakenOnCourseCount = DB::table('student_section as ss')
-            ->leftJoin('users', 'users.id', '=', 'ss.student_id')
-            ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
-            ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-            ->where('ss.student_id', Auth::id())
-            // ->where('users.is_testing', '=', 'n')
-            ->where('lessons.id', $lessonId)
-            ->count();
+        // $completedAndPassedSectionsCount = DB::table('student_section as ss')
+        //     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+        //     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+        //     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+        //     ->where('ss.student_id', Auth::id())
+        //     // ->where('users.is_testing', '=', 'n')
+        //     ->where('lessons.id', $lessonId)
+        //     ->count();
+
+        // Sekarang, gunakan $completedAndPassedSectionsCount ini untuk menentukan completion
+        if ($completedAndPassedSectionsCount == $total_section) {
+            $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
+            if ($u_student_lesson && $u_student_lesson->learn_status != 1) { // Pastikan $u_student_lesson ada
+                $u_student_lesson->finished_at = Carbon::now();
+                $u_student_lesson->learn_status = 1;
+                $u_student_lesson->save();
+                // dd("Lesson status set to COMPLETED."); // Debugging
+
+            }
+        } else {
+            // Penting: Jika sebelumnya sudah 100% completed tapi sekarang tidak lagi,
+            // Anda mungkin ingin mengubah statusnya kembali menjadi belum selesai (misalnya 0)
+            // Atau biarkan saja sampai semua syarat terpenuhi lagi.
+            $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
+            if ($u_student_lesson && $u_student_lesson->learn_status == 1) {
+                // Debugging: Cek status sebelum reset
+                // dd('Attempting to reset learn_status.',
+                //    'Current learn_status in DB: ' . $u_student_lesson->learn_status,
+                //    'Should be 0? ' . ($u_student_lesson->learn_status == 1 ? 'YES' : 'NO'));
+
+                $u_student_lesson->learn_status = 0; // Atau nilai lain yang menandakan belum completed
+                $u_student_lesson->finished_at = null; // Hapus timestamp selesai
+                $u_student_lesson->save();
+
+                // Debugging: Konfirmasi reset
+                //  dd('learn_status reset to 0 and saved. New status: ' . $u_student_lesson->learn_status);
+            }
+        }
 
 
-        // return $sectionTakenOnCourseCount;
+        // return $completedAndPassedSectionsCount;
         // $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         // Fetch all sections for the lesson
         $student_sections = DB::select("select * from student_section ");
@@ -678,16 +786,36 @@ class CourseSectionController extends Controller
                 ->where('student_id', Auth::id())
                 ->exists();
 
+            // Tambahkan logika ini untuk kuis
+            if ($isTaken && $section->quiz_session_id !== null && $section->quiz_session_id != "" && $section->quiz_session_id != "null" && $section->quiz_session_id != "-") {
+                $examSession = ExamSession::find($section->quiz_session_id);
+                if ($examSession && $examSession->standard_pass_score !== null) {
+                    $highestScoreAchieved = (int) ExamTaker::where('user_id', Auth::id())
+                                                            ->where('course_section_flag', $section->id)
+                                                            ->where('is_finished', 'y')
+                                                            ->whereNotNull('finished_at')
+                                                            ->max('current_score'); // Pastikan 'current_score'
+
+                    // Jika ini adalah kuis dan siswa belum lulus, maka isTaken adalah false
+                    if ($highestScoreAchieved < $examSession->standard_pass_score) {
+                        $isTaken = false;
+                    }
+                    $isTaken = true;
+                }
+            }
+
             // Add the 'isTaken' attribute to the section object
             $section->isTaken = $isTaken;
             $section->user_id = Auth::id();
-            $section->isCurrent = $sectionId;
+            // $section->isCurrent = $sectionId;
+            $section->isCurrent = ($section->section_id == $currentSectionId); // Perbaikan di sini
 
-            if ($section->section_id == $sectionId) {
-                $section->isCurrent = true;
-            } else {
-                $section->isCurrent = false;
-            }
+
+            // if ($section->section_id == $sectionId) {
+            //     $section->isCurrent = true;
+            // } else {
+            //     $section->isCurrent = false;
+            // }
         }
 
         $section = $sections;
@@ -821,7 +949,7 @@ class CourseSectionController extends Controller
 
                 // Check if the section from sectionOrder exists in completedSections
                 if (!in_array($sectionOrder[$i], $completedSections)) {
-                    if ($sectionTakenOnCourseCount != 0) {
+                    if ($completedAndPassedSectionsCount != 0) {
                         $zsectionTitle = $currentIndexedSection->section_title;
                         $zsectionId = $currentIndexedSection->id;
                         $zlink = url()->to("/course/$lessonId/section/$zsectionId");
@@ -944,22 +1072,22 @@ class CourseSectionController extends Controller
 
                 $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
 
-                $sectionTakenOnCourseCount = DB::table('student_section as ss')
-                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
-                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
-                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-                    ->where('ss.student_id', Auth::id())
-                    ->where('lessons.id', $lessonId)
-                    // ->where('users.is_testing', '=', 'n')
-                    ->count();
+                // $completedAndPassedSectionsCount = DB::table('student_section as ss')
+                //     ->leftJoin('users', 'users.id', '=', 'ss.student_id')
+                //     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
+                //     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
+                //     ->where('ss.student_id', Auth::id())
+                //     ->where('lessons.id', $lessonId)
+                //     // ->where('users.is_testing', '=', 'n')
+                //     ->count();
 
-                if ($sectionTakenOnCourseCount == $total_section) {
-                    if ($u_student_lesson->learn_status != 1) {
-                        $u_student_lesson->finished_at = Carbon::now();
-                        $u_student_lesson->learn_status = 1;
-                        $u_student_lesson->save();
-                    }
-                }
+                // if ($completedAndPassedSectionsCount == $total_section) {
+                //     if ($u_student_lesson->learn_status != 1) {
+                //         $u_student_lesson->finished_at = Carbon::now();
+                //         $u_student_lesson->learn_status = 1;
+                //         $u_student_lesson->save();
+                //     }
+                // }
             }
         }
 
@@ -1015,6 +1143,7 @@ class CourseSectionController extends Controller
         }
 
         // return $classInfo;
+        // dd($sections);
 
         $compact = compact(
             'isEligibleStudent',
@@ -1028,7 +1157,8 @@ class CourseSectionController extends Controller
             'prev_section',
             'isStudent',
             'sectionTakenByStudent',
-            'sectionTakenOnCourseCount',
+            // 'completedAndPassedSectionsCount', 
+            'completedAndPassedSectionsCount', 'total_section',
             'isFirstSection',
             'isExam',
             'title',
