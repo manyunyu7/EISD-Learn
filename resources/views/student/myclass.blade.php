@@ -61,12 +61,59 @@
                                         a.student_id = $userID AND b.course_id = $data->id;
                                     ");
                     $totalSections = count($silabusClass);
-                    $total_hasTaken = count($hasTaken);
-                    if ($totalSections != null and $total_hasTaken != null) {
-                        $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                    // $total_hasTaken = count($hasTaken);
+                    // if ($totalSections != null and $total_hasTaken != null) {
+                    //     $progressPercentage = round(($total_hasTaken / $totalSections) * 100);
+                    // } else {
+                    //     $progressPercentage = 0;
+                    // }
+
+                    // LOGIKA BARU UNTUK progressPercentage di myclass.blade.php
+                    $completedAndPassedSectionsCountForMyClass = 0;
+
+                    foreach ($silabusClass as $section) { // Loop melalui semua section di kelas ini
+                        $isSectionTaken = \App\Models\StudentSection::where('section_id', $section->id)
+                                                        ->where('student_id', $userID)
+                                                        ->exists();
+
+                        if ($isSectionTaken) {
+                            // Jika section ini adalah kuis
+                            if ($section->quiz_session_id != null && $section->quiz_session_id != "" && $section->quiz_session_id != "null" && $section->quiz_session_id != "-") {
+                                $examSession = \App\Models\ExamSession::find($section->quiz_session_id);
+
+                                if ($examSession && $examSession->standard_pass_score !== null) {
+                                    $highestScoreAchieved = (int) \App\Models\ExamTaker::where('user_id', $userID)
+                                                                                        ->where('course_section_flag', $section->id)
+                                                                                        ->where('session_id', $section->quiz_session_id) // Tambahkan ini agar lebih spesifik
+                                                                                        ->where('is_finished', 'y')
+                                                                                        ->whereNotNull('finished_at')
+                                                                                        ->selectRaw('MAX(CAST(current_score AS SIGNED)) as max_score')
+                                                                                        ->value('max_score');
+
+                                    if (is_null($highestScoreAchieved)) { // Tangani kasus jika tidak ada record
+                                        $highestScoreAchieved = 0;
+                                    }
+
+                                    if ($highestScoreAchieved >= $examSession->standard_pass_score) {
+                                        $completedAndPassedSectionsCountForMyClass++;
+                                    }
+                                } else {
+                                    // Jika kuis tidak ada passing score atau examSession tidak ditemukan, anggap lulus jika diambil
+                                    $completedAndPassedSectionsCountForMyClass++;
+                                }
+                            } else {
+                                // Jika bukan kuis, anggap lulus jika sudah diambil
+                                $completedAndPassedSectionsCountForMyClass++;
+                            }
+                        }
+                    }
+
+                    if ($totalSections > 0) {
+                        $progressPercentage = round(($completedAndPassedSectionsCountForMyClass / $totalSections) * 100);
                     } else {
                         $progressPercentage = 0;
                     }
+
                 @endphp
 
                 <div class="col-sm-6 col-xl-4">
