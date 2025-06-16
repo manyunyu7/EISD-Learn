@@ -29,7 +29,9 @@
                             </div>
 
                             <div class="form-group">
-                                <h5>Minimal Passing Score: {{ $session->standard_pass_score }}</h5>
+                                @if (isset($session->standard_pass_score) && $session->standard_pass_score > 0)
+                                    <h5>Minimal Passing Score: {{ $session->standard_pass_score }}</h5>
+                                @endif
                             </div>
 
 

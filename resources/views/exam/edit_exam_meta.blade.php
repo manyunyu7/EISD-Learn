@@ -181,6 +181,7 @@
                         </select>
                     </div>
                 </div>
+
                 {{-- Input Batas Waktu --}}
                 <div class="mb-3">
                     <label for="times_limit" class="mb-2">Batas Waktu (Menit)</label>
@@ -194,6 +195,21 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
+
+                {{-- Input Standar Nilai Kelulusan --}}
+                <div class="mb-3">
+                    <label for="" class="mb-2">Standar Nilai Kelulusan<span style="color: red">*</span></label>
+                    <div class="input-group mb-3">
+                        <input name="standard_pass_score" type="text"
+                            class="form-control @error('standard_pass_score') is-invalid @enderror"
+                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    </div>
+                    @error('standard_pass_score')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                
                 {{-- Input Randomize Ujian --}}
                 <div class="mb-3">
                     <label class="mb-2">Random Sort Ujian</label><br>
