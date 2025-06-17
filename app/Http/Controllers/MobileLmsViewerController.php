@@ -27,7 +27,6 @@ class MobileLmsViewerController extends Controller
 
     public function seeClassSections(Request $request, Lesson $lesson)
     {
-        return "Test";
         $userId = $request->user_id;
         Auth::loginUsingId($userId);
         $user_id = Auth::user()->id;
