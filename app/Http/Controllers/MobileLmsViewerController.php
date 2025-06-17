@@ -133,6 +133,7 @@ class MobileLmsViewerController extends Controller
 
     public function seeSection(Request $request, Lesson $lesson, CourseSection $section)
     {
+        return "memew";
         // Find the next and previous sections
         $nextSectionId = null;
         $prevSectionId = null;
