@@ -25,6 +25,7 @@ class MobileLmsViewerController extends Controller
         $mentorName = "";
     }
 
+
     public function seeClassSections(Request $request, Lesson $lesson)
     {
         $userId = $request->user_id;
@@ -52,7 +53,7 @@ class MobileLmsViewerController extends Controller
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
             ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
-            ->leftJoin('lesson_categories', 'lesson_categories.id', '=', 'lessons.category_id') // Left join to quiz_session
+            ->leftJoin('lesson_categories', 'lesson_categories.id', '=', 'lessons.category_id') // Left join to lesson_categories
             ->where('course_section.course_id', $lessonId)
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
@@ -68,16 +69,20 @@ class MobileLmsViewerController extends Controller
                 $section->quiz_session_id !== null &&
                 $section->quiz_session_id != "" &&
                 $section->quiz_session_id != "null" &&
-                $section->quiz_session_id != "-"
+                $section->quiz_session_id != "-" &&
+                $section->quiz_session_id != "Tidak Ada Quiz"
             ) {
 
                 $examSession = ExamSession::find($section->quiz_session_id);
                 if ($examSession && $examSession->standard_pass_score !== null) {
+                    // ✅ FIXED: Use the same query structure as in seeSection for consistency
                     $highestScoreAchieved = (int) ExamTaker::where('user_id', Auth::id())
                         ->where('course_section_flag', $section->section_id)
+                        ->where('session_id', $section->quiz_session_id)  // ✅ ADD: Include session_id for accuracy
                         ->where('is_finished', 'y')
                         ->whereNotNull('finished_at')
-                        ->max('current_score');
+                        ->selectRaw('MAX(CAST(current_score AS SIGNED)) as max_score')  // ✅ IMPROVED: Use selectRaw + value for better accuracy
+                        ->value('max_score');
 
                     // ✅ CHECKMARK LOGIC: Show checkmark only if passed
                     if ($highestScoreAchieved >= $examSession->standard_pass_score) {
@@ -89,6 +94,7 @@ class MobileLmsViewerController extends Controller
                     // If no passing score set, show checkmark if attempted
                     $isTaken = ExamTaker::where('user_id', Auth::id())
                         ->where('course_section_flag', $section->section_id)
+                        ->where('session_id', $section->quiz_session_id)  // ✅ ADD: Include session_id for consistency
                         ->where('is_finished', 'y')
                         ->whereNotNull('finished_at')
                         ->exists();
@@ -101,17 +107,39 @@ class MobileLmsViewerController extends Controller
             }
 
             $fullContentUrl = "";
-            if (str_contains($section->section_video, 's3')) {
+            if ($section->section_video && str_contains($section->section_video, 's3')) {
                 $fullContentUrl = env('AWS_BASE_URL') . $section->section_video;
-            } else {
+            } else if ($section->section_video) {
                 $fullContentUrl = asset('storage/class/content/' . $lessonId . '/' . $section->section_video);
             }
 
             // Add the 'isTaken' attribute to the section object
             $section->isTaken = $isTaken;
             $section->full_content_url = $fullContentUrl;
-        }
 
+            // ✅ ADD: Debug information (remove this in production)
+            if ($request->debug == true && $section->quiz_session_id) {
+                $examSession = ExamSession::find($section->quiz_session_id);
+                if ($examSession && $examSession->standard_pass_score !== null) {
+                    $highestScore = ExamTaker::where('user_id', Auth::id())
+                        ->where('course_section_flag', $section->section_id)
+                        ->where('session_id', $section->quiz_session_id)
+                        ->where('is_finished', 'y')
+                        ->whereNotNull('finished_at')
+                        ->selectRaw('MAX(CAST(current_score AS SIGNED)) as max_score')
+                        ->value('max_score');
+
+                    $section->debug_info = [
+                        'section_title' => $section->section_title,
+                        'quiz_session_id' => $section->quiz_session_id,
+                        'standard_pass_score' => $examSession->standard_pass_score,
+                        'highest_score_achieved' => $highestScore,
+                        'is_passed' => $highestScore >= $examSession->standard_pass_score,
+                        'should_show_checkmark' => $isTaken
+                    ];
+                }
+            }
+        }
 
         $compact = compact(
             'sections',
