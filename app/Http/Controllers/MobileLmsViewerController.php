@@ -118,11 +118,9 @@ class MobileLmsViewerController extends Controller
         );
     }
 
-    // ✅ COMPLETE UPDATED seeSection METHOD
-    // Replace the entire seeSection method with this:
-
     public function seeSection(Request $request, Lesson $lesson, CourseSection $section)
     {
+        return "test";
         // Find the next and previous sections
         $nextSectionId = null;
         $prevSectionId = null;
@@ -268,6 +266,82 @@ class MobileLmsViewerController extends Controller
         $isPrecedingTaken = StudentSection::whereIn('section_id', $precedingSectionIds)
             ->where('student_id', $user_id)
             ->exists();
+
+        // ✅ NEW: Calculate completion progress properly (like in main controller)
+        // Fetch all sections for the lesson
+        $allSectionsInLesson = CourseSection::where('course_id', $lessonId)
+            ->orderByRaw("CAST(section_order AS UNSIGNED)")
+            ->get();
+
+        $completedAndPassedSectionsCount = 0;
+
+        // ✅ NEW: Check each section for completion AND passing score
+        foreach ($allSectionsInLesson as $sectionItem) {
+            // Check if student has taken this section
+            $isSectionTaken = StudentSection::where('section_id', $sectionItem->id)
+                ->where('student_id', Auth::id())
+                ->exists();
+
+            if ($isSectionTaken) {
+                // If this section is a quiz
+                if (
+                    $sectionItem->quiz_session_id != null &&
+                    $sectionItem->quiz_session_id != "" &&
+                    $sectionItem->quiz_session_id != "null" &&
+                    $sectionItem->quiz_session_id != "-" &&
+                    $sectionItem->quiz_session_id != "Tidak Ada Quiz"
+                ) {
+
+                    $examSession = ExamSession::find($sectionItem->quiz_session_id);
+
+                    if ($examSession && $examSession->standard_pass_score !== null) {
+                        // Get student's highest score for this quiz
+                        $highestScoreAchieved = (int) ExamTaker::where('user_id', Auth::id())
+                            ->where('course_section_flag', $sectionItem->id)
+                            ->where('session_id', $sectionItem->quiz_session_id)
+                            ->where('is_finished', 'y')
+                            ->whereNotNull('finished_at')
+                            ->selectRaw('MAX(CAST(current_score AS SIGNED)) as max_score')
+                            ->value('max_score');
+
+                        // If highest score meets passing score, count as completed
+                        if ($highestScoreAchieved >= $examSession->standard_pass_score) {
+                            $completedAndPassedSectionsCount++;
+                        }
+                    } else {
+                        // If quiz but no passing score, count as completed if taken
+                        $completedAndPassedSectionsCount++;
+                    }
+                } else {
+                    // If not a quiz, count as completed if taken
+                    $completedAndPassedSectionsCount++;
+                }
+            }
+        }
+
+        // ✅ NEW: Update lesson completion status
+        $total_section = count($allSectionsInLesson);
+
+        if ($completedAndPassedSectionsCount == $total_section) {
+            $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)
+                ->where('lesson_id', '=', $lessonId)
+                ->first();
+            if ($u_student_lesson && $u_student_lesson->learn_status != 1) {
+                $u_student_lesson->finished_at = Carbon::now();
+                $u_student_lesson->learn_status = 1;
+                $u_student_lesson->save();
+            }
+        } else {
+            // Reset completion status if no longer all sections completed
+            $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)
+                ->where('lesson_id', '=', $lessonId)
+                ->first();
+            if ($u_student_lesson && $u_student_lesson->learn_status == 1) {
+                $u_student_lesson->learn_status = 0;
+                $u_student_lesson->finished_at = null;
+                $u_student_lesson->save();
+            }
+        }
 
         $sectionTakenOnCourseCount = DB::table('student_section as ss')
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
@@ -554,26 +628,26 @@ class MobileLmsViewerController extends Controller
         }
 
         $classInfo = DB::select("SELECT
-                    a.*,
-                    b.name AS mentor_name,
-                    b.profile_url,
-                    COUNT(c.student_id) AS num_students_registered,
-                    CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered
-                    FROM
-                        lessons a
-                    LEFT JOIN
-                        users b ON a.mentor_id = b.id
-                    LEFT JOIN
-                        student_lesson c ON a.id = c.lesson_id
-                    WHERE
-                        EXISTS (
-                            SELECT 1
-                            FROM student_lesson sl
-                            WHERE a.id = $lessonId
-                        )
-                    GROUP BY
-                        a.id, b.name, b.profile_url
-                    LIMIT 1;");
+                a.*,
+                b.name AS mentor_name,
+                b.profile_url,
+                COUNT(c.student_id) AS num_students_registered,
+                CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered
+                FROM
+                    lessons a
+                LEFT JOIN
+                    users b ON a.mentor_id = b.id
+                LEFT JOIN
+                    student_lesson c ON a.id = c.lesson_id
+                WHERE
+                    EXISTS (
+                        SELECT 1
+                        FROM student_lesson sl
+                        WHERE a.id = $lessonId
+                    )
+                GROUP BY
+                    a.id, b.name, b.profile_url
+                LIMIT 1;");
 
         if (count($classInfo) != 0) {
             $classInfo = $classInfo[0];
@@ -584,9 +658,8 @@ class MobileLmsViewerController extends Controller
 
         $isSectionTaken = in_array($sectionId, $sectionTakenByStudent);
 
-        // taken $sectionTakenOnCourseCount;
-        // all sections $sectionCount;
-        $progressPercentage = round(($sectionTakenOnCourseCount / $sectionCount) * 100);
+        // ✅ UPDATED: Use proper completion count for progress
+        $progressPercentage = round(($completedAndPassedSectionsCount / $sectionCount) * 100);
 
         // ================CHECK IF EXAM IS IN TIME =========================
         $isExamInTime = true;
@@ -635,22 +708,6 @@ class MobileLmsViewerController extends Controller
                 if ($isExamInTime) {
                     $this->startSection($currentSectionId, $userId); //168
                 }
-                $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
-                $sectionTakenOnCourseCount = DB::table('student_section as ss')
-                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
-                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
-                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-                    ->where('ss.student_id', Auth::id())
-                    ->where('lessons.id', $lessonId)
-                    ->count();
-
-                if ($sectionTakenOnCourseCount == $sectionCount) {
-                    if ($u_student_lesson->learn_status != 1) {
-                        $u_student_lesson->finished_at = Carbon::now();
-                        $u_student_lesson->learn_status = 1;
-                        $u_student_lesson->save();
-                    }
-                }
             }
         }
 
@@ -666,6 +723,8 @@ class MobileLmsViewerController extends Controller
             'isStudent',
             'sectionTakenByStudent',
             'sectionTakenOnCourseCount',
+            'completedAndPassedSectionsCount', // ✅ NEW: Added proper completion tracking
+            'total_section', // ✅ NEW: Added total sections count
             'isFirstSection',
             'isExam',
             'isSectionTaken',
