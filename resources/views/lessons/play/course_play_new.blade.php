@@ -1,3 +1,4 @@
+{{-- resources/views/lessons/play/course_play_new.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -521,7 +522,7 @@
                                     @php
                                         $totalSections = count($sections);
                                         // $sectionsTaken = count($sectionTakenByStudent);
-                                        $sectionsTaken = $completedAndPassedSectionsCount; 
+                                        $sectionsTaken = $completedAndPassedSectionsCount;
                                         $percentage = round(($sectionsTaken / $totalSections) * 100);
                                         $finished = $sectionsTaken >= $totalSections;
                                     @endphp
@@ -626,7 +627,7 @@
                                 </a>
                             @endif
                         </div>
-                        
+
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {

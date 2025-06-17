@@ -1,3 +1,4 @@
+{{-- resources/views/lessons/play/student_exam_section_mobile.blade.php --}}
 <div class="container-fluid">
     <div class="main-content-container container-fluid px-4 mt-5">
         <section id="exam-information">

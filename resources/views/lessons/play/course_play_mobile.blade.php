@@ -1,3 +1,4 @@
+{{-- resources/views/lessons/play/course_play_mobile.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 

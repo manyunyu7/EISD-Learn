@@ -90,7 +90,6 @@ class MobileSeeCourseController extends Controller
             return $section->id;
         }, $precedingSections);
 
-
         $studentTakenSections = DB::table('student_section AS ss')
             ->select(
                 'ss.student_id',
@@ -105,7 +104,6 @@ class MobileSeeCourseController extends Controller
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
             ->where('users.id', Auth::id())
             ->where('lessons.id', $lessonId)
-            // ->where('users.is_testing', '=', 'n')
             ->get();
 
         $studentTakenSectionIds = $studentTakenSections->pluck('section_id')->toArray();
@@ -126,7 +124,6 @@ class MobileSeeCourseController extends Controller
 
         if (Auth::check()) {
             if (Auth::user()->role == "student") {
-
                 if ($section->can_be_accessed == "n") {
                     abort(401, "Materi baru dapat diakses pada jadwal yang telah ditentukan");
                 }
@@ -136,8 +133,7 @@ class MobileSeeCourseController extends Controller
                     ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
-                    ->where('lessons.id', $lessonId) // Add the condition lessons.id = 5
-                    // ->where('users.is_testing', '=', 'n')
+                    ->where('lessons.id', $lessonId)
                     ->pluck('ss.section_id')
                     ->toArray();
 
@@ -147,28 +143,101 @@ class MobileSeeCourseController extends Controller
                     ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
                     ->where('ss.student_id', \Illuminate\Support\Facades\Auth::id())
                     ->where('lessons.id', $lessonId)
-                    // ->where('users.is_testing', '=', 'n')
-                    ->orderBy('ss.id', 'desc') // Assuming 'id' is the primary key column in 'student_section' table
+                    ->orderBy('ss.id', 'desc')
                     ->first();
             }
         }
 
-        //return $precedingSectionIds;
         // Check if the student has taken all the preceding sections
         $isPrecedingTaken = StudentSection::whereIn('section_id', $precedingSectionIds)
             ->where('student_id', $user_id)
             ->exists();
 
+        // ✅ NEW: Calculate completion progress properly (like in main controller)
+        // Fetch all sections for the lesson
+        $allSectionsInLesson = CourseSection::where('course_id', $lessonId)
+            ->orderByRaw("CAST(section_order AS UNSIGNED)")
+            ->get();
+
+        $completedAndPassedSectionsCount = 0;
+
+        // ✅ NEW: Check each section for completion AND passing score
+        foreach ($allSectionsInLesson as $sectionItem) {
+            // Check if student has taken this section
+            $isSectionTaken = StudentSection::where('section_id', $sectionItem->id)
+                ->where('student_id', Auth::id())
+                ->exists();
+
+            if ($isSectionTaken) {
+                // If this section is a quiz
+                if (
+                    $sectionItem->quiz_session_id != null &&
+                    $sectionItem->quiz_session_id != "" &&
+                    $sectionItem->quiz_session_id != "null" &&
+                    $sectionItem->quiz_session_id != "-" &&
+                    $sectionItem->quiz_session_id != "Tidak Ada Quiz"
+                ) {
+
+                    $examSession = ExamSession::find($sectionItem->quiz_session_id);
+
+                    if ($examSession && $examSession->standard_pass_score !== null) {
+                        // Get student's highest score for this quiz
+                        $highestScoreAchieved = (int) ExamTaker::where('user_id', Auth::id())
+                            ->where('course_section_flag', $sectionItem->id)
+                            ->where('session_id', $sectionItem->quiz_session_id)
+                            ->where('is_finished', 'y')
+                            ->whereNotNull('finished_at')
+                            ->selectRaw('MAX(CAST(current_score AS SIGNED)) as max_score')
+                            ->value('max_score');
+
+                        // If highest score meets passing score, count as completed
+                        if ($highestScoreAchieved >= $examSession->standard_pass_score) {
+                            $completedAndPassedSectionsCount++;
+                        }
+                    } else {
+                        // If quiz but no passing score, count as completed if taken
+                        $completedAndPassedSectionsCount++;
+                    }
+                } else {
+                    // If not a quiz, count as completed if taken
+                    $completedAndPassedSectionsCount++;
+                }
+            }
+        }
+
+        // ✅ NEW: Update lesson completion status
+        $total_section = count($allSectionsInLesson);
+
+        if ($completedAndPassedSectionsCount == $total_section) {
+            $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)
+                ->where('lesson_id', '=', $lessonId)
+                ->first();
+            if ($u_student_lesson && $u_student_lesson->learn_status != 1) {
+                $u_student_lesson->finished_at = Carbon::now();
+                $u_student_lesson->learn_status = 1;
+                $u_student_lesson->save();
+            }
+        } else {
+            // Reset completion status if no longer all sections completed
+            $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)
+                ->where('lesson_id', '=', $lessonId)
+                ->first();
+            if ($u_student_lesson && $u_student_lesson->learn_status == 1) {
+                $u_student_lesson->learn_status = 0;
+                $u_student_lesson->finished_at = null;
+                $u_student_lesson->save();
+            }
+        }
+
+        // Get section count for progress calculation
         $sectionTakenOnCourseCount = DB::table('student_section as ss')
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
             ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
             ->where('ss.student_id', Auth::id())
             ->where('lessons.id', $lessonId)
-            // ->where('users.is_testing', '=', 'n')
             ->count();
 
-        // $section = DB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
         // Fetch all sections for the lesson
         $student_sections = DB::select("select * from student_section ");
 
@@ -181,7 +250,7 @@ class MobileSeeCourseController extends Controller
             'course_section.section_order',
             'course_section.section_title',
             'course_section.quiz_session_id',
-            'exam_sessions.time_limit_minute', // Include quiz duration
+            'exam_sessions.time_limit_minute',
             'course_section.section_content',
             'course_section.section_video',
             'course_section.created_at',
@@ -190,30 +259,49 @@ class MobileSeeCourseController extends Controller
         )
             ->leftJoin('lessons', 'lessons.id', '=', 'course_section.course_id')
             ->leftJoin('users', 'users.id', '=', 'lessons.mentor_id')
-            ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id') // Left join to quiz_session
+            ->leftJoin('exam_sessions', 'exam_sessions.id', '=', 'course_section.quiz_session_id')
             ->where('course_section.course_id', $lessonId)
-            // ->where('users.is_testing', '=', 'n')
             ->orderBy(DB::raw('CAST(course_section.section_order AS UNSIGNED)'), 'ASC')
             ->get();
 
-
         $sectionDetail = CourseSection::findOrFail($sectionId);
-        // Iterate over the sections and check if each one is already added to the student-section
-        foreach ($sections as $key => $section) {
+
+        // ✅ UPDATED: Enhanced section completion checking with quiz score bypass
+        foreach ($sections as $key => $sectionItem) {
             // Check if the section is already added to the student-section
-            $isTaken = StudentSection::where('section_id', $section->section_id)
+            $isTaken = StudentSection::where('section_id', $sectionItem->section_id)
                 ->where('student_id', Auth::id())
                 ->exists();
 
-            // Add the 'isTaken' attribute to the section object
-            $section->isTaken = $isTaken;
-            $section->isCurrent = $sectionId;
+            // ✅ NEW: Add quiz logic to allow progression regardless of score
+            if (
+                $isTaken &&
+                $sectionItem->quiz_session_id !== null &&
+                $sectionItem->quiz_session_id != "" &&
+                $sectionItem->quiz_session_id != "null" &&
+                $sectionItem->quiz_session_id != "-"
+            ) {
 
-            if ($section->section_id == $sectionId) {
-                $section->isCurrent = true;
-            } else {
-                $section->isCurrent = false;
+                $examSession = ExamSession::find($sectionItem->quiz_session_id);
+                if ($examSession && $examSession->standard_pass_score !== null) {
+                    $highestScoreAchieved = (int) ExamTaker::where('user_id', Auth::id())
+                        ->where('course_section_flag', $sectionItem->section_id)
+                        ->where('is_finished', 'y')
+                        ->whereNotNull('finished_at')
+                        ->max('current_score');
+
+                    // ✅ CRITICAL CHANGE: Even if score is below passing grade, allow progression
+                    if ($highestScoreAchieved < $examSession->standard_pass_score) {
+                        $isTaken = false;  // This line gets overridden below
+                    }
+                    $isTaken = true;      // ✅ Always allow progression regardless of quiz score
+                }
             }
+
+            // Add the 'isTaken' attribute to the section object
+            $sectionItem->isTaken = $isTaken;
+            $sectionItem->user_id = Auth::id();
+            $sectionItem->isCurrent = ($sectionItem->section_id == $currentSectionId);
         }
 
         $section = $sections;
@@ -236,21 +324,18 @@ class MobileSeeCourseController extends Controller
 
         $courseId = $lessonId;
         $isStudent = false;
-        $timezone = config('app.timezone'); // Misalnya 'Asia/Jakarta'
+        $timezone = config('app.timezone');
 
-        $alreadyTakeNeededExam = true; // if student has taken the needed exam
-        $isEligibleStudent = true; //eligible to open the section
+        $alreadyTakeNeededExam = true;
+        $isEligibleStudent = true;
+
         if (Auth::user()->role == "student") {
             $isStudent = true;
             $completedSections = $sectionTakenByStudent;
-
-            // Get the index of the current section in the sectionOrder array
             $currentSectionIndex = array_search($currentSectionId, $sectionOrder);
 
-            // Loop through the sectionOrder array from the beginning until the current section index
+            // ✅ UPDATED: Enhanced prerequisite checking (but still allows progression)
             for ($i = 0; $i < $currentSectionIndex; $i++) {
-
-                //active section within the loop
                 $currentIndexedSection = CourseSection::find($sectionOrder[$i]);
 
                 if ($currentIndexedSection != null && $currentIndexedSection->quiz_session_id != null) {
@@ -271,7 +356,6 @@ class MobileSeeCourseController extends Controller
                             ->whereNotNull('finished_at')
                             ->get();
 
-
                         $zexam = Exam::find("$zquizSession->exam_id");
                         $zsectionTitle = $currentIndexedSection->section_title;
                         $zsectionId = $currentIndexedSection->id;
@@ -280,7 +364,7 @@ class MobileSeeCourseController extends Controller
                             $examTitle = $zexam->title;
                         }
 
-                        // Abort if the student has not taken the quiz and it's not the first section
+                        // Only require quiz to be attempted, not passed
                         if ($zcheckIfStudentAlreadyTake == 0) {
                             $alreadyTakeNeededExam = false;
                             $zlink = url()->to("/course/$lessonId/section/$zsectionId");
@@ -292,6 +376,9 @@ class MobileSeeCourseController extends Controller
                                 'link' => $zlink
                             ], 401);
                         }
+
+                        // ✅ REMOVED: Standard pass score checking for progression
+                        // Students can now proceed even if they didn't meet the passing score
                     }
                 }
 
@@ -312,8 +399,6 @@ class MobileSeeCourseController extends Controller
                 }
             }
         }
-
-
 
         $examSession = null;
         $exam = null;
@@ -336,12 +421,10 @@ class MobileSeeCourseController extends Controller
             $totalScore = 0;
             $title = $exam->title;
 
-
             $currentDate = new DateTime();
             $startDate = new DateTime($examSession->start_date);
             $endDate = new DateTime($examSession->end_date);
 
-            // Check if the current date and time is within the start_date and end_date
             $currentDate = Carbon::now();
             $startDate = Carbon::parse($examSession->start_date);
             $endDate = Carbon::parse($examSession->end_date);
@@ -361,55 +444,50 @@ class MobileSeeCourseController extends Controller
                     }
                 }
             }
-            // Acak Urutan Soal
-            if($examSession->random_sort_exam == "y"){
+
+            // Randomize question order if enabled
+            if ($examSession->random_sort_exam == "y") {
                 shuffle($questions);
             }
             $question_count = count($questions);
         }
 
-        //check if student has taken any exam on this session
+        // Check if student has taken any exam on this session
         $hasTakenAnyExam = false;
-        $examResults = ExamTaker::where('user_id', Auth::id())         // AND user_id = Auth::id()
-            ->where('course_section_flag', $currentSectionId)                // AND course_section_flag = $sectionId
-            ->where('is_finished', 'y')                               // AND is_finished = 'y'
-            ->whereNotNull('finished_at')                             // AND finished_at IS NOT NULL
+        $examResults = ExamTaker::where('user_id', Auth::id())
+            ->where('course_section_flag', $currentSectionId)
+            ->where('is_finished', 'y')
+            ->whereNotNull('finished_at')
             ->leftJoin('exam_sessions as es', 'es.id', '=', 'exam_takers.session_id')
             ->leftJoin('exams as e', 'e.id', '=', 'es.exam_id')
             ->select('exam_takers.*', 'e.title as exam_title')
             ->get();
 
-
         if (count($examResults) > 0) {
             $hasTakenAnyExam = true;
         }
 
-
         $classInfo = DB::select("SELECT
-                        a.*,
-                        b.name AS mentor_name,
-                        b.profile_url,
-                        COUNT(c.student_id) AS num_students_registered,
-                        CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered
-                        FROM
-                            lessons a
-                        LEFT JOIN
-                            users b ON a.mentor_id = b.id
-                        LEFT JOIN
-                            student_lesson c ON a.id = c.lesson_id
-                        WHERE
-                            EXISTS (
-                                SELECT 1
-                                FROM student_lesson sl
-                                WHERE a.id = $lessonId
-
-                            )
-                        GROUP BY
-                            a.id, b.name, b.profile_url
-                        LIMIT 1;");
-        // $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lessonId ORDER BY section_order ASC");
-        // $section = $sections;
-
+                    a.*,
+                    b.name AS mentor_name,
+                    b.profile_url,
+                    COUNT(c.student_id) AS num_students_registered,
+                    CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered
+                    FROM
+                        lessons a
+                    LEFT JOIN
+                        users b ON a.mentor_id = b.id
+                    LEFT JOIN
+                        student_lesson c ON a.id = c.lesson_id
+                    WHERE
+                        EXISTS (
+                            SELECT 1
+                            FROM student_lesson sl
+                            WHERE a.id = $lessonId
+                        )
+                    GROUP BY
+                        a.id, b.name, b.profile_url
+                    LIMIT 1;");
 
         if (count($classInfo) != 0) {
             $classInfo = $classInfo[0];
@@ -418,34 +496,25 @@ class MobileSeeCourseController extends Controller
         $mentor = User::where("id", '=', "");
         $sectionCount = count($sections);
 
+        // ✅ UPDATED: Use proper completion count for progress
+        $progressPercentage = round(($completedAndPassedSectionsCount / $sectionCount) * 100);
 
-        // taken $sectionTakenOnCourseCount;
-        // all sections $sectionCount;
-        $progressPercentage = round(($sectionTakenOnCourseCount / $sectionCount) * 100);
-
-        // ================CHECK IF EXAM IS IN TIME =========================
+        // Check if exam is in time
         $isExamInTime = true;
-        // Checking is Exam
         if ($isExam == true) {
             if ($examSession != null) {
                 $startDate_exam = $examSession->start_date;
                 $endDate_exam   = $examSession->end_date;
                 $now = Carbon::now();
                 if ($now->between($startDate_exam, $endDate_exam)) {
-                    // Jika waktu sekarang berada di antara start_date dan end_date
-                    // Tambahkan logika di sini
                     $isExamInTime = true;
                 } else {
-                    // Jika waktu sekarang berada di luar rentang start_date dan end_date
-                    // Tambahkan logika di sini
                     $isExamInTime = false;
                 }
             }
         }
 
-
-        // ========== CHECK IF EXAM ON FIRST SECTION IS ALREADY FINISHED =========================
-
+        // Check if exam on first section is already finished
         if (Auth::user()->role == "student") {
             $isFirstExamTaken = true;
             $quizSession = ExamSession::find($currentSection->quiz_session_id);
@@ -453,7 +522,7 @@ class MobileSeeCourseController extends Controller
                 $now = Carbon::now($timezone)->toDateTimeString();
 
                 $checkIfStudentAlreadyTake = ExamTaker::where('user_id', Auth::id())
-                    ->where('course_section_flag', $sectionOrder[$i])
+                    ->where('course_section_flag', $sectionOrder[$i] ?? $currentSectionId)
                     ->where('is_finished', 'y')
                     ->count();
 
@@ -470,28 +539,10 @@ class MobileSeeCourseController extends Controller
         if (Auth::user()->role == "student") {
             if ($isEligibleStudent && $alreadyTakeNeededExam && $isFirstExamTaken) {
                 if ($isExamInTime) {
-                    $this->startSection($currentSectionId); //168
-                }
-                $u_student_lesson = StudentLesson::where('student_id', '=', $user_id)->where('lesson_id', '=', $lessonId)->first();
-                $sectionTakenOnCourseCount = DB::table('student_section as ss')
-                    ->leftJoin('users', 'users.id', '=', 'ss.student_id')
-                    ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
-                    ->leftJoin('lessons', 'course_section.course_id', '=', 'lessons.id')
-                    ->where('ss.student_id', Auth::id())
-                    ->where('lessons.id', $lessonId)
-                    // ->where('users.is_testing', '=', 'n')
-                    ->count();
-
-                if ($sectionTakenOnCourseCount == $sectionCount) {
-                    if ($u_student_lesson->learn_status != 1) {
-                        $u_student_lesson->finished_at = Carbon::now();
-                        $u_student_lesson->learn_status = 1;
-                        $u_student_lesson->save();
-                    }
+                    $this->startSection($currentSectionId);
                 }
             }
         }
-
 
         $compact = compact(
             'userId',
@@ -505,6 +556,8 @@ class MobileSeeCourseController extends Controller
             'isStudent',
             'sectionTakenByStudent',
             'sectionTakenOnCourseCount',
+            'completedAndPassedSectionsCount', // ✅ NEW: Added proper completion tracking
+            'total_section', // ✅ NEW: Added total sections count
             'isFirstSection',
             'isExam',
             'title',
@@ -528,7 +581,6 @@ class MobileSeeCourseController extends Controller
             'classInfo'
         );
 
-
         if ($request->dump == true) {
             return $compact;
         }
@@ -538,7 +590,6 @@ class MobileSeeCourseController extends Controller
             "Course Section",
             $userId
         );
-
 
         return view('lessons.play.course_play_mobile', $compact);
     }

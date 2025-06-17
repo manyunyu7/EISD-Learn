@@ -171,7 +171,7 @@ class CourseSectionController extends Controller
         }else{
             $insert_to_CourseSection->section_order = '';
         }
-        
+
         $insert_to_CourseSection->section_content = $request->content_area;
         $insert_to_CourseSection->course_id = $request->lessonId;
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
@@ -179,7 +179,7 @@ class CourseSectionController extends Controller
         $insert_to_CourseSection->embedded_file = $request->embeded_file;
         // dd($insert_to_CourseSection);
         $insert_to_CourseSection->save();
-        
+
         // $u_student_lesson = StudentLesson::where('lesson_id', '=', $lessonId)->first();
         // if($insert_to_CourseSection->save()){
         //     $u_student_lesson->learn_status = 0;
@@ -651,7 +651,7 @@ class CourseSectionController extends Controller
                         ->whereNotNull('finished_at')
                         ->get(); // Ambil semua record untuk debugging
 
-                        
+
                         // !!! DEBUGGING KRITIS DI SINI !!!
                         // dd(
                         //     '--- DEBUGGING QUIZ SECTION ---',
@@ -670,7 +670,7 @@ class CourseSectionController extends Controller
                             $completedAndPassedSectionsCount++;
                         }
                         // dd('Checking Highest Score:', $completedAndPassedSectionsCount);
-                        
+
                     } else {
                         // Jika ini kuis tapi tidak ada passing score (atau examSession tidak ditemukan),
                         // anggap lulus jika sudah diambil (sesuaikan dengan kebutuhan Anda)
@@ -687,7 +687,7 @@ class CourseSectionController extends Controller
         $total_section = DB::table('course_section AS cs')
             ->where('cs.course_id', $lessonId)
             ->count();
-        
+
         // --- DEBUGGING UTAMA SEBELUM MENYIMPAN STATUS KELAS ---
         // dd(
         //     "Final Check for Lesson Completion:",
@@ -889,7 +889,7 @@ class CourseSectionController extends Controller
                         // Debugging: Lihat hasil query exam_takers
                         // dd('Exam Takers Results for Section ' . $sectionOrder[$i] . ':', $zquizResults->toArray());
                         // dd('Number of Attempts: ' . $zcheckIfStudentAlreadyTake);
-    
+
 
 
                         $zexam = Exam::find("$zquizSession->exam_id");
@@ -986,7 +986,7 @@ class CourseSectionController extends Controller
             $exam = Exam::find($examSession->exam_id);
             $session = $examSession;
             $questions = json_decode($session->questions_answers);
-            
+
             // Acak Urutan Soal
             if($examSession->random_sort_exam == "y"){
                 shuffle($questions);
@@ -1157,7 +1157,7 @@ class CourseSectionController extends Controller
             'prev_section',
             'isStudent',
             'sectionTakenByStudent',
-            // 'completedAndPassedSectionsCount', 
+            // 'completedAndPassedSectionsCount',
             'completedAndPassedSectionsCount', 'total_section',
             'isFirstSection',
             'isExam',
@@ -1466,7 +1466,7 @@ class CourseSectionController extends Controller
                         ->where('student_id', $id)
                         ->where('cs.course_id', $lessonId)
                         ->delete();
-        
+
         ExamTaker::where('user_id', $id)->where('exam_takers.course_flag', $lessonId)->delete();
 
         return back()->with(['success' => 'Students Deleted Successfully']);
