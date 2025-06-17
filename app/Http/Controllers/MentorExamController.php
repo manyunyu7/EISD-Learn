@@ -667,6 +667,7 @@ class MentorExamController extends Controller
             $examSession->description = 'n/a';
             $examSession->can_access = 'n/a';
             $examSession->time_limit_minute = $request->times_limit;
+            $examSession->standard_pass_score = $request->standard_pass_score;
             $examSession->exam_type = $request->exam_type;
             $examSession->random_sort_exam = $request->randomize;
 
