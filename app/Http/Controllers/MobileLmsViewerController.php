@@ -131,9 +131,10 @@ class MobileLmsViewerController extends Controller
         );
     }
 
+    //mobile168 see section
+    //used when user open a section in mobile app
     public function seeSection(Request $request, Lesson $lesson, CourseSection $section)
     {
-        return "memew";
         // Find the next and previous sections
         $nextSectionId = null;
         $prevSectionId = null;
