@@ -63,12 +63,13 @@ class MobileLmsViewerController extends Controller
                 ->where('student_id', Auth::id())
                 ->exists();
 
-            // ✅ STRICT ENFORCEMENT: Block progression if quiz score below passing grade
-            if ($isTaken &&
+            // ✅ ENHANCED: Properly check if quiz was passed for checkmark display
+            if (
                 $section->quiz_session_id !== null &&
                 $section->quiz_session_id != "" &&
                 $section->quiz_session_id != "null" &&
-                $section->quiz_session_id != "-") {
+                $section->quiz_session_id != "-"
+            ) {
 
                 $examSession = ExamSession::find($section->quiz_session_id);
                 if ($examSession && $examSession->standard_pass_score !== null) {
@@ -78,12 +79,25 @@ class MobileLmsViewerController extends Controller
                         ->whereNotNull('finished_at')
                         ->max('current_score');
 
-                    // ✅ BLOCK progression if score is below passing grade
-                    if ($highestScoreAchieved < $examSession->standard_pass_score) {
-                        $isTaken = false; // User CANNOT progress to next sections
+                    // ✅ CHECKMARK LOGIC: Show checkmark only if passed
+                    if ($highestScoreAchieved >= $examSession->standard_pass_score) {
+                        $isTaken = true; // Show checkmark - user passed
+                    } else {
+                        $isTaken = false; // No checkmark - user failed or didn't attempt
                     }
-                    // ❌ REMOVED: $isTaken = true; (No longer bypass the blocking)
+                } else {
+                    // If no passing score set, show checkmark if attempted
+                    $isTaken = ExamTaker::where('user_id', Auth::id())
+                        ->where('course_section_flag', $section->section_id)
+                        ->where('is_finished', 'y')
+                        ->whereNotNull('finished_at')
+                        ->exists();
                 }
+            } else {
+                // Non-quiz section: show checkmark if taken
+                $isTaken = StudentSection::where('section_id', $section->section_id)
+                    ->where('student_id', Auth::id())
+                    ->exists();
             }
 
             $fullContentUrl = "";
@@ -97,6 +111,7 @@ class MobileLmsViewerController extends Controller
             $section->isTaken = $isTaken;
             $section->full_content_url = $fullContentUrl;
         }
+
 
         $compact = compact(
             'sections',
@@ -281,11 +296,13 @@ class MobileLmsViewerController extends Controller
 
             if ($isSectionTaken) {
                 // If this section is a quiz
-                if ($sectionItem->quiz_session_id != null &&
+                if (
+                    $sectionItem->quiz_session_id != null &&
                     $sectionItem->quiz_session_id != "" &&
                     $sectionItem->quiz_session_id != "null" &&
                     $sectionItem->quiz_session_id != "-" &&
-                    $sectionItem->quiz_session_id != "Tidak Ada Quiz") {
+                    $sectionItem->quiz_session_id != "Tidak Ada Quiz"
+                ) {
 
                     $examSession = ExamSession::find($sectionItem->quiz_session_id);
 
@@ -386,19 +403,19 @@ class MobileLmsViewerController extends Controller
             $title = $sectionDetail->section_title ?? "";
         }
 
-        // ✅ STRICT ENFORCEMENT: Enhanced section completion checking
         foreach ($sections as $key => $sectionItem) {
             // Check if the section is already added to the student-section
             $isTaken = StudentSection::where('section_id', $sectionItem->section_id)
                 ->where('student_id', Auth::id())
                 ->exists();
 
-            // ✅ STRICT ENFORCEMENT: Block progression if quiz score below passing grade
-            if ($isTaken &&
+            // ✅ ENHANCED: Properly check if quiz was passed for checkmark display
+            if (
                 $sectionItem->quiz_session_id !== null &&
                 $sectionItem->quiz_session_id != "" &&
                 $sectionItem->quiz_session_id != "null" &&
-                $sectionItem->quiz_session_id != "-") {
+                $sectionItem->quiz_session_id != "-"
+            ) {
 
                 $examSession = ExamSession::find($sectionItem->quiz_session_id);
                 if ($examSession && $examSession->standard_pass_score !== null) {
@@ -408,12 +425,25 @@ class MobileLmsViewerController extends Controller
                         ->whereNotNull('finished_at')
                         ->max('current_score');
 
-                    // ✅ BLOCK progression if score is below passing grade
-                    if ($highestScoreAchieved < $examSession->standard_pass_score) {
-                        $isTaken = false; // User CANNOT progress to next sections
+                    // ✅ CHECKMARK LOGIC: Show checkmark only if passed
+                    if ($highestScoreAchieved >= $examSession->standard_pass_score) {
+                        $isTaken = true; // Show checkmark - user passed
+                    } else {
+                        $isTaken = false; // No checkmark - user failed or didn't attempt
                     }
-                    // ❌ REMOVED: $isTaken = true; (No longer bypass the blocking)
+                } else {
+                    // If no passing score set, show checkmark if attempted
+                    $isTaken = ExamTaker::where('user_id', Auth::id())
+                        ->where('course_section_flag', $sectionItem->section_id)
+                        ->where('is_finished', 'y')
+                        ->whereNotNull('finished_at')
+                        ->exists();
                 }
+            } else {
+                // Non-quiz section: show checkmark if taken
+                $isTaken = StudentSection::where('section_id', $sectionItem->section_id)
+                    ->where('student_id', Auth::id())
+                    ->exists();
             }
 
             // Add the 'isTaken' attribute to the section object
@@ -426,6 +456,7 @@ class MobileLmsViewerController extends Controller
                 $sectionItem->isCurrent = false;
             }
         }
+
 
         $section = $sections;
         $firstSectionId = null;
