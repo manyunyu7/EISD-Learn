@@ -24,6 +24,7 @@ class MobileLmsViewerController extends Controller
     {
         $mentorName = "";
     }
+
     public function seeClassSections(Request $request, Lesson $lesson)
     {
         $userId = $request->user_id;
@@ -62,15 +63,12 @@ class MobileLmsViewerController extends Controller
                 ->where('student_id', Auth::id())
                 ->exists();
 
-            // ✅ NEW: Add quiz score bypass logic for sidebar display
-            // This ensures sections show as "completed" even if quiz score is below passing grade
-            if (
-                $isTaken &&
+            // ✅ STRICT ENFORCEMENT: Block progression if quiz score below passing grade
+            if ($isTaken &&
                 $section->quiz_session_id !== null &&
                 $section->quiz_session_id != "" &&
                 $section->quiz_session_id != "null" &&
-                $section->quiz_session_id != "-"
-            ) {
+                $section->quiz_session_id != "-") {
 
                 $examSession = ExamSession::find($section->quiz_session_id);
                 if ($examSession && $examSession->standard_pass_score !== null) {
@@ -80,11 +78,11 @@ class MobileLmsViewerController extends Controller
                         ->whereNotNull('finished_at')
                         ->max('current_score');
 
-                    // ✅ CRITICAL CHANGE: Even if score is below passing grade, allow progression
+                    // ✅ BLOCK progression if score is below passing grade
                     if ($highestScoreAchieved < $examSession->standard_pass_score) {
-                        $isTaken = false;  // This line gets overridden below
+                        $isTaken = false; // User CANNOT progress to next sections
                     }
-                    $isTaken = true;      // ✅ Always show as completed for progression purposes
+                    // ❌ REMOVED: $isTaken = true; (No longer bypass the blocking)
                 }
             }
 
@@ -266,7 +264,7 @@ class MobileLmsViewerController extends Controller
             ->where('student_id', $user_id)
             ->exists();
 
-        // ✅ NEW: Calculate completion progress properly (like in main controller)
+        // ✅ Calculate completion progress properly (like in main controller)
         // Fetch all sections for the lesson
         $allSectionsInLesson = CourseSection::where('course_id', $lessonId)
             ->orderByRaw("CAST(section_order AS UNSIGNED)")
@@ -274,7 +272,7 @@ class MobileLmsViewerController extends Controller
 
         $completedAndPassedSectionsCount = 0;
 
-        // ✅ NEW: Check each section for completion AND passing score
+        // ✅ Check each section for completion AND passing score
         foreach ($allSectionsInLesson as $sectionItem) {
             // Check if student has taken this section
             $isSectionTaken = StudentSection::where('section_id', $sectionItem->id)
@@ -283,13 +281,11 @@ class MobileLmsViewerController extends Controller
 
             if ($isSectionTaken) {
                 // If this section is a quiz
-                if (
-                    $sectionItem->quiz_session_id != null &&
+                if ($sectionItem->quiz_session_id != null &&
                     $sectionItem->quiz_session_id != "" &&
                     $sectionItem->quiz_session_id != "null" &&
                     $sectionItem->quiz_session_id != "-" &&
-                    $sectionItem->quiz_session_id != "Tidak Ada Quiz"
-                ) {
+                    $sectionItem->quiz_session_id != "Tidak Ada Quiz") {
 
                     $examSession = ExamSession::find($sectionItem->quiz_session_id);
 
@@ -318,7 +314,7 @@ class MobileLmsViewerController extends Controller
             }
         }
 
-        // ✅ NEW: Update lesson completion status
+        // ✅ Update lesson completion status
         $total_section = count($allSectionsInLesson);
 
         if ($completedAndPassedSectionsCount == $total_section) {
@@ -390,22 +386,19 @@ class MobileLmsViewerController extends Controller
             $title = $sectionDetail->section_title ?? "";
         }
 
-        // ✅ UPDATED: Enhanced section completion checking with quiz score bypass
+        // ✅ STRICT ENFORCEMENT: Enhanced section completion checking
         foreach ($sections as $key => $sectionItem) {
             // Check if the section is already added to the student-section
             $isTaken = StudentSection::where('section_id', $sectionItem->section_id)
                 ->where('student_id', Auth::id())
                 ->exists();
 
-            // ✅ NEW: Add quiz score bypass logic
-            // This allows users to progress even if their quiz score is below passing grade
-            if (
-                $isTaken &&
+            // ✅ STRICT ENFORCEMENT: Block progression if quiz score below passing grade
+            if ($isTaken &&
                 $sectionItem->quiz_session_id !== null &&
                 $sectionItem->quiz_session_id != "" &&
                 $sectionItem->quiz_session_id != "null" &&
-                $sectionItem->quiz_session_id != "-"
-            ) {
+                $sectionItem->quiz_session_id != "-") {
 
                 $examSession = ExamSession::find($sectionItem->quiz_session_id);
                 if ($examSession && $examSession->standard_pass_score !== null) {
@@ -415,11 +408,11 @@ class MobileLmsViewerController extends Controller
                         ->whereNotNull('finished_at')
                         ->max('current_score');
 
-                    // ✅ CRITICAL CHANGE: Even if score is below passing grade, allow progression
+                    // ✅ BLOCK progression if score is below passing grade
                     if ($highestScoreAchieved < $examSession->standard_pass_score) {
-                        $isTaken = false;  // This line gets overridden below
+                        $isTaken = false; // User CANNOT progress to next sections
                     }
-                    $isTaken = true;      // ✅ Always allow progression regardless of quiz score
+                    // ❌ REMOVED: $isTaken = true; (No longer bypass the blocking)
                 }
             }
 
@@ -465,7 +458,7 @@ class MobileLmsViewerController extends Controller
             // Get the index of the current section in the sectionOrder array
             $currentSectionIndex = array_search($currentSectionId, $sectionOrder);
 
-            // ✅ UPDATED: Enhanced prerequisite checking (but allows progression with failed quizzes)
+            // ✅ STRICT ENFORCEMENT: Enhanced prerequisite checking
             for ($i = 0; $i < $currentSectionIndex; $i++) {
                 //active section within the loop
                 $currentIndexedSection = CourseSection::find($sectionOrder[$i]);
@@ -496,7 +489,7 @@ class MobileLmsViewerController extends Controller
                             $examTitle = $zexam->title;
                         }
 
-                        // ✅ UPDATED: Only require quiz to be attempted, not passed
+                        // Require quiz to be attempted
                         if ($zcheckIfStudentAlreadyTake == 0) {
                             $alreadyTakeNeededExam = false;
                             $zlink = url()->to("/course/$lessonId/section/$zsectionId");
@@ -513,8 +506,29 @@ class MobileLmsViewerController extends Controller
                             );
                         }
 
-                        // ✅ REMOVED: Standard pass score checking for progression
-                        // Students can now proceed even if they didn't meet the passing score
+                        // ✅ RESTORED: Standard pass score checking for progression
+                        if ($zquizSession->standard_pass_score !== null) {
+                            $totalScoreAchieved = 0;
+                            if ($zcheckIfStudentAlreadyTake > 0) {
+                                $highestScore = $zquizResults->max('current_score');
+                                $totalScoreAchieved = $highestScore;
+                            }
+
+                            // ✅ BLOCK if user hasn't met passing score
+                            if ($totalScoreAchieved < $zquizSession->standard_pass_score) {
+                                $isEligibleStudent = false;
+                                $zlink = url()->to("/course/$lessonId/section/$zsectionId");
+                                $message = "Anda belum mencapai Skor Lulus Minimum (" . $zquizSession->standard_pass_score . ") pada Quiz Bagian **$zsectionTitle**. Mohon selesaikan quiz tersebut dengan skor yang memenuhi.";
+                                return MyHelper::responseErrorWithData(
+                                    400,
+                                    400,
+                                    0,
+                                    $message,
+                                    "Class Section Not Found",
+                                    $message
+                                );
+                            }
+                        }
                     }
                 }
 
@@ -627,26 +641,26 @@ class MobileLmsViewerController extends Controller
         }
 
         $classInfo = DB::select("SELECT
-                a.*,
-                b.name AS mentor_name,
-                b.profile_url,
-                COUNT(c.student_id) AS num_students_registered,
-                CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered
-                FROM
-                    lessons a
-                LEFT JOIN
-                    users b ON a.mentor_id = b.id
-                LEFT JOIN
-                    student_lesson c ON a.id = c.lesson_id
-                WHERE
-                    EXISTS (
-                        SELECT 1
-                        FROM student_lesson sl
-                        WHERE a.id = $lessonId
-                    )
-                GROUP BY
-                    a.id, b.name, b.profile_url
-                LIMIT 1;");
+                    a.*,
+                    b.name AS mentor_name,
+                    b.profile_url,
+                    COUNT(c.student_id) AS num_students_registered,
+                    CASE WHEN COUNT(c.student_id) > 0 THEN 1 ELSE 0 END AS is_registered
+                    FROM
+                        lessons a
+                    LEFT JOIN
+                        users b ON a.mentor_id = b.id
+                    LEFT JOIN
+                        student_lesson c ON a.id = c.lesson_id
+                    WHERE
+                        EXISTS (
+                            SELECT 1
+                            FROM student_lesson sl
+                            WHERE a.id = $lessonId
+                        )
+                    GROUP BY
+                        a.id, b.name, b.profile_url
+                    LIMIT 1;");
 
         if (count($classInfo) != 0) {
             $classInfo = $classInfo[0];
@@ -657,7 +671,7 @@ class MobileLmsViewerController extends Controller
 
         $isSectionTaken = in_array($sectionId, $sectionTakenByStudent);
 
-        // ✅ UPDATED: Use proper completion count for progress
+        // ✅ Use proper completion count for progress
         $progressPercentage = round(($completedAndPassedSectionsCount / $sectionCount) * 100);
 
         // ================CHECK IF EXAM IS IN TIME =========================
@@ -722,8 +736,8 @@ class MobileLmsViewerController extends Controller
             'isStudent',
             'sectionTakenByStudent',
             'sectionTakenOnCourseCount',
-            'completedAndPassedSectionsCount', // ✅ NEW: Added proper completion tracking
-            'total_section', // ✅ NEW: Added total sections count
+            'completedAndPassedSectionsCount', // ✅ Proper completion tracking
+            'total_section', // ✅ Total sections count
             'isFirstSection',
             'isExam',
             'isSectionTaken',
