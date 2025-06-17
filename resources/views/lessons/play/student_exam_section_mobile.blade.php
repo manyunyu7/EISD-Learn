@@ -38,12 +38,6 @@ value="{{ Auth::user()->name }}" @endauth>
                                 @endif
                             </div>
 
-                            <!-- Time -->
-                            <div class="form-group">
-                                <h5>Batas Waktu : {{ $session->time_limit_minute }} Menit</h5>
-                            </div>
-
-
                             <!-- Number of Questions -->
                             <div class="form-group">
                                 <label>Jumlah Pertanyaan :</label>
