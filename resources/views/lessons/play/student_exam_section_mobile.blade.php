@@ -31,6 +31,11 @@
                                 <h5>Multiple Attempt: {{$session->allow_multiple === 'y' || $session->allow_multiple === 'Aktif' ? 'Ya' : 'Tidak'}}</h5>
                             </div>
 
+                            <!-- Time -->
+                            <div class="form-group">
+                                <h5>Batas Waktu : {{ $session->time_limit_minute }} Menit</h5>
+                            </div>
+
 
                             <!-- Number of Questions -->
                             <div class="form-group">
