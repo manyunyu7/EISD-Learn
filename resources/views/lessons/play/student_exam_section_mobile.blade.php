@@ -6,29 +6,36 @@
                 <div class="col-md-12 ">
                     <div class="">
                         <div class="pt-2">
-                            <h1 class="card-title">Quiz : {{$exam->title}}</h1>
+                            <h1 class="card-title">Quiz : {{ $exam->title }}</h1>
 
 
                             <div class="form-group d-none">
                                 <label for="fullName">Nama Peserta Quiz :</label>
                                 <input type="text" id="fullName" name="fullName" class="form-control"
-                                       placeholder="Enter your full name" required
-                                       @auth
-                                           value="{{ Auth::user()->name }}"
-                                    @endauth
-                                >
+                                    placeholder="Enter your full name" required
+                                    @auth
+value="{{ Auth::user()->name }}" @endauth>
                             </div>
 
-                            <h5 style="font-size: 22px; color: slategray;">{{"Anda Sudah Mengambil Quiz ini : ".count($examResults)." Kali" }}</h5>
+                            <h5 style="font-size: 22px; color: slategray;">
+                                {{ 'Anda Sudah Mengambil Quiz ini : ' . count($examResults) . ' Kali' }}</h5>
                             <h5 style="font-size: 21px; margin-top: 20px">{!! $session->instruction !!}</h5>
 
                             <!-- Time -->
                             <div class="form-group">
-                                <h5>Batas Waktu : {{$session->time_limit_minute}} Menit</h5>
+                                <h5>Batas Waktu : {{ $session->time_limit_minute }} Menit</h5>
                             </div>
 
                             <div class="form-group">
-                                <h5>Multiple Attempt: {{$session->allow_multiple === 'y' || $session->allow_multiple === 'Aktif' ? 'Ya' : 'Tidak'}}</h5>
+                                <h5>Multiple Attempt:
+                                    {{ $session->allow_multiple === 'y' || $session->allow_multiple === 'Aktif' ? 'Ya' : 'Tidak' }}
+                                </h5>
+                            </div>
+
+                            <div class="form-group">
+                                @if (isset($session->standard_pass_score) && $session->standard_pass_score > 0)
+                                    <h5>Minimal Passing Score: {{ $session->standard_pass_score }}</h5>
+                                @endif
                             </div>
 
                             <!-- Time -->
@@ -40,7 +47,7 @@
                             <!-- Number of Questions -->
                             <div class="form-group">
                                 <label>Jumlah Pertanyaan :</label>
-                                <span>{{$question_count}}</span>
+                                <span>{{ $question_count }}</span>
                             </div>
 
 
@@ -52,8 +59,8 @@
 
                             <!-- Start Exam Button -->
                             <button id="confirmStartButton" type="button"
-                                    class="btn btn-primary btn-border btn-round mb-3 mt-3"
-                                    data-toggle="modal" data-target="#confirmationModal">
+                                class="btn btn-primary btn-border btn-round mb-3 mt-3" data-toggle="modal"
+                                data-target="#confirmationModal">
                                 Mulai Ujian
                             </button>
 
@@ -70,14 +77,14 @@
 
                             <!-- Confirmation Modal -->
                             <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="confirmationModalLabel">Start Exam
                                                 Confirmation</h5>
                                             <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -85,12 +92,11 @@
                                             Are you sure you want to start the exam?
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                                 Cancel
                                             </button>
                                             <button id="startExam" type="button" data-dismiss="modal"
-                                                    class="btn btn-primary">
+                                                class="btn btn-primary">
                                                 Start Exam
                                             </button>
                                         </div>
@@ -107,26 +113,27 @@
 
 
         <section id="sectionFocus" style="display: none">
-            @if(isset($questions) && count($questions) > 0)
-                @foreach($questions as $index => $question)
+            @if (isset($questions) && count($questions) > 0)
+                @foreach ($questions as $index => $question)
                     <div class="" style="margin-bottom: 20px; ">
                         <div class="panel-body">
                             <p style="font-size: 18px"><strong>{{ $index + 1 }}.</strong> <span
                                     style="font-size: 18px">{{ $question->question }}</span></p>
                             @if (!empty($question->image))
                                 <img src="{{ url('https://lms-modernland.s3.ap-southeast-3.amazonaws.com') . '/' . $question->image }}"
-                                alt="Question Image" style="max-width: 100%;">
+                                    alt="Question Image" style="max-width: 100%;">
                             @endif
 
                             @if (stripos($question->question_type, 'single') !== false)
                                 <div class="radio">
                                     @php $letters = range('A', 'Z'); @endphp
-                                    @foreach(json_decode($question->choices, true) as $index => $choice)
+                                    @foreach (json_decode($question->choices, true) as $index => $choice)
                                         <div>
                                             <label>
                                                 <input type="radio" name="answers[{{ $question->id }}]"
-                                                       value="{{ $choice['text'] }}"
-                                                       style="background-color: #208DBB; font-size: 18px"> {{ $letters[$index] }}
+                                                    value="{{ $choice['text'] }}"
+                                                    style="background-color: #208DBB; font-size: 18px">
+                                                {{ $letters[$index] }}
                                                 . {{ $choice['text'] }}
                                             </label>
                                         </div>
@@ -135,12 +142,13 @@
                             @else
                                 <div class="checkbox">
                                     @php $letters = range('A', 'Z'); @endphp
-                                    @foreach(json_decode($question->choices, true) as $index => $choice)
+                                    @foreach (json_decode($question->choices, true) as $index => $choice)
                                         <div>
                                             <label>
                                                 <input type="checkbox" name="answers[{{ $question->id }}][]"
-                                                       value="{{ $choice['text'] }}"
-                                                       style="background-color: #208DBB; font-size: 18px;"> {{ $letters[$index] }}
+                                                    value="{{ $choice['text'] }}"
+                                                    style="background-color: #208DBB; font-size: 18px;">
+                                                {{ $letters[$index] }}
                                                 . {{ $choice['text'] }}
                                             </label>
                                         </div>
@@ -158,118 +166,117 @@
         </section>
 
         @if ($examSession->show_result == 'y' || $examSession->show_result != 'n')
-        <div class="mt-4">
-            <hr>
-            <h4>Riwayat Hasil Ujian : </h4>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Guest Name</th>
-                            <th>Current Score</th>
-                            <th>Finished At</th>
-                            @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
-                                <th>Actions</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($examResults->reverse() as $result)
+            <div class="mt-4">
+                <hr>
+                <h4>Riwayat Hasil Ujian : </h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
                             <tr>
-                                <td>{{ $result['guest_name'] }}</td>
-                                <td>{{ $result['current_score'] }}</td>
-                                <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}
-                                </td>
+                                <th>Guest Name</th>
+                                <th>Current Score</th>
+                                <th>Finished At</th>
                                 @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#exampleModal{{ $result['id'] }}">
-                                            Show Answers
-                                        </button>
+                                    <th>Actions</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($examResults->reverse() as $result)
+                                <tr>
+                                    <td>{{ $result['guest_name'] }}</td>
+                                    <td>{{ $result['current_score'] }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($result['finished_at'])->format('F j, Y g:i A') }}
                                     </td>
+                                    @if ($examSession->allow_review == 'y' || $examSession->allow_review == '')
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#exampleModal{{ $result['id'] }}">
+                                                Show Answers
+                                            </button>
+                                        </td>
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1"
-                                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">User Answers</h5>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    @foreach (json_decode($result['user_answers'], true) as $answer)
-                                                        <div style="margin-top: 20px">
-                                                            <strong>Question:</strong><br>
-                                                            {{ $answer['question_text'] ?? '' }}
-                                                        </div>
-                                                        <div>
-                                                            <strong>Jawaban Pengguna:</strong><br>
-                                                            @if (isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
-                                                                Multiple Choice:
-                                                                @if (is_array($answer['values']))
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal{{ $result['id'] }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">User Answers</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @foreach (json_decode($result['user_answers'], true) as $answer)
+                                                            <div style="margin-top: 20px">
+                                                                <strong>Question:</strong><br>
+                                                                {{ $answer['question_text'] ?? '' }}
+                                                            </div>
+                                                            <div>
+                                                                <strong>Jawaban Pengguna:</strong><br>
+                                                                @if (isset($answer['isMultipleSelect']) && $answer['isMultipleSelect'])
+                                                                    Multiple Choice:
+                                                                    @if (is_array($answer['values']))
+                                                                        <ul>
+                                                                            @foreach ($answer['values'] as $value)
+                                                                                <li>{{ $value }}</li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                    @else
+                                                                        {{ $answer['values'] ?? '' }}
+                                                                    @endif
+                                                                @else
+                                                                    Single Choice: {{ $answer['values'][0] ?? '' }}
+                                                                @endif
+                                                            </div>
+                                                            <div>
+                                                                <strong>Jawaban Benar:</strong><br>
+                                                                @if (is_array($answer['correct_answer']))
                                                                     <ul>
-                                                                        @foreach ($answer['values'] as $value)
-                                                                            <li>{{ $value }}</li>
+                                                                        @foreach ($answer['correct_answer'] as $item)
+                                                                            <li>{{ $item }}</li>
                                                                         @endforeach
                                                                     </ul>
                                                                 @else
-                                                                    {{ $answer['values'] ?? '' }}
+                                                                    {{ $answer['correct_answer'] ?? '' }}
                                                                 @endif
-                                                            @else
-                                                                Single Choice: {{ $answer['values'][0] ?? '' }}
-                                                            @endif
-                                                        </div>
-                                                        <div>
-                                                            <strong>Jawaban Benar:</strong><br>
-                                                            @if(is_array($answer['correct_answer']))
-                                                                <ul>
-                                                                    @foreach($answer['correct_answer'] as $item)
-                                                                        <li>{{ $item }}</li>
-                                                                    @endforeach
-                                                                </ul>
-                                                            @else
-                                                                {{ $answer['correct_answer'] ?? '' }}
-                                                            @endif
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Close</button>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5">No exam results found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                    @endif
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5">No exam results found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
-        </div>
-    @endif
+            </div>
+        @endif
     </div>
 
 </div>
 
 <!-- Add this script to the HTML file -->
 <script>
-
     //function to fetch student result on current sections
     const startExamButton = document.getElementById("startExam");
     const confirmStartButton = document.getElementById("confirmStartButton");
     const timer = document.getElementById("timer");
     const sectionFocus = document.getElementById("sectionFocus");
-    const timeLimit = {{$session->time_limit_minute}} * 60; // Convert minutes to seconds
+    const timeLimit = {{ $session->time_limit_minute }} * 60; // Convert minutes to seconds
     let remainingTime = timeLimit;
     let timerInterval;
 
@@ -293,13 +300,13 @@
 
         // Send the payload to your API endpoint using Fetch
         fetch("/exam/save-user-answer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}" // Include CSRF token
-            },
-            body: JSON.stringify(payload)
-        })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}" // Include CSRF token
+                },
+                body: JSON.stringify(payload)
+            })
             .then(response => response.json()) // Parse response as JSON
             .then(data => {
                 var myerror = data.showError;
@@ -379,7 +386,7 @@
         const checkboxInputs = document.querySelectorAll("input[type='checkbox']:checked");
 
         // Add radio answers to the payload
-        radioInputs.forEach(function (input) {
+        radioInputs.forEach(function(input) {
             const answerId = input.name.split("[")[1].split("]")[0]; // Extract question ID
             const answerValue = input.value;
             payload.userAnswers.answers.push({
@@ -390,7 +397,7 @@
         });
 
         // Add checkbox answers to the payload
-        checkboxInputs.forEach(function (input) {
+        checkboxInputs.forEach(function(input) {
             const answerId = input.name.split("[")[1].split("]")[0]; // Extract question ID
             const answerValue = input.value;
             const existingAnswer = payload.userAnswers.answers.find(answer => answer.id === answerId);
@@ -407,13 +414,13 @@
 
         // Send the payload to your API endpoint using Fetch
         fetch("/exam/save-user-answer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}" // Include CSRF token
-            },
-            body: JSON.stringify(payload)
-        })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}" // Include CSRF token
+                },
+                body: JSON.stringify(payload)
+            })
             .then(response => response.json()) // Parse response as JSON
             .then(data => {
                 var myerror = data.showError;
@@ -450,7 +457,7 @@
     }
 
     // Add event listener to capture click on the "Submit" button
-    document.getElementById("finishExam").addEventListener("click", function () {
+    document.getElementById("finishExam").addEventListener("click", function() {
         // Show Sweet Alert confirmation dialog
         Swal.fire({
             title: 'Are you sure you want to finish the exam?',
@@ -463,7 +470,8 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 // User confirmed, proceed to submit
-                sendAllUserAnswers(true); // Call function to send all user answers with isFinished = true
+                sendAllUserAnswers(
+                true); // Call function to send all user answers with isFinished = true
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 // User cancelled, do nothing
                 Swal.fire('Cancelled', 'Your exam submission was cancelled.', 'info');
@@ -472,8 +480,8 @@
     });
 
     // Add event listeners to capture checkbox and radio button changes
-    document.querySelectorAll("input[type='checkbox'], input[type='radio']").forEach(function (input) {
-        input.addEventListener("change", function () {
+    document.querySelectorAll("input[type='checkbox'], input[type='radio']").forEach(function(input) {
+        input.addEventListener("change", function() {
             sendAllUserAnswers(false); // Call function to send all user answers
         });
     });
@@ -483,10 +491,9 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
 
 
 
     });
-
 </script>
