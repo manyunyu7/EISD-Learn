@@ -202,14 +202,15 @@
                     <div class="input-group mb-3">
                         <input name="standard_pass_score" type="text"
                             class="form-control @error('standard_pass_score') is-invalid @enderror"
-                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            aria-label="Recipient's username" aria-describedby="basic-addon2"
+                            value="{{ old('standard_pass_score', $data->exam_session->standard_pass_score ?? '') }}">
                     </div>
                     @error('standard_pass_score')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
 
-                
+
                 {{-- Input Randomize Ujian --}}
                 <div class="mb-3">
                     <label class="mb-2">Random Sort Ujian</label><br>
