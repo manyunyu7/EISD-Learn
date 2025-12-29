@@ -334,6 +334,165 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            {{-- Start Date --}}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="start_date" class="mb-2">Start Date<span style="color: red">*</span></label>
+                                    <input required name="start_date" type="date" class="form-control" value="{{ old('start_date') }}">
+                                </div>
+                            </div>
+                        
+                            {{-- End Date --}}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="end_date" class="mb-2">End Date<span style="color: red">*</span></label>
+                                    <input required name="end_date" type="date" class="form-control" value="{{ old('end_date') }}">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            {{-- Target Peserta --}}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="target_peserta" class="mb-2">Target Peserta<span style="color: red">*</span></label>
+                                    <input required name="target_peserta" type="number" class="form-control" value="{{ old('target_peserta') }}">
+                                </div>
+                            </div>
+                        
+                            {{-- Durasi --}}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="durasi" class="mb-2">Durasi (Menit)<span style="color: red">*</span></label>
+                                    <input required name="durasi" type="text" class="form-control" value="{{ old('durasi') }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Bentuk Pelatihan --}}
+                        <div class="mb-3">
+                            <label class="mb-2 d-block">Bentuk Pelatihan<span style="color: red">*</span></label>
+                            <div class="input-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="bentuk_pelatihan" id="online" value="Online" 
+                                        {{ old('bentuk_pelatihan') == 'Online' ? 'checked' : '' }} required onclick="toggleLokasi()">
+                                    <label class="form-check-label" for="online">Online</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="bentuk_pelatihan" id="offline" value="Offline" 
+                                        {{ old('bentuk_pelatihan') == 'Offline' ? 'checked' : '' }} onclick="toggleLokasi()">
+                                    <label class="form-check-label" for="offline">Offline</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Lokasi Pelatihan --}}
+                        <div class="mb-3" id="lokasi_container" style="display: none;">
+                            <label for="lokasi" class="mb-2">Lokasi Pelatihan<span style="color: red">*</span></label>
+                            <input id="input_lokasi" name="lokasi" type="text" class="form-control" value="{{ old('lokasi') }}" placeholder="Masukkan tempat pelatihan">
+                        </div>
+                        <script>
+                            function toggleLokasi() {
+                                const radioOffline = document.getElementById('offline');
+                                const lokasiContainer = document.getElementById('lokasi_container');
+                                const inputLokasi = document.getElementById('input_lokasi');
+                        
+                                if (radioOffline.checked) {
+                                    // Tampilkan container dan buat input menjadi wajib diisi (required)
+                                    lokasiContainer.style.display = 'block';
+                                    inputLokasi.setAttribute('required', 'required');
+                                } else {
+                                    // Sembunyikan container, hapus required, dan kosongkan value
+                                    lokasiContainer.style.display = 'none';
+                                    inputLokasi.removeAttribute('required');
+                                    inputLokasi.value = ''; 
+                                }
+                            }
+                        
+                            // Jalankan saat halaman pertama kali dimuat (untuk menangani old value setelah validasi gagal)
+                            document.addEventListener('DOMContentLoaded', function() {
+                                toggleLokasi();
+                            });
+                        </script>
+
+                        {{-- Pelaksana/Vendor --}}
+                        <div class="mb-3">
+                            <label for="vendor" class="mb-2">Pelaksana/Vendor<span style="color: red">*</span></label>
+                            <input required name="vendor" type="text" class="form-control" value="{{ old('vendor') }}">
+                        </div>
+
+                        <div class="row">
+                            {{-- Budget Diajukan --}}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="budget_diajukan" class="mb-2">Budget Diajukan<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input required name="budget_diajukan" type="number" class="form-control" value="{{ old('budget_diajukan') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- Budget Realisasi --}}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="budget_realisasi" class="mb-2">Budget Realisasi</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input name="budget_realisasi" id="budget_realisasi" type="number" 
+                                            class="form-control" value="{{ old('budget_realisasi') }}" disabled>
+                                    </div>
+                                    <small id="budget_note" class="text-muted">Dapat diisi setelah tanggal End Date.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            function checkBudgetStatus() {
+                                const endDateInput = document.getElementsByName('end_date')[0];
+                                const budgetInput = document.getElementById('budget_realisasi');
+                                const budgetNote = document.getElementById('budget_note');
+                                
+                                if (endDateInput.value) {
+                                    const endDate = new Date(endDateInput.value);
+                                    const today = new Date();
+                                    
+                                    // Reset waktu ke 00:00:00 untuk perbandingan tanggal saja
+                                    today.setHours(0, 0, 0, 0);
+                                    endDate.setHours(0, 0, 0, 0);
+                        
+                                    if (today >= endDate) {
+                                        // Jika hari ini sudah masuk atau melewati End Date
+                                        budgetInput.disabled = false;
+                                        budgetNote.textContent = "Field sudah dapat diisi.";
+                                        budgetNote.classList.remove('text-muted');
+                                        budgetNote.classList.add('text-success');
+                                    } else {
+                                        // Jika belum mencapai End Date
+                                        budgetInput.disabled = true;
+                                        budgetInput.value = ''; // Kosongkan jika user mencoba manipulasi
+                                        budgetNote.textContent = "Dapat diisi setelah tanggal End Date.";
+                                        budgetNote.classList.remove('text-success');
+                                        budgetNote.classList.add('text-muted');
+                                    }
+                                }
+                            }
+                        
+                            // Jalankan fungsi saat ada perubahan pada End Date
+                            document.getElementsByName('end_date')[0].addEventListener('change', checkBudgetStatus);
+                        
+                            // Jalankan juga saat halaman pertama kali dimuat (antisipasi old value)
+                            document.addEventListener('DOMContentLoaded', function() {
+                                checkBudgetStatus();
+                                toggleLokasi(); // Memastikan fungsi toggle lokasi sebelumnya juga terpanggil
+                            });
+                        </script>
+                        
+
                         {{-- Default Rating Kelas --}}
                         <div class="mb-3" hidden>
                             <input name="rating" type="number" value="0">
@@ -404,25 +563,6 @@
                                     class="form-control form-select-lg js-example-basic-multiple" multiple></select>
                             </div>
                         </div>
-
-                        {{-- Target Employee --}}
-                        {{-- <div class="mb-3">
-                            <label for="" class="mb-2">Member -  Non Member<span style="color: red">*</span></label>
-                            <div class="input-group">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input name="member" class="form-check-input" type="checkbox" value="Member">
-                                        <span class="form-check-sign">Member</span>
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input name="non_member" target_employee class="form-check-input" type="checkbox" value="Non Member">
-                                        <span class="form-check-sign">Non Member</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div> --}}
 
                         {{-- Deskripsi Kelas --}}
                         <div class="mb-3">
