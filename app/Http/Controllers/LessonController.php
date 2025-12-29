@@ -307,73 +307,80 @@ class LessonController extends Controller
 
     public function updateClassV2(Request $request, $lesson_id)
     {
-
+        // 1. Validasi Data
         $this->validate($request, [
-            // 'image' => 'required',
-            'title' => 'required',
-            'content' => 'required',
+            'title'            => 'required',
+            'content'          => 'required',
+            'start_date'       => 'required|date',
+            'end_date'         => 'required|date|after_or_equal:start_date',
+            'target_peserta'   => 'required|numeric',
+            'durasi'           => 'required',
+            'bentuk_pelatihan' => 'required',
+            'vendor'           => 'required',
+            'budget_diajukan'  => 'required|numeric',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg|max:1024', // Optional saat update
         ]);
-
-        //upload image
-        $cat = $request->input('category');
-
-        // $video->storeAs('public/class/trailer', $video->hashName());
+    
         $user_id = Auth::id();
         $update_data_lesson = Lesson::findOrFail($lesson_id);
-
-        $image = $request->file('image');
-        $old_image_name = $update_data_lesson->course_cover_image;
-        $new_image_name = null;
-
-        if ($image != null) {
-            Storage::disk('s3')->delete("profile-s3/$old_image_name");
+    
+        // 2. Handling Image Upload (S3)
+        if ($request->hasFile('image')) {
+            // Hapus image lama jika ada
+            if ($update_data_lesson->course_cover_image) {
+                Storage::disk('s3')->delete($update_data_lesson->course_cover_image);
+            }
+    
             $image = $request->file('image');
             $imagePath = "lesson-s3/" . $image->hashName();
             Storage::disk('s3')->put($imagePath, file_get_contents($image));
             $update_data_lesson->course_cover_image = $imagePath;
         }
-
+    
+        // 3. Update Field Original
         $update_data_lesson->course_title       = $request->title;
         $update_data_lesson->course_trailer     = 'Value';
         $update_data_lesson->category_id        = $request->category_id;
-        $update_data_lesson->start_time         = $request->start_time;
-        $update_data_lesson->end_time           = $request->end_time;
-        $canBeAccessValueMapping = [
-            'Aktif' => 'y',
-            'Tidak Aktif' => 'n',
-        ];
-        $update_data_lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
-        $update_data_lesson->mentor_id          = $user_id;
         $update_data_lesson->course_description = $request->content;
-        $update_data_lesson->text_descriptions  = '';
+        $update_data_lesson->mentor_id          = $user_id;
         $update_data_lesson->pin                = $request->pass_class;
-        $update_data_lesson->position           = $request->position;
-        $update_data_lesson->target_employee    = '';
-        $newLabelValueMapping = [
+        $update_data_lesson->tipe               = $request->tipe;
+    
+        // Mapping Status (Aktif/Tidak Aktif)
+        $statusMapping = [
             'Aktif' => 'y',
             'Tidak Aktif' => 'n',
         ];
-
-        $update_data_lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
-        $update_data_lesson->tipe               = $request->tipe;
-        $update_data_lesson->department_id      = json_encode($request->department_id);
-        $update_data_lesson->position_id        = json_encode($request->position_id);
-
-        if($request->department_id==null || $request->department_id==""){
-            $update_data_lesson->department_id = "[]";
+        $update_data_lesson->can_be_accessed = $statusMapping[$request->akses_kelas] ?? 'n';
+        $update_data_lesson->new_class       = $statusMapping[$request->new_class] ?? 'n';
+    
+        // 4. Update Field Baru (Bahasa Inggris sesuai Database)
+        $update_data_lesson->start_date      = $request->start_date;
+        $update_data_lesson->end_date        = $request->end_date;
+        $update_data_lesson->target_audience = $request->target_peserta;
+        $update_data_lesson->duration        = $request->durasi;
+        $update_data_lesson->training_type   = $request->bentuk_pelatihan;
+        
+        // Lokasi: simpan input jika Offline, jika Online berikan tanda strip atau null
+        $update_data_lesson->location        = ($request->bentuk_pelatihan == 'Offline') ? $request->lokasi : '-';
+        
+        $update_data_lesson->vendor          = $request->vendor;
+        $update_data_lesson->proposed_budget = $request->budget_diajukan;
+    
+        // Budget Realisasi: Update hanya jika field tidak disabled (sudah melewati end_date)
+        // Jika field disabled di view, request tidak akan mengirim nilainya, kita pertahankan data lama atau default 0
+        if ($request->has('budget_realisasi')) {
+            $update_data_lesson->actual_budget = $request->budget_realisasi;
         }
-
-        if($request->position_id==null || $request->position_id==""){
-            $update_data_lesson->position_id = "[]";
-        }
-
-
-
+    
+        // 5. Handle JSON Department & Position
+        $update_data_lesson->department_id = !empty($request->department_id) ? json_encode($request->department_id) : "[]";
+        $update_data_lesson->position_id   = !empty($request->position_id) ? json_encode($request->position_id) : "[]";
+    
+        // 6. Eksekusi Simpan
         if ($update_data_lesson->save()) {
-            //redirect dengan pesan sukses
             return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Diperbaharui!']);
         } else {
-            //redirect dengan pesan error
             return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Diperbaharui!']);
         }
     }
