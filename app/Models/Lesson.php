@@ -62,6 +62,24 @@ class Lesson extends Model
         'department_id',
         'position_id',
         'tipe',
-        'rating_course'
+        'rating_course',
+    
+        // --- TAMBAHKAN FIELD BARU DI BAWAH INI ---
+        'start_date',
+        'end_date',
+        'target_audience',
+        'duration',
+        'training_type',
+        'location',
+        'vendor',
+        'proposed_budget',
+        'actual_budget',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date'   => 'date',
+        'department_id' => 'array',
+        'position_id'   => 'array',
     ];
 }
