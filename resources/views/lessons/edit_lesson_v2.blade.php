@@ -12,6 +12,59 @@
                 console.error(error);
             });
     </script>
+    <script>
+        // Fungsi untuk toggle field Lokasi
+        function toggleLokasi() {
+            const radioOffline = document.getElementById('offline');
+            const lokasiContainer = document.getElementById('lokasi_container');
+            const inputLokasi = document.getElementById('input_lokasi');
+    
+            if (radioOffline && radioOffline.checked) {
+                lokasiContainer.style.display = 'block';
+                inputLokasi.setAttribute('required', 'required');
+            } else if (lokasiContainer) {
+                lokasiContainer.style.display = 'none';
+                inputLokasi.removeAttribute('required');
+            }
+        }
+    
+        // Fungsi untuk toggle field Budget Realisasi berdasarkan End Date
+        function checkBudgetStatus() {
+            const endDateInput = document.getElementsByName('end_date')[0];
+            const budgetInput = document.getElementById('budget_realisasi');
+            const budgetNote = document.getElementById('budget_note');
+            
+            if (endDateInput && endDateInput.value) {
+                const endDate = new Date(endDateInput.value);
+                const today = new Date();
+                
+                today.setHours(0, 0, 0, 0);
+                endDate.setHours(0, 0, 0, 0);
+    
+                if (today >= endDate) {
+                    budgetInput.disabled = false;
+                    budgetNote.textContent = "Field sudah dapat diisi.";
+                    budgetNote.classList.remove('text-muted');
+                    budgetNote.classList.add('text-success');
+                } else {
+                    budgetInput.disabled = true;
+                    budgetNote.textContent = "Dapat diisi setelah tanggal End Date.";
+                    budgetNote.classList.remove('text-success');
+                    budgetNote.classList.add('text-muted');
+                }
+            }
+        }
+    
+        // Jalankan saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleLokasi();
+            checkBudgetStatus();
+            
+            // Listener untuk perubahan End Date
+            const endDateEl = document.getElementsByName('end_date')[0];
+            if(endDateEl) endDateEl.addEventListener('change', checkBudgetStatus);
+        });
+    </script>
 @endsection
 
 @section('script')
@@ -316,6 +369,100 @@
                                         aria-describedby="basic-addon2">
                                 </div>
                             </div>
+
+
+{{-- Field Baru: Baris Tanggal --}}
+<div class="row">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="start_date" class="mb-2">Start Date<span style="color: red">*</span></label>
+            <input required name="start_date" type="date" class="form-control" 
+                value="{{ old('start_date', $myClass->start_date) }}">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="end_date" class="mb-2">End Date<span style="color: red">*</span></label>
+            <input required name="end_date" type="date" class="form-control" 
+                value="{{ old('end_date', $myClass->end_date) }}">
+        </div>
+    </div>
+</div>
+
+{{-- Field Baru: Baris Target & Durasi --}}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="target_peserta" class="mb-2">Target Peserta<span style="color: red">*</span></label>
+                                        <input required name="target_peserta" type="number" class="form-control" 
+                                            value="{{ old('target_peserta', $myClass->target_audience) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="durasi" class="mb-2">Durasi<span style="color: red">*</span></label>
+                                        <input required name="durasi" type="text" class="form-control" 
+                                            value="{{ old('durasi', $myClass->duration) }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Field Baru: Bentuk Pelatihan --}}
+                            <div class="mb-3">
+                                <label class="mb-2 d-block">Bentuk Pelatihan<span style="color: red">*</span></label>
+                                <div class="input-group">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="bentuk_pelatihan" id="online" value="Online" 
+                                            {{ old('bentuk_pelatihan', $myClass->training_type) == 'Online' ? 'checked' : '' }} required onclick="toggleLokasi()">
+                                        <label class="form-check-label" for="online">Online</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="bentuk_pelatihan" id="offline" value="Offline" 
+                                            {{ old('bentuk_pelatihan', $myClass->training_type) == 'Offline' ? 'checked' : '' }} onclick="toggleLokasi()">
+                                        <label class="form-check-label" for="offline">Offline</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Field Baru: Lokasi (Conditional) --}}
+                            <div class="mb-3" id="lokasi_container" style="display: none;">
+                                <label for="lokasi" class="mb-2">Lokasi Pelatihan<span style="color: red">*</span></label>
+                                <input id="input_lokasi" name="lokasi" type="text" class="form-control" 
+                                    value="{{ old('lokasi', $myClass->location) }}">
+                            </div>
+
+                            {{-- Field Baru: Pelaksana/Vendor --}}
+                            <div class="mb-3">
+                                <label for="vendor" class="mb-2">Pelaksana/Vendor<span style="color: red">*</span></label>
+                                <input required name="vendor" type="text" class="form-control" 
+                                    value="{{ old('vendor', $myClass->vendor) }}">
+                            </div>
+
+                            {{-- Field Baru: Baris Budget --}}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="budget_diajukan" class="mb-2">Budget Diajukan<span style="color: red">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend"><span class="input-group-text">Rp</span></div>
+                                            <input required name="budget_diajukan" type="number" class="form-control" 
+                                                value="{{ old('budget_diajukan', $myClass->proposed_budget) }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="budget_realisasi" class="mb-2">Budget Realisasi</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend"><span class="input-group-text">Rp</span></div>
+                                            <input name="budget_realisasi" id="budget_realisasi" type="number" class="form-control" 
+                                                value="{{ old('budget_realisasi', $myClass->actual_budget) }}" disabled>
+                                        </div>
+                                        <small id="budget_note" class="text-muted">Dapat diisi setelah tanggal End Date.</small>
+                                    </div>
+                                </div>
+                            </div>
+
 
                             {{-- Kategori --}}
                             <div class="mb-3">
