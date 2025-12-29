@@ -641,96 +641,89 @@ class LessonController extends Controller
     }
     public function storeV2(Request $request)
     {
-
-        $totalsize = $request->image->getsize();
-
-
-        if($totalsize <= 1048576){
+        // Validasi ukuran file gambar (1MB)
+        $totalsize = $request->image->getSize();
+    
+        if ($totalsize <= 1048576) {
             $this->validate($request, [
-                'image' => 'required',
-                'title' => 'required',
-                'content' => 'required',
+                'image'             => 'required|image|mimes:jpeg,png,jpg|max:1024',
+                'title'             => 'required',
+                'content'           => 'required',
+                'start_date'        => 'required|date',
+                'end_date'          => 'required|date|after_or_equal:start_date',
+                'target_peserta'    => 'required|numeric',
+                'durasi'            => 'required',
+                'bentuk_pelatihan'  => 'required',
+                'vendor'            => 'required',
+                'budget_diajukan'   => 'required|numeric',
             ]);
-
-            //upload image
+    
+            // 1. Proses Upload Image ke S3
             $image = $request->file('image');
             $imagePath = "";
             if ($image != null) {
-                $image = $request->file('image');
                 $imagePath = "lesson-s3/" . $image->hashName();
                 Storage::disk('s3')->put($imagePath, file_get_contents($image));
             }
-
+    
             $user_id = Auth::id();
-
-            // Setting Value Department
-            $department = $request->department_id;
-            $json_department = json_encode($department);
-            // return $json_department;
-            // Setting Value Position
-            $position = $request->position_id;
-
+    
+            // 2. Inisialisasi Model Lesson
             $insert_to_Lesson = new Lesson();
+            
+            // Field Original
             $insert_to_Lesson->course_cover_image = $imagePath;
-            $insert_to_Lesson->course_title = $request->title;
-
-
-            $insert_to_Lesson->course_trailer = 'Value';
-            $insert_to_Lesson->category_id = $request->category_id;
-            $insert_to_Lesson->start_time = $request->start_time;
-            $insert_to_Lesson->end_time = $request->end_time;
-            $canBeAccessValueMapping = [
-                'Aktif' => 'y',
-                'Tidak Aktif' => 'n',
-            ];
-            $insert_to_Lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
-            $insert_to_Lesson->mentor_id = $user_id;
+            $insert_to_Lesson->course_title       = $request->title;
+            $insert_to_Lesson->course_trailer     = 'Value';
+            $insert_to_Lesson->category_id        = $request->category_id;
             $insert_to_Lesson->course_description = $request->content;
-            $insert_to_Lesson->text_descriptions = '';
-            $insert_to_Lesson->pin = $request->pass_class;
-            $insert_to_Lesson->position = $request->position;
-            $insert_to_Lesson->target_employee = '';
-            $newLabelValueMapping = [
+            $insert_to_Lesson->mentor_id          = $user_id;
+            $insert_to_Lesson->pin                = $request->pass_class;
+            $insert_to_Lesson->tipe               = $request->tipe;
+            $insert_to_Lesson->rating_course      = $request->rating ?? 0;
+    
+            // Mapping Label Button (Aktif/Tidak Aktif) ke (y/n)
+            $statusMapping = [
                 'Aktif' => 'y',
                 'Tidak Aktif' => 'n',
             ];
-
-            $insert_to_Lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
-            $insert_to_Lesson->tipe = $request->tipe;
-            $insert_to_Lesson->department_id = json_encode($request->department_id);
-            $insert_to_Lesson->position_id = json_encode($request->position_id);
-
-            if($request->department_id==null || $request->department_id==""){
-                $insert_to_Lesson->department_id = "[]";
-            }
-
-            if($request->position_id==null || $request->position_id==""){
-                $insert_to_Lesson->position_id = "[]";
-            }
-
-            $insert_to_Lesson->rating_course = $request->rating;
-
-
-            // $insert_to_Lesson->rating_course = 0;
-
-
+            $insert_to_Lesson->can_be_accessed = $statusMapping[$request->akses_kelas] ?? 'n';
+            $insert_to_Lesson->new_class       = $statusMapping[$request->new_class] ?? 'n';
+    
+            // 3. Tambahan Field Baru (Data Pelatihan)
+            $insert_to_Lesson->start_date       = $request->start_date; // Menggunakan start_date (bukan start_time)
+            $insert_to_Lesson->end_date         = $request->end_date;   // Menggunakan end_date (bukan end_time)
+            $insert_to_Lesson->target_peserta   = $request->target_peserta;
+            $insert_to_Lesson->durasi           = $request->durasi;
+            $insert_to_Lesson->bentuk_pelatihan = $request->bentuk_pelatihan;
+            
+            // Lokasi hanya diisi jika Offline, jika Online set null/kosong
+            $insert_to_Lesson->lokasi           = ($request->bentuk_pelatihan == 'Offline') ? $request->lokasi : '-';
+            
+            $insert_to_Lesson->vendor           = $request->vendor;
+            $insert_to_Lesson->budget_diajukan  = $request->budget_diajukan;
+    
+            // Budget Realisasi dicek (hanya simpan jika input tidak disabled/ada isinya)
+            $insert_to_Lesson->budget_realisasi = $request->budget_realisasi ?? 0;
+    
+            // 4. Handle JSON Department & Position
+            $insert_to_Lesson->department_id = !empty($request->department_id) ? json_encode($request->department_id) : "[]";
+            $insert_to_Lesson->position_id   = !empty($request->position_id) ? json_encode($request->position_id) : "[]";
+    
+            // Placeholder field agar tidak error jika database mewajibkan string
+            $insert_to_Lesson->text_descriptions = '';
+            $insert_to_Lesson->target_employee   = '';
+    
+            // 5. Eksekusi Simpan
             if ($insert_to_Lesson->save()) {
-                //redirect dengan pesan sukses
                 return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
             } else {
-                //redirect dengan pesan error
-                return "error gais";
                 return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
             }
-        }else{
-            return redirect('lesson/manage_v2')->with(['error' => 'Ukuran file terlalu besar! Program hanya menerima ukuran file di bawah 1 MB.']);
+    
+        } else {
+            return redirect('lesson/manage_v2')->with(['error' => 'Ukuran file terlalu besar! Maksimal 1 MB.']);
         }
-
-
-
-        // return $totalsize;
-
-
     }
 
     public function fetchDepartments()
