@@ -639,6 +639,7 @@ class LessonController extends Controller
             return redirect('lesson/manage')->with(['error' => 'Kelas Gagal Disimpan!']);
         }
     }
+    
     public function storeV2(Request $request)
     {
         // Validasi ukuran file gambar (1MB)
@@ -690,21 +691,21 @@ class LessonController extends Controller
             $insert_to_Lesson->can_be_accessed = $statusMapping[$request->akses_kelas] ?? 'n';
             $insert_to_Lesson->new_class       = $statusMapping[$request->new_class] ?? 'n';
     
-            // 3. Tambahan Field Baru (Data Pelatihan)
-            $insert_to_Lesson->start_date       = $request->start_date; // Menggunakan start_date (bukan start_time)
-            $insert_to_Lesson->end_date         = $request->end_date;   // Menggunakan end_date (bukan end_time)
-            $insert_to_Lesson->target_peserta   = $request->target_peserta;
-            $insert_to_Lesson->durasi           = $request->durasi;
-            $insert_to_Lesson->bentuk_pelatihan = $request->bentuk_pelatihan;
+            // 3. Tambahan Field Baru (Menggunakan Nama Kolom Bahasa Inggris)
+            $insert_to_Lesson->start_date       = $request->start_date;
+            $insert_to_Lesson->end_date         = $request->end_date;
+            $insert_to_Lesson->target_audience  = $request->target_peserta;
+            $insert_to_Lesson->duration         = $request->durasi;
+            $insert_to_Lesson->training_type    = $request->bentuk_pelatihan;
             
-            // Lokasi hanya diisi jika Offline, jika Online set null/kosong
-            $insert_to_Lesson->lokasi           = ($request->bentuk_pelatihan == 'Offline') ? $request->lokasi : '-';
+            // Lokasi (location) hanya diisi jika Offline
+            $insert_to_Lesson->location         = ($request->bentuk_pelatihan == 'Offline') ? $request->lokasi : '-';
             
             $insert_to_Lesson->vendor           = $request->vendor;
-            $insert_to_Lesson->budget_diajukan  = $request->budget_diajukan;
+            $insert_to_Lesson->proposed_budget  = $request->budget_diajukan;
     
-            // Budget Realisasi dicek (hanya simpan jika input tidak disabled/ada isinya)
-            $insert_to_Lesson->budget_realisasi = $request->budget_realisasi ?? 0;
+            // Budget Realisasi (actual_budget)
+            $insert_to_Lesson->actual_budget    = $request->budget_realisasi ?? 0;
     
             // 4. Handle JSON Department & Position
             $insert_to_Lesson->department_id = !empty($request->department_id) ? json_encode($request->department_id) : "[]";
