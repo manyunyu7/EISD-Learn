@@ -238,6 +238,9 @@ Route::group(['middleware’' => ['auth']], function () {
         Route::get('/training-request/mentor', 'LessonController@view_trainingRequest');
         Route::post('/training-request/create', 'LessonController@store_trainingRequest');
 
+        // Routing for Report
+        Route::get('/report/generate', 'ReportController@index');
+        Route::post('/report/create', 'ReportController@store');
 
         // Route::post('/lesson/{lesson}/store/','CourseSectionController@store')->name('section.store');
         // Route::delete('/lesson/{lesson}/section/s','CourseSectionController@destroy')->name('section.delete');
