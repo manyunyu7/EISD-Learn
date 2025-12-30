@@ -13,7 +13,7 @@ class ReportController extends Controller
     {
         // 1. Ambil data Business Unit (Departments) dari koneksi ithub
         $businessUnits = DB::connection('ithub')
-            ->table('m_departments')
+            ->table('m_unit_businesses')
             ->select('id', 'code', 'name')
             ->where('code', 'like', '%_NEW%')
             ->get();
