@@ -90,7 +90,7 @@
 
         <h1 class="page-title">Generate Report</h1>
 
-        <form action="{{ url('/report/preview') }}" method="POST">
+        <form id="reportForm" action="{{ url('/report/preview') }}" method="POST">
             @csrf
             <div class="row">
                 <div class="col-md-6 form-group">
@@ -156,8 +156,46 @@
 
             <div class="footer-actions">
                 <button type="button" class="btn-report btn-cancel" onclick="window.location.href='{{ url('/home') }}'">Cancel</button>
-                <button type="submit" class="btn-report btn-save">Save</button>
+                <button type="button" id="btnPreview" class="btn-report btn-save">Save</button>
             </div>
         </form>
     </div>
+@endsection
+
+@section('script')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi Select2 jika masih diperlukan
+            $('.select2-basic').select2({
+                theme: "bootstrap",
+                width: '100%'
+            });
+
+            $('#btnPreview').on('click', function() {
+                // Ambil semua data form
+                const formData = {
+                    start_date: $('input[name="start_date"]').val(),
+                    end_date: $('input[name="end_date"]').val(),
+                    jabatan_id: $('select[name="jabatan_id"]').val(),
+                    bu_id: $('select[name="bu_id"]').val(),
+                    training_type: $('input[name="training_type"]:checked').val()
+                };
+
+                // Tampilkan di console
+                console.log("=== Generate Report Input Data ===");
+                console.table(formData); // Menggunakan table agar lebih rapi di console
+
+                // Validasi sederhana sebelum submit
+                if(!formData.start_date || !formData.end_date) {
+                    Swal.fire('Error', 'Start Date dan End Date wajib diisi!', 'error');
+                    return;
+                }
+
+                // Jika ingin lanjut ke Controller (Preview Page)
+                // Hapus baris di bawah ini jika hanya ingin ngetes di console saja
+                $('#reportForm').submit();
+            });
+        });
+    </script>
 @endsection

@@ -1,0 +1,194 @@
+@extends('main.template')
+
+@section('head-section')
+    <style>
+        .page-inner {
+            padding: 30px !important;
+            background-color: #fff;
+            min-height: 100vh;
+        }
+
+        /* Breadcrumb Divider */
+        .breadcrumb { 
+            background: #fff; 
+            border: 1px solid #ebedf2;
+            border-radius: 10px;
+            padding: 15px 25px; 
+            margin-bottom: 40px; 
+            font-size: 14px;
+        }
+        .breadcrumb-item + .breadcrumb-item::before { content: ">"; color: #333; padding: 0 10px; }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        /* Tombol Export Biru sesuai gambar */
+        .btn-export-main {
+            background-color: #5b8fb9;
+            color: white;
+            border: none;
+            padding: 10px 35px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .timestamp {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Border Hitam Tebal di atas dan bawah tabel sesuai gambar */
+        .table-container {
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: 700;
+            text-align: left;
+            padding: 12px 10px;
+            font-size: 13px;
+            border: 1px solid #dee2e6;
+        }
+
+        .report-table td {
+            padding: 12px 10px;
+            border: 1px solid #dee2e6;
+            font-size: 13px;
+            color: #333;
+        }
+
+        /* Styling Ringkasan Total di Bawah */
+        .summary-box {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+
+        .summary-item {
+            display: flex;
+            border: 1px solid #ebedf2;
+            border-radius: 5px;
+            overflow: hidden;
+            min-width: 150px;
+        }
+
+        .summary-label {
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            font-weight: 500;
+            border-right: 1px solid #ebedf2;
+            flex: 1;
+            text-align: center;
+        }
+
+        .summary-value {
+            padding: 10px 25px;
+            background-color: #fff;
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+        }
+    </style>
+@endsection
+
+@section('main')
+<div class="page-inner">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url('/home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Report</li>
+        </ol>
+    </nav>
+
+    <h1 class="page-title">Generate Report</h1>
+
+    <div class="dropdown">
+        <button class="btn-export-main dropdown-toggle" type="button" data-toggle="dropdown">
+            Export
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#"><i class="fas fa-file-excel mr-2"></i> Export Excel</a>
+            <a class="dropdown-item" href="#"><i class="fas fa-file-pdf mr-2"></i> Export PDF</a>
+        </div>
+    </div>
+
+    <div class="timestamp">
+        {{ date('d/m/y H:i') }}
+    </div>
+
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal Pelaksanaan</th>
+                        <th>Nama</th>
+                        <th>Nomor Karyawan</th>
+                        <th>Jenis Kelamin</th>
+                        <th>Posisi / Job Title</th>
+                        <th>Departement</th>
+                        <th>Jabatan</th>
+                        <th>Unit Bisnis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $totalHadir = 0; @endphp
+                    @forelse($reports as $index => $row)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ \Carbon\Carbon::parse($row->start_date)->format('d/m/Y') }}</td>
+                            <td>{{ $row->student_name ?? 'N/A' }}</td> {{-- Sesuaikan dengan join student Anda --}}
+                            <td>{{ $row->employee_number ?? 'N/A' }}</td>
+                            <td>{{ $row->gender ?? 'N/A' }}</td>
+                            <td>{{ $row->job_title ?? 'N/A' }}</td>
+                            <td>{{ $row->department_name ?? 'N/A' }}</td>
+                            <td>Member</td> {{-- Default sesuai gambar --}}
+                            <td>{{ $row->business_unit_name ?? 'N/A' }}</td>
+                        </tr>
+                        @php $totalHadir++; @endphp
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center">Belum memiliki materi / data tidak ditemukan.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-item">
+            <div class="summary-label">Total</div>
+            <div class="summary-value">{{ count($reports) }}</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-label">Hadir</div>
+            <div class="summary-value">{{ $totalHadir }}</div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <button class="btn btn-link text-muted" onclick="window.history.back()">
+            <i class="fas fa-arrow-left mr-2"></i> Kembali ke Filter
+        </button>
+    </div>
+</div>
+@endsection

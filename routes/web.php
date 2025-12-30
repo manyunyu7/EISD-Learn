@@ -240,6 +240,7 @@ Route::group(['middleware’' => ['auth']], function () {
 
         // Routing for Report
         Route::get('/report/generate', 'ReportController@index');
+        Route::post('/report/preview', 'ReportController@previewReport');
         Route::post('/report/create', 'ReportController@store');
 
         // Route::post('/lesson/{lesson}/store/','CourseSectionController@store')->name('section.store');

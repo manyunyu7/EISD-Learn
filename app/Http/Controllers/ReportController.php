@@ -35,47 +35,48 @@ class ReportController extends Controller
 
     private function getReportData(Request $request)
     {
-        // Query dasar dengan join ke kategori
-        $query = Lesson::query()
-            ->select(
-                'lessons.*',
-                'course_categories.name as category_name'
-            )
-            ->join('course_categories', 'lessons.category_id', '=', 'course_categories.id')
-            ->whereBetween('lessons.start_date', [$request->start_date, $request->end_date]);
-
-        // Filter berdasarkan Jabatan (Position)
-        // Karena di storeV2 menggunakan json_encode, gunakan whereJsonContains
+        // Menggunakan Model Lesson dengan relasi category
+        $query = Lesson::with('category') 
+            ->whereBetween('start_date', [$request->start_date, $request->end_date]);
+    
+        // Filter Jabatan (Position) - Menggunakan kolom position_id (JSON)
         if ($request->filled('jabatan_id')) {
-            $query->whereJsonContains('lessons.position_id', $request->jabatan_id);
+            $query->whereJsonContains('position_id', $request->jabatan_id);
         }
-
-        // Filter berdasarkan Business Unit (Department)
+    
+        // Filter Business Unit (Department) - Menggunakan kolom department_id (JSON)
         if ($request->filled('bu_id')) {
-            $query->whereJsonContains('lessons.department_id', $request->bu_id);
+            $query->whereJsonContains('department_id', $request->bu_id);
         }
-
-        // Filter berdasarkan Jenis Training (All, Online, Offline)
+    
+        // Filter Jenis Training
         if ($request->filled('training_type') && $request->training_type != 'All') {
-            $query->where('lessons.training_type', $request->training_type);
+            $query->where('training_type', $request->training_type);
         }
-
-        return $query->orderBy('lessons.start_date', 'asc')->get();
+    
+        return $query->orderBy('start_date', 'asc')->get();
     }
 
 
     // Tambahkan fungsi baru untuk preview
     public function previewReport(Request $request)
     {
+        // Validasi data yang masuk
         $request->validate([
-            'start_date' => 'required',
-            'end_date' => 'required',
+            'start_date' => 'required|date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
         ]);
 
-        // Mengambil data dengan filter yang sama seperti sebelumnya
+        // Opsional: Jika ingin debugging di sisi server (muncul di network tab browser)
+        // return response()->json($request->all());
+
+        // Mengambil data report berdasarkan filter
         $reports = $this->getReportData($request);
 
-        // Kirim data ke view baru bernama preview_page.blade.php
-        return view('report.preview_page', compact('reports', 'request'));
+        // Kirim data ke view preview_page.blade.php
+        return view('report.preview_page', [
+            'reports' => $reports,
+            'request' => $request // Membawa kembali inputan untuk ditampilkan di label preview
+        ]);
     }
 }

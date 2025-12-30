@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Models\LessonCategory;
 
 class Lesson extends Model
 {
@@ -38,6 +39,12 @@ class Lesson extends Model
         $fullImgPath = url("/") . Storage::url('public/class/category/') . $imgPath;
 
         return $fullImgPath;
+    }
+
+    public function category()
+    {
+        // Sesuaikan 'category_id' dengan nama kolom foreign key di tabel lessons
+        return $this->belongsTo(LessonCategory::class, 'category_id');
     }
 
     protected $fillable = [
