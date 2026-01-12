@@ -154,13 +154,14 @@
                     @forelse($reports as $index => $row)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($row->start_date)->format('d/m/Y') }}</td>
-                            <td>{{ $row->student_name ?? 'N/A' }}</td> {{-- Sesuaikan dengan join student Anda --}}
-                            <td>{{ $row->employee_number ?? 'N/A' }}</td>
-                            <td>{{ $row->gender ?? 'N/A' }}</td>
-                            <td>{{ $row->job_title ?? 'N/A' }}</td>
-                            <td>{{ $row->department_name ?? 'N/A' }}</td>
-                            <td>Member</td> {{-- Default sesuai gambar --}}
+                            {{-- ATAU jika Anda ingin mengakses key array lainnya --}}
+                            <td>{{ $row['start_date'] }}</td>
+                            <td>{{ $row['nama'] ?? 'N/A' }}</td> {{-- Sesuaikan dengan join student Anda --}}
+                            <td>{{ $row['nip'] ?? 'N/A' }}</td>
+                            <td>{{ $row['jenis_kelamin'] ?? 'N/A' }}</td>
+                            <td>{{ $row['posisi'] ?? 'N/A' }}</td>
+                            <td>{{ $row['department'] ?? 'N/A' }}</td>
+                            <td>{{ $row['jabatan'] ?? 'N/A' }}</td>
                             <td>{{ $row->business_unit_name ?? 'N/A' }}</td>
                         </tr>
                         @php $totalHadir++; @endphp

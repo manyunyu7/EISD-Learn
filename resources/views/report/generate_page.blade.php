@@ -96,7 +96,7 @@
                 <div class="col-md-6 form-group">
                     <label>Start Date <span class="text-danger">*</span></label>
                     <div class="input-with-icon">
-                        <input type="date" name="start_date" class="form-control-custom" required>
+                        <input type="date" value="2023-08-11" name="start_date" class="form-control-custom" required>
                         <i class="fas fa-calendar-alt"></i>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                 <div class="col-md-6 form-group">
                     <label>End Date <span class="text-danger">*</span></label>
                     <div class="input-with-icon">
-                        <input type="date" name="end_date" class="form-control-custom" required>
+                        <input type="date" value="2026-01-05" name="end_date" class="form-control-custom" required>
                         <i class="fas fa-calendar-alt"></i>
                     </div>
                 </div>
