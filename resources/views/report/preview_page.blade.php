@@ -147,6 +147,18 @@
                         <th>Departement</th>
                         <th>Jabatan</th>
                         <th>Unit Bisnis</th>
+                        <th>Judul Training</th>
+                        <th>Pelaksana/Vendor</th>
+                        <th>Lokasi Pelatihan</th>
+                        <th>Durasi (Menit)</th>
+                        <th>Budget (Total Diajukan)</th>
+                        <th>Budget (Total Realisasi)</th>
+                        <th>Keterangan Ketidakhadiran</th>
+                        <th>Target Peserta</th>
+                        <th>Aktual Peserta</th>
+                        <th>Persentase Kehadiran</th>
+                        <th>Progress</th>
+                        <th>Jenis Pelatihan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -154,15 +166,26 @@
                     @forelse($reports as $index => $row)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            {{-- ATAU jika Anda ingin mengakses key array lainnya --}}
-                            <td>{{ $row['start_date'] }}</td>
-                            <td>{{ $row['nama'] ?? 'N/A' }}</td> {{-- Sesuaikan dengan join student Anda --}}
-                            <td>{{ $row['nip'] ?? 'N/A' }}</td>
-                            <td>{{ $row['jenis_kelamin'] ?? 'N/A' }}</td>
-                            <td>{{ $row['posisi'] ?? 'N/A' }}</td>
-                            <td>{{ $row['department'] ?? 'N/A' }}</td>
-                            <td>{{ $row['jabatan'] ?? 'N/A' }}</td>
-                            <td>{{ $row->business_unit_name ?? 'N/A' }}</td>
+                            <td>{{ $row->start_date }}</td>
+                            <td>{{ $row->name }}</td>
+                            <td>{{ $row->nip }}</td>
+                            <td>{{ $row->gender }}</td>
+                            <td>{{ $row->position }}</td>
+                            <td>{{ $row->department }}</td>
+                            <td>{{ $row->jabatan }}</td>
+                            <td>{{ $row->business_unit }}</td>
+                            <td>{{ $row->course_title }}</td>
+                            <td>{{ $row->vendor }}</td>
+                            <td>{{ $row->location }}</td>
+                            <td>{{ $row->duration }}</td>
+                            <td>{{ $row->proposed_budget }}</td>
+                            <td>{{ $row->actual_budget }}</td>
+                            <td>{{ $row->keterangan_hadir }}</td>
+                            <td>{{ $row->target_audience }}</td>
+                            <td>{{ $row->actual_audience }}</td>
+                            <td>{{ $row->presentase_kehadiran }}</td>
+                            <td>undefined</td>
+                            <td>{{ $row->training_type }}</td>
                         </tr>
                         @php $totalHadir++; @endphp
                     @empty
