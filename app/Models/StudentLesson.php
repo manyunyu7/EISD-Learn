@@ -19,7 +19,7 @@ class StudentLesson extends Model
         'updated_at',
         'learn_status',
         'certificate_file',
-        'student-lesson'
+        'student_lesson'
     ];
 
 }

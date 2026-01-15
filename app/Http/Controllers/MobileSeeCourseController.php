@@ -52,7 +52,7 @@ class MobileSeeCourseController extends Controller
         $isRegistered = false;
         if (Auth::user()->role == "student") {
             $student_lesson = DB::table('student_lesson')
-                ->where('student-lesson', "$user_id-$lessonId")
+                ->where('student_lesson', "$user_id-$lessonId")
                 ->get()
                 ->toArray();
 
@@ -97,7 +97,7 @@ class MobileSeeCourseController extends Controller
                 'lessons.course_title',
                 'lessons.id AS lessons_id',
                 'ss.section_id',
-                'ss.student-section'
+                'ss.student_section'
             )
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
@@ -268,7 +268,7 @@ class MobileSeeCourseController extends Controller
 
         // ✅ UPDATED: Enhanced section completion checking with quiz score bypass
         foreach ($sections as $key => $sectionItem) {
-            // Check if the section is already added to the student-section
+            // Check if the section is already added to the student_section
             $isTaken = StudentSection::where('section_id', $sectionItem->section_id)
                 ->where('student_id', Auth::id())
                 ->exists();
@@ -601,25 +601,25 @@ class MobileSeeCourseController extends Controller
 
         $studentSectionValue = "$student" . "-" . "$section";
 
-        // Check if the student-section already exists
-        $existingRecord = StudentSection::where('student-section', $studentSectionValue)->first();
+        // Check if the student_section already exists
+        $existingRecord = StudentSection::where('student_section', $studentSectionValue)->first();
 
         if ($existingRecord) {
             // Handle the case when the record already exists
             // For example, you can return an error message or redirect back with an error
-            // return back()->with('error', 'Student-section already exists.');
+            // return back()->with('error', 'student_section already exists.');
         } else {
             // Create a new instance of StudentSection
             $data = new StudentSection();
             $data->student_id = $student;
             $data->section_id = $section;
-            $data->setAttribute('student-section', $studentSectionValue);
+            $data->setAttribute('student_section', $studentSectionValue);
             // Save the data
             $data->save();
 
             // Perform any additional actions after saving
             // Redirect or return a success message
-            // return redirect()->route('success')->with('success', 'Student-section saved successfully.');
+            // return redirect()->route('success')->with('success', 'student_section saved successfully.');
         }
     }
 }

@@ -449,7 +449,7 @@ class LessonController extends Controller
         $lesson = $lessonz[0];
 
         $student_lesson = FacadesDB::table('student_lesson')
-            ->where('student-lesson', "$user_id-$lesson_id")
+            ->where('student_lesson', "$user_id-$lesson_id")
             ->get()
             ->toArray();
 
@@ -460,11 +460,11 @@ class LessonController extends Controller
 
         $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
 
-        // Iterate over the sections and check if each one is already added to the student-section
+        // Iterate over the sections and check if each one is already added to the student_section
         foreach ($sections as $key => $section) {
             $section_id = $section->section_id;
 
-            // Check if the section is already added to the student-section
+            // Check if the section is already added to the student_section
             $isTaken = StudentSection::where('section_id', $section_id)
                 ->where('student_id', Auth::id())
                 ->exists();
@@ -782,7 +782,7 @@ class LessonController extends Controller
                 'lesson_id' => $request->course_id,
                 'learn_status' => 0,
                 'certificate_file' => "",
-                'student-lesson' => "$user_id-$request->course_id",
+                'student_lesson' => "$user_id-$request->course_id",
             ]);
             if ($registerLesson) {
                 return redirect('/home')->with(['success' => 'Berhasil Mendaftar Kelas!']);
@@ -799,7 +799,7 @@ class LessonController extends Controller
     {
         $user_id = Auth::user()->id;
         $course_id = $request->course_id;
-        $delete = DB::table('student_lesson')->where('student-lesson', '=', $user_id . "-" . $course_id)->delete();
+        $delete = DB::table('student_lesson')->where('student_lesson', '=', $user_id . "-" . $course_id)->delete();
         if ($delete) {
             return redirect('/home')->with(['success' => 'Berhasil Drop Kelas!']);
         } else {
