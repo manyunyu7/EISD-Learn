@@ -63,9 +63,9 @@ class ReportController extends Controller
         $request->validate([
             'start_date' => 'required|date',
             'end_date'   => 'required|date|after_or_equal:start_date',
-            'positionName'   => 'varchar(255)',
-            'buName'   => 'varchar(255)',
-            'trainingType'   => 'varchar(255)',
+            'positionName'   => 'nullable|string|max:255',
+            'buName'   => 'nullable|string|max:255',
+            'trainingType'   => 'nullable|string|max:255',
         ]);
     
         $reports = $this->getReportData($request);
