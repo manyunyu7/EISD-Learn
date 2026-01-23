@@ -41,15 +41,17 @@ class ReportController extends Controller
         
         // Asumsi parameter ke-3 dan ke-4 adalah filter tambahan (misal: user_id atau category)
         // Jika tidak ada di request, kirim NULL
-        $param3 = $request->input('param3', null); 
-        $param4 = $request->input('param4', null);
+        $positionName = $request->input('positionName', null); 
+        $buName = $request->input('buName', null);
+        $trainingType = $request->input('trainingType', null);
     
         // Memanggil procedure dengan array bindings (?)
         $query = DB::select('CALL sp_get_learning_report(?, ?, ?, ?)', [
             $startDate,
             $endDate,
-            $param3,
-            $param4
+            $positionName,
+            $buName,
+            $trainingType
         ]);
     
         return $query;
@@ -61,6 +63,9 @@ class ReportController extends Controller
         $request->validate([
             'start_date' => 'required|date',
             'end_date'   => 'required|date|after_or_equal:start_date',
+            'positionName'   => 'varchar(255)',
+            'buName'   => 'varchar(255)',
+            'trainingType'   => 'varchar(255)',
         ]);
     
         $reports = $this->getReportData($request);

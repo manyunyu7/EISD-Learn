@@ -112,10 +112,10 @@
                 <div class="col-md-6 form-group">
                     <label>Jabatan</label>
                     <div class="select-wrapper">
-                        <select name="jabatan_id" class="form-control-custom">
+                        <select name="positionName" class="form-control-custom">
                             <option value="">Pilih Jabatan</option>
                             @foreach($positions as $position)
-                                <option value="{{ $position->id }}">{{ $position->name }}</option>
+                                <option value="{{ $position->name }}">{{ $position->name }}</option>
                             @endforeach
                         </select>
                         <i class="fas fa-chevron-down"></i>
@@ -125,10 +125,10 @@
                 <div class="col-md-6 form-group">
                     <label>Business Unit</label>
                     <div class="select-wrapper">
-                        <select name="bu_id" class="form-control-custom">
+                        <select name="buName" class="form-control-custom">
                             <option value="">ALL</option>
                             @foreach($businessUnits as $bu)
-                                <option value="{{ $bu->id }}">{{ $bu->name }}</option>
+                                <option value="{{ $bu->name }}">{{ $bu->name }}</option>
                             @endforeach
                         </select>
                         <i class="fas fa-chevron-down"></i>
@@ -139,15 +139,15 @@
                     <label>Jenis Training</label>
                     <div class="radio-group">
                         <div class="custom-radio">
-                            <input type="radio" name="training_type" id="all" value="All" checked>
+                            <input type="radio" name="trainingType" id="all" value="All" checked>
                             <label for="all">All</label>
                         </div>
                         <div class="custom-radio">
-                            <input type="radio" name="training_type" id="online" value="Online">
+                            <input type="radio" name="trainingType" id="online" value="Online">
                             <label for="online">Online</label>
                         </div>
                         <div class="custom-radio">
-                            <input type="radio" name="training_type" id="offline" value="Offline">
+                            <input type="radio" name="trainingType" id="offline" value="Offline">
                             <label for="offline">Offline</label>
                         </div>
                     </div>
@@ -177,9 +177,9 @@
                 const formData = {
                     start_date: $('input[name="start_date"]').val(),
                     end_date: $('input[name="end_date"]').val(),
-                    jabatan_id: $('select[name="jabatan_id"]').val(),
-                    bu_id: $('select[name="bu_id"]').val(),
-                    training_type: $('input[name="training_type"]:checked').val()
+                    positionName: $('select[name="positionName"]').val(),
+                    buName: $('select[name="buName"]').val(),
+                    trainingType: $('input[name="trainingType"]:checked').val()
                 };
 
                 // Tampilkan di console
