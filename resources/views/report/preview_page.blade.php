@@ -190,7 +190,7 @@
                         @php $totalHadir++; @endphp
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center">Belum memiliki materi / data tidak ditemukan.</td>
+                            <td colspan="21" class="text-center">Belum memiliki materi / data tidak ditemukan.</td>
                         </tr>
                     @endforelse
                 </tbody>

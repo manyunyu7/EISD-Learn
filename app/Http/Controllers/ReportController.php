@@ -36,17 +36,23 @@ class ReportController extends Controller
     private function getReportData(Request $request)
     {
         // Mengambil nilai dari request yang sudah divalidasi
-        $startDate = $request->input('start_date');
-        $endDate   = $request->input('end_date');
+        $startDate = $request->input('start_date', null);
+        $endDate   = $request->input('end_date', null);
         
-        // Asumsi parameter ke-3 dan ke-4 adalah filter tambahan (misal: user_id atau category)
         // Jika tidak ada di request, kirim NULL
         $positionName = $request->input('positionName', null); 
         $buName = $request->input('buName', null);
-        $trainingType = $request->input('trainingType', null);
-    
+        // Handling Radio Button
+        $trainingType = $request->input('trainingType');
+            
+        // Jika value-nya "All", set jadi null agar Stored Procedure mengabaikan filter ini
+        if ($trainingType === 'All') {
+            $trainingType = null;
+        }    
+
+
         // Memanggil procedure dengan array bindings (?)
-        $query = DB::select('CALL sp_get_learning_report(?, ?, ?, ?)', [
+        $query = DB::select('CALL sp_get_learning_report(?, ?, ?, ?, ?)', [
             $startDate,
             $endDate,
             $positionName,
@@ -65,7 +71,7 @@ class ReportController extends Controller
             'end_date'   => 'required|date|after_or_equal:start_date',
             'positionName'   => 'nullable|string|max:255',
             'buName'   => 'nullable|string|max:255',
-            'trainingType'   => 'nullable|string|max:255',
+            'trainingType'   => 'nullable|in:All,Online,Offline',
         ]);
     
         $reports = $this->getReportData($request);
