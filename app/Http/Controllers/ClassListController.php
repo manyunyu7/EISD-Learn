@@ -223,7 +223,7 @@ class ClassListController extends Controller
             $dataToInsert = [
                 'student_id' => $userID,
                 'lesson_id' => $idClass,
-                'student-lesson' => "$userID-$idClass",
+                'student_lesson' => "$userID-$idClass",
                 'learn_status' => 0,
                 'certificate_file' => "",
                 'created_at' => now()->format('Y-m-d H:i:s'),

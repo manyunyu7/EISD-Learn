@@ -307,73 +307,80 @@ class LessonController extends Controller
 
     public function updateClassV2(Request $request, $lesson_id)
     {
-
+        // 1. Validasi Data
         $this->validate($request, [
-            // 'image' => 'required',
-            'title' => 'required',
-            'content' => 'required',
+            'title'            => 'required',
+            'content'          => 'required',
+            'start_date'       => 'required|date',
+            'end_date'         => 'required|date|after_or_equal:start_date',
+            'target_peserta'   => 'required|numeric',
+            'durasi'           => 'required',
+            'bentuk_pelatihan' => 'required',
+            'vendor'           => 'required',
+            'budget_diajukan'  => 'required|numeric',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg|max:1024', // Optional saat update
         ]);
-
-        //upload image
-        $cat = $request->input('category');
-
-        // $video->storeAs('public/class/trailer', $video->hashName());
+    
         $user_id = Auth::id();
         $update_data_lesson = Lesson::findOrFail($lesson_id);
-
-        $image = $request->file('image');
-        $old_image_name = $update_data_lesson->course_cover_image;
-        $new_image_name = null;
-
-        if ($image != null) {
-            Storage::disk('s3')->delete("profile-s3/$old_image_name");
+    
+        // 2. Handling Image Upload (S3)
+        if ($request->hasFile('image')) {
+            // Hapus image lama jika ada
+            if ($update_data_lesson->course_cover_image) {
+                Storage::disk('s3')->delete($update_data_lesson->course_cover_image);
+            }
+    
             $image = $request->file('image');
             $imagePath = "lesson-s3/" . $image->hashName();
             Storage::disk('s3')->put($imagePath, file_get_contents($image));
             $update_data_lesson->course_cover_image = $imagePath;
         }
-
+    
+        // 3. Update Field Original
         $update_data_lesson->course_title       = $request->title;
         $update_data_lesson->course_trailer     = 'Value';
         $update_data_lesson->category_id        = $request->category_id;
-        $update_data_lesson->start_time         = $request->start_time;
-        $update_data_lesson->end_time           = $request->end_time;
-        $canBeAccessValueMapping = [
-            'Aktif' => 'y',
-            'Tidak Aktif' => 'n',
-        ];
-        $update_data_lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
-        $update_data_lesson->mentor_id          = $user_id;
         $update_data_lesson->course_description = $request->content;
-        $update_data_lesson->text_descriptions  = '';
+        $update_data_lesson->mentor_id          = $user_id;
         $update_data_lesson->pin                = $request->pass_class;
-        $update_data_lesson->position           = $request->position;
-        $update_data_lesson->target_employee    = '';
-        $newLabelValueMapping = [
+        $update_data_lesson->tipe               = $request->tipe;
+    
+        // Mapping Status (Aktif/Tidak Aktif)
+        $statusMapping = [
             'Aktif' => 'y',
             'Tidak Aktif' => 'n',
         ];
-
-        $update_data_lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
-        $update_data_lesson->tipe               = $request->tipe;
-        $update_data_lesson->department_id      = json_encode($request->department_id);
-        $update_data_lesson->position_id        = json_encode($request->position_id);
-
-        if($request->department_id==null || $request->department_id==""){
-            $update_data_lesson->department_id = "[]";
+        $update_data_lesson->can_be_accessed = $statusMapping[$request->akses_kelas] ?? 'n';
+        $update_data_lesson->new_class       = $statusMapping[$request->new_class] ?? 'n';
+    
+        // 4. Update Field Baru (Bahasa Inggris sesuai Database)
+        $update_data_lesson->start_date      = $request->start_date;
+        $update_data_lesson->end_date        = $request->end_date;
+        $update_data_lesson->target_audience = $request->target_peserta;
+        $update_data_lesson->duration        = $request->durasi;
+        $update_data_lesson->training_type   = $request->bentuk_pelatihan;
+        
+        // Lokasi: simpan input jika Offline, jika Online berikan tanda strip atau null
+        $update_data_lesson->location        = ($request->bentuk_pelatihan == 'Offline') ? $request->lokasi : '-';
+        
+        $update_data_lesson->vendor          = $request->vendor;
+        $update_data_lesson->proposed_budget = $request->budget_diajukan;
+    
+        // Budget Realisasi: Update hanya jika field tidak disabled (sudah melewati end_date)
+        // Jika field disabled di view, request tidak akan mengirim nilainya, kita pertahankan data lama atau default 0
+        if ($request->has('budget_realisasi')) {
+            $update_data_lesson->actual_budget = $request->budget_realisasi;
         }
-
-        if($request->position_id==null || $request->position_id==""){
-            $update_data_lesson->position_id = "[]";
-        }
-
-
-
+    
+        // 5. Handle JSON Department & Position
+        $update_data_lesson->department_id = !empty($request->department_id) ? json_encode($request->department_id) : "[]";
+        $update_data_lesson->position_id   = !empty($request->position_id) ? json_encode($request->position_id) : "[]";
+    
+        // 6. Eksekusi Simpan
         if ($update_data_lesson->save()) {
-            //redirect dengan pesan sukses
             return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Diperbaharui!']);
         } else {
-            //redirect dengan pesan error
             return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Diperbaharui!']);
         }
     }
@@ -442,7 +449,7 @@ class LessonController extends Controller
         $lesson = $lessonz[0];
 
         $student_lesson = FacadesDB::table('student_lesson')
-            ->where('student-lesson', "$user_id-$lesson_id")
+            ->where('student_lesson', "$user_id-$lesson_id")
             ->get()
             ->toArray();
 
@@ -453,11 +460,11 @@ class LessonController extends Controller
 
         $sections = FacadesDB::select("select * from view_course_section where lesson_id = $lesson_id ORDER BY section_order ASC");
 
-        // Iterate over the sections and check if each one is already added to the student-section
+        // Iterate over the sections and check if each one is already added to the student_section
         foreach ($sections as $key => $section) {
             $section_id = $section->section_id;
 
-            // Check if the section is already added to the student-section
+            // Check if the section is already added to the student_section
             $isTaken = StudentSection::where('section_id', $section_id)
                 ->where('student_id', Auth::id())
                 ->exists();
@@ -639,98 +646,92 @@ class LessonController extends Controller
             return redirect('lesson/manage')->with(['error' => 'Kelas Gagal Disimpan!']);
         }
     }
+    
     public function storeV2(Request $request)
     {
-
-        $totalsize = $request->image->getsize();
-
-
-        if($totalsize <= 1048576){
+        // Validasi ukuran file gambar (1MB)
+        $totalsize = $request->image->getSize();
+    
+        if ($totalsize <= 1048576) {
             $this->validate($request, [
-                'image' => 'required',
-                'title' => 'required',
-                'content' => 'required',
+                'image'             => 'required|image|mimes:jpeg,png,jpg|max:1024',
+                'title'             => 'required',
+                'content'           => 'required',
+                'start_date'        => 'required|date',
+                'end_date'          => 'required|date|after_or_equal:start_date',
+                'target_peserta'    => 'required|numeric',
+                'durasi'            => 'required',
+                'bentuk_pelatihan'  => 'required',
+                'vendor'            => 'required',
+                'budget_diajukan'   => 'required|numeric',
             ]);
-
-            //upload image
+    
+            // 1. Proses Upload Image ke S3
             $image = $request->file('image');
             $imagePath = "";
             if ($image != null) {
-                $image = $request->file('image');
                 $imagePath = "lesson-s3/" . $image->hashName();
                 Storage::disk('s3')->put($imagePath, file_get_contents($image));
             }
-
+    
             $user_id = Auth::id();
-
-            // Setting Value Department
-            $department = $request->department_id;
-            $json_department = json_encode($department);
-            // return $json_department;
-            // Setting Value Position
-            $position = $request->position_id;
-
+    
+            // 2. Inisialisasi Model Lesson
             $insert_to_Lesson = new Lesson();
+            
+            // Field Original
             $insert_to_Lesson->course_cover_image = $imagePath;
-            $insert_to_Lesson->course_title = $request->title;
-
-
-            $insert_to_Lesson->course_trailer = 'Value';
-            $insert_to_Lesson->category_id = $request->category_id;
-            $insert_to_Lesson->start_time = $request->start_time;
-            $insert_to_Lesson->end_time = $request->end_time;
-            $canBeAccessValueMapping = [
-                'Aktif' => 'y',
-                'Tidak Aktif' => 'n',
-            ];
-            $insert_to_Lesson->can_be_accessed = $canBeAccessValueMapping[$request->akses_kelas] ?? null;
-            $insert_to_Lesson->mentor_id = $user_id;
+            $insert_to_Lesson->course_title       = $request->title;
+            $insert_to_Lesson->course_trailer     = 'Value';
+            $insert_to_Lesson->category_id        = $request->category_id;
             $insert_to_Lesson->course_description = $request->content;
-            $insert_to_Lesson->text_descriptions = '';
-            $insert_to_Lesson->pin = $request->pass_class;
-            $insert_to_Lesson->position = $request->position;
-            $insert_to_Lesson->target_employee = '';
-            $newLabelValueMapping = [
+            $insert_to_Lesson->mentor_id          = $user_id;
+            $insert_to_Lesson->pin                = $request->pass_class;
+            $insert_to_Lesson->tipe               = $request->tipe;
+            $insert_to_Lesson->rating_course      = $request->rating ?? 0;
+    
+            // Mapping Label Button (Aktif/Tidak Aktif) ke (y/n)
+            $statusMapping = [
                 'Aktif' => 'y',
                 'Tidak Aktif' => 'n',
             ];
-
-            $insert_to_Lesson->new_class = $newLabelValueMapping[$request->new_class] ?? null;
-            $insert_to_Lesson->tipe = $request->tipe;
-            $insert_to_Lesson->department_id = json_encode($request->department_id);
-            $insert_to_Lesson->position_id = json_encode($request->position_id);
-
-            if($request->department_id==null || $request->department_id==""){
-                $insert_to_Lesson->department_id = "[]";
-            }
-
-            if($request->position_id==null || $request->position_id==""){
-                $insert_to_Lesson->position_id = "[]";
-            }
-
-            $insert_to_Lesson->rating_course = $request->rating;
-
-
-            // $insert_to_Lesson->rating_course = 0;
-
-
+            $insert_to_Lesson->can_be_accessed = $statusMapping[$request->akses_kelas] ?? 'n';
+            $insert_to_Lesson->new_class       = $statusMapping[$request->new_class] ?? 'n';
+    
+            // 3. Tambahan Field Baru (Menggunakan Nama Kolom Bahasa Inggris)
+            $insert_to_Lesson->start_date       = $request->start_date;
+            $insert_to_Lesson->end_date         = $request->end_date;
+            $insert_to_Lesson->target_audience  = $request->target_peserta;
+            $insert_to_Lesson->duration         = $request->durasi;
+            $insert_to_Lesson->training_type    = $request->bentuk_pelatihan;
+            
+            // Lokasi (location) hanya diisi jika Offline
+            $insert_to_Lesson->location         = ($request->bentuk_pelatihan == 'Offline') ? $request->lokasi : '-';
+            
+            $insert_to_Lesson->vendor           = $request->vendor;
+            $insert_to_Lesson->proposed_budget  = $request->budget_diajukan;
+    
+            // Budget Realisasi (actual_budget)
+            $insert_to_Lesson->actual_budget    = $request->budget_realisasi ?? 0;
+    
+            // 4. Handle JSON Department & Position
+            $insert_to_Lesson->department_id = !empty($request->department_id) ? json_encode($request->department_id) : "[]";
+            $insert_to_Lesson->position_id   = !empty($request->position_id) ? json_encode($request->position_id) : "[]";
+    
+            // Placeholder field agar tidak error jika database mewajibkan string
+            $insert_to_Lesson->text_descriptions = '';
+            $insert_to_Lesson->target_employee   = '';
+    
+            // 5. Eksekusi Simpan
             if ($insert_to_Lesson->save()) {
-                //redirect dengan pesan sukses
                 return redirect('lesson/manage_v2')->with(['success' => 'Kelas Berhasil Disimpan!']);
             } else {
-                //redirect dengan pesan error
-                return "error gais";
                 return redirect('lesson/manage_v2')->with(['error' => 'Kelas Gagal Disimpan!']);
             }
-        }else{
-            return redirect('lesson/manage_v2')->with(['error' => 'Ukuran file terlalu besar! Program hanya menerima ukuran file di bawah 1 MB.']);
+    
+        } else {
+            return redirect('lesson/manage_v2')->with(['error' => 'Ukuran file terlalu besar! Maksimal 1 MB.']);
         }
-
-
-
-        // return $totalsize;
-
-
     }
 
     public function fetchDepartments()
@@ -781,7 +782,7 @@ class LessonController extends Controller
                 'lesson_id' => $request->course_id,
                 'learn_status' => 0,
                 'certificate_file' => "",
-                'student-lesson' => "$user_id-$request->course_id",
+                'student_lesson' => "$user_id-$request->course_id",
             ]);
             if ($registerLesson) {
                 return redirect('/home')->with(['success' => 'Berhasil Mendaftar Kelas!']);
@@ -798,7 +799,7 @@ class LessonController extends Controller
     {
         $user_id = Auth::user()->id;
         $course_id = $request->course_id;
-        $delete = DB::table('student_lesson')->where('student-lesson', '=', $user_id . "-" . $course_id)->delete();
+        $delete = DB::table('student_lesson')->where('student_lesson', '=', $user_id . "-" . $course_id)->delete();
         if ($delete) {
             return redirect('/home')->with(['success' => 'Berhasil Drop Kelas!']);
         } else {

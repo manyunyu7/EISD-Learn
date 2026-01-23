@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Models\LessonCategory;
 
 class Lesson extends Model
 {
@@ -40,6 +41,12 @@ class Lesson extends Model
         return $fullImgPath;
     }
 
+    public function category()
+    {
+        // Sesuaikan 'category_id' dengan nama kolom foreign key di tabel lessons
+        return $this->belongsTo(LessonCategory::class, 'category_id');
+    }
+
     protected $fillable = [
         'id',
         'course_title',
@@ -62,6 +69,24 @@ class Lesson extends Model
         'department_id',
         'position_id',
         'tipe',
-        'rating_course'
+        'rating_course',
+    
+        // --- TAMBAHKAN FIELD BARU DI BAWAH INI ---
+        'start_date',
+        'end_date',
+        'target_audience',
+        'duration',
+        'training_type',
+        'location',
+        'vendor',
+        'proposed_budget',
+        'actual_budget',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date'   => 'date',
+        'department_id' => 'array',
+        'position_id'   => 'array',
     ];
 }

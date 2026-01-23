@@ -279,7 +279,7 @@
 
             {{-- DASHBOARD --}}
             <div class="col-md-12">
-                <h1><strong>Dashboard</strong></h1>
+                <h1><strong>Dashboard - Feature Improvement</strong></h1>
             </div>
 
             {{-- Total Class --}}

@@ -74,3 +74,18 @@
            style="{{ Request::is('training-request/*') ? 'color: white !important;' : '' }} margin-left: 10px;">Training Request</p>
     </a>
 </li>
+
+{{-- REPORT --}}
+<li class="nav-item {{ Request::is('report/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
+    <a href="{{ url('/report/generate') }}"  style="display: flex; align-items: center;">
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/request_training.png"
+             class="nav-ok-logo"
+             style="width: 14%;
+                height: auto;
+                margin-top: 5px;
+                "
+        >
+        <p class="{{ Request::is('report/*') ? 'text-white' : ''}}"
+           style="{{ Request::is('report/*') ? 'color: white !important;' : '' }} margin-left: 10px;">Report</p>
+    </a>
+</li>

@@ -580,7 +580,7 @@ class MobileHomeController extends Controller
                 'lesson_id' => $request->course_id,
                 'learn_status' => 0,
                 'certificate_file' => "",
-                'student-lesson' => "$user_id-$request->course_id",
+                'student_lesson' => "$user_id-$request->course_id",
             ]);
 
             if ($registerLesson) {
