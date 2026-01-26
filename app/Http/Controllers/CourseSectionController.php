@@ -1208,7 +1208,7 @@ class CourseSectionController extends Controller
         $studentSectionValue = "$student" . "-" . "$section";
 
         // Check if the student_section already exists
-        $existingRecord = StudentSection::where('student_section', $studentSectionValue)->first();
+        $existingRecord = StudentSection::where('student-section', $studentSectionValue)->first();
 
         if ($existingRecord) {
             // Handle the case when the record already exists
