@@ -1219,6 +1219,7 @@ class CourseSectionController extends Controller
             $data = new StudentSection();
             $data->student_id = $student;
             $data->section_id = $section;
+            $data->setAttribute('student-section', $studentSectionValue);
             $data->setAttribute('student_section', $studentSectionValue);
             // Save the data
             $data->save();
