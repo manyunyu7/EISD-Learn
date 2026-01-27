@@ -544,6 +544,10 @@ class MobileSeeCourseController extends Controller
             }
         }
 
+        // Convert array-casted fields back to string for mobile API compatibility
+        $lesson->department_id = $lesson->getRawOriginal('department_id');
+        $lesson->position_id = $lesson->getRawOriginal('position_id');
+
         $compact = compact(
             'userId',
             'isEligibleStudent',
