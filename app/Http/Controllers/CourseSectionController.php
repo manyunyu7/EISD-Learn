@@ -1495,7 +1495,8 @@ class CourseSectionController extends Controller
         $insert_to_StuLess = new StudentLesson();
         $insert_to_StuLess->student_id = $user_to_insert->id;
         $insert_to_StuLess->lesson_id = $lessonId;
-        $insert_to_StuLess->{"student_lesson"} = $user_to_insert->id . '-' . $lessonId;
+        $insert_to_StuLess->setAttribute('student-lesson', $user_to_insert->id . '-' . $lessonId);
+        $insert_to_StuLess->setAttribute('student_lesson', $user_to_insert->id . '-' . $lessonId);
         $insert_to_StuLess->learn_status = 0;
         $insert_to_StuLess->certificate_file = '';
         $insert_to_StuLess->save();
