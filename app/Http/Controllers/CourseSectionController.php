@@ -503,7 +503,7 @@ class CourseSectionController extends Controller
         $isRegistered = false;
         if (Auth::user()->role == "student") {
             $student_lesson = DB::table('student_lesson')
-                ->where('student_lesson', "$user_id-$lessonId")
+                ->where('student-lesson', "$user_id-$lessonId")
                 ->get()
                 ->toArray();
 
@@ -546,7 +546,7 @@ class CourseSectionController extends Controller
                 lessons.course_title,
                 lessons.id AS lessons_id,
                 ss.section_id,
-                ss.`student_section`
+                ss.`student-section`
             FROM
                 student_section AS ss
             LEFT JOIN users ON users.id = ss.student_id

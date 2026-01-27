@@ -449,7 +449,7 @@ class LessonController extends Controller
         $lesson = $lessonz[0];
 
         $student_lesson = FacadesDB::table('student_lesson')
-            ->where('student_lesson', "$user_id-$lesson_id")
+            ->where('student-lesson', "$user_id-$lesson_id")
             ->get()
             ->toArray();
 
@@ -800,7 +800,7 @@ class LessonController extends Controller
     {
         $user_id = Auth::user()->id;
         $course_id = $request->course_id;
-        $delete = DB::table('student_lesson')->where('student_lesson', '=', $user_id . "-" . $course_id)->delete();
+        $delete = DB::table('student_lesson')->where('student-lesson', '=', $user_id . "-" . $course_id)->delete();
         if ($delete) {
             return redirect('/home')->with(['success' => 'Berhasil Drop Kelas!']);
         } else {

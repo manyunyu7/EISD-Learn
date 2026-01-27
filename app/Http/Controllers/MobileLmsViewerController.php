@@ -200,7 +200,7 @@ class MobileLmsViewerController extends Controller
         $isRegistered = false;
         if (Auth::user()->role == "student") {
             $student_lesson = DB::table('student_lesson')
-                ->where('student_lesson', "$user_id-$lessonId")
+                ->where('student-lesson', "$user_id-$lessonId")
                 ->get()
                 ->toArray();
 
@@ -245,7 +245,7 @@ class MobileLmsViewerController extends Controller
                 'lessons.course_title',
                 'lessons.id AS lessons_id',
                 'ss.section_id',
-                'ss.student_section'
+                'ss.`student-section`'
             )
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
@@ -851,7 +851,7 @@ class MobileLmsViewerController extends Controller
         $studentSectionValue = "$student" . "-" . "$section";
 
         // Check if the student_section already exists
-        $existingRecord = StudentSection::where('student_section', $studentSectionValue)->first();
+        $existingRecord = StudentSection::where('student-section', $studentSectionValue)->first();
 
         if ($existingRecord) {
             // Handle the case when the record already exists

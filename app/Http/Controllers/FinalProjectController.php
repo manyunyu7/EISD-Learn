@@ -43,7 +43,7 @@ class FinalProjectController extends Controller
         $lesson_id = $lesson->id;
 
         $student_lesson = DB::table('student_lesson')
-            ->where('student_lesson', "$user_id-$lesson_id")
+            ->where('student-lesson', "$user_id-$lesson_id")
             ->get()
             ->toArray();
 
