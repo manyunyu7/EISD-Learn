@@ -97,7 +97,7 @@ class MobileSeeCourseController extends Controller
                 'lessons.course_title',
                 'lessons.id AS lessons_id',
                 'ss.section_id',
-                'ss.`student-section`'
+                'ss.student-section'
             )
             ->leftJoin('users', 'users.id', '=', 'ss.student_id')
             ->leftJoin('course_section', 'ss.section_id', '=', 'course_section.id')
