@@ -183,8 +183,8 @@
                             <td>{{ $row->keterangan_hadir }}</td>
                             <td>{{ $row->target_audience }}</td>
                             <td>{{ $row->actual_audience }}</td>
-                            <td>{{ $row->presentase_kehadiran }}</td>
-                            <td>undefined</td>
+                            <td>{{ (int)$row->presentase_kehadiran }}%</td>
+                            <td>{{ (int)$row->progress }}%</td>
                             <td>{{ $row->training_type }}</td>
                         </tr>
                         @php $totalHadir++; @endphp
