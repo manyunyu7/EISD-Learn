@@ -78,14 +78,14 @@
 {{-- REPORT --}}
 <li class="nav-item {{ Request::is('report/*') ? 'active' : '' }}" style="display: flex; justify-content: center;">
     <a href="{{ url('/report/generate') }}"  style="display: flex; align-items: center;">
-        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/request_training.png"
+        <img src="{{URL::to('/')}}/home_assets/img/Icon_Side_Bar/ic-report.svg"
              class="nav-ok-logo"
-             style="width: 14%;
+             style="width: 10%;
                 height: auto;
-                margin-top: 5px;
+                margin-top: 5px; margin-left: 3px;
                 "
         >
         <p class="{{ Request::is('report/*') ? 'text-white' : ''}}"
-           style="{{ Request::is('report/*') ? 'color: white !important;' : '' }} margin-left: 10px;">Report</p>
+           style="{{ Request::is('report/*') ? 'color: white !important;' : '' }} margin-left: 16px;">Report</p>
     </a>
 </li>
