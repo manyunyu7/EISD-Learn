@@ -223,7 +223,9 @@
                             <!-- Cover Image Course -->
                             <img class="card-img-top" style="aspect-ratio: 16 / 9"
                                 onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-                                src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}" alt="La Noyee">
+                                {{-- src="{{ 'https://jkt-1.s3.eranyacloud.id/bucket1-modernland/' . $data->course_cover_image }}"  --}}
+                                src="{{ $data->cover_url }}"
+                                alt="La Noyee">
 
                         <!-- Card body -->
                         <div class="card-body">

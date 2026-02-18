@@ -206,6 +206,18 @@ class LessonController extends Controller
             })
         ->get();
 
+        // Tambahkan logika ini untuk menghasilkan URL aman bagi setiap kelas
+        foreach ($myClasses as $data) {
+            if ($data->course_cover_image) {
+                // Menghasilkan URL yang berlaku selama 60 menit
+                $data->cover_url = Storage::disk('s3')->temporaryUrl(
+                    $data->course_cover_image, now()->addMinutes(60)
+                );
+            } else {
+                $data->cover_url = url('/default/default_courses.jpeg');
+            }
+        }
+
         $compact = compact('dayta', 'myClasses', 'keyword', 'myClasses_searchKeyword', 'lessonCategories');
         if($request->dump==true){
             return $compact;
@@ -337,11 +349,11 @@ class LessonController extends Controller
         // optional: ambil signed download URL
         $downloadUrl = $ceph->presignDownload($key, 60);
  
-        return response()->json([
-            'message' => 'Upload berhasil',
-            'key' => $key,
-            'download_url' => $downloadUrl
-        ], 200, [], JSON_UNESCAPED_SLASHES);
+        // return response()->json([
+        //     'message' => 'Upload berhasil',
+        //     'key' => $key,
+        //     'download_url' => $downloadUrl
+        // ], 200, [], JSON_UNESCAPED_SLASHES);
     
         // 2. Handling Image Upload (S3)
         if ($request->hasFile('image')) {
