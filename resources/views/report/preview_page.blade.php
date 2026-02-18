@@ -126,19 +126,23 @@
     <script>
         $(document).ready(function () {
             var table = $('#basic-datatables').DataTable({
-                // 1. Nonaktifkan fitur ubah jumlah entri
                 "lengthChange": false, 
-                
-                // 2. Tentukan jumlah default baris yang tampil (misal tetap 10)
                 "pageLength": 20,
+                
+                // Mengatur posisi elemen menggunakan layout
+                layout: {
+                    topStart: 'search', // Memindahkan Search Bar ke pojok kiri atas
+                    topEnd: null,       // Menghilangkan elemen di pojok kanan atas (kosong)
+                    bottomStart: 'info',
+                    bottomEnd: 'paging'
+                },
 
-                // Konfigurasi tata letak agar search bar dan pagination rapi ala Bootstrap
-                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                    '<"row"<"col-sm-12"tr>>' +
-                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                // Jika Anda masih menggunakan opsi 'dom' (opsional, pilih salah satu)
+                // dom: '<"row"<"col-sm-12 col-md-6"f><"col-sm-12 col-md-6">>t<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+
                 buttons: [
                     { extend: 'excelHtml5', title: 'Export Excel' },
-                    { extend: 'pdfHtml5', title: 'Export PDF', orientation: 'landscape' },
+                    { extend: 'pdfHtml5', title: 'Export PDF', orientation: 'landscape', pageSize: 'A2', },
                     { extend: 'csvHtml5', title: 'Export CSV' }
                 ],
                 "language": {
