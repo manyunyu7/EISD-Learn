@@ -53,25 +53,23 @@
         }
 
         .report-table {
-            width: 100%;
+            width: auto; 
+            min-width: 100%;
             border-collapse: collapse;
         }
 
-        .report-table th {
-            background-color: #f2f2f2;
-            color: #333;
-            font-weight: 700;
-            text-align: left;
-            padding: 12px 10px;
-            font-size: 13px;
-            border: 1px solid #dee2e6;
+        /* Kunci utama: mencegah teks turun ke bawah (wrap) */
+        .report-table th, 
+        .report-table td {
+            white-space: nowrap; 
+            padding: 8px 12px; /* Beri sedikit ruang agar tidak terlalu rapat */
+            text-align: left;   /* Atau sesuaikan dengan kebutuhan */
         }
 
-        .report-table td {
-            padding: 12px 10px;
-            border: 1px solid #dee2e6;
-            font-size: 13px;
-            color: #333;
+        /* Khusus untuk kontainer agar bisa di-scroll secara horizontal */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Styling Ringkasan Total di Bawah */
@@ -108,6 +106,67 @@
     </style>
 @endsection
 
+@section('script')
+    <!-- DataTables JS -->
+    {{-- <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script> --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.bootstrap4.css">
+    <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap4.js"></script>
+    
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.bootstrap4.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#basic-datatables').DataTable({
+                // 1. Nonaktifkan fitur ubah jumlah entri
+                "lengthChange": false, 
+                
+                // 2. Tentukan jumlah default baris yang tampil (misal tetap 10)
+                "pageLength": 20,
+
+                // Konfigurasi tata letak agar search bar dan pagination rapi ala Bootstrap
+                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                    '<"row"<"col-sm-12"tr>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                buttons: [
+                    { extend: 'excelHtml5', title: 'Export Excel' },
+                    { extend: 'pdfHtml5', title: 'Export PDF', orientation: 'landscape' },
+                    { extend: 'csvHtml5', title: 'Export CSV' }
+                ],
+                "language": {
+                    "search": "Search:",
+                    "paginate": {
+                        "previous": "<",
+                        "next": ">"
+                    }
+                }
+            });
+
+            // Menghubungkan tombol dropdown Anda ke fungsi export DataTables
+            $('#btn-excel').on('click', function() {
+                table.button('.buttons-excel').trigger();
+            });
+
+            $('#btn-pdf').on('click', function() {
+                table.button('.buttons-pdf').trigger();
+            });
+
+            $('#btn-csv').on('click', function() {
+                table.button('.buttons-csv').trigger();
+            });
+        });
+    </script>
+
+@endsection
+
 @section('main')
 <div class="page-inner">
     <nav aria-label="breadcrumb">
@@ -124,8 +183,12 @@
             Export
         </button>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="#"><i class="fas fa-file-excel mr-2"></i> Export Excel</a>
-            <a class="dropdown-item" href="#"><i class="fas fa-file-pdf mr-2"></i> Export PDF</a>
+            <a class="dropdown-item" href="javascript:void(0)" id="btn-excel">
+                <i class="fas fa-file-excel mr-2"></i> Export Excel
+            </a>
+            <a class="dropdown-item" href="javascript:void(0)" id="btn-pdf">
+                <i class="fas fa-file-pdf mr-2"></i> Export PDF
+            </a>
         </div>
     </div>
 
@@ -135,7 +198,7 @@
 
     <div class="table-container">
         <div class="table-responsive">
-            <table class="report-table">
+            <table id="basic-datatables" class="report-table">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -162,7 +225,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php $totalHadir = 0; @endphp
+                    @php
+                        // Total Peserta (Semua baris yang tampil)
+                        $reports = collect($reports);
+
+                        // Total Hadir (Filter berdasarkan kolom keterangan_hadir)
+                        $totalPeserta = $reports->count();
+                        // Menggunakan trim() untuk menghindari whitespace tak terlihat
+                        $totalHadir = $reports->where('keterangan_hadir', 'Hadir')->count();
+
+                        // Total Tidak Hadir
+                        $totalTidakHadir = $totalPeserta - $totalHadir;
+
+                        // --- LOGIKA GROUPING UNTUK KELAS ---
+    
+                        // 3. Ambil data unik berdasarkan Judul Training (Grouping)
+                        $uniqueClasses = $reports->unique('course_title');
+                        // Grouping berdasarkan Judul Training (Nama Kelas)
+                        $groupedClasses = $reports->groupBy('course_title');
+
+                        // 4. Hitung Online/Offline dari hasil grouping tersebut
+                        $totalKelasOnline = $uniqueClasses->filter(function($item) {
+                            return stripos($item->training_type, 'Online') !== false;
+                        })->count();
+
+                        $totalKelasOffline = $uniqueClasses->filter(function($item) {
+                            return stripos($item->training_type, 'Offline') !== false;
+                        })->count();
+                    @endphp
                     @forelse($reports as $index => $row)
                         <tr>
                             <td>{{ $index + 1 }}</td>
@@ -178,8 +268,8 @@
                             <td>{{ $row->vendor }}</td>
                             <td>{{ $row->location }}</td>
                             <td>{{ $row->duration }}</td>
-                            <td>{{ $row->proposed_budget }}</td>
-                            <td>{{ $row->actual_budget }}</td>
+                            <td>Rp. {{ number_format($row->proposed_budget, 0, ',', '.') }}</td>
+                            <td>Rp. {{ number_format($row->actual_budget, 0, ',', '.') }}</td>
                             <td>{{ $row->keterangan_hadir }}</td>
                             <td>{{ $row->target_audience }}</td>
                             <td>{{ $row->actual_audience }}</td>
@@ -187,7 +277,6 @@
                             <td>{{ (int)$row->progress }}%</td>
                             <td>{{ $row->training_type }}</td>
                         </tr>
-                        @php $totalHadir++; @endphp
                     @empty
                         <tr>
                             <td colspan="21" class="text-center">Belum memiliki materi / data tidak ditemukan.</td>
@@ -198,7 +287,7 @@
         </div>
     </div>
 
-    <div class="summary-box">
+    {{-- <div class="summary-box">
         <div class="summary-item">
             <div class="summary-label">Total</div>
             <div class="summary-value">{{ count($reports) }}</div>
@@ -206,6 +295,36 @@
         <div class="summary-item">
             <div class="summary-label">Hadir</div>
             <div class="summary-value">{{ $totalHadir }}</div>
+        </div>
+    </div> --}}
+
+    <div class="summary-container" style="margin-top: 20px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background: #f8f9fa; padding: 12px 15px; border-bottom: 1px solid #ddd; font-weight: bold;">
+            Ringkasan Kehadiran Per Kelas
+        </div>
+        
+        <div class="summary-list">
+            @foreach($groupedClasses as $namaKelas => $dataGrup)
+                @php
+                    // Menghitung jumlah baris yang statusnya 'Hadir' dalam grup ini
+                    $totalHadirPerKelas = $dataGrup->where('keterangan_hadir', 'Hadir')->count();
+                    $totalPesertaPerKelas = $dataGrup->count();
+                @endphp
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #eee; background: #fff;">
+                    <div style="flex: 2;">
+                        <span style="display: block; font-size: 0.9rem; color: #666; text-transform: uppercase;">Nama Kelas</span>
+                        <strong style="font-size: 1rem; color: #333;">{{ $namaKelas }}</strong>
+                    </div>
+                    
+                    <div style="flex: 1; text-align: right;">
+                        <span style="display: block; font-size: 0.85rem; color: #666;">Total Peserta Hadir</span>
+                        <span style="font-size: 1.2rem; font-weight: bold; color: #28a745;">
+                            {{ $totalHadirPerKelas }} <small style="color: #999; font-size: 0.8rem;">/ {{ $totalPesertaPerKelas }}</small>
+                        </span>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 
