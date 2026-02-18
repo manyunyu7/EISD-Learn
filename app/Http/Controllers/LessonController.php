@@ -22,6 +22,9 @@ use App\Models\StudentSection;
 use App\Http\Controllers\ITHubController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\CephStorageService;
+use Illuminate\Support\Str;
+
 
 class LessonController extends Controller
 {
@@ -305,7 +308,7 @@ class LessonController extends Controller
         return view('lessons.edit_lesson_v2', $compact);
     }
 
-    public function updateClassV2(Request $request, $lesson_id)
+    public function updateClassV2(Request $request, $lesson_id, CephStorageService $ceph)
     {
         // 1. Validasi Data
         $this->validate($request, [
@@ -323,6 +326,22 @@ class LessonController extends Controller
     
         $user_id = Auth::id();
         $update_data_lesson = Lesson::findOrFail($lesson_id);
+
+        $file = $request->file('image');
+ 
+        // generate nama unik
+        $key = "uploads/" . Str::uuid() . "." . $file->getClientOriginalExtension();
+ 
+        $ceph->putObject($key, $file);
+ 
+        // optional: ambil signed download URL
+        $downloadUrl = $ceph->presignDownload($key, 60);
+ 
+        return response()->json([
+            'message' => 'Upload berhasil',
+            'key' => $key,
+            'download_url' => $downloadUrl
+        ], 200, [], JSON_UNESCAPED_SLASHES);
     
         // 2. Handling Image Upload (S3)
         if ($request->hasFile('image')) {

@@ -42,6 +42,16 @@ return [
             'visibility' => 'public',
         ],
 
+        // 's3' => [
+        //     'driver' => 's3',
+        //     'key' => env('AWS_ACCESS_KEY_ID'),
+        //     'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        //     'region' => env('AWS_DEFAULT_REGION'),
+        //     'bucket' => env('AWS_BUCKET'),
+        //     'url' => env('AWS_URL'),
+        //     'endpoint' => env('AWS_ENDPOINT'),
+        // ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -50,7 +60,19 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
         ],
+        'ceph' => [
+            'driver' => 's3',
+            'key' => env('CEPH_ACCESS_KEY'),
+            'secret' => env('CEPH_SECRET_KEY'),
+            'endpoint' => env('CEPH_ENDPOINT'),
+            'bucket' => env('CEPH_BUCKET'),
+            'region' => env('CEPH_REGION'),
+            'use_path_style_endpoint' => true,
+        ],
+ 
 
     ],
 

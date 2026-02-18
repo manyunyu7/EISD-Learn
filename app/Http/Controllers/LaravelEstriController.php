@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\CephStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class LaravelEstriController extends Controller
@@ -182,20 +184,41 @@ class LaravelEstriController extends Controller
             //            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $imageName = time() . '.' . $request->image->extension();
-
-        // Upload the file to S3
-        $path = Storage::disk('s3')->put('testing', $request->image);
-
-        return $path;
-        // Generate a signed URL for accessing the file
-        $url = Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(60)); // Adjust expiry time as needed
-
-
-        /* Store $imageName name in DATABASE from HERE */
+        try {
+            // Coba upload
+            $path = Storage::disk('s3')->put('testing', $request->image);
+            
+            return response()->json([
+                'status' => 'success',
+                'path' => $path,
+                'url' => Storage::disk('s3')->url($path)
+            ]);
+    
+        } catch (\Exception $e) {
+            // Tangkap error detail (misal: S3 Error: 403 Forbidden / Connection Refused)
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
 
         return back()
             ->with('success', 'You have successfully uploaded the image.')
             ->with('image', $url);
+    }
+
+    public function checkMyBuckets()
+    {
+        // Laravel secara otomatis menggunakan S3Client di balik layar
+        $s3Client = Storage::disk('s3')->getAdapter()->getClient();
+        
+        // Mengambil daftar bucket sesuai dokumentasi Ceph
+        $listResponse = $s3Client->listBuckets();
+        $buckets = $listResponse['Buckets'];
+    
+        foreach ($buckets as $bucket) {
+            echo $bucket['Name'] . " - Created: " . $bucket['CreationDate'] . "<br>";
+        }
     }
 }
