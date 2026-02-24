@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use stdClass;
-
+use App\Services\CephStorageService;
 class CourseSectionController extends Controller
 {
 
@@ -130,7 +130,7 @@ class CourseSectionController extends Controller
         return view('lessons.manage_materials', $compact);
     }
 
-    public function store_materials(Request $request, Lesson $lesson)
+    public function store_materials(Request $request, Lesson $lesson, CephStorageService $ceph)
     {
         $this->validate($request, [
             'content_area' => 'required|string',
@@ -144,21 +144,20 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection = new CourseSection();
 
-        ini_set('upload_max_filesize', '1G');
-        ini_set('post_max_size', '1G');
-        ini_set('memory_limit', '1G'); // 1GB
         $materials = $request->file('data_file');
 
         if ($materials) {
-            // Upload new video
-            if ($materials != null) {
-                $image = $request->file('data_file');
-                $imagePath = "course-s3/$lessonId" . $image->hashName();
-                Storage::disk('s3')->put($imagePath, file_get_contents($image));
-                $insert_to_CourseSection->section_video = $imagePath;
-            } else {
-                $insert_to_CourseSection->section_video = "";
-            }
+            set_time_limit(600); // 10 menit timeout
+            $fileName = $lessonId . $materials->hashName();
+            $imagePath = "course-s3/" . $fileName;
+            
+            Storage::disk('s3')->putObject(
+                "course-s3/",
+                $materials,
+                $fileName
+            );
+            
+            $insert_to_CourseSection->section_video = $imagePath;
         } else {
             $insert_to_CourseSection->section_video = "";
         }
@@ -223,10 +222,16 @@ class CourseSectionController extends Controller
         $materials = $request->file('data_file');
 
         if ($materials != null) {
-            Storage::disk('s3')->delete("profile-s3/$lessonId");
-            $dataFile = $request->file('data_file');
-            $dataFilePath = "course-s3/$lessonId" . $dataFile->hashName();
-            Storage::disk('s3')->put($dataFilePath, file_get_contents($dataFile));
+            set_time_limit(600);
+            $fileName = $lessonId . $materials->hashName();
+            $dataFilePath = "course-s3/" . $fileName;
+            
+            Storage::disk('s3')->putFileAs(
+                "course-s3/",
+                $materials,
+                $fileName
+            );
+            
             $update_to_CourseSection->section_video = $dataFilePath;
         }
 
@@ -779,6 +784,16 @@ class CourseSectionController extends Controller
         // return $sections;
 
         $sectionDetail = CourseSection::findOrFail($sectionId);
+        // Jika file ada di S3/Ceph
+        if ($sectionDetail->section_video && str_contains($sectionDetail->section_video, 'course-s3')) {
+            $sectionDetail->signed_url = Storage::disk('s3')->temporaryUrl(
+                $sectionDetail->section_video, now()->addMinutes(60)
+            );
+        }
+
+        // dd($sectionDetail);
+
+
         // Iterate over the sections and check if each one is already added to the student_section
         foreach ($sections as $key => $section) {
             // Check if the section is already added to the student_section

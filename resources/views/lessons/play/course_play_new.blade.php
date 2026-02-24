@@ -216,13 +216,13 @@
                             @if(Str::contains(Storage::url('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
 
                                 @if(str_contains($sectionDetail->section_video,'course-s3'))
-                                   <iframe id="pdfIframe"
-                                           src="{{ url('/') }}/library/viewerjs/src/#{{ env('AWS_BASE_URL') . $sectionDetail->section_video }}#page=1"
-                                           style="text-align:center;" width="100%" height="550" allowfullscreen=""
-                                           webkitallowfullscreen=""></iframe>
+                                    <iframe id="pdfIframe"
+                                            src="{{ url('/') }}/library/viewerjs/src/#{{ $sectionDetail->signed_url }}#page=1"
+                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                            webkitallowfullscreen=""></iframe>
                                 @else
                                     <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
+                                            src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->signed_url) }}#page=1"
                                             style="text-align:center;" width="100%" height="550" allowfullscreen=""
                                             webkitallowfullscreen=""></iframe>
                                 @endif
@@ -309,20 +309,18 @@
 
                                 @if (in_array($fileExtension, $videoFormats) || str_contains($sectionDetail->section_video,".mp4"))
                                     @if(str_contains($sectionDetail->section_video,'course-s3'))
-                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                        <video controls playsinline id="myVideo" autoplay="autoplay"
                                                width="100%"
                                                class="video-mask" disablePictureInPicture
                                                controlsList="nodownload">
-                                            <source
-                                                src="{{"https://lms-modernland.s3.ap-southeast-3.amazonaws.com/"."$sectionDetail->section_video" }}">
+                                            <source src="{{ $sectionDetail->signed_url }}" type="video/mp4">
                                         </video>
                                     @else
-                                        <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                        <video controls playsinline id="myVideo" autoplay="autoplay"
                                                width="100%"
                                                class="video-mask" disablePictureInPicture
                                                controlsList="nodownload">
-                                            <source
-                                                src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}">
+                                            <source src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}" type="video/mp4">
                                         </video>
                                     @endif
                                 @elseif (in_array($fileExtension, $imageFormats))
@@ -330,12 +328,11 @@
                                         src="{{ asset('storage/class/content/' . $courseId . '/' . $sectionDetail->section_video) }}"
                                         alt="Image">
                                 @elseif (Str::contains($sectionDetail->section_video, "https://streamable"))
-                                    <video crossorigin controls playsinline id="myVideo" autoplay="autoplay"
+                                    <video controls playsinline id="myVideo" autoplay="autoplay"
                                            width="100%"
                                            class="video-mask" disablePictureInPicture
                                            controlsList="nodownload">
-                                        <source
-                                            src="{{$sectionDetail->section_video}}">
+                                        <source src="{{$sectionDetail->section_video}}">
                                     </video>
                                 @else
                                     {{-- <h1>Unsupported file format</h1> --}}
