@@ -151,7 +151,7 @@ class CourseSectionController extends Controller
             $fileName = $lessonId . $materials->hashName();
             $imagePath = "course-s3/" . $fileName;
             
-            Storage::disk('s3')->put(
+            Storage::disk('s3')->putFileAs(
                 "course-s3/",
                 $materials,
                 $fileName
