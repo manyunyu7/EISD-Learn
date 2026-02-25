@@ -138,16 +138,12 @@ class CourseSectionController extends Controller
             'content_area.required' => 'Deskripsi Kelas wajib diisi.',
         ]);
 
-
-
         $lessonId = $request->lessonId;
 
         $insert_to_CourseSection = new CourseSection();
 
         $file = $request->file('data_file');
         $originalExtension = strtolower($file->getClientOriginalExtension());
-        
-        // $extension = strtolower($file->getClientOriginalExtension()); 
         $filenameOnly = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
         $newFileName = $lessonId . md5($filenameOnly . microtime()) . '.' . $originalExtension;
@@ -168,9 +164,6 @@ class CourseSectionController extends Controller
                 $contentType = $file->getMimeType(); // Untuk file lain, biarkan sistem yang tebak
         }
         
-        // $fileName = Str::random(40) . '.' . $originalExtension;
-        // $fileName = $lessonId . $file->hashName(). '.' . $originalExtension;
-        
         $file->storeAs('course-s3', $newFileName, [
             'disk' => 's3',
             'ContentType' => $contentType
@@ -186,24 +179,6 @@ class CourseSectionController extends Controller
 
         }
 
-        // if ($materials) {
-        //     set_time_limit(600); // 10 menit timeout
-        //     $fileName = $lessonId . $materials->hashName();
-        //     $imagePath = "course-s3/" . $fileName;
-            
-        //     Storage::disk('s3')->putFileAs(
-        //         "course-s3/",
-        //         $materials,
-        //         $fileName
-        //     );
-            
-        //     $insert_to_CourseSection->section_video = $imagePath;
-        // } else {
-        //     $insert_to_CourseSection->section_video = "";
-        // }
-
-        // dd($path);
-
         $lastSectionOrder = $insert_to_CourseSection ->where('course_id', $lessonId) ->max('section_order');
 
         $insert_to_CourseSection->section_title = $request->title;
@@ -218,15 +193,7 @@ class CourseSectionController extends Controller
         $insert_to_CourseSection->can_be_accessed = $request->is_access;
         $insert_to_CourseSection->quiz_session_id = $request->is_examId;
         $insert_to_CourseSection->embedded_file = $request->embeded_file;
-        // dd($insert_to_CourseSection);
         $insert_to_CourseSection->save();
-
-        // $u_student_lesson = StudentLesson::where('lesson_id', '=', $lessonId)->first();
-        // if($insert_to_CourseSection->save()){
-        //     $u_student_lesson->learn_status = 0;
-        //     $u_student_lesson->save();
-        // }
-
 
         if ($insert_to_CourseSection) {
             //redirect dengan pesan sukses
