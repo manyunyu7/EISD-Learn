@@ -57,6 +57,32 @@ class MobileHomeController extends Controller
             } else {
                 $class->new_class = false;
             }
+
+            // --- LOGIKA PRESIGNED URL UNTUK MOBILE API ---
+            if ($class->course_cover_image) {
+                // Cek apakah file berada di S3 (berdasarkan path atau string tertentu)
+                if (str_contains($class->course_cover_image, "course-s3") || str_contains($class->course_cover_image, "lesson-s3")) {
+                    
+                    // Timpa langsung properti path lama dengan Presigned URL
+                    $presignedUrl = Storage::disk('s3')->temporaryUrl(
+                        $class->course_cover_image, now()->addMinutes(60)
+                    );
+
+                    $class->course_cover_image = $presignedUrl; // Menimpa key asli
+                    $class->full_img_path = $presignedUrl;      // Menimpa key full_img_path
+                    
+                } else {
+                    // Jika file lokal/public storage
+                    $localPath = url("/") . Storage::url('public/class/cover/') . $class->course_cover_image;
+                    $class->course_cover_image = $localPath;
+                    $class->full_img_path = $localPath;
+                }
+            } else {
+                // Default image jika kosong
+                $default = url('/default/default_courses.jpeg');
+                $class->course_cover_image = $default;
+                $class->full_img_path = $default;
+            }
         }
 
 
@@ -516,7 +542,7 @@ class MobileHomeController extends Controller
             }
 
             $data->first_section = $section ? (string)$section->id : null;
-            
+
             // --- LOGIKA PRESIGNED URL UNTUK MOBILE API ---
             if ($data->course_cover_image) {
                 // Cek apakah file berada di S3 (berdasarkan path atau string tertentu)
@@ -542,13 +568,6 @@ class MobileHomeController extends Controller
                 $data->course_cover_image = $default;
                 $data->full_img_path = $default;
             }
-
-            // $awsBaseUrl = env('AWS_BASE_URL');
-            // if (str_contains($data->course_cover_image, "lesson-s3")) {
-            //     $data->full_img_path = env('AWS_BASE_URL') . $data->course_cover_image;
-            // } else {
-            //     $data->full_img_path = url("/") . Storage::url('public/class/cover/') . $data->course_cover_image;
-            // }
         }
 
 
