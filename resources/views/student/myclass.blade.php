@@ -119,9 +119,11 @@
                 <div class="col-sm-6 col-xl-4">
                     <div class="card shadow ">
                         <!-- Image -->
-                        <img class="card-img-top" style="aspect-ratio: 16 / 9"
+                        <img class="card-img-top" 
+                            style="aspect-ratio: 16 / 9; object-fit: cover;"
                             onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Course Image';"
-                            src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}" alt="La Noyee">
+                            src="{{ $data->cover_signed_url ?? url('/default/default_courses.jpeg') }}" 
+                            alt="{{ $data->course_title }}">
                         <!-- Card body -->
                         <div class="card-body">
                             <div

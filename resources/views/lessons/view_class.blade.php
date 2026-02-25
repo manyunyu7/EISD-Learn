@@ -92,11 +92,11 @@
                     <div class="col-md-12 mt-3">
                         <div style="text-align: center;">
                             <a href="javascript:void();" data-switch="0">
-                                <img
-                                    style="height: auto!important; max-height: 80vh; object-fit: cover; width: 100vw!important; max-width: 70vw!important; display: inline-block; border-radius: 20px;"
+                                <img style="height: auto!important; max-height: 80vh; object-fit: cover; width: 100vw!important; max-width: 70vw!important; display: inline-block; border-radius: 20px;"
                                     class="card-img-top"
                                     onerror="this.onerror=null; this.src='{{ url('/default/default_courses.jpeg') }}'; this.alt='Alternative Image';"
-                                    src="{{ env('AWS_BASE_URL') . $data->course_cover_image }}" alt="La Noyee">
+                                    src="{{ $data->cover_signed_url ?? url('/default/default_courses.jpeg') }}" 
+                                    alt="{{ $data->course_title }}">
                             </a>
                         </div>
 

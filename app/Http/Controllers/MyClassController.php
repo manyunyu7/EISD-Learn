@@ -71,6 +71,16 @@ class MyClassController extends Controller
         $myClasses = $myClassesQuery->get();
 
         foreach ($myClasses as &$class) {
+            // --- LOGIKA PRESIGNED URL UNTUK COVER IMAGE ---
+            if ($class->course_cover_image) {
+                // Jika path image mengandung 'course-s3' atau sesuai dengan disk S3
+                $class->cover_signed_url = Storage::disk('s3')->temporaryUrl(
+                    $class->course_cover_image, now()->addMinutes(60)
+                );
+            } else {
+                $class->cover_signed_url = null;
+            }
+
             $sections = CourseSection::select(
                 'lessons.id as lesson_id',
                 'lessons.course_title as lessons_title',
@@ -97,6 +107,7 @@ class MyClassController extends Controller
             $class->first_section = $sections ? $sections->section_id : null;
         }
 
+        // dd($myClasses);
         
         $compact = compact('myClasses', 'userID', 'lessonCategories');
 

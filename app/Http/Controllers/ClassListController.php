@@ -113,6 +113,17 @@ class ClassListController extends Controller
             // Tambahkan flag 'is_registered_by_student' untuk setiap kelas
             foreach ($classes as $classItem) {
                 $classItem->is_registered_by_student = in_array($classItem->id, $registeredLessons);
+
+                // --- TAMBAHKAN KODE INI ---
+                if ($classItem->course_cover_image) {
+                    // Generate URL sementara yang berlaku selama 60 menit
+                    $classItem->cover_signed_url = Storage::disk('s3')->temporaryUrl(
+                        $classItem->course_cover_image, 
+                        now()->addMinutes(60)
+                    );
+                } else {
+                    $classItem->cover_signed_url = null;
+                }
             }
 
         // return $classes;

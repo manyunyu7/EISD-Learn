@@ -13,6 +13,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+
 
 class DetailClassController extends Controller
 {
@@ -20,6 +22,15 @@ class DetailClassController extends Controller
     public function viewClass(Request $request,$id){
         // $lesson_id = $lesson->id;
         $data = Lesson::findOrFail($id);
+        // --- GENERATE PRESIGNED URL UNTUK COVER IMAGE ---
+        if ($data->course_cover_image) {
+            $data->cover_signed_url = Storage::disk('s3')->temporaryUrl(
+                $data->course_cover_image, now()->addMinutes(60)
+            );
+        } else {
+            $data->cover_signed_url = null;
+        }
+
         $dayta = DB::table('course_section as c')
             ->select(
                 'a.id as lesson_id',
