@@ -106,16 +106,24 @@ class MobileLmsViewerController extends Controller
                     ->exists();
             }
 
+            // --- ADJUSTMENT START: S3 Presigned URL ---
             $fullContentUrl = "";
-            if ($section->section_video && str_contains($section->section_video, 's3')) {
-                $fullContentUrl = env('AWS_BASE_URL') . $section->section_video;
-            } else if ($section->section_video) {
-                $fullContentUrl = asset('storage/class/content/' . $lessonId . '/' . $section->section_video);
+            if ($section->section_video) {
+                if (str_contains($section->section_video, 'course-s3') || str_contains($section->section_video, 's3')) {
+                    // Generate Presigned URL
+                    $fullContentUrl = Storage::disk('s3')->temporaryUrl(
+                        $section->section_video, now()->addMinutes(60)
+                    );
+                } else {
+                    // URL Lokal
+                    $fullContentUrl = asset('storage/class/content/' . $lessonId . '/' . $section->section_video);
+                }
             }
 
-            // Add the 'isTaken' attribute to the section object
-            $section->isTaken = $isTaken;
+            // Timpa key asli dan full_content_url agar mobile tidak perlu ganti key
+            $section->section_video = $fullContentUrl; 
             $section->full_content_url = $fullContentUrl;
+            // --- ADJUSTMENT END ---
 
             // ✅ ADD: Debug information (remove this in production)
             if ($request->debug == true && $section->quiz_session_id) {
@@ -422,12 +430,20 @@ class MobileLmsViewerController extends Controller
 
         $sectionDetail = CourseSection::findOrFail($sectionId);
 
-        if (str_contains($sectionDetail->section_video, 's3')) {
-            $fullContentUrl = env('AWS_BASE_URL') . $section->section_video;
-        } else {
-            $fullContentUrl = asset('storage/class/content/' . $lessonId . '/' . $section->section_video);
+        // --- ADJUSTMENT START ---
+        if ($sectionDetail->section_video) {
+            if (str_contains($sectionDetail->section_video, 'course-s3') || str_contains($sectionDetail->section_video, 's3')) {
+                $fullContentUrl = Storage::disk('s3')->temporaryUrl(
+                    $sectionDetail->section_video, now()->addMinutes(60)
+                );
+            } else {
+                $fullContentUrl = asset('storage/class/content/' . $lessonId . '/' . $sectionDetail->section_video);
+            }
+            
+            // Timpa key asli dengan URL lengkap
+            $sectionDetail->section_video = $fullContentUrl;
         }
-        $sectionDetail->section_video = $fullContentUrl;
+        // --- ADJUSTMENT END ---
 
         if ($sectionDetail != null) {
             $title = $sectionDetail->section_title ?? "";
