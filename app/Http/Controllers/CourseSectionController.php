@@ -144,23 +144,59 @@ class CourseSectionController extends Controller
 
         $insert_to_CourseSection = new CourseSection();
 
-        $materials = $request->file('data_file');
+        $file = $request->file('data_file');
+        $originalExtension = strtolower($file->getClientOriginalExtension());
 
-        if ($materials) {
-            set_time_limit(600); // 10 menit timeout
-            $fileName = $lessonId . $materials->hashName();
-            $imagePath = "course-s3/" . $fileName;
-            
-            Storage::disk('s3')->putFileAs(
-                "course-s3/",
-                $materials,
-                $fileName
-            );
-            
-            $insert_to_CourseSection->section_video = $imagePath;
-        } else {
-            $insert_to_CourseSection->section_video = "";
+        switch ($originalExtension) {
+            case 'mp4':
+                $contentType = 'video/mp4';
+                break;
+            case 'pdf':
+                $contentType = 'application/pdf';
+                break;
+            case 'jpg':
+            case 'jpeg':
+                $contentType = 'image/jpeg';
+                break;
+            default:
+                $contentType = $file->getMimeType(); // Untuk file lain, biarkan sistem yang tebak
         }
+        
+        // $fileName = Str::random(40) . '.' . $originalExtension;
+        $fileName = $lessonId . $file->hashName(). '.' . $originalExtension;
+        
+        $file->storeAs('course-s3', $fileName, [
+            'disk' => 's3',
+            'ContentType' => $contentType
+        ]);
+
+        $imagePath = "course-s3/" . $fileName;
+
+        if ($file){
+            $insert_to_CourseSection->section_video = $imagePath;
+        }
+        else {
+            $insert_to_CourseSection->section_video = "";
+
+        }
+
+        // if ($materials) {
+        //     set_time_limit(600); // 10 menit timeout
+        //     $fileName = $lessonId . $materials->hashName();
+        //     $imagePath = "course-s3/" . $fileName;
+            
+        //     Storage::disk('s3')->putFileAs(
+        //         "course-s3/",
+        //         $materials,
+        //         $fileName
+        //     );
+            
+        //     $insert_to_CourseSection->section_video = $imagePath;
+        // } else {
+        //     $insert_to_CourseSection->section_video = "";
+        // }
+
+        // dd($path);
 
         $lastSectionOrder = $insert_to_CourseSection ->where('course_id', $lessonId) ->max('section_order');
 

@@ -215,14 +215,16 @@
                         <div class="container-fluid">
                             @if(Str::contains(Storage::url('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video),'pdf'))
 
-                                @if(str_contains($sectionDetail->section_video,'course-s3'))
+                                @if(str_contains($sectionDetail->section_video, 'course-s3'))
+                                    {{-- Jika dari S3, gunakan signed_url langsung --}}
                                     <iframe id="pdfIframe"
                                             src="{{ url('/') }}/library/viewerjs/src/#{{ $sectionDetail->signed_url }}#page=1"
                                             style="text-align:center;" width="100%" height="550" allowfullscreen=""
                                             webkitallowfullscreen=""></iframe>
                                 @else
+                                    {{-- Jika lokal, pastikan path storage benar --}}
                                     <iframe id="pdfIframe"
-                                            src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->signed_url) }}#page=1"
+                                            src="{{ url('/') }}/library/viewerjs/src/#{{ asset('storage/class/content/' . $sectionDetail->lesson_id . '/' . $sectionDetail->section_video) }}#page=1"
                                             style="text-align:center;" width="100%" height="550" allowfullscreen=""
                                             webkitallowfullscreen=""></iframe>
                                 @endif
