@@ -146,7 +146,13 @@ class CourseSectionController extends Controller
 
         $file = $request->file('data_file');
         $originalExtension = strtolower($file->getClientOriginalExtension());
+        
+        // $extension = strtolower($file->getClientOriginalExtension()); 
+        $filenameOnly = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
+        $newFileName = $lessonId . md5($filenameOnly . microtime()) . '.' . $originalExtension;
+
+        $contentType = $file->getMimeType(); // Default
         switch ($originalExtension) {
             case 'mp4':
                 $contentType = 'video/mp4';
@@ -163,14 +169,14 @@ class CourseSectionController extends Controller
         }
         
         // $fileName = Str::random(40) . '.' . $originalExtension;
-        $fileName = $lessonId . $file->hashName(). '.' . $originalExtension;
+        // $fileName = $lessonId . $file->hashName(). '.' . $originalExtension;
         
-        $file->storeAs('course-s3', $fileName, [
+        $file->storeAs('course-s3', $newFileName, [
             'disk' => 's3',
             'ContentType' => $contentType
         ]);
 
-        $imagePath = "course-s3/" . $fileName;
+        $imagePath = "course-s3/" . $newFileName;
 
         if ($file){
             $insert_to_CourseSection->section_video = $imagePath;
