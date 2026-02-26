@@ -122,6 +122,7 @@ class MobileLmsViewerController extends Controller
             }
 
             // Timpa key asli dan full_content_url agar mobile tidak perlu ganti key
+            $section->isTaken = $isTaken;
             $section->section_video = $fullContentUrl; 
             $section->full_content_url = $fullContentUrl;
             // --- ADJUSTMENT END ---
