@@ -217,8 +217,12 @@
 
                                 @if(str_contains($sectionDetail->section_video, 'course-s3'))
                                     {{-- Jika dari S3, gunakan signed_url langsung --}}
-                                    <iframe id="pdfIframe"
+                                    {{-- <iframe id="pdfIframe"
                                             src="{{ url('/') }}/library/viewerjs/src/#{{ $sectionDetail->signed_url }}#page=1"
+                                            style="text-align:center;" width="100%" height="550" allowfullscreen=""
+                                            webkitallowfullscreen=""></iframe> --}}
+                                    <iframe id="pdfIframe"
+                                            src="{{ $sectionDetail->signed_url }}#page=1"
                                             style="text-align:center;" width="100%" height="550" allowfullscreen=""
                                             webkitallowfullscreen=""></iframe>
                                 @else
@@ -228,7 +232,6 @@
                                             style="text-align:center;" width="100%" height="550" allowfullscreen=""
                                             webkitallowfullscreen=""></iframe>
                                 @endif
-
 
                                 <!-- Add this single <script> tag to the body of your HTML document -->
 

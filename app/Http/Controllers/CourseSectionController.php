@@ -1167,7 +1167,7 @@ class CourseSectionController extends Controller
         }
 
         // return $classInfo;
-        // dd($sections);
+        // dd($sectionDetail);
 
         $compact = compact(
             'isEligibleStudent',
