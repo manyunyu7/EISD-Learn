@@ -305,7 +305,7 @@
                             @if ($data->image !== null)
                                 <div class="text-center">
                                     {{-- src="{{ Storage::url('public/exam/question/' . $data->image) }}"  --}}
-                                    <img src="{{ Storage::disk('s3')->url($data->image) }}"
+                                    <img src="{{ env('AWS_BASE_URL') . $data->image }}"
                                         style="width: auto; height:350px"
                                         class="rounded"
                                         alt="...">
